@@ -9,8 +9,11 @@
  * */
 
 #include <iostream>
-
 using namespace std;
+
+
+// the directory the program will use as a destination
+#define DIRECTORY "test_image"
 
 int main(){
 
