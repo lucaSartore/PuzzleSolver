@@ -24,6 +24,9 @@ using namespace cv;
 
 void split_pieces_into_single_images();
 
+void do_images_pre_processing();
+
+
 int main(){
 
     split_pieces_into_single_images();
@@ -118,11 +121,40 @@ void split_pieces_into_single_images(){
                 waitKey(0);
 
                 //calculate path
-                string path = string("../") + string(DIRECTORY) + string("/deviated/") + to_string(piece_index++) + string(IMAGE_FORMAT);
+                string path = string("../") + string(DIRECTORY) + string("/divided/") + to_string(piece_index++) + string(IMAGE_FORMAT);
 
                 //save the file
                 imwrite(path,cropped_image);
             }
         }
     }
+}
+
+// this function make some preprocessing to increase the speed of the comparison operation later
+void do_images_pre_processing(){
+
+    int piece_index = 1;
+
+    while (true){
+        //step 1: read all the files
+        string path = string("../") + string(DIRECTORY) + string("/divided/") + to_string(piece_index) + string(IMAGE_FORMAT);
+        // image with the scanned raw data
+        Mat raw_image = imread(path);
+        // break in the case the image is empty
+        if (raw_image.empty()){
+            if(piece_index == 1){
+                cerr << "no file found with name: " << path << endl;
+                exit(1);
+            }else{
+                cout << "total file read: " << piece_index << endl;
+                break;
+            }
+        }
+        piece_index++;
+
+
+
+    }
+
+
 }
