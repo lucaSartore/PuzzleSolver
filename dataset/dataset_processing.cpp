@@ -15,7 +15,7 @@ using namespace std;
 using namespace cv;
 
 // the directory the program will use as a destination
-#define DIRECTORY "cat500pcs"
+#define DIRECTORY "cat_500pcs"
 #define IMAGE_FORMAT ".jpeg"
 int main(){
 
