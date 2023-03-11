@@ -1,23 +1,5 @@
 cmake_minimum_required(VERSION 2.24)
 
-#set(OpenCV_DIR /usr/local/lib/cmake/opencv4 )
-#set(CMAKE_PREFIX_PATH /usr/local/lib/cmake/opencv4)
-#set(OpenCV_INCLUDE_DIRS /usr/local/include/opencv4)
-#set(OpenCV_LIBS opencv_calib3d;opencv_core;opencv_dnn;opencv_features2d;opencv_flann;opencv_gapi;opencv_highgui;opencv_imgcodecs;opencv_imgproc;opencv_ml;opencv_objdetect;opencv_photo;opencv_stitching;opencv_video;opencv_videoio)
-
-#if(EXISTS "/usr/local/lib/cmake/opencv4/OpenCVConfig.cmake")
-if(EXISTS "/find_me.txt")
-    message("file found")
-else()
-    message("file not found")
-endif()
-
-include(CMakePrintHelpers)
-cmake_print_variables(OpenCV_DIR)
-cmake_print_variables(CMAKE_PREFIX_PATH)
-cmake_print_variables(OpenCV_INCLUDE_DIRS)
-cmake_print_variables(OpenCV_LIBS)
-cmake_print_variables(CMAKE_MODULE_PATH)
 
 project( Processing )
 find_package(OpenCV REQUIRED)
