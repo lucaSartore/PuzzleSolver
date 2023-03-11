@@ -16,43 +16,52 @@ using namespace cv;
 
 // the directory the program will use as a destination
 #define DIRECTORY "blue_500pcs"
+// format of the file
 #define IMAGE_FORMAT ".jpg"
+// how many pixels a piece's area has to be big for it to be considered an actual piece
+#define PIECE_MINIMUM_AREA 50000
+
+
+void split_pieces_into_single_images();
+
 int main(){
 
-    // list for keeping the files
-    vector<Mat> raw_images = vector<Mat>();
-    int c = 1;
+    split_pieces_into_single_images();
 
-    //read all the files
+
+}
+
+void split_pieces_into_single_images(){
+    // index for keeping tracking the scanned files
+    int raw_image_index = 1;
+    // index for keeping tracking the files to write
+    int piece_index = 1;
+
     while (true){
-        string path = string("../") + string(DIRECTORY) + string("/raw/") + to_string(c) + string(IMAGE_FORMAT);
-        Mat img = imread(path);
 
+
+        //step 1: read all the files
+        string path = string("../") + string(DIRECTORY) + string("/raw/") + to_string(raw_image_index) + string(IMAGE_FORMAT);
+        // image with the scanned raw data
+        Mat raw_image = imread(path);
         // break in the case the image is empty
-        if (img.empty()){
-            if(c == 1){
+        if (raw_image.empty()){
+            if(raw_image_index == 1){
                 cerr << "no file found with name: " << path << endl;
                 exit(1);
             }else{
-                cout << "total file read: " << c << endl;
+                cout << "total file read: " << raw_image_index << endl;
                 break;
             }
         }
-        raw_images.push_back(img);
-        c++;
-        break;
-    }
+        raw_image_index++;
 
-    // step 1: converting all the images to gray
-    vector<Mat> mask_images = vector<Mat>();
-    for(auto raw_image: raw_images){
         // converting image to gray
         Mat gray_image;
         cvtColor(raw_image, gray_image, COLOR_BGR2GRAY);
         // applying a threshold
         Mat threshold_image;
         threshold(gray_image, threshold_image, 25, 255, THRESH_BINARY);
-
 
         // create a matrix kernel full of 255
         int kernel_data[20*20];
@@ -69,33 +78,51 @@ int main(){
         Mat kernel2 = Mat(12,12,CV_8U, kernel_data2);
 
         // remove black white dots
-        Mat black_dots_removed_image;
-        morphologyEx(white_dots_removed_image,black_dots_removed_image,MORPH_CLOSE,kernel2);
+        Mat final_mask;
+        morphologyEx(white_dots_removed_image,final_mask,MORPH_CLOSE,kernel2);
 
-        mask_images.push_back(black_dots_removed_image);
+        // split the pieces and get the data
+        Mat individual_pieces, stats, center;
+        int number_of_pieces = connectedComponentsWithStats(final_mask,individual_pieces,stats,center);
+
+        // for each individual piece
+        for(int i=1; i<=number_of_pieces; i++){
+            // coordinates to crop the image
+            int x1 = -1 + stats.at<int>(i, cv::CC_STAT_LEFT);
+            int y1 = -1 + stats.at<int>(i, cv::CC_STAT_TOP);
+            int x2 = 1 + x1 + stats.at<int>(i, cv::CC_STAT_WIDTH);
+            int y2 = 1 + y1 + stats.at<int>(i, cv::CC_STAT_HEIGHT);
+            // area to understand if the considered mask is actually a piece of puzzle or just a tiny dot
+            int area = stats.at<int>(i  , cv::CC_STAT_AREA);
+
+            // the piece has to be big enough
+            if(area > PIECE_MINIMUM_AREA){
+                cout << area << endl;
+                // get the individual piece
+                Mat single_piece_32U = individual_pieces == i;
+                Mat single_piece;
+                // convert it to simpler format
+                single_piece_32U.convertTo(single_piece,CV_8U);
+                // crop it
+                Mat cropped_image = single_piece(Range(y1,y2),Range(x1,x2));
+
+                //show the piece corpped
+                Mat cropped_image_resized;
+                Mat to_target_resized;
+                resize(cropped_image,cropped_image_resized,Size(400,400));
+                Mat to_target = raw_image;
+                rectangle(to_target,Point(x1,y1),Point(x2,y2),Scalar(255,0,0,0),30);
+                resize(to_target,to_target_resized,Size(550,800));
+                imshow( "output", cropped_image_resized);
+                imshow( "where", to_target_resized);
+                waitKey(0);
+
+                //calculate path
+                string path = string("../") + string(DIRECTORY) + string("/deviated/") + to_string(piece_index++) + string(IMAGE_FORMAT);
+
+                //save the file
+                imwrite(path,cropped_image);
+            }
+        }
     }
-    //Mat resized;
-    //resize(mask_images[0],resized,Size(70,100));
-
-    Mat individual_pieces;
-    int number_of_pieces = connectedComponents(mask_images[0],individual_pieces);
-
-    cout << individual_pieces.depth();
-
-    Mat new_dype;
-    individual_pieces.convertTo(new_dype,CV_8U);
-
-
-    Mat resized;
-    resize(new_dype,resized,Size(700,1000));
-
-
-    Mat test = resized == 22;
-
-    imshow( "Connected Components", test);
-    waitKey(0);
-
-
-
-    return 0;
 }
