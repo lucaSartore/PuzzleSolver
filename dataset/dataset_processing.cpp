@@ -26,7 +26,7 @@ using namespace cv;
 
 void split_pieces_into_single_images();
 
-void do_images_pre_processing();
+void remove_holes();
 
 void quick_convex_hull(Mat &input, Mat &output_);
 
@@ -34,7 +34,7 @@ int main(){
 
     //split_pieces_into_single_images();
 
-    do_images_pre_processing();
+    remove_holes();
 
     return 0;
 
@@ -156,7 +156,7 @@ void split_pieces_into_single_images(){
 #define EROSION_KERNEL_SIZE 100
 #define MIN_SHRINKING_PERCENTAGE  0.44
 //this function make some preprocessing to increase the speed of the comparison operation later
-void do_images_pre_processing(){
+void remove_holes(){
     Mat temp;
     Mat temp2;
     Mat kernel;
@@ -235,9 +235,9 @@ void do_images_pre_processing(){
                     bitwise_and(convex_hull_erosion_temp,single_filler,masked_filler);
 
                     // display
-                    /*resize(masked_filler,temp,Size(500,500));
+                    /*resize(masked_filler,hole_removed,Size(500,500));
                     resize(convex_hull_erosion_temp,temp2,Size(500,500));
-                    imshow("1",temp);
+                    imshow("1",hole_removed);
                     imshow("2",temp2);
                     waitKey(0);*/
 
@@ -275,9 +275,9 @@ void do_images_pre_processing(){
 
                 //cout << shrinking_percentage << endl;
 
-                /*resize(single_filler_erosion_1,temp,Size(500,500));
+                /*resize(single_filler_erosion_1,hole_removed,Size(500,500));
                 resize(single_filler_erosion_2,temp2,Size(500,500));
-                imshow("1",temp);
+                imshow("1",hole_removed);
                 imshow("2",temp2);
                 waitKey(0);*/
 
@@ -287,12 +287,12 @@ void do_images_pre_processing(){
                 }
             }
         }
-        /*resize(piece_no_hole,temp,Size(500,500));
-        imshow("",temp);
+        /*resize(piece_no_hole,hole_removed,Size(500,500));
+        imshow("",hole_removed);
         waitKey(0);*/
 
         //calculate path
-        string save_path = string("../") + string(DIRECTORY) + string("/temp/") + to_string(piece_index++) + string(IMAGE_FORMAT);
+        string save_path = string("../") + string(DIRECTORY) + string("/hole_removed/") + to_string(piece_index++) + string(IMAGE_FORMAT);
         //save the file
         imwrite(save_path,piece_no_hole);
 
