@@ -347,8 +347,11 @@ void quick_convex_hull(Mat &input, Mat &output){
     output = output != 100;
 }
 
-#define ANGLE_BLUR_SIZE 100
-
+#define EROSION_AND_EXPANSION_SIZE 75
+#define RESIZE_DIVISION_FACTOR 6
+#define SECOND_EROSION_SIZE 15
+#define MINIMUM_KNOB_AREA 15000
+#define KNOB_REMOVER_RADIUS 300
 void remove_extensions(){
     Mat temp;
     Mat temp2;
@@ -356,15 +359,14 @@ void remove_extensions(){
     int piece_index = 1;
 
     while (true) {
-
         cout << "processing piece: " << piece_index << endl;
-
 
         //step 1: read all the files
         string path =
                 string("../") + string(DIRECTORY) + string("/hole_removed/") + to_string(piece_index) + string(IMAGE_FORMAT);
         // image with the scanned raw data
         Mat piece = imread(path, IMREAD_GRAYSCALE);
+        // apply threshold jut to be shore...
         piece = piece > 127;
         // break in the case the image is empty
         if (piece.empty()) {
@@ -377,142 +379,66 @@ void remove_extensions(){
             }
         }
 
-        /*
-        kernel = Mat::zeros(Size(ANGLE_BLUR_SIZE, ANGLE_BLUR_SIZE), CV_32F);
-        circle(kernel,Point(ANGLE_BLUR_SIZE/2,ANGLE_BLUR_SIZE/2),(ANGLE_BLUR_SIZE-1)/2,Scalar(1),1);
-        kernel /= countNonZero(kernel);
+        // resize the image to low resolution to make the process faster (since we don't need too muck precision)
+        Mat piece_resize;
+        resize(piece,piece_resize,piece.size()/RESIZE_DIVISION_FACTOR);
 
-        Mat piece_blur, piece_32F;
-        piece.convertTo(piece_32F,CV_32F);
-        Size big_size = piece_32F.size() + Size(ANGLE_BLUR_SIZE*4,ANGLE_BLUR_SIZE*4);
-        Mat piece_expanded = Mat::zeros(big_size,CV_32F);
-        Rect rect = Rect (ANGLE_BLUR_SIZE*2,ANGLE_BLUR_SIZE*2, piece_32F.size().width,piece_32F.size().height);
-        Mat middle_point_of_piece_expanded = Mat(piece_expanded,rect);
-        piece_32F.copyTo(middle_point_of_piece_expanded);
-        //cout << piece_32F;
-        filter2D(piece_expanded,piece_blur,CV_32F ,kernel,Point(ANGLE_BLUR_SIZE/2,ANGLE_BLUR_SIZE/2));
-        piece_blur.convertTo(temp,CV_8U);
-        resize(temp,temp2,Size(400,400));
-        imshow(" ", temp2);
+        // just to be sure that there are no tiny dost inside the original mask...
+        floodFill(piece_resize,Point(0,0),Scalar(100));
+        piece_resize = piece_resize != 100;
 
-        piece_blur = piece_blur(Range(ANGLE_BLUR_SIZE*2,piece_32F.size().height+ANGLE_BLUR_SIZE*2),Range(ANGLE_BLUR_SIZE*2,piece_32F.size().width+ANGLE_BLUR_SIZE*2));
+        // creating kernel for erosion and expansion
+        kernel = Mat::zeros(Size(EROSION_AND_EXPANSION_SIZE, EROSION_AND_EXPANSION_SIZE), CV_8U);
+        circle(kernel,Point(EROSION_AND_EXPANSION_SIZE/2,EROSION_AND_EXPANSION_SIZE/2),(EROSION_AND_EXPANSION_SIZE-3)/2,Scalar(255),-1);
 
-        //cout << piece_blur;
+        // eroding and expansion the mask remove the "bumps" along the corners,
+        Mat piece_with_smooth_corner;
+        erode(piece_resize,temp,kernel);
+        dilate(temp,piece_with_smooth_corner,kernel);
 
+        // bumps_along_corner = piece_resize AND ( NOT piece_with_smooth_corner)
+        // this mask now contains the bumps, and the angles of the original image
+        Mat bumps_along_corner;
+        temp = piece_with_smooth_corner == 0;
+        bitwise_and(piece_resize,temp,bumps_along_corner);
 
-        //Mat piece_threshold = piece_blur > 255.0*0.375;
-        Mat piece_threshold = piece_blur > 255.0*0.55;
+        // eroding the `bumps_along_corner_eroded` make the connection piece more distinguishable from the corner of the piece
+        kernel = Mat::zeros(Size(SECOND_EROSION_SIZE, SECOND_EROSION_SIZE), CV_8U);
+        circle(kernel,Point(SECOND_EROSION_SIZE/2,SECOND_EROSION_SIZE/2),(SECOND_EROSION_SIZE-3)/2,Scalar(255),-1);
+        Mat bumps_along_corner_eroded;
+        erode(bumps_along_corner,bumps_along_corner_eroded,kernel);
 
+        // resize the image
+        Mat knobs_and_angles;
+        resize(bumps_along_corner_eroded,knobs_and_angles,piece.size());
 
-        Mat offset;
-        bitwise_and(255-piece,piece_threshold,offset);
+        // maks where i will remove the knobs
+        Mat piece_with_no_knobs = piece.clone();
 
-        show(offset);
-        */
+        // split
+        Mat individual_knobs, stats, center;
+        int number_of_pieces = connectedComponentsWithStats(knobs_and_angles,individual_knobs,stats,center);
 
+        for(int i=1; i<number_of_pieces; i++){
+            // find the individual knob
+            Mat knob = individual_knobs == i;
 
+            // check that he is actually a knob and not just an angle
+            // cout << "I: " << i  << " " << countNonZero(knob) << endl;
+            if(countNonZero(knob) > MINIMUM_KNOB_AREA){
+                // if it is an actual knob i remove an area from the original image
 
+                //calculate center of the knob
+                int c_y = stats.at<int>(i, cv::CC_STAT_TOP) + stats.at<int>(i, cv::CC_STAT_HEIGHT)/2;
+                int c_x = stats.at<int>(i, cv::CC_STAT_LEFT) + stats.at<int>(i, cv::CC_STAT_WIDTH)/2;
 
-        /*
-        int a = 400;
-        kernel = Mat::zeros(Size(a,a),CV_8U);
-        circle(kernel,Point(a/2,a/2),a/2,Scalar(255),-1);
-        Mat dilated, eroded;
-        erode(piece,eroded,kernel);
-        dilate(eroded,dilated,kernel);
+                circle(piece_with_no_knobs,Point(c_x,c_y),KNOB_REMOVER_RADIUS,Scalar(0),-1);
+            }
+        }
 
-        resize(dilated,temp2,Size(400,400));
-        imshow(" ",temp2);
-        show(piece);
-        //waitKey(0);
-         */
-
-        // metodo identifica centro protuberanza
-        /*
-        int a = 200;
-        kernel = Mat::zeros(Size(a,a),CV_8U);
-        circle(kernel,Point(a/2,a/2),a/2,Scalar(255),-1);
-        Mat corner, eroded;
-        erode(piece,eroded,kernel);
-        corner = piece - eroded;
-        //show(corner);
-
-        a = 200;
-        kernel = Mat::zeros(Size(a,a),CV_32F);
-        circle(kernel,Point(a/2,a/2),75,Scalar(1),20);
-        kernel /= countNonZero(kernel);
-
-        temp = kernel > 0;
-        show(temp);
-
-
-        corner = 255 - corner;
-        corner.convertTo(temp,CV_32F);
-        corner = temp;
-
-        Mat output;
-        filter2D(corner,output,CV_32F,kernel,Point(a/2,a/2));
-
-        output.convertTo(temp,CV_8U);
-        output = temp;
-
-        resize(piece,temp,Size(400,400));
-        imshow("  ",temp);
-        show(output);
-        */
-
-
-
-
-        resize(piece,temp,Size(200,200));
-        floodFill(temp,Point(0,0),Scalar(100));
-        piece = temp != 100;
-
-
-
-        int k = 75;
-        kernel = Mat::zeros(Size(k, k), CV_8U);
-        circle(kernel,Point(k/2,k/2),(k-3)/2,Scalar(255),-1);
-
-
-        Mat piece_blur, piece_32F;
-        piece.convertTo(piece_32F,CV_32F);
-        Size big_size = piece_32F.size() + Size(k*4,k*4);
-        Mat piece_expanded = Mat::zeros(big_size,CV_32F);
-        Rect rect = Rect (k*2,k*2, piece_32F.size().width,piece_32F.size().height);
-        Mat middle_point_of_piece_expanded = Mat(piece_expanded,rect);
-        piece_32F.copyTo(middle_point_of_piece_expanded);
-        //cout << piece_32F;ù
-        //imshow("!",piece_expanded);
-
-        erode(piece_expanded,temp,kernel);
-        dilate(temp,piece_blur,kernel);
-
-        piece_blur.convertTo(temp,CV_8U);
-        resize(temp,temp2,Size(400,400));
-        imshow(" ", temp2);
-
-        piece_blur = piece_blur(Range(k*2,piece_32F.size().height+k*2),Range(k*2,piece_32F.size().width+k*2));
-
-        //cout << piece_blur;
-
-
-        //Mat piece_threshold = piece_blur > 255.0*0.375;
-        Mat piece_threshold = piece_blur > 255.0*0.55;
-
-        temp = piece_threshold == 0;
-        bitwise_and(piece,temp,temp2);
-
-        k = 15;
-        kernel = Mat::zeros(Size(k, k), CV_8U);
-        circle(kernel,Point(k/2,k/2),(k-3)/2,Scalar(255),-1);
-
-        erode(temp2,temp,kernel);
-
-        imshow(" ",temp);
-        show(piece_threshold);
-
-
+        resize(piece_with_no_knobs,temp,Size(400,400));
+        imshow("knob removed",temp);
+        show(piece_resize);
 
 
 
