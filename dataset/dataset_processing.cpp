@@ -24,9 +24,16 @@ using namespace cv;
 // how many pixel of margin the crop keeps
 #define CROP_MARGIN 10
 
+// takes many images in input and split the puzzle piece into single images
 void split_pieces_into_single_images();
 
+// take a single piece in inout and remove the holes
 void remove_holes();
+
+// take a single piece WITH the holes already removed, and remove the "extensions" remaining with a square
+void remove_extensions();
+
+void show(Mat &m);
 
 void quick_convex_hull(Mat &input, Mat &output_);
 
@@ -34,7 +41,9 @@ int main(){
 
     //split_pieces_into_single_images();
 
-    remove_holes();
+    //remove_holes();
+
+    remove_extensions();
 
     return 0;
 
@@ -336,4 +345,184 @@ void quick_convex_hull(Mat &input, Mat &output){
     floodFill(output,Point(0,0),Scalar(255));
     floodFill(output,Point(0,0),Scalar(100));
     output = output != 100;
+}
+
+#define ANGLE_BLUR_SIZE 100
+
+void remove_extensions(){
+    Mat temp;
+    Mat temp2;
+    Mat kernel;
+    int piece_index = 1;
+
+    while (true) {
+
+        cout << "processing piece: " << piece_index << endl;
+
+
+        //step 1: read all the files
+        string path =
+                string("../") + string(DIRECTORY) + string("/hole_removed/") + to_string(piece_index) + string(IMAGE_FORMAT);
+        // image with the scanned raw data
+        Mat piece = imread(path, IMREAD_GRAYSCALE);
+        piece = piece > 127;
+        // break in the case the image is empty
+        if (piece.empty()) {
+            if (piece_index == 1) {
+                cerr << "no file found with name: " << path << endl;
+                exit(1);
+            } else {
+                cout << "total file read: " << piece_index << endl;
+                break;
+            }
+        }
+
+        /*
+        kernel = Mat::zeros(Size(ANGLE_BLUR_SIZE, ANGLE_BLUR_SIZE), CV_32F);
+        circle(kernel,Point(ANGLE_BLUR_SIZE/2,ANGLE_BLUR_SIZE/2),(ANGLE_BLUR_SIZE-1)/2,Scalar(1),1);
+        kernel /= countNonZero(kernel);
+
+        Mat piece_blur, piece_32F;
+        piece.convertTo(piece_32F,CV_32F);
+        Size big_size = piece_32F.size() + Size(ANGLE_BLUR_SIZE*4,ANGLE_BLUR_SIZE*4);
+        Mat piece_expanded = Mat::zeros(big_size,CV_32F);
+        Rect rect = Rect (ANGLE_BLUR_SIZE*2,ANGLE_BLUR_SIZE*2, piece_32F.size().width,piece_32F.size().height);
+        Mat middle_point_of_piece_expanded = Mat(piece_expanded,rect);
+        piece_32F.copyTo(middle_point_of_piece_expanded);
+        //cout << piece_32F;
+        filter2D(piece_expanded,piece_blur,CV_32F ,kernel,Point(ANGLE_BLUR_SIZE/2,ANGLE_BLUR_SIZE/2));
+        piece_blur.convertTo(temp,CV_8U);
+        resize(temp,temp2,Size(400,400));
+        imshow(" ", temp2);
+
+        piece_blur = piece_blur(Range(ANGLE_BLUR_SIZE*2,piece_32F.size().height+ANGLE_BLUR_SIZE*2),Range(ANGLE_BLUR_SIZE*2,piece_32F.size().width+ANGLE_BLUR_SIZE*2));
+
+        //cout << piece_blur;
+
+
+        //Mat piece_threshold = piece_blur > 255.0*0.375;
+        Mat piece_threshold = piece_blur > 255.0*0.55;
+
+
+        Mat offset;
+        bitwise_and(255-piece,piece_threshold,offset);
+
+        show(offset);
+        */
+
+
+
+
+        /*
+        int a = 400;
+        kernel = Mat::zeros(Size(a,a),CV_8U);
+        circle(kernel,Point(a/2,a/2),a/2,Scalar(255),-1);
+        Mat dilated, eroded;
+        erode(piece,eroded,kernel);
+        dilate(eroded,dilated,kernel);
+
+        resize(dilated,temp2,Size(400,400));
+        imshow(" ",temp2);
+        show(piece);
+        //waitKey(0);
+         */
+
+        // metodo identifica centro protuberanza
+        /*
+        int a = 200;
+        kernel = Mat::zeros(Size(a,a),CV_8U);
+        circle(kernel,Point(a/2,a/2),a/2,Scalar(255),-1);
+        Mat corner, eroded;
+        erode(piece,eroded,kernel);
+        corner = piece - eroded;
+        //show(corner);
+
+        a = 200;
+        kernel = Mat::zeros(Size(a,a),CV_32F);
+        circle(kernel,Point(a/2,a/2),75,Scalar(1),20);
+        kernel /= countNonZero(kernel);
+
+        temp = kernel > 0;
+        show(temp);
+
+
+        corner = 255 - corner;
+        corner.convertTo(temp,CV_32F);
+        corner = temp;
+
+        Mat output;
+        filter2D(corner,output,CV_32F,kernel,Point(a/2,a/2));
+
+        output.convertTo(temp,CV_8U);
+        output = temp;
+
+        resize(piece,temp,Size(400,400));
+        imshow("  ",temp);
+        show(output);
+        */
+
+
+
+
+        resize(piece,temp,Size(200,200));
+        floodFill(temp,Point(0,0),Scalar(100));
+        piece = temp != 100;
+
+
+
+        int k = 75;
+        kernel = Mat::zeros(Size(k, k), CV_8U);
+        circle(kernel,Point(k/2,k/2),(k-3)/2,Scalar(255),-1);
+
+
+        Mat piece_blur, piece_32F;
+        piece.convertTo(piece_32F,CV_32F);
+        Size big_size = piece_32F.size() + Size(k*4,k*4);
+        Mat piece_expanded = Mat::zeros(big_size,CV_32F);
+        Rect rect = Rect (k*2,k*2, piece_32F.size().width,piece_32F.size().height);
+        Mat middle_point_of_piece_expanded = Mat(piece_expanded,rect);
+        piece_32F.copyTo(middle_point_of_piece_expanded);
+        //cout << piece_32F;ù
+        //imshow("!",piece_expanded);
+
+        erode(piece_expanded,temp,kernel);
+        dilate(temp,piece_blur,kernel);
+
+        piece_blur.convertTo(temp,CV_8U);
+        resize(temp,temp2,Size(400,400));
+        imshow(" ", temp2);
+
+        piece_blur = piece_blur(Range(k*2,piece_32F.size().height+k*2),Range(k*2,piece_32F.size().width+k*2));
+
+        //cout << piece_blur;
+
+
+        //Mat piece_threshold = piece_blur > 255.0*0.375;
+        Mat piece_threshold = piece_blur > 255.0*0.55;
+
+        temp = piece_threshold == 0;
+        bitwise_and(piece,temp,temp2);
+
+        k = 15;
+        kernel = Mat::zeros(Size(k, k), CV_8U);
+        circle(kernel,Point(k/2,k/2),(k-3)/2,Scalar(255),-1);
+
+        erode(temp2,temp,kernel);
+
+        imshow(" ",temp);
+        show(piece_threshold);
+
+
+
+
+
+        piece_index++;
+    }
+}
+
+void show(Mat &m){
+    Mat temp;
+    resize(m,temp,Size(400,400));
+    imshow("",temp);
+    waitKey(0);
 }
