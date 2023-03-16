@@ -10,6 +10,7 @@
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include <cstring>
+#include <fstream>
 #include <list>
 using namespace std;
 using namespace cv;
@@ -593,7 +594,17 @@ void remove_extensions_and_save_corner_data(){
             line(temp,vertices_precise[i],vertices_precise[(i+1)%4],Scalar(0,0,255),8);
         }
 
-        show(temp);
+        //show(temp);
+
+        path = string("../") + string(DIRECTORY) + string("/data/") + to_string(piece_index) + string(".txt");
+
+        ofstream file;
+        file.open (path,ios::out);
+        file <<"P0: "<< vertices_precise[0] << endl;
+        file <<"P1: "<< vertices_precise[1] << endl;
+        file <<"P2: "<< vertices_precise[2] << endl;
+        file <<"P3: "<< vertices_precise[3];
+        file.close();
 
         piece_index++;
     }
