@@ -31,7 +31,7 @@ void split_pieces_into_single_images();
 void remove_holes();
 
 // take a single piece WITH the holes already removed, and remove the "extensions" remaining with a square
-void remove_extensions();
+void remove_extensions_and_save_corner_data();
 
 void show(Mat &m);
 
@@ -43,7 +43,7 @@ int main(){
 
     //remove_holes();
 
-    remove_extensions();
+    remove_extensions_and_save_corner_data();
 
     return 0;
 
@@ -330,6 +330,7 @@ void quick_convex_hull(Mat &input, Mat &output){
     vector<vector<Point>> contours;
     findContours(canny, contours, RETR_TREE, CHAIN_APPROX_SIMPLE );
 
+
     vector<vector<Point>>hull( contours.size() );
     for( size_t i = 0; i < contours.size(); i++ )
     {
@@ -351,12 +352,12 @@ void quick_convex_hull(Mat &input, Mat &output){
 #define RESIZE_DIVISION_FACTOR 6
 #define SECOND_EROSION_SIZE 15
 #define MINIMUM_KNOB_AREA 15000
-#define KNOB_REMOVER_RADIUS 300
-void remove_extensions(){
+#define KNOB_REMOVER_RADIUS 250
+void remove_extensions_and_save_corner_data(){
     Mat temp;
     Mat temp2;
     Mat kernel;
-    int piece_index = 1;
+    int piece_index = 121; // 121 474
 
     while (true) {
         cout << "processing piece: " << piece_index << endl;
@@ -436,11 +437,123 @@ void remove_extensions(){
             }
         }
 
-        resize(piece_with_no_knobs,temp,Size(400,400));
-        imshow("knob removed",temp);
-        show(piece_resize);
+
+        // find the 4 corners of the box using the minAreaRec function
+
+        // canny filter to remove the pixels in the middle and make the execution faster
+        Mat canny;
+        Canny(piece_with_no_knobs,canny,50,200);
+        //resize(canny,temp,Size(400,400));
+        //imshow("kanny",temp);
+        // finding the contortions of the various blobs;
+        vector<vector<Point>> contours;
+            findContours(canny, contours, RETR_TREE, CHAIN_APPROX_SIMPLE );
+        vector<Point> main_contour = vector<Point>();
+        // transforming it in a single vector
+        for(auto v: contours){
+            main_contour.insert(main_contour.end(),v.begin(),v.end());
+        }
+        // find the rectangle
+        RotatedRect rect = minAreaRect( main_contour);
+        // find the 4 points;
+        Point2f vertices[4];
+        rect.points(vertices);
+
+        //  taking a mask of only the 4 angles;
+        Mat angles = Mat::zeros(piece.size(),CV_8U);
+        Mat angle_mask;
+        Mat only_angle;
+
+        int max_radius = 0;
+
+        for(auto point: vertices){
+            int radius = 10;
+            // finding the optimal radius to mask the image
+            while (true){
+                //making the mask empty
+                angle_mask = Mat::zeros(piece.size(),CV_8U);
+                //creating a circle around a point
+                circle(angle_mask,point,radius,Scalar(255),-1);
+                // mask containing only the angle
+                bitwise_and(piece_with_no_knobs, angle_mask,only_angle);
+                // if the angle is big enough i continue, otherwise i increase the radius
+                if(countNonZero(only_angle) > 3000){
+                    angles += only_angle;
+                    break;
+                }else{
+                    radius*=13;
+                    radius/=10;
+                }
+            }
+            if(radius>max_radius){
+                max_radius = radius;
+            }
+            //show(only_angle);
+        }
+        max_radius += 5;
+
+        // taking the convex hull of the 4 angles gives us the final result!
+
+        //show(angles);
+
+        // calculate the 4 vertices in a precis more precise way
+        Point2f vertices_precise[4];
+        for(int i=0; i<4; i++){
+            // create a mask that keeps only a vertice at a time
+            Mat single_corner;
+            Mat mask = Mat::zeros(angles.size(),CV_8U);
+            circle(mask,vertices[i],max_radius,Scalar(255),-1);
+
+            bitwise_and(angles, mask, single_corner);
+
+            resize(single_corner,temp,Size(400,400));
+            imshow(to_string(i),temp);
+
+            // find the triangle with the minimum area that can keep inside the 3 dots
+            // canny filter to remove the pixels in the middle and make the execution faster
+            Canny(single_corner, canny, 50, 200);
 
 
+            // finding the contortions of the points;
+            findContours(canny, contours, RETR_TREE, CHAIN_APPROX_SIMPLE );
+            // transforming it in a single vector
+            main_contour = vector<Point>();
+            for(auto v: contours){
+                main_contour.insert(main_contour.end(),v.begin(),v.end());
+            }
+
+            // find the triangle that enclose the vertice
+            vector<Point> triangle_points;
+            minEnclosingTriangle( main_contour,triangle_points);
+            //cout << triangle_points << endl;
+
+            // Draw the triangle
+            /*for( i = 0; i < 3; i++ )
+                line(single_corner, triangle_points[i], triangle_points[(i + 1) % 3], Scalar(120), 1, LINE_AA);
+            show(single_corner);*/
+
+            // find the point that is the closest to the original point...
+            // that point will be the vertex of the puzzle!
+            Point closest = triangle_points[0];
+            Point vertex = vertices[i];
+            for(auto p: triangle_points){
+                //find the closest point to the original vertex... that will be the precise vertex
+                if(cv::norm(p - vertex) < cv::norm(closest - vertex)){
+                    closest = p;
+                }
+            }
+            vertices_precise[i] = closest;
+
+        }
+
+
+        cvtColor(piece,temp,COLOR_GRAY2BGR);
+
+        for(int i=0; i<4; i++){
+            line(temp,vertices_precise[i],vertices_precise[(i+1)%4],Scalar(0,0,255),8);
+        }
+
+        show(temp);
 
         piece_index++;
     }
