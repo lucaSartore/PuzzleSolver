@@ -6,7 +6,6 @@
 #define PROCESSING_DATASET_PROCESSING_H
 
 #include <iostream>
-#include <vector>
 void do_preprocessing(std::string path, int ppi = 1200);
 
 

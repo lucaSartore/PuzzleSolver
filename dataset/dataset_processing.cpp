@@ -12,6 +12,7 @@
 #include <cstring>
 #include <fstream>
 #include "util.h"
+#include "piece_splitting.h"
 using namespace std;
 using namespace cv;
 
@@ -28,6 +29,8 @@ using namespace cv;
 // takes many images in input and split the puzzle piece into single images
 void split_pieces_into_single_images();
 
+void remove_holes();
+
 // take a single piece WITH the holes already removed, and remove the "extensions" remaining with a square
 void remove_extensions_and_save_corner_data();
 
@@ -37,7 +40,7 @@ void quick_convex_hull(Mat &input, Mat &output_);
 
 int main(){
 
-    //split_pieces_into_single_images();
+    split_pieces_into_single_images("../blue_500pcs/raw");
 
     //remove_holes();
 
