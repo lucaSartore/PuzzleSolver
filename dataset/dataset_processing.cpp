@@ -11,7 +11,7 @@
 #include <iostream>
 #include <cstring>
 #include <fstream>
-#include <list>
+#include "util.h"
 using namespace std;
 using namespace cv;
 
@@ -27,9 +27,6 @@ using namespace cv;
 
 // takes many images in input and split the puzzle piece into single images
 void split_pieces_into_single_images();
-
-// take a single piece in inout and remove the holes
-void remove_holes();
 
 // take a single piece WITH the holes already removed, and remove the "extensions" remaining with a square
 void remove_extensions_and_save_corner_data();
@@ -319,35 +316,6 @@ bool is_convex(Mat &input, float min_percentage = 0.9){
     return (float) countNonZero(input)/(float) countNonZero(convex_hull) > min_percentage;
 }
 
-// find the convex hull of a mask, and fill it with white.
-void quick_convex_hull(Mat &input, Mat &output){
-
-    // create output_
-    output =  Mat::zeros(input.size(), CV_8U );
-
-    Mat canny;
-    Canny(input, canny, 50, 200 );
-
-    vector<vector<Point>> contours;
-    findContours(canny, contours, RETR_TREE, CHAIN_APPROX_SIMPLE );
-
-
-    vector<vector<Point>>hull( contours.size() );
-    for( size_t i = 0; i < contours.size(); i++ )
-    {
-        convexHull( contours[i], hull[i] );
-    }
-
-    for( size_t i = 0; i< contours.size(); i++ )
-    {
-        drawContours(output, hull, (int)i, 255 );
-    }
-
-
-    floodFill(output,Point(0,0),Scalar(255));
-    floodFill(output,Point(0,0),Scalar(100));
-    output = output != 100;
-}
 
 #define EROSION_AND_EXPANSION_SIZE 75
 #define RESIZE_DIVISION_FACTOR 6
@@ -596,8 +564,8 @@ void remove_extensions_and_save_corner_data(){
 
         //show(temp);
 
+        // save the coordinates to a txt file
         path = string("../") + string(DIRECTORY) + string("/data/") + to_string(piece_index) + string(".txt");
-
         ofstream file;
         file.open (path,ios::out);
         file <<"P0: "<< vertices_precise[0] << endl;
@@ -608,11 +576,4 @@ void remove_extensions_and_save_corner_data(){
 
         piece_index++;
     }
-}
-
-void show(Mat &m){
-    Mat temp;
-    resize(m,temp,Size(400,400));
-    imshow("",temp);
-    waitKey(0);
 }
