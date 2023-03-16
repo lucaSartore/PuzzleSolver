@@ -352,12 +352,14 @@ void quick_convex_hull(Mat &input, Mat &output){
 #define RESIZE_DIVISION_FACTOR 6
 #define SECOND_EROSION_SIZE 15
 #define MINIMUM_KNOB_AREA 15000
+#define ANGLE_FINDING_BLUR_RADIUS 150
 #define KNOB_REMOVER_RADIUS 250
+#define ANGLE_MASK_FOR_TRIANGLE_CALCULATION 100
 void remove_extensions_and_save_corner_data(){
     Mat temp;
     Mat temp2;
     Mat kernel;
-    int piece_index = 121; // 121 474
+    int piece_index = 1; // 121 474 416
 
     while (true) {
         cout << "processing piece: " << piece_index << endl;
@@ -466,7 +468,7 @@ void remove_extensions_and_save_corner_data(){
 
         int max_radius = 0;
 
-        for(auto point: vertices){
+        for(auto &point: vertices){
             int radius = 10;
             // finding the optimal radius to mask the image
             while (true){
@@ -490,24 +492,62 @@ void remove_extensions_and_save_corner_data(){
             }
             //show(only_angle);
         }
+        // just for safety increase it by 5
         max_radius += 5;
 
-        // taking the convex hull of the 4 angles gives us the final result!
-
-        //show(angles);
-
-        // calculate the 4 vertices in a precis more precise way
-        Point2f vertices_precise[4];
-        for(int i=0; i<4; i++){
-            // create a mask that keeps only a vertice at a time
+        // i need to increase the precision of the points... to do so i look for the corner by applying a blur to the corner
+        // and detect the pixels that were white before the blur, but was black after, this means that they are in a sharp corner
+        for(int i=0; i<4; i++) {
+            // create a mask that keeps only a vertex at a time
             Mat single_corner;
-            Mat mask = Mat::zeros(angles.size(),CV_8U);
-            circle(mask,vertices[i],max_radius,Scalar(255),-1);
-
+            Mat mask = Mat::zeros(angles.size(), CV_8U);
+            circle(mask, vertices[i], max_radius, Scalar(255), -1);
             bitwise_and(angles, mask, single_corner);
 
+            //kernel for the blur
+            kernel = Mat::zeros(Size(2*ANGLE_FINDING_BLUR_RADIUS,2*ANGLE_FINDING_BLUR_RADIUS),CV_32F);
+            circle(kernel,Point(ANGLE_FINDING_BLUR_RADIUS,ANGLE_FINDING_BLUR_RADIUS),ANGLE_FINDING_BLUR_RADIUS,Scalar(1),-1);
+            kernel /= countNonZero(kernel);
+
+            // applying a blur;
+            Mat blur;
+            filter2D(piece_with_no_knobs, blur, CV_8U, kernel,Point(ANGLE_FINDING_BLUR_RADIUS,ANGLE_FINDING_BLUR_RADIUS),0,BORDER_ISOLATED);
+
+            // masking the blur to consider only the piece close to an angle;
+            Mat blur_masked;
+            bitwise_and(blur,mask,blur_masked);
+
+            //putting hhe bits outside of the original mask at 255
+            temp = piece_with_no_knobs == 0;
+            bitwise_or(blur_masked,temp,temp2);
+            blur_masked = temp2;
+            temp = mask == 0;
+            bitwise_or(blur_masked,temp,temp2);
+            blur_masked = temp2;
+            // now i need to find the darkest pixel(s) coordinates, and that will be the new angle center
+            Point minLoc;
+            minMaxLoc(blur_masked, nullptr, nullptr, &minLoc, nullptr);
+            vertices[i] = minLoc;
+
+            //show(blur_masked);
+        }
+
+
+            //show(angles);
+
+        // calculate the 4 vertices in a precis more precise way, by finding the smallest triangle that can contains the angle,
+        // and tanking the closest point to the original point as new corner
+        Point2f vertices_precise[4];
+        for(int i=0; i<4; i++){
+            // create a mask that keeps only a vertex at a time
+            Mat single_corner;
+            Mat mask = Mat::zeros(angles.size(),CV_8U);
+            circle(mask,vertices[i],ANGLE_MASK_FOR_TRIANGLE_CALCULATION,Scalar(255),-1);
+
+            bitwise_and(piece_with_no_knobs, mask, single_corner);
+
             resize(single_corner,temp,Size(400,400));
-            imshow(to_string(i),temp);
+            //imshow(to_string(i),temp);
 
             // find the triangle with the minimum area that can keep inside the 3 dots
             // canny filter to remove the pixels in the middle and make the execution faster
