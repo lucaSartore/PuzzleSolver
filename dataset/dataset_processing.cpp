@@ -22,15 +22,8 @@ using namespace cv;
 #define DIRECTORY "blue_500pcs"
 // format of the file
 #define IMAGE_FORMAT ".jpg"
-// how many pixels a piece's area has to be big for it to be considered an actual piece
-#define PIECE_MINIMUM_AREA 50000
-// how many pixel of margin the crop keeps
-#define CROP_MARGIN 10
 
-// takes many images in input and split the puzzle piece into single images
-void split_pieces_into_single_images();
 
-void remove_holes();
 
 // take a single piece WITH the holes already removed, and remove the "extensions" remaining with a square
 void remove_extensions_and_save_corner_data();
@@ -42,30 +35,20 @@ int main(){
 
     //cout << "i have found " << number_of_pieces << " puzzle pieces" << endl;
 
-    find_corner("../blue_500pcs/divided",10);
+    //find_corner("../blue_500pcs/divided",10);
 
     //remove_holes();
 
-    //remove_extensions_and_save_corner_data();
+    remove_extensions_and_save_corner_data();
 
     return 0;
 }
 
 
-// return if a mask is convex or not,
-// it the function calculate the "convex percentage"
-// witch is defined as the number of pixels of the original image decided by
-// the number of pixels in the convex hull of the image
-bool is_convex(Mat &input, float min_percentage = 0.9){
-    Mat convex_hull;
-    quick_convex_hull(input,convex_hull);
-    return (float) countNonZero(input)/(float) countNonZero(convex_hull) > min_percentage;
-}
-
 
 #define EROSION_AND_EXPANSION_SIZE 75
 #define RESIZE_DIVISION_FACTOR 6
-#define SECOND_EROSION_SIZE 15
+#define KNOB_EROSION_SIZE 15
 #define MINIMUM_KNOB_AREA 15000
 #define ANGLE_FINDING_BLUR_RADIUS 150
 #define KNOB_REMOVER_RADIUS 250
@@ -97,62 +80,8 @@ void remove_extensions_and_save_corner_data(){
             }
         }
 
-        // resize the image to low resolution to make the process faster (since we don't need too muck precision)
-        Mat piece_resize;
-        resize(piece,piece_resize,piece.size()/RESIZE_DIVISION_FACTOR);
-
-        // just to be sure that there are no tiny dost inside the original mask...
-        floodFill(piece_resize,Point(0,0),Scalar(100));
-        piece_resize = piece_resize != 100;
-
-        // creating kernel for erosion and expansion
-        kernel = Mat::zeros(Size(EROSION_AND_EXPANSION_SIZE, EROSION_AND_EXPANSION_SIZE), CV_8U);
-        circle(kernel,Point(EROSION_AND_EXPANSION_SIZE/2,EROSION_AND_EXPANSION_SIZE/2),(EROSION_AND_EXPANSION_SIZE-3)/2,Scalar(255),-1);
-
-        // eroding and expansion the mask remove the "bumps" along the corners,
-        Mat piece_with_smooth_corner;
-        erode(piece_resize,temp,kernel);
-        dilate(temp,piece_with_smooth_corner,kernel);
-
-        // bumps_along_corner = piece_resize AND ( NOT piece_with_smooth_corner)
-        // this mask now contains the bumps, and the angles of the original image
-        Mat bumps_along_corner;
-        temp = piece_with_smooth_corner == 0;
-        bitwise_and(piece_resize,temp,bumps_along_corner);
-
-        // eroding the `bumps_along_corner_eroded` make the connection piece more distinguishable from the corner of the piece
-        kernel = Mat::zeros(Size(SECOND_EROSION_SIZE, SECOND_EROSION_SIZE), CV_8U);
-        circle(kernel,Point(SECOND_EROSION_SIZE/2,SECOND_EROSION_SIZE/2),(SECOND_EROSION_SIZE-3)/2,Scalar(255),-1);
-        Mat bumps_along_corner_eroded;
-        erode(bumps_along_corner,bumps_along_corner_eroded,kernel);
-
-        // resize the image
-        Mat knobs_and_angles;
-        resize(bumps_along_corner_eroded,knobs_and_angles,piece.size());
-
-        // maks where i will remove the knobs
-        Mat piece_with_no_knobs = piece.clone();
-
-        // split
-        Mat individual_knobs, stats, center;
-        int number_of_pieces = connectedComponentsWithStats(knobs_and_angles,individual_knobs,stats,center);
-
-        for(int i=1; i<number_of_pieces; i++){
-            // find the individual knob
-            Mat knob = individual_knobs == i;
-
-            // check that he is actually a knob and not just an angle
-            // cout << "I: " << i  << " " << countNonZero(knob) << endl;
-            if(countNonZero(knob) > MINIMUM_KNOB_AREA){
-                // if it is an actual knob i remove an area from the original image
-
-                //calculate center of the knob
-                int c_y = stats.at<int>(i, cv::CC_STAT_TOP) + stats.at<int>(i, cv::CC_STAT_HEIGHT)/2;
-                int c_x = stats.at<int>(i, cv::CC_STAT_LEFT) + stats.at<int>(i, cv::CC_STAT_WIDTH)/2;
-
-                circle(piece_with_no_knobs,Point(c_x,c_y),KNOB_REMOVER_RADIUS,Scalar(0),-1);
-            }
-        }
+        Mat piece_with_no_knobs;
+        remove_knobs(piece,piece_with_no_knobs);
 
 
         // find the 4 corners of the box using the minAreaRec function
@@ -305,10 +234,10 @@ void remove_extensions_and_save_corner_data(){
         cvtColor(piece,temp,COLOR_GRAY2BGR);
 
         for(int i=0; i<4; i++){
-            line(temp,vertices_precise[i],vertices_precise[(i+1)%4],Scalar(0,0,255),8);
+            line(temp,vertices_precise[i],ertices_precise[(i+1)%4],Scalar(0,0,255),8);
         }
 
-        //show(temp);
+        show(temp);
 
         // save the coordinates to a txt file
         path = string("../") + string(DIRECTORY) + string("/data/") + to_string(piece_index) + string(".txt");

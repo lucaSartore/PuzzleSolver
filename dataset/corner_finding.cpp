@@ -181,3 +181,87 @@ void remove_holes(const Mat &input, Mat &output,const int ppi){
     }
     output = piece_no_hole;
 }
+
+
+// this function removes the knobs, it dose so with the following steps:
+// - it apply an erosion followed by an expansion with size `EROSION_AND_EXPANSION_SIZE`
+//   in this way the knob will be removed and the angle wll be smoothed out leaving us with a square
+//   that more or less resemble the original piece
+// - i then create a mask with the pixels that were white in the original mask, but not in the eroded and expanded one...
+//   this pixels will include the knobs and the angle of the piece
+// - i apply a second erosion with size `KNOB_EROSION_SIZE` in order to remove small lines that might be created
+// - i then split the mask into all is subcomponent, an consider only the one with area greater then `MINIMUM_KNOB_AREA`
+//   in this way i obtain only the knobs, since angles and other things are too small
+// - when i know an area is a knob i calculate is center, and remove all the white pixels in a radius of `KNOB_REMOVER_RADIUS`
+//   from the center, in this way i have removed the knob
+//
+//  the operations of erosion and expansion are really heavy, so the image get resized to a lower resolution using the
+//  `RESIZE_DIVISION_FACTOR` coefficient
+#define EROSION_AND_EXPANSION_SIZE 75 // don't need to adjust for PPI since the division factor is already adjusted
+#define RESIZE_DIVISION_FACTOR (6*ppi/1200)
+#define KNOB_EROSION_SIZE 15 // don't need to adjust for PPI since the division factor is already adjusted
+#define MINIMUM_KNOB_AREA (15000*ppi/1200)
+#define KNOB_REMOVER_RADIUS (250*ppi/1200)
+/// this function take as input an image (that has to have the oles already removed) and remove the knobs
+void remove_knobs(const cv::Mat&input, cv::Mat &output,const int ppi){
+
+    Mat piece = input, kernel,temp;
+
+    // resize the image to low resolution to make the process faster (since we don't need too muck precision)
+    Mat piece_resize;
+    resize(piece,piece_resize,piece.size()/RESIZE_DIVISION_FACTOR);
+
+    // just to be sure that there are no tiny dost inside the original mask...
+    floodFill(piece_resize,Point(0,0),Scalar(100));
+    piece_resize = piece_resize != 100;
+
+    // creating kernel for erosion and expansion
+    kernel = Mat::zeros(Size(EROSION_AND_EXPANSION_SIZE, EROSION_AND_EXPANSION_SIZE), CV_8U);
+    circle(kernel,Point(EROSION_AND_EXPANSION_SIZE/2,EROSION_AND_EXPANSION_SIZE/2),(EROSION_AND_EXPANSION_SIZE-3)/2,Scalar(255),-1);
+
+    // eroding and expansion the mask remove the "bumps" along the corners,
+    Mat piece_with_smooth_corner;
+    erode(piece_resize,temp,kernel);
+    dilate(temp,piece_with_smooth_corner,kernel);
+
+    // bumps_along_corner = piece_resize AND ( NOT piece_with_smooth_corner)
+    // this mask now contains the bumps, and the angles of the original image
+    Mat bumps_along_corner;
+    temp = piece_with_smooth_corner == 0;
+    bitwise_and(piece_resize,temp,bumps_along_corner);
+
+    // eroding the `bumps_along_corner_eroded` make the connection piece more distinguishable from the corner of the piece
+    kernel = Mat::zeros(Size(KNOB_EROSION_SIZE, KNOB_EROSION_SIZE), CV_8U);
+    circle(kernel, Point(KNOB_EROSION_SIZE / 2, KNOB_EROSION_SIZE / 2), (KNOB_EROSION_SIZE - 3) / 2, Scalar(255), -1);
+    Mat bumps_along_corner_eroded;
+    erode(bumps_along_corner,bumps_along_corner_eroded,kernel);
+
+    // resize the image
+    Mat knobs_and_angles;
+    resize(bumps_along_corner_eroded,knobs_and_angles,piece.size());
+
+    // maks where i will remove the knobs
+    Mat piece_with_no_knobs = piece.clone();
+
+    // split
+    Mat individual_knobs, stats, center;
+    int number_of_pieces = connectedComponentsWithStats(knobs_and_angles,individual_knobs,stats,center);
+
+    for(int i=1; i<number_of_pieces; i++){
+        // find the individual knob
+        Mat knob = individual_knobs == i;
+
+        // check that he is actually a knob and not just an angle
+        if(countNonZero(knob) > MINIMUM_KNOB_AREA){
+            // if it is an actual knob i remove an area from the original image
+
+            //calculate center of the knob
+            int c_y = stats.at<int>(i, cv::CC_STAT_TOP) + stats.at<int>(i, cv::CC_STAT_HEIGHT)/2;
+            int c_x = stats.at<int>(i, cv::CC_STAT_LEFT) + stats.at<int>(i, cv::CC_STAT_WIDTH)/2;
+
+            circle(piece_with_no_knobs,Point(c_x,c_y),KNOB_REMOVER_RADIUS,Scalar(0),-1);
+        }
+    }
+
+    output = piece_with_no_knobs;
+};
