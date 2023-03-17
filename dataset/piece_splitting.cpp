@@ -24,12 +24,12 @@ using namespace cv;
 
 /// this function take as input a input_path where some scansion of a puzzle is made
 /// and split them into many single pieces
-void split_pieces_into_single_images(const std::string& input_path,const std::string& output_path,const int ppi, bool enable_image_view){
+int split_pieces_into_single_images(const std::string& input_path,const std::string& output_path,const int ppi, bool enable_image_view){
 
     // a temporary value to to quick operations
     Mat temp, kernel;
     // index for keeping tracking the files to write
-    int piece_index = 1;
+    int piece_index = 0;
 
     for (const auto & entry : std::filesystem::directory_iterator(input_path)){
 
@@ -115,7 +115,7 @@ void split_pieces_into_single_images(const std::string& input_path,const std::st
 
 
                 //calculate input_path
-                string output_path_image = output_path + string("/") + to_string(piece_index++) + string(".jpeg");
+                string output_path_image = output_path + string("/") + to_string(++piece_index) + string(".jpeg");
 
                 //make share that there are not white pixels in the border by creating a rectangle
                 int x = cropped_image.size().width, y = cropped_image.size().height;
@@ -127,4 +127,5 @@ void split_pieces_into_single_images(const std::string& input_path,const std::st
             }
         }
     }
+    return piece_index;
 }
