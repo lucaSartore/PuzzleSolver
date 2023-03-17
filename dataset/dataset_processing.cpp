@@ -234,7 +234,7 @@ void remove_extensions_and_save_corner_data(){
         cvtColor(piece,temp,COLOR_GRAY2BGR);
 
         for(int i=0; i<4; i++){
-            line(temp,vertices_precise[i],ertices_precise[(i+1)%4],Scalar(0,0,255),8);
+            line(temp,vertices_precise[i],vertices_precise[(i+1)%4],Scalar(0,0,255),8);
         }
 
         show(temp);
