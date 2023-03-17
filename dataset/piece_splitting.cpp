@@ -6,6 +6,7 @@
 #include <opencv2/opencv.hpp>
 #include <filesystem>
 #include <iostream>
+#include "util.h"
 
 using namespace std;
 using namespace cv;
@@ -13,7 +14,7 @@ using namespace cv;
 /// how many pixels a piece's area has to be big for it to be considered an actual piece
 #define PIECE_MINIMUM_AREA (50000*ppi/1200)
 /// how many pixel of margin the function keeps when cropping an image
-#define CROP_MARGIN (10*ppi/1200)
+#define CROP_MARGIN (50*ppi/1200)
 /// the threshold that gets applied to the original mask, in order to split the pieces from the background
 #define THRESHOLD 25
 /// kernel of the morphologyEx open filter that will be apply to the mask
@@ -21,18 +22,27 @@ using namespace cv;
 /// kernel of the morphologyEx open filter that will be apply to the mask
 #define MORPH_CLOSED_KERNEL (12*ppi/1200)
 
-/// this function take as input a path where some scansion of a puzzle is made
+/// this function take as input a input_path where some scansion of a puzzle is made
 /// and split them into many single pieces
-void split_pieces_into_single_images(const std::string& path,const int ppi, bool enable_image_view){
+void split_pieces_into_single_images(const std::string& input_path,const std::string& output_path,const int ppi, bool enable_image_view){
 
     // a temporary value to to quick operations
     Mat temp, kernel;
     // index for keeping tracking the files to write
     int piece_index = 1;
 
-    for (const auto & entry : std::filesystem::directory_iterator(path)){
+    for (const auto & entry : std::filesystem::directory_iterator(input_path)){
+
         //step 1: read the files one by one;
         Mat image = imread(entry.path());
+
+        // expand the image border so that it could crop the pieces without "overflowing" and throwing an error
+        int width = image.size().width, height = image.size().height;
+        Size new_size = Size(width + 2*CROP_MARGIN,height + 2*CROP_MARGIN);
+        temp = Mat::zeros(new_size,image.type());
+        cv::Mat middle_image = Mat(temp, cv::Rect(CROP_MARGIN, CROP_MARGIN, width,height));
+        image.copyTo(middle_image);
+        image = temp;
 
         Mat mask = image.clone();
 
@@ -78,7 +88,7 @@ void split_pieces_into_single_images(const std::string& path,const int ppi, bool
             if(area > PIECE_MINIMUM_AREA){
 
                 // show progress
-                cout << "processing piece: " << piece_index << endl;
+                cout << "processing piece: " << piece_index  <<endl;
 
                 // get the individual piece
                 Mat single_piece = individual_pieces == i;
@@ -104,11 +114,16 @@ void split_pieces_into_single_images(const std::string& path,const int ppi, bool
                 }
 
 
-                //calculate path
-                string output_path = path + string("/..") + string("/divided/") + to_string(piece_index++) + string(".jpeg");
+                //calculate input_path
+                string output_path_image = output_path + string("/") + to_string(piece_index++) + string(".jpeg");
+
+                //make share that there are not white pixels in the border by creating a rectangle
+                int x = cropped_image.size().width, y = cropped_image.size().height;
+                rectangle(cropped_image,Point(0,0),Point(x-1,y-1),Scalar(0),CROP_MARGIN*2-4);
+
 
                 //save the file
-                imwrite(output_path,cropped_image);
+                imwrite(output_path_image,cropped_image);
             }
         }
     }
