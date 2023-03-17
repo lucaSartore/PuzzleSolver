@@ -15,7 +15,7 @@ using namespace cv;
 
 
 
-void find_corner(const std::string& path,const int number_of_pieces,const int ppi,const bool use_multithreading,const bool enable_image_view){
+void do_pre_processing(const std::string& path, int number_of_pieces, int ppi, bool use_multithreading, bool enable_image_view){
 
     // impossible to enable the view if multi threading is in use!
     if(use_multithreading){
@@ -26,12 +26,13 @@ void find_corner(const std::string& path,const int number_of_pieces,const int pp
 
     }else{
         for(int i = 1; i<=number_of_pieces; i++){
-            find_corner_thread(path,i,ppi,enable_image_view);
+            do_pre_processing_thread(path, i, ppi, enable_image_view);
+
         }
     }
 }
 
-void find_corner_thread(const std::string& path,const int piece_index,const int ppi,const bool enable_image_view){
+void do_pre_processing_thread(const std::string& path, int piece_index, int ppi, bool enable_image_view){
 
     // load the piece
     string piece_path = path + string("/") +  to_string(piece_index) + string(".jpeg");
@@ -40,9 +41,46 @@ void find_corner_thread(const std::string& path,const int piece_index,const int 
 
     // removing the hole of the piece
     Mat piece_no_holes;
-    remove_holes(piece,piece_no_holes);
+    remove_holes(piece,piece_no_holes,ppi);
 
-    show(piece_no_holes);
+    // removing the knobs
+    Mat piece_no_knobs;
+    remove_knobs(piece_no_holes,piece_no_knobs,ppi);
+
+    // finding the points
+    Point p1,p2,p3,p4;
+    find_corners(piece_no_knobs,p1,p2,p3,p4,ppi);
+
+    // show results
+    if(enable_image_view){
+        Mat display;
+        cvtColor(piece,display,COLOR_GRAY2BGR);
+
+        Scalar color = Scalar(0,0,255);
+        int thickness = 10;
+
+        line(display,p1,p2,color,thickness);
+        line(display,p2,p3,color,thickness);
+        line(display,p3,p4,color,thickness);
+        line(display,p4,p1,color,thickness);
+
+        Mat display_resize;
+        resize(display,display_resize,display.size()/(2*ppi/1200));
+        imshow("piece with corners", display_resize);
+        waitKey(0);
+
+    }
+
+    // save the coordinates to a txt file
+    string save_path = path + string("/") + to_string(piece_index) + string(".txt");
+
+    ofstream file;
+    file.open (save_path,ios::out);
+    file <<"P1: "<< p1 << endl;
+    file <<"P2: "<< p2 << endl;
+    file <<"P3: "<< p3 << endl;
+    file <<"P4: "<< p4;
+    file.close();
 }
 
 
@@ -265,3 +303,189 @@ void remove_knobs(const cv::Mat&input, cv::Mat &output,const int ppi){
 
     output = piece_with_no_knobs;
 };
+
+
+
+// this function find the 4 corners in the image, it dose using 3 layer of precision... this means that it find the
+// approximate position of the corners once, than it uses that data to find a mor precise position, and it do so a third
+// time, so he can end up with a precise estimate
+//
+// the 3 layer of precision are the following:
+//
+// 1) it find the rectangle that can contain all of the maks, with the minimum possible area, and it then i take the 4
+//    corner of the rectangle as first approximation
+// 2) i den apply a blur with a radius of `ANGLE_FINDING_BLUR_RADIUS` and find the coordinates of the darkest pixel
+//    that was white before, and is among the `MIN_NUMBER_OF_PIXELS_TO_CONSIDER_AS_CORNER` closest pixels to the previews
+//    position of the corner. this pixel will be the new corner
+// 3) i create a mask with a radius of `ANGLE_MASK_FOR_TRIANGLE_CALCULATION` around the corner coordinates, use it to
+//    mask the original input, and then find tha smallest triangle that can contain the masked area. i then take the
+//    corner of the triangle that is the closest to the previews position, and that is the final point
+#define ANGLE_FINDING_BLUR_RADIUS 150
+#define ANGLE_MASK_FOR_TRIANGLE_CALCULATION 100
+#define MIN_NUMBER_OF_PIXELS_TO_CONSIDER_AS_CORNER 3000
+/// tis function return the precise coordinates of the 4 angle of the puzzle piece
+/// the image in input must have the knob and hole removed
+void find_corners(const cv::Mat &input, cv::Point &p1,  cv::Point &p2,  cv::Point &p3,  cv::Point &p4,const int ppi){
+
+    Mat piece_with_no_knobs = input, kernel,temp,temp2;
+
+
+    //
+    //      APPROXIMATION 1
+    //
+
+    // canny filter to remove the pixels in the middle and make the execution faster
+    Mat canny;
+    Canny(input,canny,50,200);
+
+    // find the contours and put it in to a 1D array;
+    vector<vector<Point>> contours;
+    findContours(canny, contours, RETR_TREE, CHAIN_APPROX_SIMPLE );
+    vector<Point> main_contour = vector<Point>();
+    // transforming it in a single vector
+    for(auto v: contours){
+        main_contour.insert(main_contour.end(),v.begin(),v.end());
+    }
+
+    // find the rectangle
+    RotatedRect rect = minAreaRect( main_contour);
+    // find the 4 points;
+    Point2f vertices[4];
+    rect.points(vertices);
+
+    //
+    //      APPROXIMATION 2
+    //
+
+    //  taking a mask of only the 4 angles;
+
+    // mask with all 4 angles
+    Mat angles = Mat::zeros(input.size(),CV_8U);
+    // mask for masking one angle at a time
+    Mat angle_mask;
+    // mask with an angle at a time
+    Mat single_angle;
+
+    // need to keep track of the biggest radius used to identify the `MIN_NUMBER_OF_PIXELS_TO_CONSIDER_AS_CORNER` closest pixels to the corner
+    int max_radius = 0;
+
+    for(auto &point: vertices){
+        int radius = 10;
+        // finding the optimal radius to mask the image
+        while (true){
+
+            //making the mask empty
+            angle_mask = Mat::zeros(input.size(),CV_8U);
+
+            //creating a circle around a point
+            circle(angle_mask,point,radius,Scalar(255),-1);
+
+            // mask containing only the angle
+            bitwise_and(piece_with_no_knobs, angle_mask, single_angle);
+
+            // if the angle is big enough i continue, otherwise i increase the radius
+            if(countNonZero(single_angle) > MIN_NUMBER_OF_PIXELS_TO_CONSIDER_AS_CORNER){
+                angles += single_angle;
+                break;
+            }else{
+
+                radius*=13;
+                radius/=10;
+            }
+        }
+        if(radius>max_radius){
+            max_radius = radius;
+        }
+    }
+    // just for safety increase it by 5.. the angle will be so distance that there will be no differnece
+    max_radius += 5;
+
+    // i need to increase the precision of the points... to do so i look for the corner by applying a blur to the corner
+    // and detect the pixels that were white before the blur, but was black after, this means that they are in a sharp corner
+    for(auto & vertex : vertices) {
+        // create a mask that keeps only a vertex at a time
+        Mat single_corner;
+        Mat mask = Mat::zeros(angles.size(), CV_8U);
+        circle(mask, vertex, max_radius, Scalar(255), -1);
+        bitwise_and(angles, mask, single_corner);
+
+        //kernel for the blur
+        kernel = Mat::zeros(Size(2*ANGLE_FINDING_BLUR_RADIUS,2*ANGLE_FINDING_BLUR_RADIUS),CV_32F);
+        circle(kernel,Point(ANGLE_FINDING_BLUR_RADIUS,ANGLE_FINDING_BLUR_RADIUS),ANGLE_FINDING_BLUR_RADIUS,Scalar(1),-1);
+        kernel /= countNonZero(kernel);
+
+        // applying a blur;
+        Mat blur;
+        filter2D(piece_with_no_knobs, blur, CV_8U, kernel,Point(ANGLE_FINDING_BLUR_RADIUS,ANGLE_FINDING_BLUR_RADIUS),0,BORDER_ISOLATED);
+
+        // masking the blur to consider only the piece close to an angle;
+        Mat blur_masked;
+        bitwise_and(blur,mask,blur_masked);
+
+        //putting hhe bits outside of the original mask at 255
+        temp = piece_with_no_knobs == 0;
+        bitwise_or(blur_masked,temp,temp2);
+        blur_masked = temp2;
+        temp = mask == 0;
+        bitwise_or(blur_masked,temp,temp2);
+        blur_masked = temp2;
+        // now i need to find the darkest pixel(s) coordinates, and that will be the new angle center
+        Point minLoc;
+        minMaxLoc(blur_masked, nullptr, nullptr, &minLoc, nullptr);
+        vertex = minLoc;
+
+        //show(blur_masked);
+    }
+
+    // calculate the 4 vertices in a precis more precise way, by finding the smallest triangle that can contains the angle,
+    // and tanking the closest point to the original point as new corner
+    Point2f vertices_precise[4];
+    for(int i=0; i<4; i++){
+        // create a mask that keeps only a vertex at a time
+        Mat single_corner;
+        Mat mask = Mat::zeros(angles.size(),CV_8U);
+        circle(mask,vertices[i],ANGLE_MASK_FOR_TRIANGLE_CALCULATION,Scalar(255),-1);
+
+        bitwise_and(piece_with_no_knobs, mask, single_corner);
+
+        resize(single_corner,temp,Size(400,400));
+        //imshow(to_string(i),temp);
+
+        // find the triangle with the minimum area that can keep inside the 3 dots
+        // canny filter to remove the pixels in the middle and make the execution faster
+        Canny(single_corner, canny, 50, 200);
+
+
+        // finding the contortions of the points;
+        findContours(canny, contours, RETR_TREE, CHAIN_APPROX_SIMPLE );
+        // transforming it in a single vector
+        main_contour = vector<Point>();
+        for(auto v: contours){
+            main_contour.insert(main_contour.end(),v.begin(),v.end());
+        }
+
+        // find the triangle that enclose the vertice
+        vector<Point> triangle_points;
+        minEnclosingTriangle( main_contour,triangle_points);
+        //cout << triangle_points << endl;
+
+
+
+        // find the point that is the closest to the original point...
+        // that point will be the vertex of the puzzle!
+        Point closest = triangle_points[0];
+        Point vertex = vertices[i];
+        for(auto p: triangle_points){
+            //find the closest point to the original vertex... that will be the precise vertex
+            if(cv::norm(p - vertex) < cv::norm(closest - vertex)){
+                closest = p;
+            }
+        }
+        vertices_precise[i] = closest;
+    }
+
+    p1 = vertices_precise[0];
+    p2 = vertices_precise[1];
+    p3 = vertices_precise[2];
+    p4 = vertices_precise[3];
+}

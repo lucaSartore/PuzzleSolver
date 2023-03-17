@@ -35,23 +35,19 @@ int main(){
 
     //cout << "i have found " << number_of_pieces << " puzzle pieces" << endl;
 
-    //find_corner("../blue_500pcs/divided",10);
+    do_pre_processing("../blue_500pcs/divided",10, 1200,false, true);
 
     //remove_holes();
 
-    remove_extensions_and_save_corner_data();
+    //remove_extensions_and_save_corner_data();
 
     return 0;
 }
 
 
 
-#define EROSION_AND_EXPANSION_SIZE 75
-#define RESIZE_DIVISION_FACTOR 6
-#define KNOB_EROSION_SIZE 15
-#define MINIMUM_KNOB_AREA 15000
 #define ANGLE_FINDING_BLUR_RADIUS 150
-#define KNOB_REMOVER_RADIUS 250
+#define MIN_NUMBER_OF_PIXELS_TO_CONSIDER_AS_CORNER 3000
 #define ANGLE_MASK_FOR_TRIANGLE_CALCULATION 100
 void remove_extensions_and_save_corner_data(){
     Mat temp;
@@ -123,7 +119,7 @@ void remove_extensions_and_save_corner_data(){
                 // mask containing only the angle
                 bitwise_and(piece_with_no_knobs, angle_mask,only_angle);
                 // if the angle is big enough i continue, otherwise i increase the radius
-                if(countNonZero(only_angle) > 3000){
+                if(countNonZero(only_angle) > MIN_NUMBER_OF_PIXELS_TO_CONSIDER_AS_CORNER){
                     angles += only_angle;
                     break;
                 }else{
