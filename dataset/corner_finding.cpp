@@ -4,11 +4,12 @@
 #include "corner_finding.h"
 #include <opencv2/opencv.hpp>
 #include <iostream>
-#include <cstring>
 #include <fstream>
 #include "util.h"
 #include "piece_splitting.h"
 #include "corner_finding.h"
+#include <thread>
+
 using namespace std;
 using namespace cv;
 
@@ -22,11 +23,52 @@ void do_pre_processing(const std::string& path, int number_of_pieces, int ppi, b
 
     if(use_multithreading){
 
+        // check how many cores are available
+        const auto processor_count = std::thread::hardware_concurrency();
+
+
+        // make share the number is detected correctly
+        assert(processor_count != 0);
+
+        int piece_number = 1;
+
+        while (piece_number <= number_of_pieces){
+
+            // find how many threads i have to spawn
+            int threads_to_spawn = processor_count;
+
+            // create the threads
+            auto *threads = new thread[threads_to_spawn];
+
+            for(int j=0; j<threads_to_spawn; j++){
+
+                // make share not to overflow
+                if(piece_number > number_of_pieces){
+                    break;
+                }
+
+                auto f = [path,piece_number](){ do_pre_processing_thread(path,piece_number);};
+                threads[j] = thread(f);
+                cout << "preprocessing piece " << piece_number << "/" << number_of_pieces << endl;
+
+                piece_number++;
+            }
+            for(int j=0; j<threads_to_spawn; j++){
+                if(threads[j].joinable()){
+                    threads[j].join();
+                }
+            }
+
+            // free the memory
+            delete[] threads;
+        }
+
+
     }else{
         for(int i = 1; i<=number_of_pieces; i++){
             cout << "preprocessing piece " << i << "/" << number_of_pieces << endl;
-            do_pre_processing_thread(path, i, ppi, enable_image_view);
 
+            do_pre_processing_thread(path, i, ppi, enable_image_view);
         }
     }
 }

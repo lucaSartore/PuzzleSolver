@@ -14,6 +14,12 @@
 #include "util.h"
 #include "piece_splitting.h"
 #include "corner_finding.h"
+
+
+#include <numeric>
+#include <execution>
+#include <unistd.h>
+
 using namespace std;
 using namespace cv;
 
@@ -35,7 +41,7 @@ int main(){
 
     //cout << "i have found " << number_of_pieces << " puzzle pieces" << endl;
 
-    do_pre_processing("../blue_500pcs/divided",15, 1200,false, false);
+    do_pre_processing("../blue_500pcs/divided",499, 1200, true, false);
 
     cout << "preprocessing finished" << endl;
 
