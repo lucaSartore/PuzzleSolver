@@ -1,7 +1,6 @@
 //
 // Created by luca on 3/17/23.
 //
-
 #include "corner_finding.h"
 #include <opencv2/opencv.hpp>
 #include <iostream>
@@ -12,7 +11,6 @@
 #include "corner_finding.h"
 using namespace std;
 using namespace cv;
-
 
 
 void do_pre_processing(const std::string& path, int number_of_pieces, int ppi, bool use_multithreading, bool enable_image_view){
@@ -26,6 +24,7 @@ void do_pre_processing(const std::string& path, int number_of_pieces, int ppi, b
 
     }else{
         for(int i = 1; i<=number_of_pieces; i++){
+            cout << "preprocessing piece " << i << "/" << number_of_pieces << endl;
             do_pre_processing_thread(path, i, ppi, enable_image_view);
 
         }

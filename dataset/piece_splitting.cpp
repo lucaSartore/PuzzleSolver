@@ -31,7 +31,18 @@ int split_pieces_into_single_images(const std::string& input_path,const std::str
     // index for keeping tracking the files to write
     int piece_index = 0;
 
+    auto iter_files = std::filesystem::directory_iterator(input_path);
+
+    int number_of_images = (int) count_if(
+            begin(iter_files),
+            end(iter_files),
+            [](auto & entity){return true;}
+            );
+    int images_counter=0;
+
     for (const auto & entry : std::filesystem::directory_iterator(input_path)){
+
+        cout << "splitting image "<< ++images_counter << "/" << number_of_images << endl;
 
         //step 1: read the files one by one;
         Mat image = imread(entry.path());
@@ -88,7 +99,7 @@ int split_pieces_into_single_images(const std::string& input_path,const std::str
             if(area > PIECE_MINIMUM_AREA){
 
                 // show progress
-                cout << "processing piece: " << piece_index  <<endl;
+                //cout << "processing piece: " << piece_index  <<endl;
 
                 // get the individual piece
                 Mat single_piece = individual_pieces == i;
