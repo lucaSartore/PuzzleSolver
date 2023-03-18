@@ -1,6 +1,3 @@
-//
-// Created by luca on 3/18/23.
-//
 
 #include "Piece.h"
 #include <fstream>
@@ -16,9 +13,6 @@ Piece::Piece(int piece_id, string path) {
     piece = imread(piece_path);
     assert(!piece.empty());
 
-    imshow("a",piece);
-    waitKey(0);
-
     // initialize id
     id = piece_id;
 
@@ -27,12 +21,16 @@ Piece::Piece(int piece_id, string path) {
     ifstream data (data_path);
 
     assert(data.is_open());
-    while ( getline (data, line) )
-    {
-        cout << line << '\n';
+
+    // fill the points
+    for (auto & point : points) {
+        std::getline(data, line);
+        std::stringstream ss(line);
+        char c[6], a;
+        int x, y;
+        ss >> c >> a >> x >> a >> y >> a;
+        point = Point(x, y);
     }
-
-
 }
 
 void Piece::set_origin_path(string path) {

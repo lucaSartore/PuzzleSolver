@@ -16,6 +16,7 @@ class Piece {
 private:
     static string origin_path;
     Side sides[4];
+    Point points[4];
     Mat piece;
     int id;
 public:
