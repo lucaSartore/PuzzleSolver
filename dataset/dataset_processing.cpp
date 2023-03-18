@@ -11,7 +11,7 @@ int main(){
 
     cout << "i have found " << number_of_pieces << " puzzle pieces" << endl;
 
-    do_pre_processing("../blue_500pcs/divided",499, 1200, true, false);
+    do_pre_processing("../blue_500pcs/divided",number_of_pieces, 1200, true, false);
 
     cout << "preprocessing finished" << endl;
 
