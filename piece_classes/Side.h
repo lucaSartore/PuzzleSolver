@@ -7,8 +7,11 @@
 
 
 #include <opencv2/opencv.hpp>
-
 using namespace cv;
+
+class Piece;
+
+typedef enum{BORDER,MALE,FEMALE}SideKind;
 
 class Side {
 private:
@@ -16,13 +19,30 @@ private:
     Mat border_shape;
     // is a mask containing the part of the border that needs to be checked for compatibility
     Mat border_mask;
+    // pointer to the original piece
+    Piece* piece;
+    // an integer referring on witch side the of the original piece this border appear to
+    int piece_side;
+    // an enum that defines with kind of border this one si
+    SideKind kind;
 public:
+
+    // disable copy constructor, since all the pieces will be the same in all the program it make mor sense to use pointers
+    Side(Side& other) = delete;
+
     Side();
     // constructor
-    Side(Mat& piece, Point p1, Point p2);
+    Side(Mat& piece_mask, Piece* piece_, int piece_side_, Point p1, Point p2);
 
     // a comparing function that returns a percentage thad indicate how match the 2 pieces are comparable
-    float compare_to(Side &other);
+    float compare_to(Side &other, bool debug = false);
+
+    // get the kind of the border
+    SideKind get_kind();
+
+    // return the piece this border appertains to
+    Piece &get_piece();
+
 };
 
 
