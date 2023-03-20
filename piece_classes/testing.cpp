@@ -10,14 +10,22 @@ using namespace std;
 
 int main(){
 
+
+
     Piece::set_origin_path("../../dataset/blue_500pcs/divided");
 
-    Piece piece = Piece(1);
+    Piece p1 = Piece(400);
 
-    Point p1(0,0),p2(-1,-1);
-
-    cout << find_angle_of_2_points(p1,p2) * 180 / 3.1415926535898 << endl;
-
+    for(int i=2; i<500;i++){
+        cout << i << "/500" << endl;
+        Piece p2 = Piece(i);
+        for(int side=0; side < 4; side++){
+            float perc = p1.get_side(0).compare_to(p2.get_side(side));
+            if(perc > 0.99){
+                p1.get_side(0).compare_to(p2.get_side(side), true);
+            }
+        }
+    }
 
     return 0;
 }

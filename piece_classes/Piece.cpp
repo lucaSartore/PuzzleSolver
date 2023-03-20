@@ -5,14 +5,13 @@
 #include <utility>
 
 string Piece::origin_path = "";
-int Piece::compare_res = 1200;
 
 Piece::Piece(int piece_id, string path) {
     string piece_path = path + string("/") + to_string(piece_id) + string(".jpeg");
     string data_path = path + string("/") + to_string(piece_id) + string(".txt");
 
     // initialize piece
-    piece = imread(piece_path);
+    piece = imread(piece_path,IMREAD_GRAYSCALE);
     assert(!piece.empty());
 
     // initialize id
@@ -34,9 +33,12 @@ Piece::Piece(int piece_id, string path) {
         point = Point(x, y);
     }
 
+    Point center = (points[0]+points[1]+points[2]+points[3])/4;
+
     for(int i=0; i<4; i++){
-        sides[i] = Side(piece, this,i,points[i],points[(i+1)%4]);
+        sides[i] = Side(piece, this,i,points[i],points[(i+1)%4],center);
     }
+
 }
 
 Piece::Piece(int piece_id): Piece(piece_id, origin_path){}
@@ -51,10 +53,7 @@ Side &Piece::get_side(int index) {
     return sides[index];
 }
 
-void Piece::set_compare_res(int res) {
-    compare_res = res;
+Piece::Piece() {
+
 }
 
-int Piece::get_compare_res() {
-    return compare_res;
-}
