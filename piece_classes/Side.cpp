@@ -107,19 +107,19 @@ float Side::compare_to(Side &other,bool debug) {
     bitwise_xor(border_shape, other_border_shape_rotated,result);
 
     // dilate the result to consider only wide gaps areas and not tiny borders
-    Mat kernel = Mat::zeros(Size(EROSION_SIZE,EROSION_SIZE),CV_8U) == 0;
-    Mat result_expanded;
-    dilate(result,result_expanded,kernel);
+    //Mat kernel = Mat::zeros(Size(EROSION_SIZE,EROSION_SIZE),CV_8U) == 0;
+    //Mat result_expanded;
+    //dilate(result,result_expanded,kernel);
 
-    float compatibility = ((float)countNonZero(result_expanded)) / (Side::compare_res*Side::compare_res);
+    float compatibility = ((float)countNonZero(result)) / (Side::compare_res*Side::compare_res);
 
     if(debug){
         std::string name = std::string("compatibility: ") + std::to_string(compatibility*100) + std::string("%");
         // create the colored image
         std::vector<cv::Mat> channels;
-        channels.push_back(cv::Mat::zeros(result_expanded.size(), CV_8U));
-        channels.push_back(cv::Mat::zeros(result_expanded.size(), CV_8U));
-        channels.push_back(cv::Mat::zeros(result_expanded.size(), CV_8U));
+        channels.push_back(cv::Mat::zeros(result.size(), CV_8U));
+        channels.push_back(cv::Mat::zeros(result.size(), CV_8U));
+        channels.push_back(cv::Mat::zeros(result.size(), CV_8U));
 
         border_shape.copyTo(channels[2]); // set red channel where border_shape is white
         other_border_shape_rotated.copyTo(channels[0]); // set blue channel where other_border_shape_rotated is white

@@ -25,9 +25,9 @@ int main(){
 
     for(int i=0; i<500;i++){
         for(int side = 0; side<4; side++){
-            float p = pieces[30].get_side(0).compare_to(pieces[i].get_side(side));
-            if(p>0.995){
-                pieces[30].get_side(0).compare_to(pieces[i].get_side(side), true);
+            float p = pieces[444].get_side(0).compare_to(pieces[i].get_side(side));
+            if(p>0.99){
+                pieces[444].get_side(0).compare_to(pieces[i].get_side(side), true);
             }
         }
     }
@@ -36,7 +36,7 @@ int main(){
 
     auto duration = duration_cast<milliseconds>(stop - start);
 
-    cout << "Time taken by function: " << duration.count() << " microseconds" << endl;
+    cout << "Time taken by function: " << duration.count() << " milliseconds" << endl;
 
 
     return 0;
