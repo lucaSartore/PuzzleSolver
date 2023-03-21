@@ -3,9 +3,9 @@
 //
 
 #include <iostream>
-#include "Side.h"
-#include "Piece.h"
-#include "util_piece.h"
+#include "grafic_piece/Side.h"
+#include "grafic_piece/Piece.h"
+#include "grafic_piece/util_piece.h"
 #include <chrono>
 using namespace std;
 using namespace std::chrono;
