@@ -21,7 +21,7 @@ int main(){
         Piece p2 = Piece(i);
         for(int side=0; side < 4; side++){
             float perc = p1.get_side(0).compare_to(p2.get_side(side));
-            if(perc > 0.99){
+            if(perc > 0.995){
                 p1.get_side(0).compare_to(p2.get_side(side), true);
             }
         }

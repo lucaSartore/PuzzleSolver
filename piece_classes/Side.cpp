@@ -70,19 +70,25 @@ Side::Side(Mat& shape, Piece* piece_, int piece_side_, Point p1, Point p2, Point
     // doto: add piece kind
 }
 
+
+#define EROSION_SIZE (6*Side::compare_res/1200)
 float Side::compare_to(Side &other,bool debug) {
     Mat other_border_shape;
     rotate(other.border_shape, other_border_shape, ROTATE_180);
     Mat result;
     bitwise_xor(border_shape, other_border_shape,result);
 
+    // dilate the result to consider only wide gaps areas and not tiny borders
+    Mat kernel = Mat::zeros(Size(EROSION_SIZE,EROSION_SIZE),CV_8U) == 0;
+    Mat result_expanded;
+    dilate(result,result_expanded,kernel);
 
-    float compatibility = ((float)countNonZero(result)) / (Side::compare_res*Side::compare_res);
+    float compatibility = ((float)countNonZero(result_expanded)) / (Side::compare_res*Side::compare_res);
 
     if(debug){
         std::string name = std::string("compatibility: ") + std::to_string(compatibility*100) + std::string("%");
         Mat temp;
-        resize(result,temp,result.size()/4);
+        resize(result_expanded,temp,result_expanded.size()/4);
         imshow(name,temp);
         waitKey(0);
         destroyAllWindows();
