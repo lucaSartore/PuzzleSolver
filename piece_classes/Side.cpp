@@ -60,12 +60,29 @@ Side::Side(Mat& shape, Piece* piece_, int piece_side_, Point p1, Point p2, Point
     floodFill(border_shape,Point(0,0),100);
     border_shape = border_shape != 100;
 
+
+    int difference = Side::compare_res*Side::compare_res/2 - countNonZero(border_shape);
+
+
+    //std::cout << difference << std::endl;
+
+    if (difference > 15000){
+        kind = SideKind::FEMALE;
+        //std::cout << "female" << std::endl;
+    }else if(difference < -15000){
+        kind = SideKind::MALE;
+        //std::cout << "male" << std::endl;
+    }else{
+        kind = SideKind::BORDER;
+        //std::cout << "border" << std::endl;
+    }
+
     /*
     Mat temp;
     resize(border_shape,temp,Size(500,500) );
     imshow("new_side", temp);
     waitKey(0);
-     */
+    */
 
     // doto: add piece kind
 }
@@ -73,6 +90,17 @@ Side::Side(Mat& shape, Piece* piece_, int piece_side_, Point p1, Point p2, Point
 
 #define EROSION_SIZE (6*Side::compare_res/1200)
 float Side::compare_to(Side &other,bool debug) {
+
+    // quick comp
+    if(!debug){
+        if(kind == other.kind){
+            return 0;
+        }
+        if(kind == SideKind::BORDER || other.kind == SideKind::BORDER){
+            return 0;
+        }
+    }
+
     Mat other_border_shape;
     rotate(other.border_shape, other_border_shape, ROTATE_180);
     Mat result;
