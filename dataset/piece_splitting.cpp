@@ -126,7 +126,7 @@ int split_pieces_into_single_images(const std::string& input_path,const std::str
 
 
                 //calculate input_path
-                string output_path_image = output_path + string("/") + to_string(++piece_index) + string(".jpeg");
+                string output_path_image = output_path + string("/") + to_string(piece_index++) + string(".jpeg");
 
                 //make share that there are not white pixels in the border by creating a rectangle
                 int x = cropped_image.size().width, y = cropped_image.size().height;

@@ -30,9 +30,9 @@ void do_pre_processing(const std::string& path, int number_of_pieces, int ppi, b
         // make share the number is detected correctly
         assert(processor_count != 0);
 
-        int piece_number = 1;
+        int piece_number = 0;
 
-        while (piece_number <= number_of_pieces){
+        while (piece_number < number_of_pieces){
 
             // find how many threads i have to spawn
             int threads_to_spawn = processor_count;
@@ -43,7 +43,7 @@ void do_pre_processing(const std::string& path, int number_of_pieces, int ppi, b
             for(int j=0; j<threads_to_spawn; j++){
 
                 // make share not to overflow
-                if(piece_number > number_of_pieces){
+                if(piece_number >= number_of_pieces){
                     break;
                 }
 
@@ -65,7 +65,7 @@ void do_pre_processing(const std::string& path, int number_of_pieces, int ppi, b
 
 
     }else{
-        for(int i = 1; i<=number_of_pieces; i++){
+        for(int i=0; i<number_of_pieces; i++){
             cout << "preprocessing piece " << i << "/" << number_of_pieces << endl;
 
             do_pre_processing_thread(path, i, ppi, enable_image_view);

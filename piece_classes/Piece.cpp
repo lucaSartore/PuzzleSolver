@@ -23,7 +23,7 @@ Piece::Piece(int piece_id, string path) {
 
     assert(data.is_open());
 
-    // fill the points
+    // read the points
     for (auto & point : points) {
         std::getline(data, line);
         std::stringstream ss(line);
@@ -33,8 +33,10 @@ Piece::Piece(int piece_id, string path) {
         point = Point(x, y);
     }
 
+    //calculate center of the piece
     Point center = (points[0]+points[1]+points[2]+points[3])/4;
 
+    // create sides
     for(int i=0; i<4; i++){
         sides[i] = Side(piece, this,i,points[i],points[(i+1)%4],center);
     }
@@ -53,7 +55,5 @@ Side &Piece::get_side(int index) {
     return sides[index];
 }
 
-Piece::Piece() {
-
-}
+Piece::Piece() {}
 
