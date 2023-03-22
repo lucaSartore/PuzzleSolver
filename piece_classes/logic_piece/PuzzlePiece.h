@@ -21,7 +21,7 @@ public:
     /// one parameter constructor, it initialize with matching_pieces empty
     explicit PuzzlePiece(int piece_id_);
     /// this is a constructor that create a piece form some data saved by the `save_as_file` path
-    explicit PuzzlePiece(string path);
+    explicit PuzzlePiece(string path, int id);
     /// return the ids of the current piece
     int get_piece_id() const;
     /// return a pointer to the set of the pieces close to the specified side

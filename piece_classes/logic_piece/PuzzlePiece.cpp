@@ -7,6 +7,7 @@
 #include <assert.h>
 
 void PuzzlePiece::save_as_file(string path) {
+    path += "/" + to_string(piece_id)+".txt";
     ofstream outfile(path);
     if (outfile.is_open()) {
         outfile << piece_id << endl;
@@ -23,7 +24,8 @@ void PuzzlePiece::save_as_file(string path) {
     }
 }
 
-PuzzlePiece::PuzzlePiece(string path) {
+PuzzlePiece::PuzzlePiece(string path, int id) {
+    path += "/" + to_string(id) + ".txt";
     ifstream infile(path);
     if (infile.is_open()) {
         string line;

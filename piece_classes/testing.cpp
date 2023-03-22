@@ -14,16 +14,18 @@ using namespace std::chrono;
 int main(){
 
 
+
     PuzzlePiece piece = PuzzlePiece(22);
     piece.insert_matching_piece(0,11);
     piece.insert_matching_piece(0,14);
     piece.insert_matching_piece(1,77);
     piece.insert_matching_piece(3,11);
+    piece.insert_matching_piece(3,113);
+    piece.insert_matching_piece(3,113);
 
+    piece.save_as_file(".");
 
-    piece.save_as_file("22.txt");
-
-    PuzzlePiece piece2 = PuzzlePiece("22.txt");
+    PuzzlePiece piece2 = PuzzlePiece(".",22);
 
 
     cout << piece << endl;
@@ -32,6 +34,9 @@ int main(){
 
 
     return 0;
+
+
+
     Piece::set_origin_path("../../dataset/blue_500pcs/divided");
 
     Piece pieces[500];
