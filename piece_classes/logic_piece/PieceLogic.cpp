@@ -1,4 +1,4 @@
-#include "PuzzlePiece.h"
+#include "PieceLogic.h"
 #include <fstream>
 #include <iostream>
 #include <iterator>
@@ -6,7 +6,7 @@
 #include <string>
 #include <assert.h>
 
-void PuzzlePiece::save_as_file(string path) {
+void PieceLogic::save_as_file(string path) {
     path += "/" + to_string(piece_id)+".txt";
     ofstream outfile(path);
     if (outfile.is_open()) {
@@ -24,7 +24,7 @@ void PuzzlePiece::save_as_file(string path) {
     }
 }
 
-PuzzlePiece::PuzzlePiece(string path, int id) {
+PieceLogic::PieceLogic(string path, int id) {
     path += "/" + to_string(id) + ".txt";
     ifstream infile(path);
     if (infile.is_open()) {
@@ -50,18 +50,18 @@ PuzzlePiece::PuzzlePiece(string path, int id) {
     }
 }
 
-int PuzzlePiece::get_piece_id() const{
+int PieceLogic::get_piece_id() const{
     return piece_id;
 }
 
-set<int> &PuzzlePiece::get_matching_piece_to_side(int side){
+set<int> &PieceLogic::get_matching_piece_to_side(int side){
     // check that the side is in range
     assert(side >= 0);
     assert(side <= 3);
     return matching_pieces[side];
 }
 
-ostream & operator<<(ostream& os, PuzzlePiece& piece){
+ostream & operator<<(ostream& os, PieceLogic& piece){
 
     os << "piece_id: " << piece.piece_id <<
     "\nside 0 neighbor: " << piece.get_side_as_string(0) <<
@@ -72,7 +72,7 @@ ostream & operator<<(ostream& os, PuzzlePiece& piece){
     return os;
 }
 
-string PuzzlePiece::get_side_as_string(int side) const {
+string PieceLogic::get_side_as_string(int side) const {
     assert(side>=0);
     assert(side<4);
     string s = string("{");
@@ -83,20 +83,20 @@ string PuzzlePiece::get_side_as_string(int side) const {
     return std::move(s);
 }
 
-void PuzzlePiece::insert_matching_piece(int side, int other_piece_id) {
+void PieceLogic::insert_matching_piece(int side, int other_piece_id) {
     assert(side>=0);
     assert(side<4);
     assert(other_piece_id != piece_id);
     matching_pieces[side].insert(other_piece_id);
 }
 
-PuzzlePiece::PuzzlePiece(int piece_id_) {
+PieceLogic::PieceLogic(int piece_id_) {
     piece_id = piece_id_;
     for(auto e: matching_pieces){
         e = set<int>();
     }
 }
-PuzzlePiece::PuzzlePiece() {
+PieceLogic::PieceLogic() {
     piece_id = 0;
     for(auto e: matching_pieces){
         e = set<int>();

@@ -11,7 +11,7 @@ using namespace cv;
 
 int Side::compare_res = 1200;
 
-Side::Side(Mat& shape, Piece* piece_, int piece_side_, Point p1, Point p2, Point center){
+Side::Side(Mat& shape, PieceShape* piece_, int piece_side_, Point p1, Point p2, Point center){
 
     assert(shape.type() == CV_8U);
 
@@ -146,7 +146,7 @@ SideKind Side::get_kind() {
     return kind;
 }
 
-Piece &Side::get_piece() {
+PieceShape &Side::get_piece() {
     return *piece;
 }
 

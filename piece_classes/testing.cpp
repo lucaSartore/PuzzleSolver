@@ -4,9 +4,9 @@
 
 #include <iostream>
 #include "grafic_piece/Side.h"
-#include "grafic_piece/Piece.h"
+#include "grafic_piece/PieceShape.h"
 #include "grafic_piece/util_piece.h"
-#include "logic_piece/PuzzlePiece.h"
+#include "logic_piece/PieceLogic.h"
 #include <chrono>
 using namespace std;
 using namespace std::chrono;
@@ -14,7 +14,7 @@ using namespace std::chrono;
 int main(){
 
 
-    PuzzlePiece piece = PuzzlePiece(22);
+    PieceLogic piece = PieceLogic(22);
     piece.insert_matching_piece(0,11);
     piece.insert_matching_piece(0,14);
     piece.insert_matching_piece(1,77);
@@ -24,7 +24,7 @@ int main(){
 
     piece.save_as_file(".");
 
-    PuzzlePiece piece2 = PuzzlePiece(".",22);
+    PieceLogic piece2 = PieceLogic(".", 22);
 
 
     cout << piece << endl;
@@ -32,16 +32,12 @@ int main(){
 
 
 
-    return 0;
+    PieceShape::set_origin_path("../../dataset/blue_500pcs/divided");
+    PieceShape pieces[500];
 
-
-
-    Piece::set_origin_path("../../dataset/blue_500pcs/divided");
-
-    Piece pieces[500];
 
     for(int i=0; i<500;i++){
-        pieces[i] = Piece(i);
+        pieces[i] = PieceShape(i);
     }
 
 

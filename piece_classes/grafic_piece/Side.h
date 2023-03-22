@@ -7,7 +7,7 @@
 #include <opencv2/opencv.hpp>
 using namespace cv;
 
-class Piece;
+class PieceShape;
 
 typedef enum{BORDER,MALE,FEMALE}SideKind;
 
@@ -18,7 +18,7 @@ private:
     // a image containing the shape of the border ready compared it with others
     Mat border_shape;
     // pointer to the original piece
-    Piece* piece;
+    PieceShape* piece;
     // an integer referring on witch side the of the original piece this border appear to
     int piece_side;
     // an enum that defines with kind of border this one si
@@ -30,7 +30,7 @@ public:
 
     Side();
     // constructor
-    Side(Mat& piece_mask, Piece* piece_, int piece_side_, Point p1, Point p2, Point center);
+    Side(Mat& piece_mask, PieceShape* piece_, int piece_side_, Point p1, Point p2, Point center);
 
     // a comparing function that returns a percentage thad indicate how match the 2 pieces are comparable
     float compare_to(Side &other, bool debug = false);
@@ -39,7 +39,7 @@ public:
     SideKind get_kind();
 
     // return the piece this border appertains to
-    Piece &get_piece();
+    PieceShape &get_piece();
 
     // set the comparison resolution that has to be used in the side to side cameraperson
     static void set_compare_res(int res);

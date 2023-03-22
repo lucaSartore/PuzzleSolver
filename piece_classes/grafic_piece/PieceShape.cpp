@@ -1,12 +1,12 @@
 
 #include "Side.h"
-#include "Piece.h"
+#include "PieceShape.h"
 #include <fstream>
 #include <utility>
 
-string Piece::origin_path = "";
+string PieceShape::origin_path = "";
 
-Piece::Piece(int piece_id, string path) {
+PieceShape::PieceShape(int piece_id, string path) {
     string piece_path = path + string("/") + to_string(piece_id) + string(".jpeg");
     string data_path = path + string("/") + to_string(piece_id) + string(".txt");
 
@@ -43,17 +43,17 @@ Piece::Piece(int piece_id, string path) {
 
 }
 
-Piece::Piece(int piece_id): Piece(piece_id, origin_path){}
+PieceShape::PieceShape(int piece_id): PieceShape(piece_id, origin_path){}
 
-void Piece::set_origin_path(string path) {
+void PieceShape::set_origin_path(string path) {
     origin_path = std::move(path);
 }
 
-Side &Piece::get_side(int index) {
+Side &PieceShape::get_side(int index) {
     assert(index >= 0);
     assert(index <4);
     return sides[index];
 }
 
-Piece::Piece() {}
+PieceShape::PieceShape() {}
 

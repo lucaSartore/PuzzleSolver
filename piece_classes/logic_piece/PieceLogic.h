@@ -2,37 +2,37 @@
 // Created by luca on 3/21/23.
 //
 
-#ifndef PIECECLASS_PUZZLEPIECE_H
-#define PIECECLASS_PUZZLEPIECE_H
+#ifndef PIECECLASS_PIECELOGIC_H
+#define PIECECLASS_PIECELOGIC_H
 
 #include <iostream>
 #include <set>
 
 using namespace std;
 
-class PuzzlePiece {
+class PieceLogic {
 private:
     int piece_id;
     set<int> matching_pieces[4];
     string get_side_as_string(int side) const;
 public:
-    /// this function save the data inside the PuzzlePiece in to a file with the name specified in the path
+    /// this function save the data inside the PieceLogic in to a file with the name specified in the path
     void save_as_file(string path);
     /// zero parameter constructor;
-    PuzzlePiece();
+    PieceLogic();
     /// one parameter constructor, it initialize with matching_pieces empty
-    explicit PuzzlePiece(int piece_id_);
+    explicit PieceLogic(int piece_id_);
     /// this is a constructor that create a piece form some data saved by the `save_as_file` path
-    explicit PuzzlePiece(string path, int id);
+    explicit PieceLogic(string path, int id);
     /// return the ids of the current piece
     int get_piece_id() const;
     /// return a pointer to the set of the pieces close to the specified side
     set<int> & get_matching_piece_to_side(int side);
-    friend ostream & operator<<(ostream& os, PuzzlePiece& piece);
+    friend ostream & operator<<(ostream& os, PieceLogic& piece);
     /// allows ypu to insert a new element in the the piece's compatible pieces
     void insert_matching_piece(int side, int other_piece_id);
 };
 
-ostream & operator<<(const ostream& os,const PuzzlePiece& piece);
+ostream & operator<<(const ostream& os,const PieceLogic& piece);
 
-#endif //PIECECLASS_PUZZLEPIECE_H
+#endif //PIECECLASS_PIECELOGIC_H
