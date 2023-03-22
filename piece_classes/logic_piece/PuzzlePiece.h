@@ -18,6 +18,8 @@ private:
 public:
     /// this function save the data inside the PuzzlePiece in to a file with the name specified in the path
     void save_as_file(string path);
+    /// zero parameter constructor;
+    PuzzlePiece();
     /// one parameter constructor, it initialize with matching_pieces empty
     explicit PuzzlePiece(int piece_id_);
     /// this is a constructor that create a piece form some data saved by the `save_as_file` path

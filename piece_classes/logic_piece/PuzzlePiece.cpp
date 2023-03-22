@@ -96,3 +96,10 @@ PuzzlePiece::PuzzlePiece(int piece_id_) {
         e = set<int>();
     }
 }
+PuzzlePiece::PuzzlePiece() {
+    piece_id = 0;
+    for(auto e: matching_pieces){
+        e = set<int>();
+    }
+}
+

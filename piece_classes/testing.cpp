@@ -14,7 +14,6 @@ using namespace std::chrono;
 int main(){
 
 
-
     PuzzlePiece piece = PuzzlePiece(22);
     piece.insert_matching_piece(0,11);
     piece.insert_matching_piece(0,14);
