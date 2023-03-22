@@ -83,7 +83,7 @@ string PieceLogic::get_side_as_string(int side) const {
     return std::move(s);
 }
 
-void PieceLogic::insert_matching_piece(int side, int other_piece_id) {
+void PieceLogic::insert_matching_piece(int other_piece_id,int side) {
     assert(side>=0);
     assert(side<4);
     assert(other_piece_id != piece_id);

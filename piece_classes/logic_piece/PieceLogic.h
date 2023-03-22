@@ -30,7 +30,7 @@ public:
     set<int> & get_matching_piece_to_side(int side);
     friend ostream & operator<<(ostream& os, PieceLogic& piece);
     /// allows ypu to insert a new element in the the piece's compatible pieces
-    void insert_matching_piece(int side, int other_piece_id);
+    void insert_matching_piece(int other_piece_id,int side);
 };
 
 ostream & operator<<(const ostream& os,const PieceLogic& piece);
