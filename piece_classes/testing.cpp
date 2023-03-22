@@ -21,12 +21,12 @@ int main(){
     piece.insert_matching_piece(3,11);
 
 
-    piece.save_as_file("22.bin");
+    piece.save_as_file("22.txt");
 
-    PuzzlePiece piece2 = PuzzlePiece("22.bin");
+    PuzzlePiece piece2 = PuzzlePiece("22.txt");
 
 
-    //cout << piece << endl;
+    cout << piece << endl;
     cout << piece2 << endl;
 
 

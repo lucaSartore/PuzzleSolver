@@ -7,45 +7,45 @@
 #include <assert.h>
 
 void PuzzlePiece::save_as_file(string path) {
-    std::ofstream outfile;
-    outfile.open(path, std::ios::out | std::ios::binary);
-    if (!outfile.is_open()) {
-        std::cerr << "Failed to open file " << path << " for writing\n";
-        return;
+    ofstream outfile(path);
+    if (outfile.is_open()) {
+        outfile << piece_id << endl;
+
+        for (int i = 0; i < 4; i++) {
+            ostream_iterator<int> output_iterator(outfile, " ");
+            copy(matching_pieces[i].begin(), matching_pieces[i].end(), output_iterator);
+            outfile << endl;
+        }
+
+        outfile.close();
+    } else {
+        cerr << "Error: could not open file " << path << endl;
     }
-    outfile.write(reinterpret_cast<const char*>(&piece_id), sizeof(piece_id));
-    for (const auto& matches : matching_pieces) {
-        int size = static_cast<int>(matches.size());
-        outfile.write(reinterpret_cast<const char*>(&size), sizeof(size));
-        std::copy(matches.begin(), matches.end(), std::ostream_iterator<int>(outfile, " "));
-    }
-    outfile.close();
 }
 
 PuzzlePiece::PuzzlePiece(string path) {
-    std::ifstream infile;
-    infile.open(path, std::ios::in | std::ios::binary);
-    if (!infile.is_open()) {
-        std::cerr << "Failed to open file " << path << " for reading\n";
-        return;
-    }
-    infile.read(reinterpret_cast<char*>(&piece_id), sizeof(piece_id));
-    for (auto& matches : matching_pieces) {
-        int size;
-        infile.read(reinterpret_cast<char*>(&size), sizeof(size));
-        std::string line;
-        std::getline(infile, line);
-        std::istringstream iss(line);
-        for (int i = 0; i < size; ++i) {
-            int val;
-            if (iss >> val) {
-                matches.insert(val);
-            } else {
-                std::cerr << "Failed to parse match " << i << " for piece " << piece_id << "\n";
+    ifstream infile(path);
+    if (infile.is_open()) {
+        string line;
+
+        // read piece ID
+        getline(infile, line);
+        piece_id = stoi(line);
+
+        // read matching pieces
+        for (int i = 0; i < 4; i++) {
+            getline(infile, line);
+            istringstream iss(line);
+            int piece;
+            while (iss >> piece) {
+                matching_pieces[i].insert(piece);
             }
         }
+
+        infile.close();
+    } else {
+        cerr << "Error: could not open file " << path << endl;
     }
-    infile.close();
 }
 
 int PuzzlePiece::get_piece_id() const{
