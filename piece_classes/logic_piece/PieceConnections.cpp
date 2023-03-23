@@ -1,4 +1,4 @@
-#include "PieceLogic.h"
+#include "PieceConnections.h"
 #include <fstream>
 #include <iostream>
 #include <iterator>
@@ -6,7 +6,7 @@
 #include <string>
 #include <assert.h>
 
-void PieceLogic::save_as_file(string path) {
+void PieceConnections::save_as_file(string path) {
     mut.lock();
     path += "/" + to_string(piece_id)+".txt";
     ofstream outfile(path);
@@ -26,11 +26,11 @@ void PieceLogic::save_as_file(string path) {
     mut.unlock();
 }
 
-PieceLogic::PieceLogic(string path, int id): PieceLogic() {
+PieceConnections::PieceConnections(string path, int id): PieceConnections() {
     this->became(path,id);
 }
 
-void PieceLogic::became(string path, int id) {
+void PieceConnections::became(string path, int id) {
     mut.lock();
     path += "/" + to_string(id) + ".txt";
     ifstream infile(path);
@@ -59,18 +59,18 @@ void PieceLogic::became(string path, int id) {
 }
 
 
-int PieceLogic::get_piece_id() const{
+int PieceConnections::get_piece_id() const{
     return piece_id;
 }
 
-set<int> &PieceLogic::get_matching_piece_to_side(int side){
+set<int> &PieceConnections::get_matching_piece_to_side(int side){
     // check that the side is in range
     assert(side >= 0);
     assert(side <= 3);
     return matching_pieces[side];
 }
 
-ostream & operator<<(ostream& os, PieceLogic& piece){
+ostream & operator<<(ostream& os, PieceConnections& piece){
 
     os << "piece_id: " << piece.piece_id <<
     "\nside 0 neighbor: " << piece.get_side_as_string(0) <<
@@ -81,7 +81,7 @@ ostream & operator<<(ostream& os, PieceLogic& piece){
     return os;
 }
 
-string PieceLogic::get_side_as_string(int side) const {
+string PieceConnections::get_side_as_string(int side) const {
     assert(side>=0);
     assert(side<4);
     string s = string("{");
@@ -92,7 +92,7 @@ string PieceLogic::get_side_as_string(int side) const {
     return std::move(s);
 }
 
-void PieceLogic::insert_matching_piece(int other_piece_id,int side) {
+void PieceConnections::insert_matching_piece(int other_piece_id, int side) {
     assert(side>=0);
     assert(side<4);
     assert(other_piece_id != piece_id);
@@ -101,16 +101,16 @@ void PieceLogic::insert_matching_piece(int other_piece_id,int side) {
     mut.unlock();
 }
 
-PieceLogic::PieceLogic(int id): PieceLogic() {
+PieceConnections::PieceConnections(int id): PieceConnections() {
     this->became(id);
 }
-void PieceLogic::became(int id) {
+void PieceConnections::became(int id) {
     piece_id = id;
     for(auto e: matching_pieces){
         e = set<int>();
     }
 }
-PieceLogic::PieceLogic() {
+PieceConnections::PieceConnections() {
     piece_id = 0;
     for(auto e: matching_pieces){
         e = set<int>();

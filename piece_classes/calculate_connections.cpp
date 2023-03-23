@@ -6,7 +6,7 @@
 #include "grafic_piece/Side.h"
 #include "grafic_piece/PieceShape.h"
 #include "grafic_piece/util_piece.h"
-#include "logic_piece/PieceLogic.h"
+#include "logic_piece/PieceConnections.h"
 #include <chrono>
 #include <memory>
 #include <atomic>
@@ -18,9 +18,7 @@ using namespace std::chrono;
 #define NUMBER_OF_PIECES 500
 #define MINIMUM_COMPATIBILITY_PERCENTAGE 0.99
 
-
-
-void piece_comparer_thread(PieceLogic pieces_logic[], PieceShape pieces_shapes[], atomic<int> *index){
+void piece_comparer_thread(PieceConnections pieces_logic[], PieceShape pieces_shapes[], atomic<int> *index){
     while (true) {
         int piece_id = (*index)++;
 
@@ -67,7 +65,7 @@ void calculate_single_thread(){
     PieceShape pieces_shapes[NUMBER_OF_PIECES];
 
     // create array of piece logic
-    PieceLogic pieces_logic[NUMBER_OF_PIECES];
+    PieceConnections pieces_logic[NUMBER_OF_PIECES];
 
     // filling both array up with the respective index;
     for(int i=0; i<NUMBER_OF_PIECES;i++){
@@ -117,7 +115,7 @@ void calculate_multi_thread(){
     PieceShape pieces_shapes[NUMBER_OF_PIECES];
 
     // create array of piece logic
-    PieceLogic pieces_logic[NUMBER_OF_PIECES];
+    PieceConnections pieces_logic[NUMBER_OF_PIECES];
 
     // filling both array up with the respective index;
     for(int i=0; i<NUMBER_OF_PIECES;i++){
