@@ -7,6 +7,7 @@
 #include <assert.h>
 
 void PieceLogic::save_as_file(string path) {
+    mut.lock();
     path += "/" + to_string(piece_id)+".txt";
     ofstream outfile(path);
     if (outfile.is_open()) {
@@ -22,9 +23,15 @@ void PieceLogic::save_as_file(string path) {
     } else {
         cerr << "Error: could not open file " << path << endl;
     }
+    mut.unlock();
 }
 
-PieceLogic::PieceLogic(string path, int id) {
+PieceLogic::PieceLogic(string path, int id): PieceLogic() {
+    this->became(path,id);
+}
+
+void PieceLogic::became(string path, int id) {
+    mut.lock();
     path += "/" + to_string(id) + ".txt";
     ifstream infile(path);
     if (infile.is_open()) {
@@ -48,7 +55,9 @@ PieceLogic::PieceLogic(string path, int id) {
     } else {
         cerr << "Error: could not open file " << path << endl;
     }
+    mut.unlock();
 }
+
 
 int PieceLogic::get_piece_id() const{
     return piece_id;
@@ -87,11 +96,16 @@ void PieceLogic::insert_matching_piece(int other_piece_id,int side) {
     assert(side>=0);
     assert(side<4);
     assert(other_piece_id != piece_id);
+    mut.lock();
     matching_pieces[side].insert(other_piece_id);
+    mut.unlock();
 }
 
-PieceLogic::PieceLogic(int piece_id_) {
-    piece_id = piece_id_;
+PieceLogic::PieceLogic(int id): PieceLogic() {
+    this->became(id);
+}
+void PieceLogic::became(int id) {
+    piece_id = id;
     for(auto e: matching_pieces){
         e = set<int>();
     }
@@ -102,4 +116,5 @@ PieceLogic::PieceLogic() {
         e = set<int>();
     }
 }
+
 

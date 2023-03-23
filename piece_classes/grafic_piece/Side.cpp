@@ -89,7 +89,7 @@ Side::Side(Mat& shape, PieceShape* piece_, int piece_side_, Point p1, Point p2, 
 
 
 #define EROSION_SIZE (6*Side::compare_res/1200)
-float Side::compare_to(Side &other,bool debug) {
+float Side::compare_to(const Side &other,bool debug)const {
 
     // quick comp
     if(!debug){

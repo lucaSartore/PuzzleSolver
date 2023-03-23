@@ -25,7 +25,7 @@ public:
     PieceShape();
     // disable copy constructor, since all the pieces will be the same in all the program it make mor sense to use pointers
     PieceShape(PieceShape& other) = delete;
-    // crete a piece with the givven id from the origin path that has been chosen with `set_origin_path`
+    // crete a piece with the given id from the origin path that has been chosen with `set_origin_path`
     PieceShape(int piece_id);
     // create a piece with the given id, form the specified path
     PieceShape(int piece_id, string path);

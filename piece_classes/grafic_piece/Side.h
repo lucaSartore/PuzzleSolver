@@ -33,7 +33,7 @@ public:
     Side(Mat& piece_mask, PieceShape* piece_, int piece_side_, Point p1, Point p2, Point center);
 
     // a comparing function that returns a percentage thad indicate how match the 2 pieces are comparable
-    float compare_to(Side &other, bool debug = false);
+    float compare_to(const Side &other, bool debug = false)const ;
 
     // get the kind of the border
     SideKind get_kind();
