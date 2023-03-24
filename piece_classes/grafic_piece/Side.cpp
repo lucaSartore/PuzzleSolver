@@ -5,6 +5,8 @@
 #include "Side.h"
 #include "iostream"
 #include "util_piece.h"
+#include "../full_puzzle_graph/PieceNode.h"
+
 #include <algorithm>
 #include <opencv2/opencv.hpp>
 using namespace cv;
@@ -141,6 +143,7 @@ float Side::compare_to(const Side &other,bool debug)const {
 Side::Side() {
     border_shape = Mat();
 }
+
 
 SideKind Side::get_kind() {
     return kind;
