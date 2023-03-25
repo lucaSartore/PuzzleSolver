@@ -63,20 +63,24 @@ public:
     SideNode();
 
     // parameter constructor
-    SideNode(int side_index_,PieceNode *piece);
+    SideNode(int side_index_,PieceNode *piece_);
 
 
 };
 /// a piece that is part of a graph that represent the entire puzzle
 class PieceNode {
 private:
+    // id of the piece
+    int piece_id;
     // array with all the sides the piece has
     SideNode sides[4];
 public:
     // zero parameter constructor
-    PieceNode();
-    // constructor from a logic piece
-    explicit PieceNode(PieceConnections && connections);
+    PieceNode() = default;
+    // constructor from a logic piece, it need the array with all the pieces IN ORDER!
+    explicit PieceNode(PieceConnections & connections, PieceNode all_pieces[]);
+    // return a side from a specified index
+    SideNode &get_side(int index);
 };
 
 
