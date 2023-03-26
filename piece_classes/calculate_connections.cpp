@@ -33,7 +33,7 @@ int main(){
 
 
 
-    cout << pg.pieces[0].to_string() << endl;
+    cout << pg.pieces[44].to_string() << endl;
 
 
     //test_file_save();

@@ -122,11 +122,11 @@ std::string PieceNode::to_string() {
 
     std::string s;
 
-    s += "piece_with_id: " + std::to_string(piece_id) + "\n" +
-        "piece to side 0: " + sides[0].to_string() + "\n" +
-        "piece to side 1: " + sides[1].to_string() + "\n" +
-        "piece to side 2: " + sides[2].to_string() + "\n" +
-        "piece to side 3: " + sides[3].to_string() + "\n";
+    s += "piece with id: " + std::to_string(piece_id) + "\n" +
+        "pieces to side 0: " + sides[0].to_string() + "\n" +
+        "pieces to side 1: " + sides[1].to_string() + "\n" +
+        "pieces to side 2: " + sides[2].to_string() + "\n" +
+        "pieces to side 3: " + sides[3].to_string() + "\n";
 
     return s;
 }
