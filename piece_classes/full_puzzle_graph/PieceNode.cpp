@@ -77,6 +77,17 @@ SideNode::SideNode(int side_index_, PieceNode *piece_) {
     }
 }
 
+std::string SideNode::to_string() {
+
+    std::string s;
+
+    for(auto connected_side: connected_sides){
+        s += std::to_string(connected_side->piece->get_id()) + "_" + std::to_string(connected_side->side_index) + " ";
+    }
+
+    return s;
+}
+
 SideNode &PieceNode::get_side(int index) {
     assert(index>=0);
     assert(index<4);
@@ -87,21 +98,40 @@ PieceNode::PieceNode(PieceConnections &connections, PieceNode all_pieces[]) {
 
     piece_id = connections.get_piece_id();
 
+
     for(int i=0; i<4; i++){
         // creating the side object
-        sides[i] = SideNode(i,this);
+        sides[i] = SideNode(i,&all_pieces[piece_id]);
 
         // adding the links to the original piece
         set<SideNode*> to_add = set<SideNode*>();
 
-        // do do: the connection must be refered to bouth sides, and not only one!
-
-        // indering the reference to each
-        for(auto id: connections.get_matching_piece_to_side(i)){
-
+        for(auto id_and_side: connections.get_matching_piece_to_side(i)){
+            int id = get<0>(id_and_side);
+            int side = get<1>(id_and_side);
+            to_add.insert(&(all_pieces[id].get_side(side)));
         }
 
+        // insert pointer at direction 0 (means just attached) in this case the direction doesn't meteor
+        sides[i].insert_as_reachable(to_add,0,Direction::LEFT);
     }
 
+}
+
+std::string PieceNode::to_string() {
+
+    std::string s;
+
+    s += "piece_with_id: " + std::to_string(piece_id) + "\n" +
+        "piece to side 0: " + sides[0].to_string() + "\n" +
+        "piece to side 1: " + sides[1].to_string() + "\n" +
+        "piece to side 2: " + sides[2].to_string() + "\n" +
+        "piece to side 3: " + sides[3].to_string() + "\n";
+
+    return s;
+}
+
+int PieceNode::get_id() {
+    return piece_id;
 }
 

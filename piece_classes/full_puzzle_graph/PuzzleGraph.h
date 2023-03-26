@@ -6,8 +6,15 @@
 #define PIECECLASS_PUZZLEGRAPH_H
 
 
-class PuzzleGraph {
+#include <iostream>
+#include "PieceNode.h"
 
+class PuzzleGraph {
+public:
+    int number_of_pieces;
+    PieceNode * pieces;
+    explicit PuzzleGraph(const std::string& path_to_connection_data);
+    ~PuzzleGraph();
 };
 
 

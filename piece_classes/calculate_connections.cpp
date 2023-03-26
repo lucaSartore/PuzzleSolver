@@ -9,6 +9,7 @@
 #include "logic_piece/PieceConnections.h"
 #include <chrono>
 #include <memory>
+#include "full_puzzle_graph/PuzzleGraph.h"
 #include <atomic>
 #include <thread>
 
@@ -26,10 +27,21 @@ void calculate_multi_thread();
 
 int main(){
 
+
+    PuzzleGraph pg = PuzzleGraph("../../dataset/blue_500pcs/connections");
+
+
+
+
+    cout << pg.pieces[0].to_string() << endl;
+
+
     //test_file_save();
 
     //calculate_single_thread();
     //calculate_multi_thread();
+
+
 }
 
 

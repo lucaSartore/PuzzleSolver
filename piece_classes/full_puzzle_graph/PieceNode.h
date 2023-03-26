@@ -65,6 +65,9 @@ public:
     // parameter constructor
     SideNode(int side_index_,PieceNode *piece_);
 
+    // convert the piece to a string for it to be printed
+    std::string to_string();
+
 
 };
 /// a piece that is part of a graph that represent the entire puzzle
@@ -81,6 +84,10 @@ public:
     explicit PieceNode(PieceConnections & connections, PieceNode all_pieces[]);
     // return a side from a specified index
     SideNode &get_side(int index);
+    // convert the node to a string for printing
+    std::string to_string();
+    // return the id of the piece
+    int get_id();
 };
 
 
