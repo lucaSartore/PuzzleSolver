@@ -3,9 +3,9 @@
 //
 
 #include <iostream>
-#include "grafic_piece/Side.h"
-#include "grafic_piece/PieceShape.h"
-#include "grafic_piece/util_piece.h"
+#include "graphic_piece/Side.h"
+#include "graphic_piece/PieceShape.h"
+#include "graphic_piece/util_piece.h"
 #include "logic_piece/PieceConnections.h"
 #include <chrono>
 #include <memory>
@@ -17,6 +17,21 @@ using namespace std::chrono;
 
 #define NUMBER_OF_PIECES 500
 #define MINIMUM_COMPATIBILITY_PERCENTAGE 0.99
+
+
+void piece_comparer_thread(PieceConnections pieces_logic[], PieceShape pieces_shapes[], atomic<int> *index);
+void calculate_single_thread();
+void calculate_multi_thread();
+
+
+int main(){
+
+    //test_file_save();
+
+    //calculate_single_thread();
+    //calculate_multi_thread();
+}
+
 
 void piece_comparer_thread(PieceConnections pieces_logic[], PieceShape pieces_shapes[], atomic<int> *index){
     while (true) {
@@ -38,8 +53,8 @@ void piece_comparer_thread(PieceConnections pieces_logic[], PieceShape pieces_sh
                     );
                     if (compatibility > MINIMUM_COMPATIBILITY_PERCENTAGE) {
                         // add compatibility to the register;
-                        pieces_logic[piece_id].insert_matching_piece(other_piece_id, other_piece_side);
-                        pieces_logic[other_piece_id].insert_matching_piece(piece_id, piece_side);
+                        pieces_logic[piece_id].insert_matching_piece(other_piece_id,piece_side, other_piece_side);
+                        pieces_logic[other_piece_id].insert_matching_piece(piece_id,other_piece_side, piece_side);
                     }
                 }
             }
@@ -53,11 +68,6 @@ void piece_comparer_thread(PieceConnections pieces_logic[], PieceShape pieces_sh
 void calculate_single_thread();
 void calculate_multi_thread();
 
-
-int main(){
-    //calculate_single_thread();
-    calculate_multi_thread();
-}
 
 void calculate_single_thread(){
     // create array of piece shape
@@ -88,8 +98,8 @@ void calculate_single_thread(){
                     );
                     if(compatibility > MINIMUM_COMPATIBILITY_PERCENTAGE){
                         // add compatibility to the register;
-                        pieces_logic[piece_id].insert_matching_piece(other_piece_id,other_piece_side);
-                        pieces_logic[other_piece_id].insert_matching_piece(piece_id,piece_side);
+                        pieces_logic[piece_id].insert_matching_piece(other_piece_id,piece_side,other_piece_side);
+                        pieces_logic[other_piece_id].insert_matching_piece(piece_id,other_piece_side,piece_side);
                     }
                 }
             }
@@ -128,6 +138,7 @@ void calculate_multi_thread(){
 
     // find how many cores are available
     auto processor_count = std::thread::hardware_concurrency();
+    processor_count = 2;
 
     // make share the number is detected correctly
     assert(processor_count != 0);
