@@ -30,10 +30,13 @@ int main(){
 
     PuzzleGraph pg = PuzzleGraph("../../dataset/blue_500pcs/connections");
 
+    pg.calculate_distances();
 
+    cout << pg.exclude_some_connections() << endl;
 
+    cout << pg.pieces[55] << endl;
+    cout << pg.pieces[45] << endl;
 
-    cout << pg.pieces[44].to_string() << endl;
 
 
     //test_file_save();

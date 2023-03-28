@@ -50,6 +50,9 @@ public:
     // reset all the information about the readable pieces
     void reset_distance_metadata();
 
+    //remove a piece form the connected one
+    void remove_connection(SideNode* to_remove);
+
     // return a aet containing all the reachable pieces following a direction at a specified distance
     std::set<SideNode *> &get_reachable_pieces(int distance, Direction direction);
 
@@ -68,6 +71,9 @@ public:
     // convert the piece to a string for it to be printed
     std::string to_string();
 
+    // return the piece this side apartains to
+    PieceNode &get_original_piece();
+
 
 };
 /// a piece that is part of a graph that represent the entire puzzle
@@ -77,6 +83,8 @@ private:
     int piece_id;
     // array with all the sides the piece has
     SideNode sides[4];
+    // mutex for mt application
+    std::mutex mut;
 public:
     // zero parameter constructor
     PieceNode() = default;
@@ -88,7 +96,12 @@ public:
     std::string to_string();
     // return the id of the piece
     int get_id();
+    // move constructor (thad dose nto move the mutex)
+    PieceNode& operator=(PieceNode&& other);
+    // return the mutex of the piece
+    std::mutex& get_mutex();
 };
 
+std::ostream & operator<<(std::ostream& os, PieceNode & pn);
 
 #endif //PIECECLASS_PIECENODE_H

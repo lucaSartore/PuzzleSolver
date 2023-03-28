@@ -9,6 +9,7 @@ using namespace std;
 
 
 void SideNode::insert_as_reachable(std::set<SideNode *> &reachable_sides, int distance, Direction direction) {
+    const std::lock_guard<std::mutex> lock(piece->get_mutex());
 
     set<SideNode*>* to_edit = &get_reachable_pieces(distance,direction);
 
@@ -19,6 +20,8 @@ void SideNode::insert_as_reachable(std::set<SideNode *> &reachable_sides, int di
 }
 
 void SideNode::reset_distance_metadata() {
+    const std::lock_guard<std::mutex> lock(piece->get_mutex());
+
     right_connections[0] = set<SideNode*>();
     right_connections[1] = set<SideNode*>();
     left_connections[0] = set<SideNode*>();
@@ -88,6 +91,14 @@ std::string SideNode::to_string() {
     return s;
 }
 
+PieceNode &SideNode::get_original_piece() {
+    return *piece;
+}
+
+void SideNode::remove_connection(SideNode *to_remove) {
+    connected_sides.erase(to_remove);
+}
+
 SideNode &PieceNode::get_side(int index) {
     assert(index>=0);
     assert(index<4);
@@ -135,3 +146,23 @@ int PieceNode::get_id() {
     return piece_id;
 }
 
+PieceNode &PieceNode::operator=(PieceNode && other) {
+
+    const std::lock_guard<std::mutex> lock(mut);
+
+    piece_id = other.piece_id;
+
+    for(int i=0; i<4; i++){
+        sides [i] = std::move(other.sides[i]);
+    }
+    return *this;
+
+}
+
+std::mutex &PieceNode::get_mutex() {
+    return mut;
+}
+
+std::ostream & operator<<(std::ostream& os, PieceNode & pn){
+    return os << pn.to_string();
+}
