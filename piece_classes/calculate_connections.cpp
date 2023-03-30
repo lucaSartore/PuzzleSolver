@@ -17,7 +17,7 @@ using namespace std;
 using namespace std::chrono;
 
 #define NUMBER_OF_PIECES 500
-#define MINIMUM_COMPATIBILITY_PERCENTAGE 0.98
+#define MINIMUM_COMPATIBILITY_PERCENTAGE 0.985
 
 
 void piece_comparer_thread(PieceConnections pieces_logic[], PieceShape pieces_shapes[], atomic<int> *index);
@@ -26,8 +26,8 @@ void calculate_multi_thread(int number_of_threads = 0);
 void simplify_graph();
 
 int main(){
-    simplify_graph();
-    //calculate_single_thread(true);
+    //simplify_graph();
+    calculate_single_thread(true);
     //calculate_multi_thread(2);
 }
 
