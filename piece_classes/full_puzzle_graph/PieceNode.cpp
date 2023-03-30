@@ -24,13 +24,15 @@ void SideNode::reset_distance_metadata() {
 
     right_connections[0] = set<SideNode*>();
     right_connections[1] = set<SideNode*>();
+    right_connections[2] = set<SideNode*>();
     left_connections[0] = set<SideNode*>();
     left_connections[1] = set<SideNode*>();
+    left_connections[2] = set<SideNode*>();
 }
 
 std::set<SideNode *> &SideNode::get_reachable_pieces(int distance, Direction direction) {
     assert(distance >= 0);
-    assert(distance <= 2);
+    assert(distance <= 3);
     // find out witch array i need to edit
     set<SideNode*>* to_edit;
     if(distance == 0){
@@ -74,7 +76,7 @@ SideNode::SideNode(int side_index_, PieceNode *piece_) {
     piece = piece_;
     side_index = side_index_;
     connected_sides = set<SideNode*>();
-    for(int i=0; i<2; i++){
+    for(int i=0; i<3; i++){
         right_connections[i] = set<SideNode*>();
         left_connections[i] = set<SideNode*>();
     }

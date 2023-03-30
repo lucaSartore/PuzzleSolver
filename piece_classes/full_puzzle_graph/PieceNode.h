@@ -30,7 +30,7 @@ private:
     // this store the side that can be linked to this side, by doing only right  right turns, at the distance index -1
     // for example:
     // right_connections[0] represent a set of all the sides, that are readable by jumping 1 time
-    // right_connections[3] (if it existed) must contain the pointer to a Side of this piece, otherwise the path is not valid
+    // right_connections[2] must contain the pointer to a Side of this piece, otherwise the path is not valid
     //
     // this is used because:
     //      you are piece A, in your side 1 (named A1) you have a pointer to the side X adn side Y, you don't know which
@@ -38,9 +38,9 @@ private:
     //      repeat this 3 times and you end up in a side of yourself, you hava close the loop, and you know that X is at
     //      least possible a candidate piece. vice-versa, if is impossible for you to reach yourself by visiting 3 pieces
     //      and only turning right form Y, you can discard Y from the possible connections
-    std::set<SideNode *> right_connections[2];
+    std::set<SideNode *> right_connections[3];
     // same as above, but for left turns
-    std::set<SideNode *> left_connections[2];
+    std::set<SideNode *> left_connections[3];
 public:
     // insert into the side metadata a set of sides pointer that can be reachable form this side at a specified distance, following a specified direction
     // note that a distance of 0 means only 1 "hop" while other wise known as the set contained at `connected_sides`, or the pieces that

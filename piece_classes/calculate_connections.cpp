@@ -28,14 +28,37 @@ void calculate_multi_thread();
 int main(){
 
 
+    //PuzzleGraph pg = PuzzleGraph("../../dataset/tests/connections");
     PuzzleGraph pg = PuzzleGraph("../../dataset/blue_500pcs/connections");
+
 
     pg.calculate_distances();
 
-    cout << pg.exclude_some_connections() << endl;
+    for(int i=0; i<pg.number_of_pieces; i++){
+        cout << pg.pieces[i].to_string() << endl;
+    }
 
-    cout << pg.pieces[55] << endl;
-    cout << pg.pieces[45] << endl;
+    pg.exclude_some_connections();
+
+    for(int i=0; i<pg.number_of_pieces; i++){
+        cout << pg.pieces[i].to_string() << endl;
+    }
+
+    /*
+    SideNode* to_compare = &pg.pieces[0].get_side(1).get_side_to(LEFT);
+
+    auto possible_connections = pg.pieces[0].get_side(1).get_reachable_pieces(0,LEFT);
+
+    for(auto e: possible_connections){
+        bool condition = e->get_side_to(RIGHT).is_reachable(to_compare,2,RIGHT);
+        cout << "the connection with piece: " << e->get_original_piece().get_id() << " has condition: " << condition << endl;
+    }
+
+
+    for (auto e: pg.pieces[0].get_side(1).get_reachable_pieces(3,RIGHT)){
+        cout << "id: " << e->get_original_piece().get_id() << " condition: " << (to_compare == e) << endl;
+    }
+     */
 
 
 
@@ -43,7 +66,6 @@ int main(){
 
     //calculate_single_thread();
     //calculate_multi_thread();
-
 
 }
 

@@ -40,7 +40,7 @@ PuzzleGraph::~PuzzleGraph() {
 void PuzzleGraph::calculate_distances(bool use_multi_threading) {
 
     // need to calculate each distance one by one
-    for(int distance=0; distance<2; distance++){
+    for(int distance=0; distance<3; distance++){
         // analyzing pieces one by one
         for(int i=0; i<number_of_pieces; i++){
             cout << "distance: " << distance << "/2" << endl << "pieces: " << i << "/" << number_of_pieces << endl;
@@ -82,26 +82,45 @@ int PuzzleGraph::exclude_some_connections(bool use_multi_threading) {
         for(int side=0; side<4; side++){
             // the side i am analyzing
             SideNode* tested_side = &pieces[i].get_side(side);
-            // the side i need to connect to in order to verify a connection
-            SideNode* expected_side_to_reach = &tested_side->get_side_to(RIGHT);
-            // i can create a connection only if the other piece is not a side
-            if(!expected_side_to_reach->get_reachable_pieces(0, LEFT).empty()){
 
-                set<SideNode*> to_remove = set<SideNode*>();
+            // keeping the sides that are not connectable, and so they will be removed
+            set<SideNode*> to_remove = set<SideNode*>();
 
-                // need to test each connection individually
-                for(auto connection_to_test: tested_side->get_reachable_pieces(0,LEFT)){
+            // the side i need to connect to in order to verify a connection, by turning left and right
+            SideNode* expected_side_to_reach_turning_left = &tested_side->get_side_to(RIGHT);
+            SideNode* expected_side_to_reach_turning_right = &tested_side->get_side_to(LEFT);
 
+
+            // need to test each connection individually, this are the pieces that connect th the current piece,
+            // the idea here is that if you can't go back to the original piece from here tha side si wrong
+            for(auto possible_connection: tested_side->get_reachable_pieces(0, LEFT)){
+
+                // left turn (or counter clock wise)
+                // if the piece i want to reach has 0 connection is probably a side, and is impossible to compleate
+                // the circle
+                if(!expected_side_to_reach_turning_left->get_reachable_pieces(0,LEFT).empty()){
                     // if the side is not reachable, than i save it to be removed
-                    if(!connection_to_test->get_side_to(LEFT).is_reachable(expected_side_to_reach,2,LEFT)){
-                        to_remove.insert(connection_to_test);
+                    if(!possible_connection->get_side_to(LEFT).is_reachable(expected_side_to_reach_turning_left, 2, LEFT)){
+                        to_remove.insert(possible_connection);
                     }
                 }
-                for(auto to_remove_: to_remove){
-                    tested_side->remove_connection(to_remove_);
-                    excluded++;
+                // right turn (or clock wise)
+                if(!expected_side_to_reach_turning_right->get_reachable_pieces(0,LEFT).empty()){
+                    // if the side is not reachable, than i save it to be removed
+                    if(!possible_connection->get_side_to(RIGHT).is_reachable(expected_side_to_reach_turning_right, 2, RIGHT)){
+                        to_remove.insert(possible_connection);
+                    }
                 }
+
             }
+
+            // removing the connection that are not verified!
+            for(auto to_remove_: to_remove){
+                //to_remove_->remove_connection(tested_side);
+                tested_side->remove_connection(to_remove_);
+                excluded++;
+            }
+
         }
     }
     return excluded;
