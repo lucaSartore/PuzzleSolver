@@ -116,7 +116,7 @@ int PuzzleGraph::exclude_some_connections(bool use_multi_threading) {
 
             // removing the connection that are not verified!
             for(auto to_remove_: to_remove){
-                //to_remove_->remove_connection(tested_side);
+                to_remove_->remove_connection(tested_side);
                 tested_side->remove_connection(to_remove_);
                 excluded++;
             }

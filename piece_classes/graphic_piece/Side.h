@@ -23,7 +23,8 @@ private:
     int piece_side;
     // an enum that defines with kind of border this one si
     SideKind kind;
-
+    // keeps the length of the piece, this is useful because piece with different lenghts are not comperable
+    int side_lenght;
 public:
 
     // disable copy constructor, since all the pieces will be the same in all the program it make mor sense to use pointers

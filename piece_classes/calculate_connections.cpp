@@ -17,7 +17,7 @@ using namespace std;
 using namespace std::chrono;
 
 #define NUMBER_OF_PIECES 500
-#define MINIMUM_COMPATIBILITY_PERCENTAGE 0.985
+#define MINIMUM_COMPATIBILITY_PERCENTAGE 0.99
 
 
 void piece_comparer_thread(PieceConnections pieces_logic[], PieceShape pieces_shapes[], atomic<int> *index);
@@ -27,7 +27,7 @@ void simplify_graph();
 
 int main(){
     //simplify_graph();
-    calculate_single_thread(true);
+    calculate_single_thread();
     //calculate_multi_thread(2);
 }
 
@@ -63,8 +63,8 @@ void piece_comparer_thread(PieceConnections pieces_logic[], PieceShape pieces_sh
 
 
 void simplify_graph(){
-    PuzzleGraph pg = PuzzleGraph("../../dataset/tests/connections");
-    //PuzzleGraph pg = PuzzleGraph("../../dataset/blue_500pcs/connections");
+    //PuzzleGraph pg = PuzzleGraph("../../dataset/tests/connections");
+    PuzzleGraph pg = PuzzleGraph("../../dataset/blue_500pcs/connections");
 
     int excluded_pieces =1;
     while (excluded_pieces) {
@@ -101,6 +101,12 @@ void calculate_single_thread(bool debug){
     for(int piece_id=0; piece_id<NUMBER_OF_PIECES;piece_id++){
         cout << "done piece: " << piece_id << "/" << NUMBER_OF_PIECES << endl;
         for(int piece_side=0; piece_side<4; piece_side++){
+
+            // if this side is a border i don't need to compare it with others
+            if(pieces_shapes[piece_id].get_side(piece_side).get_kind() == BORDER){
+                continue;
+            }
+
             for(int other_piece_id=piece_id+1; other_piece_id<500;other_piece_id++){
                 for(int other_piece_side=0; other_piece_side<4; other_piece_side++){
 
@@ -121,6 +127,15 @@ void calculate_single_thread(bool debug){
                     }
                 }
             }
+
+            // debug: see with pieces get no connections
+            if(pieces_logic[piece_id].get_matching_piece_to_side(piece_side).empty()){
+                pieces_shapes[piece_id].get_side(piece_side).compare_to(
+                        pieces_shapes[0].get_side(0),
+                        true
+                );
+            }
+
         }
     }
 

@@ -2,6 +2,9 @@
 // Created by luca on 3/18/23.
 //
 
+// define the percentage of discrepancy that there could be for a piece to another in order fot them to be considered a mathc
+#define MAX_SIDE_LENGHT_ERROR 0.05
+
 #include "Side.h"
 #include "iostream"
 #include "util_piece.h"
@@ -46,6 +49,8 @@ Side::Side(Mat& shape, PieceShape* piece_, int piece_side_, Point p1, Point p2, 
     p1 = points_transformed[0];
     p2 = points_transformed[1];
     center = points_transformed[2];
+
+    side_lenght = p2.x-p1.x;
 
     // applying the threshold since the transformation has blurred the border
     border_shape = border_shape>127;
@@ -94,11 +99,19 @@ Side::Side(Mat& shape, PieceShape* piece_, int piece_side_, Point p1, Point p2, 
 float Side::compare_to(const Side &other,bool debug)const {
 
     // quick comp
-    if(!debug){
-        if(kind == other.kind){
+    if(!debug) {
+        if (kind == other.kind) {
             return 0;
         }
-        if(kind == SideKind::BORDER || other.kind == SideKind::BORDER){
+        if (kind == SideKind::BORDER || other.kind == SideKind::BORDER) {
+            return 0;
+        }
+
+        float lenght_proportion = (float) side_lenght / (float) other.side_lenght;
+        if (lenght_proportion > 1.0 + MAX_SIDE_LENGHT_ERROR) {
+            return 0;
+        }
+        if (lenght_proportion < 1.0 / (1.0 + MAX_SIDE_LENGHT_ERROR)) {
             return 0;
         }
     }
@@ -113,7 +126,7 @@ float Side::compare_to(const Side &other,bool debug)const {
     //Mat result_expanded;
     //dilate(result,result_expanded,kernel);
 
-    float compatibility = ((float)countNonZero(result)) / (Side::compare_res*Side::compare_res);
+    float compatibility = ((float)countNonZero(result)) / (float)(Side::compare_res*Side::compare_res);
 
     if(debug){
         std::string name = std::string("compatibility: ") + std::to_string(compatibility*100) + std::string("%");
