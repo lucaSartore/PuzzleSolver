@@ -3,12 +3,13 @@
 //
 
 #include <iostream>
-#include "grafic_piece/Side.h"
-#include "grafic_piece/PieceShape.h"
-#include "grafic_piece/util_piece.h"
+#include "graphic_piece/Side.h"
+#include "graphic_piece/PieceShape.h"
+#include "graphic_piece/util_piece.h"
 #include "logic_piece/PieceConnections.h"
 #include <chrono>
 #include <memory>
+#include "full_puzzle_graph/PuzzleGraph.h"
 #include <atomic>
 #include <thread>
 
@@ -16,7 +17,20 @@ using namespace std;
 using namespace std::chrono;
 
 #define NUMBER_OF_PIECES 500
-#define MINIMUM_COMPATIBILITY_PERCENTAGE 0.99
+#define MINIMUM_COMPATIBILITY_PERCENTAGE 0.985
+
+
+void piece_comparer_thread(PieceConnections pieces_logic[], PieceShape pieces_shapes[], atomic<int> *index);
+void calculate_single_thread(bool debug = false);
+void calculate_multi_thread(int number_of_threads = 0);
+void simplify_graph();
+
+int main(){
+    //simplify_graph();
+    calculate_single_thread(true);
+    //calculate_multi_thread(2);
+}
+
 
 void piece_comparer_thread(PieceConnections pieces_logic[], PieceShape pieces_shapes[], atomic<int> *index){
     while (true) {
@@ -38,8 +52,8 @@ void piece_comparer_thread(PieceConnections pieces_logic[], PieceShape pieces_sh
                     );
                     if (compatibility > MINIMUM_COMPATIBILITY_PERCENTAGE) {
                         // add compatibility to the register;
-                        pieces_logic[piece_id].insert_matching_piece(other_piece_id, other_piece_side);
-                        pieces_logic[other_piece_id].insert_matching_piece(piece_id, piece_side);
+                        pieces_logic[piece_id].insert_matching_piece(other_piece_id,piece_side, other_piece_side);
+                        pieces_logic[other_piece_id].insert_matching_piece(piece_id,other_piece_side, piece_side);
                     }
                 }
             }
@@ -48,18 +62,26 @@ void piece_comparer_thread(PieceConnections pieces_logic[], PieceShape pieces_sh
 }
 
 
+void simplify_graph(){
+    PuzzleGraph pg = PuzzleGraph("../../dataset/tests/connections");
+    //PuzzleGraph pg = PuzzleGraph("../../dataset/blue_500pcs/connections");
+
+    int excluded_pieces =1;
+    while (excluded_pieces) {
+        pg.calculate_distances();
+        excluded_pieces = pg.exclude_some_connections();
+        pg.reset_distances();
+    }
 
 
-void calculate_single_thread();
-void calculate_multi_thread();
+    for(int i=0; i<pg.number_of_pieces; i++){
+        cout << pg.pieces[i].to_string() << endl;
+    }
 
-
-int main(){
-    //calculate_single_thread();
-    calculate_multi_thread();
 }
 
-void calculate_single_thread(){
+
+void calculate_single_thread(bool debug){
     // create array of piece shape
     PieceShape::set_origin_path("../../dataset/blue_500pcs/divided");
     PieceShape pieces_shapes[NUMBER_OF_PIECES];
@@ -87,9 +109,15 @@ void calculate_single_thread(){
                             pieces_shapes[other_piece_id].get_side(other_piece_side)
                     );
                     if(compatibility > MINIMUM_COMPATIBILITY_PERCENTAGE){
+                        if(debug){
+                            pieces_shapes[piece_id].get_side(piece_side).compare_to(
+                                    pieces_shapes[other_piece_id].get_side(other_piece_side),
+                                    true
+                            );
+                        }
                         // add compatibility to the register;
-                        pieces_logic[piece_id].insert_matching_piece(other_piece_id,other_piece_side);
-                        pieces_logic[other_piece_id].insert_matching_piece(piece_id,piece_side);
+                        pieces_logic[piece_id].insert_matching_piece(other_piece_id,piece_side,other_piece_side);
+                        pieces_logic[other_piece_id].insert_matching_piece(piece_id,other_piece_side,piece_side);
                     }
                 }
             }
@@ -109,7 +137,7 @@ void calculate_single_thread(){
 }
 
 
-void calculate_multi_thread(){
+void calculate_multi_thread(int number_of_threads){
     // create array of piece shape
     PieceShape::set_origin_path("../../dataset/blue_500pcs/divided");
     PieceShape pieces_shapes[NUMBER_OF_PIECES];
@@ -126,8 +154,15 @@ void calculate_multi_thread(){
     // create a shared index
     atomic<int> index;
 
-    // find how many cores are available
-    auto processor_count = std::thread::hardware_concurrency();
+    unsigned  int processor_count;
+    if(number_of_threads == 0){
+        // find how many cores are available
+        processor_count = std::thread::hardware_concurrency();
+    }else{
+        processor_count = number_of_threads;
+    }
+
+
 
     // make share the number is detected correctly
     assert(processor_count != 0);

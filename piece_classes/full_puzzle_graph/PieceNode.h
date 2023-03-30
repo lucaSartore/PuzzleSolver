@@ -30,7 +30,7 @@ private:
     // this store the side that can be linked to this side, by doing only right  right turns, at the distance index -1
     // for example:
     // right_connections[0] represent a set of all the sides, that are readable by jumping 1 time
-    // right_connections[3] (if it existed) must contain the pointer to a Side of this piece, otherwise the path is not valid
+    // right_connections[2] must contain the pointer to a Side of this piece, otherwise the path is not valid
     //
     // this is used because:
     //      you are piece A, in your side 1 (named A1) you have a pointer to the side X adn side Y, you don't know which
@@ -48,7 +48,10 @@ public:
     void insert_as_reachable(std::set<SideNode *> &reachable_sides, int distance, Direction direction);
 
     // reset all the information about the readable pieces
-    void reset_distance_metadata();
+    void reset_distance();
+
+    //remove a piece form the connected one
+    void remove_connection(SideNode* to_remove);
 
     // return a aet containing all the reachable pieces following a direction at a specified distance
     std::set<SideNode *> &get_reachable_pieces(int distance, Direction direction);
@@ -65,6 +68,12 @@ public:
     // parameter constructor
     SideNode(int side_index_,PieceNode *piece_);
 
+    // convert the piece to a string for it to be printed
+    std::string to_string();
+
+    // return the piece this side apartains to
+    PieceNode &get_original_piece();
+
 
 };
 /// a piece that is part of a graph that represent the entire puzzle
@@ -74,6 +83,8 @@ private:
     int piece_id;
     // array with all the sides the piece has
     SideNode sides[4];
+    // mutex for mt application
+    std::mutex mut;
 public:
     // zero parameter constructor
     PieceNode() = default;
@@ -81,7 +92,18 @@ public:
     explicit PieceNode(PieceConnections & connections, PieceNode all_pieces[]);
     // return a side from a specified index
     SideNode &get_side(int index);
+    // convert the node to a string for printing
+    std::string to_string();
+    // return the id of the piece
+    int get_id();
+    // move constructor (thad dose nto move the mutex)
+    PieceNode& operator=(PieceNode&& other);
+    // return the mutex of the piece
+    std::mutex& get_mutex();
+    // reset all the distance memorized
+    void reset_distances();
 };
 
+std::ostream & operator<<(std::ostream& os, PieceNode & pn);
 
 #endif //PIECECLASS_PIECENODE_H
