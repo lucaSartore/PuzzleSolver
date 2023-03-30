@@ -17,56 +17,18 @@ using namespace std;
 using namespace std::chrono;
 
 #define NUMBER_OF_PIECES 500
-#define MINIMUM_COMPATIBILITY_PERCENTAGE 0.99
+#define MINIMUM_COMPATIBILITY_PERCENTAGE 0.98
 
 
 void piece_comparer_thread(PieceConnections pieces_logic[], PieceShape pieces_shapes[], atomic<int> *index);
-void calculate_single_thread();
-void calculate_multi_thread();
-
+void calculate_single_thread(bool debug = false);
+void calculate_multi_thread(int number_of_threads = 0);
+void simplify_graph();
 
 int main(){
-
-
-    //PuzzleGraph pg = PuzzleGraph("../../dataset/tests/connections");
-    PuzzleGraph pg = PuzzleGraph("../../dataset/blue_500pcs/connections");
-
-
-    pg.calculate_distances();
-
-    for(int i=0; i<pg.number_of_pieces; i++){
-        cout << pg.pieces[i].to_string() << endl;
-    }
-
-    pg.exclude_some_connections();
-
-    for(int i=0; i<pg.number_of_pieces; i++){
-        cout << pg.pieces[i].to_string() << endl;
-    }
-
-    /*
-    SideNode* to_compare = &pg.pieces[0].get_side(1).get_side_to(LEFT);
-
-    auto possible_connections = pg.pieces[0].get_side(1).get_reachable_pieces(0,LEFT);
-
-    for(auto e: possible_connections){
-        bool condition = e->get_side_to(RIGHT).is_reachable(to_compare,2,RIGHT);
-        cout << "the connection with piece: " << e->get_original_piece().get_id() << " has condition: " << condition << endl;
-    }
-
-
-    for (auto e: pg.pieces[0].get_side(1).get_reachable_pieces(3,RIGHT)){
-        cout << "id: " << e->get_original_piece().get_id() << " condition: " << (to_compare == e) << endl;
-    }
-     */
-
-
-
-    //test_file_save();
-
-    //calculate_single_thread();
-    //calculate_multi_thread();
-
+    simplify_graph();
+    //calculate_single_thread(true);
+    //calculate_multi_thread(2);
 }
 
 
@@ -100,13 +62,26 @@ void piece_comparer_thread(PieceConnections pieces_logic[], PieceShape pieces_sh
 }
 
 
+void simplify_graph(){
+    PuzzleGraph pg = PuzzleGraph("../../dataset/tests/connections");
+    //PuzzleGraph pg = PuzzleGraph("../../dataset/blue_500pcs/connections");
+
+    int excluded_pieces =1;
+    while (excluded_pieces) {
+        pg.calculate_distances();
+        excluded_pieces = pg.exclude_some_connections();
+        pg.reset_distances();
+    }
 
 
-void calculate_single_thread();
-void calculate_multi_thread();
+    for(int i=0; i<pg.number_of_pieces; i++){
+        cout << pg.pieces[i].to_string() << endl;
+    }
+
+}
 
 
-void calculate_single_thread(){
+void calculate_single_thread(bool debug){
     // create array of piece shape
     PieceShape::set_origin_path("../../dataset/blue_500pcs/divided");
     PieceShape pieces_shapes[NUMBER_OF_PIECES];
@@ -134,6 +109,12 @@ void calculate_single_thread(){
                             pieces_shapes[other_piece_id].get_side(other_piece_side)
                     );
                     if(compatibility > MINIMUM_COMPATIBILITY_PERCENTAGE){
+                        if(debug){
+                            pieces_shapes[piece_id].get_side(piece_side).compare_to(
+                                    pieces_shapes[other_piece_id].get_side(other_piece_side),
+                                    true
+                            );
+                        }
                         // add compatibility to the register;
                         pieces_logic[piece_id].insert_matching_piece(other_piece_id,piece_side,other_piece_side);
                         pieces_logic[other_piece_id].insert_matching_piece(piece_id,other_piece_side,piece_side);
@@ -156,7 +137,7 @@ void calculate_single_thread(){
 }
 
 
-void calculate_multi_thread(){
+void calculate_multi_thread(int number_of_threads){
     // create array of piece shape
     PieceShape::set_origin_path("../../dataset/blue_500pcs/divided");
     PieceShape pieces_shapes[NUMBER_OF_PIECES];
@@ -173,9 +154,15 @@ void calculate_multi_thread(){
     // create a shared index
     atomic<int> index;
 
-    // find how many cores are available
-    auto processor_count = std::thread::hardware_concurrency();
-    processor_count = 2;
+    unsigned  int processor_count;
+    if(number_of_threads == 0){
+        // find how many cores are available
+        processor_count = std::thread::hardware_concurrency();
+    }else{
+        processor_count = number_of_threads;
+    }
+
+
 
     // make share the number is detected correctly
     assert(processor_count != 0);

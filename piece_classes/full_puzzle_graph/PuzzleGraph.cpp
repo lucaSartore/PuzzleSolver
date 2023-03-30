@@ -40,7 +40,7 @@ PuzzleGraph::~PuzzleGraph() {
 void PuzzleGraph::calculate_distances(bool use_multi_threading) {
 
     // need to calculate each distance one by one
-    for(int distance=0; distance<3; distance++){
+    for(int distance=0; distance<2; distance++){
         // analyzing pieces one by one
         for(int i=0; i<number_of_pieces; i++){
             cout << "distance: " << distance << "/2" << endl << "pieces: " << i << "/" << number_of_pieces << endl;
@@ -124,4 +124,10 @@ int PuzzleGraph::exclude_some_connections(bool use_multi_threading) {
         }
     }
     return excluded;
+}
+
+void PuzzleGraph::reset_distances() {
+    for(int i=0; i<number_of_pieces; i++){
+        pieces[i].reset_distances();
+    }
 }

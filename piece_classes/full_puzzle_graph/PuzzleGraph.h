@@ -22,6 +22,8 @@ public:
     int exclude_some_connections(bool use_multi_threading = false);
     /// run an algorithm that find the distance form each connected piece following right or left direction
     void calculate_distances(bool use_multi_threading = false);
+    /// reset all the data about distances
+    void reset_distances();
     ~PuzzleGraph();
 };
 

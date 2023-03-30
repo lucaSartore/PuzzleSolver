@@ -19,20 +19,18 @@ void SideNode::insert_as_reachable(std::set<SideNode *> &reachable_sides, int di
     }
 }
 
-void SideNode::reset_distance_metadata() {
+void SideNode::reset_distance() {
     const std::lock_guard<std::mutex> lock(piece->get_mutex());
 
     right_connections[0] = set<SideNode*>();
     right_connections[1] = set<SideNode*>();
-    right_connections[2] = set<SideNode*>();
     left_connections[0] = set<SideNode*>();
     left_connections[1] = set<SideNode*>();
-    left_connections[2] = set<SideNode*>();
 }
 
 std::set<SideNode *> &SideNode::get_reachable_pieces(int distance, Direction direction) {
     assert(distance >= 0);
-    assert(distance <= 3);
+    assert(distance <= 2);
     // find out witch array i need to edit
     set<SideNode*>* to_edit;
     if(distance == 0){
@@ -76,7 +74,7 @@ SideNode::SideNode(int side_index_, PieceNode *piece_) {
     piece = piece_;
     side_index = side_index_;
     connected_sides = set<SideNode*>();
-    for(int i=0; i<3; i++){
+    for(int i=0; i<2; i++){
         right_connections[i] = set<SideNode*>();
         left_connections[i] = set<SideNode*>();
     }
@@ -167,4 +165,10 @@ std::mutex &PieceNode::get_mutex() {
 
 std::ostream & operator<<(std::ostream& os, PieceNode & pn){
     return os << pn.to_string();
+}
+
+void PieceNode::reset_distances() {
+    for(int side=0; side<4; side++){
+        sides[side].reset_distance();
+    }
 }

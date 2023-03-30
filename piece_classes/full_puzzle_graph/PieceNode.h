@@ -38,9 +38,9 @@ private:
     //      repeat this 3 times and you end up in a side of yourself, you hava close the loop, and you know that X is at
     //      least possible a candidate piece. vice-versa, if is impossible for you to reach yourself by visiting 3 pieces
     //      and only turning right form Y, you can discard Y from the possible connections
-    std::set<SideNode *> right_connections[3];
+    std::set<SideNode *> right_connections[2];
     // same as above, but for left turns
-    std::set<SideNode *> left_connections[3];
+    std::set<SideNode *> left_connections[2];
 public:
     // insert into the side metadata a set of sides pointer that can be reachable form this side at a specified distance, following a specified direction
     // note that a distance of 0 means only 1 "hop" while other wise known as the set contained at `connected_sides`, or the pieces that
@@ -48,7 +48,7 @@ public:
     void insert_as_reachable(std::set<SideNode *> &reachable_sides, int distance, Direction direction);
 
     // reset all the information about the readable pieces
-    void reset_distance_metadata();
+    void reset_distance();
 
     //remove a piece form the connected one
     void remove_connection(SideNode* to_remove);
@@ -100,6 +100,8 @@ public:
     PieceNode& operator=(PieceNode&& other);
     // return the mutex of the piece
     std::mutex& get_mutex();
+    // reset all the distance memorized
+    void reset_distances();
 };
 
 std::ostream & operator<<(std::ostream& os, PieceNode & pn);
