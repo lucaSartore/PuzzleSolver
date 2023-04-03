@@ -17,7 +17,7 @@ using namespace std;
 using namespace std::chrono;
 
 #define NUMBER_OF_PIECES 500
-#define MINIMUM_COMPATIBILITY_PERCENTAGE 0.99
+#define MINIMUM_COMPATIBILITY_PERCENTAGE 0.5
 
 
 void piece_comparer_thread(PieceConnections pieces_logic[], PieceShape pieces_shapes[], atomic<int> *index);
@@ -27,7 +27,7 @@ void simplify_graph();
 
 int main(){
     //simplify_graph();
-    calculate_single_thread();
+    calculate_single_thread(true);
     //calculate_multi_thread(2);
 }
 
@@ -99,7 +99,7 @@ void calculate_single_thread(bool debug){
 
     // compare all the pieces_shapes one by one, and save the results in the piece logic
     for(int piece_id=0; piece_id<NUMBER_OF_PIECES;piece_id++){
-        cout << "done piece: " << piece_id << "/" << NUMBER_OF_PIECES << endl;
+        //cout << "done piece: " << piece_id << "/" << NUMBER_OF_PIECES << endl;
         for(int piece_side=0; piece_side<4; piece_side++){
 
             // if this side is a border i don't need to compare it with others
@@ -130,10 +130,12 @@ void calculate_single_thread(bool debug){
 
             // debug: see with pieces get no connections
             if(pieces_logic[piece_id].get_matching_piece_to_side(piece_side).empty()){
-                pieces_shapes[piece_id].get_side(piece_side).compare_to(
-                        pieces_shapes[0].get_side(0),
+                cout << "not found match for piece " << piece_id << " with side " << piece_side << endl;
+                pieces_shapes[piece_id].show_debug(piece_side);
+                /*pieces_shapes[piece_id].get_side(piece_side).compare_to(
+                        pieces_shapes[80].get_side(1),
                         true
-                );
+                );*/
             }
 
         }

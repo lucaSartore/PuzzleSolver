@@ -3,12 +3,14 @@
 //
 
 // define the percentage of discrepancy that there could be for a piece to another in order fot them to be considered a mathc
-#define MAX_SIDE_LENGHT_ERROR 0.05
-
+#define MAX_SIDE_LENGHT_ERROR 0.1
+// side of the kernel that will be use to increase the thickness of the border
+#define BORDER_THICKNESS 22
 #include "Side.h"
 #include "iostream"
 #include "util_piece.h"
 #include "../full_puzzle_graph/PieceNode.h"
+#include "math.h"
 
 #include <algorithm>
 #include <opencv2/opencv.hpp>
@@ -84,12 +86,21 @@ Side::Side(Mat& shape, PieceShape* piece_, int piece_side_, Point p1, Point p2, 
         //std::cout << "border" << std::endl;
     }
 
+    // calculating making the kenny filter to the border
+    Mat canny_border;
+    Canny(border_shape,canny_border,50,200);
+
+    // eroding the border for better comparison
+    Mat kernel = Mat::ones(Size(BORDER_THICKNESS, BORDER_THICKNESS),CV_8U) == 1;
+    dilate(canny_border,border_shape,kernel);
+
     /*
     Mat temp;
     resize(border_shape,temp,Size(500,500) );
     imshow("new_side", temp);
     waitKey(0);
-    */
+     */
+
 
     // doto: add piece kind
 }
@@ -106,35 +117,36 @@ float Side::compare_to(const Side &other,bool debug)const {
         if (kind == SideKind::BORDER || other.kind == SideKind::BORDER) {
             return 0;
         }
-
+        /*
         float lenght_proportion = (float) side_lenght / (float) other.side_lenght;
         if (lenght_proportion > 1.0 + MAX_SIDE_LENGHT_ERROR) {
             return 0;
         }
         if (lenght_proportion < 1.0 / (1.0 + MAX_SIDE_LENGHT_ERROR)) {
             return 0;
-        }
+        }*/
     }
 
     Mat other_border_shape_rotated;
     rotate(other.border_shape, other_border_shape_rotated, ROTATE_180);
-    Mat result;
-    bitwise_xor(border_shape, other_border_shape_rotated,result);
+    Mat and_mask, or_mask;
+    bitwise_and(border_shape, other_border_shape_rotated, and_mask);
+    bitwise_or(border_shape, other_border_shape_rotated, or_mask);
 
-    // dilate the result to consider only wide gaps areas and not tiny borders
+    // dilate the and_mask to consider only wide gaps areas and not tiny borders
     //Mat kernel = Mat::zeros(Size(EROSION_SIZE,EROSION_SIZE),CV_8U) == 0;
     //Mat result_expanded;
-    //dilate(result,result_expanded,kernel);
+    //dilate(and_mask,result_expanded,kernel);
 
-    float compatibility = ((float)countNonZero(result)) / (float)(Side::compare_res*Side::compare_res);
+    float compatibility = ((float)countNonZero(and_mask)) / (float)countNonZero(or_mask);
 
     if(debug){
         std::string name = std::string("compatibility: ") + std::to_string(compatibility*100) + std::string("%");
         // create the colored image
         std::vector<cv::Mat> channels;
-        channels.push_back(cv::Mat::zeros(result.size(), CV_8U));
-        channels.push_back(cv::Mat::zeros(result.size(), CV_8U));
-        channels.push_back(cv::Mat::zeros(result.size(), CV_8U));
+        channels.push_back(cv::Mat::zeros(and_mask.size(), CV_8U));
+        channels.push_back(cv::Mat::zeros(and_mask.size(), CV_8U));
+        channels.push_back(cv::Mat::zeros(and_mask.size(), CV_8U));
 
         border_shape.copyTo(channels[2]); // set red channel where border_shape is white
         other_border_shape_rotated.copyTo(channels[0]); // set blue channel where other_border_shape_rotated is white

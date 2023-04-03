@@ -55,6 +55,22 @@ Side &PieceShape::get_side(int index) {
     return sides[index];
 }
 
-PieceShape::PieceShape() {}
+void PieceShape::show_debug(int side_to_highlight) {
+    Mat to_show;
+    cvtColor(piece,to_show,COLOR_GRAY2BGR);
+    for(int i=0; i<4; i++){
+        Scalar color;
+        if(side_to_highlight == i){
+            color = Scalar(0,255,0);
+        }else{
+            color = Scalar(0,0,255);
+        }
+        line(to_show,points[i],points[(i+1)%4],color,4);
+    }
+    Mat resized;
+    resize(to_show,resized,to_show.size()/2);
+    imshow("Debug", resized);
+    waitKey(0);
+}
 
 
