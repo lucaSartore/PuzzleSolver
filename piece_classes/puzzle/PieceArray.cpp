@@ -6,6 +6,7 @@
 
 using namespace std;
 
+
 PieceArray::PieceArray() {
     dim_x = 0;
     dim_y = 0;
