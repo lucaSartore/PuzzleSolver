@@ -5,11 +5,11 @@
 // define the percentage of discrepancy that there could be for a piece to another in order fot them to be considered a mathc
 #define MAX_SIDE_LENGHT_ERROR 0.1
 // side of the kernel that will be use to increase the thickness of the border
-#define BORDER_THICKNESS 22
 #include "Side.h"
 #include "iostream"
 #include "util_piece.h"
 #include "math.h"
+#include "Piece.h"
 
 #include <algorithm>
 #include <opencv2/opencv.hpp>
@@ -17,6 +17,8 @@ using namespace cv;
 
 int Side::compare_res = 1200;
 
+
+#define BORDER_THICKNESS (22*Side::compare_res/1200)
 Side::Side(Mat& shape, Piece* piece_, int piece_side_, Point p1, Point p2, Point center){
 
     assert(shape.type() == CV_8U);
@@ -102,7 +104,6 @@ Side::Side(Mat& shape, Piece* piece_, int piece_side_, Point p1, Point p2, Point
 }
 
 
-#define EROSION_SIZE (6*Side::compare_res/1200)
 float Side::compare_to(const Side &other,bool debug)const {
 
     // quick comp
@@ -128,11 +129,6 @@ float Side::compare_to(const Side &other,bool debug)const {
     Mat and_mask, or_mask;
     bitwise_and(border_shape, other_border_shape_rotated, and_mask);
     bitwise_or(border_shape, other_border_shape_rotated, or_mask);
-
-    // dilate the and_mask to consider only wide gaps areas and not tiny borders
-    //Mat kernel = Mat::zeros(Size(EROSION_SIZE,EROSION_SIZE),CV_8U) == 0;
-    //Mat result_expanded;
-    //dilate(and_mask,result_expanded,kernel);
 
     float compatibility = ((float)countNonZero(and_mask)) / (float)countNonZero(or_mask);
 
