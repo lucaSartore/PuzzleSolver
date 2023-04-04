@@ -9,7 +9,6 @@
 #include "Side.h"
 #include "iostream"
 #include "util_piece.h"
-#include "../full_puzzle_graph/PieceNode.h"
 #include "math.h"
 
 #include <algorithm>
@@ -18,7 +17,7 @@ using namespace cv;
 
 int Side::compare_res = 1200;
 
-Side::Side(Mat& shape, PieceShape* piece_, int piece_side_, Point p1, Point p2, Point center){
+Side::Side(Mat& shape, Piece* piece_, int piece_side_, Point p1, Point p2, Point center){
 
     assert(shape.type() == CV_8U);
 
@@ -100,9 +99,6 @@ Side::Side(Mat& shape, PieceShape* piece_, int piece_side_, Point p1, Point p2, 
     imshow("new_side", temp);
     waitKey(0);
      */
-
-
-    // doto: add piece kind
 }
 
 
@@ -174,7 +170,7 @@ SideKind Side::get_kind() {
     return kind;
 }
 
-PieceShape &Side::get_piece() {
+Piece &Side::get_piece() {
     return *piece;
 }
 
