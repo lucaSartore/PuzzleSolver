@@ -16,5 +16,12 @@ add_executable(
         piece/util_piece.cpp
         piece/util_piece.h
 
+        puzzle/PieceHolder.cpp
+        puzzle/PieceHolder.h
+        puzzle/Puzzle.cpp
+        puzzle/Puzzle.h
+        puzzle/PieceArray.cpp
+        puzzle/PieceArray.h
+
 )
 target_link_libraries( PieceClass ${OpenCV_LIBS} )

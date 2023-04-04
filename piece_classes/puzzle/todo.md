@@ -1,0 +1,4 @@
+ - make the puzzle array class capable of growing and shrinking dynamically
+ - insert the other kind of pieces and side (side, angle, outside puzzle, and unknown)
+ - create the Piece holder class
+ - 
