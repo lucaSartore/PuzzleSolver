@@ -5,7 +5,7 @@
 #ifndef PIECECLASS_PIECEARRAY_H
 #define PIECECLASS_PIECEARRAY_H
 
-#include "PieceHolder.h"
+#include "Holder.h"
 #include "vector"
 
 
@@ -26,16 +26,16 @@ class PieceArray {
 private:
     int dim_x;
     int dim_y;
-    std::vector<std::vector<PieceHolder>> pieces;
+    std::vector<std::vector<Holder*>> pieces;
 public:
     /// create an empty piece array
     PieceArray();
     /// return a piece_holder in one of the many position
-    PieceHolder& get(int x, int y);
+    Holder& get(int x, int y);
     /// set a piece_holder in one position
-    void set(int x, int y, PieceHolder to_be_set);
+    void set(int x, int y, Holder to_be_set);
     /// remove a piece form the puzzle
-    void reove(int x, int y);
+    void remove(int x, int y);
 };
 
 

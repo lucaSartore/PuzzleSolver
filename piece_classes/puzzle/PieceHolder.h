@@ -5,8 +5,9 @@
 #ifndef PIECECLASS_PIECEHOLDER_H
 #define PIECECLASS_PIECEHOLDER_H
 
+#include "Holder.h"
 
-class PieceHolder {
+class PieceHolder: public Holder{
 
 };
 
