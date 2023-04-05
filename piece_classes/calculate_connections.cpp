@@ -36,11 +36,23 @@ int main(){
 
     cout << array << endl;
 
-    Holder* h = new PieceHolder();
-    cout << h->get_debug_view() << endl;
-    array.set(3,1,*h);
-    delete h;
+    auto h = shared_ptr<Holder>(new PieceHolder());
+    array.set(3,1,h);
 
+    cout << array << endl;
+
+    array.grow_x();
+    array.grow_y();
+
+    cout << array << endl;
+
+    array.un_grow_x();
+    cout << array << endl;
+
+    array.un_grow_y();
+    cout << array << endl;
+
+    array.remove(3,1);
     cout << array << endl;
 
 

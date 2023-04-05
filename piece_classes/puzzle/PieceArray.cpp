@@ -5,17 +5,18 @@
 #include "PieceArray.h"
 #include "stdexcept"
 #include "UnknownHolder.h"
+#include <memory>
 using namespace std;
 
 
 PieceArray::PieceArray() {
     dim_x = 1;
     dim_y = 1;
-    pieces = vector<vector<Holder*>>();
+    pieces = vector<vector<shared_ptr<Holder>>>();
 
     // start with a 1*1 array with a null ptr inside
-    auto one_dim = vector<Holder*>();
-    one_dim.push_back(new UnknownHolder());
+    auto one_dim = vector<shared_ptr<Holder>>();
+    one_dim.push_back(shared_ptr<Holder>(new UnknownHolder()));
     pieces.push_back(one_dim);
 }
 
@@ -24,7 +25,7 @@ const Holder &PieceArray::get(int x, int y) const{
     check_indexes(x,y);
 
     // get the value
-    Holder* to_return = pieces[x][y];
+    shared_ptr<Holder> to_return = pieces[x][y];
     if(to_return == nullptr){
         cerr << "index at X: " << x << " y: " << y << " is null ptr" << endl;
         throw std::runtime_error("specified index is null ptr");
@@ -32,24 +33,18 @@ const Holder &PieceArray::get(int x, int y) const{
     return *to_return;
 }
 
-void PieceArray::set(int x, int y, Holder &to_be_set) {
+void PieceArray::set(int x, int y, std::shared_ptr<Holder> to_be_set) {
     // check if in range
     check_indexes(x,y);
-    pieces[x][y] = new Holder(to_be_set);
+    pieces[x][y] = to_be_set;
 }
 
 void PieceArray::remove(int x, int y) {
     // check if in range
     check_indexes(x,y);
 
-    // get the value to remove
-    Holder* to_remove = pieces[x][y];
-
-    // free the memory
-    delete to_remove;
-
     // insert a new unknown value
-    pieces[x][y] = new UnknownHolder();
+    pieces[x][y] = shared_ptr<Holder>(new UnknownHolder());
 }
 
 void PieceArray::check_indexes(int x, int y) const {
@@ -61,9 +56,9 @@ void PieceArray::check_indexes(int x, int y) const {
 }
 
 void PieceArray::grow_x() {
-    auto new_colon = vector<Holder*>();
+    auto new_colon = vector<shared_ptr<Holder>>();
     for(int i=0; i<dim_y; i++){
-        new_colon.push_back(new UnknownHolder());
+        new_colon.push_back(shared_ptr<Holder>(new UnknownHolder()));
     }
     pieces.push_back(new_colon);
     dim_x++;
@@ -71,7 +66,7 @@ void PieceArray::grow_x() {
 
 void PieceArray::grow_y() {
     for(int i=0; i<dim_x; i++){
-        pieces[i].push_back(new UnknownHolder());
+        pieces[i].push_back(shared_ptr<Holder>(new UnknownHolder()));
     }
     dim_y++;
 }
@@ -82,6 +77,22 @@ int PieceArray::get_dim_x() const{
 
 int PieceArray::get_dim_y() const  {
     return dim_y;
+}
+
+void PieceArray::un_grow_x() {
+    if(dim_x != 0){
+        pieces.pop_back();
+        dim_x--;
+    }
+}
+
+void PieceArray::un_grow_y() {
+    if(dim_y != 0){
+        for(int i=0; i<dim_x; i++){
+            pieces[i].pop_back();
+        }
+        dim_y--;
+    }
 }
 
 std::ostream& operator<<(std::ostream& os, const PieceArray& pa){

@@ -8,6 +8,7 @@
 #include "Holder.h"
 #include "vector"
 #include <iostream>
+#include <memory>
 
 
 
@@ -27,7 +28,7 @@ class PieceArray {
 private:
     int dim_x;
     int dim_y;
-    std::vector<std::vector<Holder*>> pieces;
+    std::vector<std::vector<std::shared_ptr<Holder>>> pieces;
     void check_indexes(int x, int y) const;
 public:
     /// returns the x dimension of the 2d array
@@ -39,7 +40,7 @@ public:
     /// return a piece_holder in one of the many position
     const Holder& get(int x, int y) const;
     /// set a piece_holder in one position
-    void set(int x, int y, Holder &to_be_set);
+    void set(int x, int y, std::shared_ptr<Holder> to_be_set);
     /// remove a piece form the puzzle
     void remove(int x, int y);
     /// grow the array by 1 in the X dimension
