@@ -9,16 +9,14 @@
 #include <iostream>
 #include <opencv2/opencv.hpp>
 
-using namespace cv;
-using namespace std;
 
 class Piece {
 private:
     // path where you can find the images saved
-    static string origin_path;
+    static std::string origin_path;
     Side sides[4];
-    Point points[4];
-    Mat piece;
+    cv::Point points[4];
+    cv::Mat piece;
     int id;
 public:
     // default constructor
@@ -28,9 +26,9 @@ public:
     // crete a piece with the given id from the origin path that has been chosen with `set_origin_path`
     Piece(int piece_id);
     // create a piece with the given id, form the specified path
-    Piece(int piece_id, string path);
+    Piece(int piece_id, std::string path);
     // set the origin path that will be used by the one parameter constructor
-    static void set_origin_path(string path);
+    static void set_origin_path(std::string path);
     // get the desired side
     Side &get_side(int index);
     // show the image with the corner to dbug

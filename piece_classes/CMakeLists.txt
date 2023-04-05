@@ -22,10 +22,11 @@ add_executable(
         puzzle/PieceHolder.cpp
         puzzle/PieceHolder.h
 
-        puzzle/PieceHolder.h
-
+        puzzle/UnknownHolder.h
         puzzle/UnknownHolder.cpp
-        puzzle/PieceHolder.h
+
+        puzzle/OutsideHolder.h
+        puzzle/OutsideHolder.cpp
 
         puzzle/Puzzle.cpp
         puzzle/Puzzle.h

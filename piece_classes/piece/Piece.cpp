@@ -4,6 +4,9 @@
 #include <fstream>
 #include <utility>
 
+using namespace std;
+using namespace cv;
+
 string Piece::origin_path = "";
 
 Piece::Piece(int piece_id, string path) {

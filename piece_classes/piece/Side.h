@@ -5,7 +5,7 @@
 #define PUZZLE_SOLVER_CORNER_H
 
 #include <opencv2/opencv.hpp>
-using namespace cv;
+
 
 class Piece;
 
@@ -16,7 +16,7 @@ private:
     // the resolution if the comparison mask, if has to be about equal to the PPI of the image
     static int compare_res;
     // a image containing the shape of the border ready compared it with others
-    Mat border_shape;
+    cv::Mat border_shape;
     // pointer to the original piece
     Piece* piece;
     // an integer referring on witch side the of the original piece this border appear to
@@ -32,7 +32,7 @@ public:
 
     Side();
     // constructor
-    Side(Mat& piece_mask, Piece* piece_, int piece_side_, Point p1, Point p2, Point center);
+    Side(cv::Mat& piece_mask, Piece* piece_, int piece_side_, cv::Point p1, cv::Point p2, cv::Point center);
 
     // a comparing function that returns a percentage thad indicate how match the 2 pieces are comparable
     float compare_to(const Side &other, bool debug = false)const ;

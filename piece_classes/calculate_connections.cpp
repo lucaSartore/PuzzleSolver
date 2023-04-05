@@ -11,7 +11,7 @@
 #include <thread>
 #include "puzzle/PieceArray.h"
 #include "puzzle/PieceHolder.h"
-
+#include "puzzle/OutsideHolder.h"
 
 using namespace std;
 using namespace std::chrono;
@@ -36,7 +36,7 @@ int main(){
 
     cout << array << endl;
 
-    auto h = shared_ptr<Holder>(new PieceHolder());
+    auto h = shared_ptr<Holder>(new OutsideHolder());
     array.set(3,1,h);
 
     cout << array << endl;
