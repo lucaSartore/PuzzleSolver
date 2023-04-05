@@ -22,7 +22,6 @@ add_executable(
         puzzle/PieceHolder.cpp
         puzzle/PieceHolder.h
 
-        puzzle/OutsideHolder.cpp
         puzzle/PieceHolder.h
 
         puzzle/UnknownHolder.cpp

@@ -27,15 +27,25 @@ private:
     int dim_x;
     int dim_y;
     std::vector<std::vector<Holder*>> pieces;
+    void check_indexes(int x, int y) const;
 public:
     /// create an empty piece array
     PieceArray();
     /// return a piece_holder in one of the many position
     Holder& get(int x, int y);
     /// set a piece_holder in one position
-    void set(int x, int y, Holder to_be_set);
+    void set(int x, int y, Holder &to_be_set);
     /// remove a piece form the puzzle
     void remove(int x, int y);
+    /// grow the array by 1 in the X dimension
+    void grow_x();
+    /// grow the array by 1 in the Y dimension
+    void grow_y();
+    /// un grow the array by 1 in the X dimension
+    void un_grow_x();
+    /// un grow the array by 1 in the Y dimension
+    void un_grow_y();
+
 };
 
 
