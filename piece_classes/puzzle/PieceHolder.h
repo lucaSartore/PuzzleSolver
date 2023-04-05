@@ -8,7 +8,10 @@
 #include "Holder.h"
 
 class PieceHolder: public Holder{
-
+public:
+    PieceHolder() = default;
+    virtual ~PieceHolder() = default;
+    virtual char get_debug_view() const;
 };
 
 

@@ -10,6 +10,7 @@ class Holder {
 public:
     Holder() = default;
     virtual ~Holder() = default;
+    virtual char get_debug_view() const;
 };
 
 

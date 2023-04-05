@@ -3,3 +3,8 @@
 //
 
 #include "UnknownHolder.h"
+
+char UnknownHolder::get_debug_view() const{
+    return 'U';
+}
+

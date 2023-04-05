@@ -3,3 +3,7 @@
 //
 
 #include "Holder.h"
+
+char Holder::get_debug_view() const{
+    return 'H';
+}

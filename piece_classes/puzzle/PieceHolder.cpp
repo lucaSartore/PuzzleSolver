@@ -3,3 +3,9 @@
 //
 
 #include "PieceHolder.h"
+
+
+
+char PieceHolder::get_debug_view() const{
+    return 'P';
+}

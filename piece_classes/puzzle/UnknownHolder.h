@@ -8,7 +8,10 @@
 #include "Holder.h"
 
 class UnknownHolder: public Holder{
-
+public:
+    UnknownHolder() = default;
+    virtual ~UnknownHolder() = default;
+    virtual char get_debug_view() const;
 };
 
 

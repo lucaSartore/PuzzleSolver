@@ -7,6 +7,7 @@
 
 #include "Holder.h"
 #include "vector"
+#include <iostream>
 
 
 
@@ -29,10 +30,14 @@ private:
     std::vector<std::vector<Holder*>> pieces;
     void check_indexes(int x, int y) const;
 public:
+    /// returns the x dimension of the 2d array
+    int get_dim_x() const;
+    /// returns the y dimension of the 2d array
+    int get_dim_y() const;
     /// create an empty piece array
     PieceArray();
     /// return a piece_holder in one of the many position
-    Holder& get(int x, int y);
+    const Holder& get(int x, int y) const;
     /// set a piece_holder in one position
     void set(int x, int y, Holder &to_be_set);
     /// remove a piece form the puzzle
@@ -47,6 +52,10 @@ public:
     void un_grow_y();
 
 };
+
+
+std::ostream& operator<<(std::ostream& os, const PieceArray& pa);
+
 
 
 #endif //PIECECLASS_PIECEARRAY_H
