@@ -23,12 +23,12 @@ using namespace std::chrono;
 
 int main(){
 
-    Direction directions[] = {UP,DOWN,RIGHT,LEFT};
-    for(auto direction: directions){
-        cout << "-" << direction << "=" << (-direction) << endl;
-    }
 
-    return 0;
+
+
+
+
+    /*
     PieceArray array = PieceArray();
 
     cout << array << endl;
@@ -61,7 +61,6 @@ int main(){
     cout << array << endl;
 
 
-    /*
     Piece::set_origin_path("../../dataset/blue_500pcs/divided");
     Piece pieces[NUMBER_OF_PIECES];
 
@@ -70,3 +69,4 @@ int main(){
         pieces[i] = Piece(i);
     }*/
 }
+

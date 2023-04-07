@@ -5,11 +5,16 @@
 #include "PieceArray.h"
 #include "stdexcept"
 #include "UnknownHolder.h"
+#include "OutsideHolder.h"
 #include <memory>
 using namespace std;
 
 
 PieceArray::PieceArray() {
+
+    // create the outside holder
+    outside_tile = new OutsideHolder();
+
     dim_x = 1;
     dim_y = 1;
     pieces = vector<vector<shared_ptr<Holder>>>();
@@ -21,8 +26,34 @@ PieceArray::PieceArray() {
 }
 
 const Holder &PieceArray::get(int x, int y) const{
+
+
+
     // check if in range
-    check_indexes(x,y);
+    try{
+        check_indexes(x,y);
+    }catch (...){
+        // if they are outside, but by one border at most, i return a border, otherwise is an error
+        try{
+            check_indexes(x-1,y);
+            return *outside_tile;
+        }catch(...){}
+        try{
+            check_indexes(x+1,y);
+            return *outside_tile;
+        }catch(...){}
+        try{
+            check_indexes(x,y-1);
+            return *outside_tile;
+        }catch(...){}
+        try{
+            check_indexes(x,y+1);
+            return *outside_tile;
+        }catch(...){}
+        // if none of them succeed, i throw the normal error
+        check_indexes(x,y);
+    }
+
 
     // get the value
     shared_ptr<Holder> to_return = pieces[x][y];
@@ -93,6 +124,14 @@ void PieceArray::un_grow_y() {
         }
         dim_y--;
     }
+}
+
+PieceArray::~PieceArray() {
+    delete outside_tile;
+}
+
+cv::Mat PieceArray::get_image() {
+    return cv::Mat();
 }
 
 std::ostream& operator<<(std::ostream& os, const PieceArray& pa){

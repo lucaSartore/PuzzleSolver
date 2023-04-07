@@ -63,10 +63,30 @@ float PieceHolder::check_compatibility(Holder *up, Holder *down, Holder *left, H
 }
 
 Side *PieceHolder::get_side(Direction direction) {
-    return Holder::get_side(direction);
+    int offset;
+    switch (direction) {
+        case UP:
+            offset=0;
+            break;
+        case RIGHT:
+            offset=1;
+            break;
+        case DOWN:
+            offset=2;
+            break;
+        case LEFT:
+            offset=3;
+            break;
+        default:
+            throw std::runtime_error("unknown direction");
+    }
+    return &piece->get_side((orientation+offset)%4);
 }
 
 PieceHolder::PieceHolder(Piece *piece_, int orientation_) {
+    assert(piece!= nullptr);
+    assert(orientation_>=0 && orientation_<4);
+
     piece = piece_;
     orientation = orientation_;
 }

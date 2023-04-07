@@ -13,13 +13,13 @@ private:
     int orientation;
 public:
     PieceHolder(Piece *piece_, int orientation_);
-    virtual ~PieceHolder() = default;
-    virtual char get_debug_view() const;
+    ~PieceHolder() override = default;
+    char get_debug_view() const override;
     /// return the compatibility of this piece with the others
-    virtual float check_compatibility(Holder* up, Holder* down, Holder* left, Holder* right);
+    float check_compatibility(Holder* up, Holder* down, Holder* left, Holder* right) override;
     /// return the side on the specified direction,
     /// it returns null ptr if the holder is an unknown holder
-    virtual Side* get_side(Direction direction);
+    Side* get_side(Direction direction) override;
 };
 
 

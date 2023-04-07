@@ -7,6 +7,8 @@
 
 #include "../piece/Piece.h"
 #include "../piece/Side.h"
+#include <opencv2/opencv.hpp>
+
 
 /// the possible directions in the puzzle array
 typedef enum Direction{UP, LEFT,DOWN, RIGHT} Direction;
@@ -28,6 +30,7 @@ public:
     /// return the side on the specified direction,
     /// it returns null ptr if the holder is an unknown holder
     virtual Side* get_side(Direction direction);
+
     Holder() = default;
     virtual ~Holder() = default;
     virtual char get_debug_view() const;

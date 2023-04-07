@@ -1,7 +1,3 @@
-//
-// Created by luca on 4/5/23.
-//
-
 #ifndef PIECECLASS_OUTSIDEHOLDER_H
 #define PIECECLASS_OUTSIDEHOLDER_H
 
@@ -11,8 +7,8 @@ class OutsideHolder: public Holder{
 public:
     char get_debug_view() const override;
     /// say if this holder is an outside holder or not
-    virtual bool is_outside();
-    OutsideHolder();
+    bool is_outside() override;
+    OutsideHolder() = default;
 };
 
 

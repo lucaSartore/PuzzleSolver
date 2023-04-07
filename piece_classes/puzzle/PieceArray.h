@@ -9,7 +9,7 @@
 #include "vector"
 #include <iostream>
 #include <memory>
-
+#include <opencv2/opencv.hpp>
 
 
 /*
@@ -26,6 +26,7 @@
 
 class PieceArray {
 private:
+    Holder* outside_tile;
     int dim_x;
     int dim_y;
     std::vector<std::vector<std::shared_ptr<Holder>>> pieces;
@@ -37,6 +38,8 @@ public:
     int get_dim_y() const;
     /// create an empty piece array
     PieceArray();
+    /// destructor
+    ~PieceArray();
     /// return a piece_holder in one of the many position
     const Holder& get(int x, int y) const;
     /// set a piece_holder in one position
@@ -51,7 +54,8 @@ public:
     void un_grow_x();
     /// un grow the array by 1 in the Y dimension
     void un_grow_y();
-
+    /// return the image of the matrix of puzzle pieces
+    cv::Mat get_image();
 };
 
 
