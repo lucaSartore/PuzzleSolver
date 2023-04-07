@@ -9,12 +9,12 @@ using namespace cv;
 // on my 5700u laptop this function can process around 110 images/minute
 int main(){
 
-    int number_of_pieces;
-    number_of_pieces = split_pieces_into_single_images("../blue_500pcs/raw","../blue_500pcs/divided",1200, false);
+    int number_of_pieces = 500;
+    //number_of_pieces = split_pieces_into_single_images("../blue_500pcs/raw","../blue_500pcs/divided",1200, true);
 
     //cout << "i have found " << number_of_pieces << " puzzle pieces" << endl;
 
-    do_pre_processing("../blue_500pcs/divided",number_of_pieces, 1200, true, false);
+    do_pre_processing("../blue_500pcs/divided",number_of_pieces, 1200, false, true);
 
     cout << "preprocessing finished" << endl;
 

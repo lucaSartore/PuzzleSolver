@@ -9,6 +9,7 @@
 #include <memory>
 #include <atomic>
 #include <thread>
+#include "puzzle/Holder.h"
 #include "puzzle/PieceArray.h"
 #include "puzzle/PieceHolder.h"
 #include "puzzle/OutsideHolder.h"
@@ -20,10 +21,14 @@ using namespace std::chrono;
 #define MINIMUM_COMPATIBILITY_PERCENTAGE 0.5
 
 
-
 int main(){
 
+    Direction directions[] = {UP,DOWN,RIGHT,LEFT};
+    for(auto direction: directions){
+        cout << "-" << direction << "=" << (-direction) << endl;
+    }
 
+    return 0;
     PieceArray array = PieceArray();
 
     cout << array << endl;

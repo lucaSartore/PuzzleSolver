@@ -23,3 +23,32 @@ Side *Holder::get_side(Direction direction) {
 bool Holder::is_outside() {
     return false;
 }
+
+Direction operator-(Direction direction){
+    switch (direction) {
+        case UP:
+            return DOWN;
+        case DOWN:
+            return UP;
+        case RIGHT:
+            return LEFT;
+        case LEFT:
+            return RIGHT;
+        default:
+            throw std::invalid_argument("unknown direction");
+    }
+}
+std::ostream& operator<<(std::ostream & os, Direction direction){
+    switch (direction) {
+        case UP:
+            return os << "UP";
+        case DOWN:
+            return os << "DOWN";
+        case RIGHT:
+            return os << "RIGHT";
+        case LEFT:
+            return os << "LEFT";
+        default:
+            throw std::invalid_argument("unknown direction");
+    }
+}

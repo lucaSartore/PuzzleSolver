@@ -9,8 +9,12 @@
 #include "../piece/Side.h"
 
 /// the possible directions in the puzzle array
-typedef enum Direction{UP, DOWN, LEFT, RIGHT} Direction;
+typedef enum Direction{UP, LEFT,DOWN, RIGHT} Direction;
 
+/// the minus sign is used to find the opposite direction to another
+/// for examole -UP == DOWN, -LEFT == RIGHT, and so on
+Direction operator-(Direction direction);
+std::ostream& operator<<(std::ostream & os, Direction direction);
 
 
 class Holder {

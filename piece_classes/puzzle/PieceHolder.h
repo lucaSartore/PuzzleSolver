@@ -9,10 +9,10 @@
 
 class PieceHolder: public Holder{
 private:
-    Piece piece;
+    Piece* piece;
     int orientation;
 public:
-    PieceHolder(Piece &&piece_, int orientation_);
+    PieceHolder(Piece *piece_, int orientation_);
     virtual ~PieceHolder() = default;
     virtual char get_debug_view() const;
     /// return the compatibility of this piece with the others
