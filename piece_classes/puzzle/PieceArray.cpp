@@ -130,8 +130,8 @@ PieceArray::~PieceArray() {
     delete outside_tile;
 }
 
-cv::Mat PieceArray::get_image() {
-    return cv::Mat();
+cv::Mat PieceArray::get_image() const {
+    return image.clone();
 }
 
 std::ostream& operator<<(std::ostream& os, const PieceArray& pa){

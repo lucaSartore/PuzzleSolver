@@ -91,3 +91,33 @@ PieceHolder::PieceHolder(Piece *piece_, int orientation_) {
     orientation = orientation_;
 }
 
+bool PieceHolder::is_a_piece() {
+    return true;
+}
+
+cv::Mat PieceHolder::get_image() {
+    return piece->get_image();
+}
+
+cv::Point PieceHolder::get_side_center(Direction direction) {
+    int offset;
+    switch (direction) {
+        case UP:
+            offset=0;
+            break;
+        case RIGHT:
+            offset=1;
+            break;
+        case DOWN:
+            offset=2;
+            break;
+        case LEFT:
+            offset=3;
+            break;
+        default:
+            throw std::runtime_error("unknown direction");
+    }
+    cv::Point p1 = piece->get_point((orientation+offset)%4);
+    cv::Point p2 = piece->get_point((orientation+offset+1)%4);
+    return (p1+p2)/2;
+}

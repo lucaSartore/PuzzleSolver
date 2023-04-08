@@ -25,6 +25,8 @@ public:
     virtual bool is_unknown();
     /// say if this holder is an outside holder or not
     virtual bool is_outside();
+    /// say if this holder is a piece holder or not
+    virtual bool is_a_piece();
     /// return the compatibility of this piece with the others
     virtual float check_compatibility(Holder* up, Holder* down, Holder* left, Holder* right);
     /// return the side on the specified direction,

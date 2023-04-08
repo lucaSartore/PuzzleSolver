@@ -26,6 +26,7 @@
 
 class PieceArray {
 private:
+    cv::Mat image;
     Holder* outside_tile;
     int dim_x;
     int dim_y;
@@ -55,7 +56,7 @@ public:
     /// un grow the array by 1 in the Y dimension
     void un_grow_y();
     /// return the image of the matrix of puzzle pieces
-    cv::Mat get_image();
+    cv::Mat get_image() const;
 };
 
 

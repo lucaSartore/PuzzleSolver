@@ -15,11 +15,18 @@ public:
     PieceHolder(Piece *piece_, int orientation_);
     ~PieceHolder() override = default;
     char get_debug_view() const override;
+    /// say if this holder is a piece holder or not
+    bool is_a_piece() override;
     /// return the compatibility of this piece with the others
     float check_compatibility(Holder* up, Holder* down, Holder* left, Holder* right) override;
     /// return the side on the specified direction,
     /// it returns null ptr if the holder is an unknown holder
     Side* get_side(Direction direction) override;
+    /// return the image held in this holder
+    virtual cv::Mat get_image();
+    /// return the coordinates (relative to the image obtained with `get_image`) of the center
+    /// of the side at the specified direction
+    virtual cv::Point get_side_center(Direction direction);
 };
 
 

@@ -76,4 +76,14 @@ void Piece::show_debug(int side_to_highlight) {
     waitKey(0);
 }
 
+cv::Mat Piece::get_image() {
+    return this->piece;
+}
+
+cv::Point Piece::get_point(int index) {
+    assert(index>=0);
+    assert(index<4);
+    return points[index];
+}
+
 

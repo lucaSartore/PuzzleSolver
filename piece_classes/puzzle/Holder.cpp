@@ -24,6 +24,10 @@ bool Holder::is_outside() {
     return false;
 }
 
+bool Holder::is_a_piece() {
+    return false;
+}
+
 Direction operator-(Direction direction){
     switch (direction) {
         case UP:
