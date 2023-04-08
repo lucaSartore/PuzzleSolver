@@ -16,6 +16,7 @@
 
 using namespace std;
 using namespace std::chrono;
+using namespace cv;
 
 #define NUMBER_OF_PIECES 500
 #define MINIMUM_COMPATIBILITY_PERCENTAGE 0.5
@@ -23,8 +24,31 @@ using namespace std::chrono;
 
 int main(){
 
+    int orientation = 2;
+    Direction direction = RIGHT;
+
+    Piece::set_origin_path("../../dataset/blue_500pcs/divided");
+    Piece p = Piece(0);
 
 
+    PieceArray pa = PieceArray();
+
+    pa.set(0,0,shared_ptr<Holder>(new PieceHolder(&p,orientation)));
+
+    Holder* h = pa.get(0,0);
+
+    if(h->is_a_piece()){
+        auto* ph = dynamic_cast<PieceHolder*>(h);
+        Mat image = ph->get_image().clone();
+        circle(image,ph->get_side_center(direction),10,Scalar(125),-1);
+        Mat side = ph->get_side(direction)->get_side_mask();
+        Mat resized;
+        resize(image,resized,image.size()*2/3);
+        imshow("Piece", resized);
+        resize(side,resized,side.size()/2);
+        imshow("Side", resized);
+        waitKey(0);
+    }
 
 
 

@@ -42,7 +42,7 @@ public:
     /// destructor
     ~PieceArray();
     /// return a piece_holder in one of the many position
-    const Holder& get(int x, int y) const;
+    Holder* get(int x, int y) const;
     /// set a piece_holder in one position
     void set(int x, int y, std::shared_ptr<Holder> to_be_set);
     /// remove a piece form the puzzle

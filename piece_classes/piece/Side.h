@@ -50,6 +50,11 @@ public:
     // get the comparing res
     static int get_compare_res();
 
+    /// get the mask of the current side;
+    cv::Mat get_side_mask(){
+        return border_shape.clone();
+    }
+
 };
 
 

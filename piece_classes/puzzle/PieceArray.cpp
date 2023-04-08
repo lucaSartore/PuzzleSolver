@@ -25,7 +25,7 @@ PieceArray::PieceArray() {
     pieces.push_back(one_dim);
 }
 
-const Holder &PieceArray::get(int x, int y) const{
+Holder *PieceArray::get(int x, int y) const{
 
 
 
@@ -36,19 +36,19 @@ const Holder &PieceArray::get(int x, int y) const{
         // if they are outside, but by one border at most, i return a border, otherwise is an error
         try{
             check_indexes(x-1,y);
-            return *outside_tile;
+            return outside_tile;
         }catch(...){}
         try{
             check_indexes(x+1,y);
-            return *outside_tile;
+            return outside_tile;
         }catch(...){}
         try{
             check_indexes(x,y-1);
-            return *outside_tile;
+            return outside_tile;
         }catch(...){}
         try{
             check_indexes(x,y+1);
-            return *outside_tile;
+            return outside_tile;
         }catch(...){}
         // if none of them succeed, i throw the normal error
         check_indexes(x,y);
@@ -61,7 +61,7 @@ const Holder &PieceArray::get(int x, int y) const{
         cerr << "index at X: " << x << " y: " << y << " is null ptr" << endl;
         throw std::runtime_error("specified index is null ptr");
     }
-    return *to_return;
+    return &(*to_return);
 }
 
 void PieceArray::set(int x, int y, std::shared_ptr<Holder> to_be_set) {
@@ -140,7 +140,7 @@ std::ostream& operator<<(std::ostream& os, const PieceArray& pa){
 
     for(int y = dim_y-1; y>=0; y--){
         for(int x = 0; x<dim_x; x++){
-            os << pa.get(x,y).get_debug_view() << " ";
+            os << pa.get(x,y)->get_debug_view() << " ";
         }
         os << endl;
     }

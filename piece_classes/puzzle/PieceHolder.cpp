@@ -84,7 +84,7 @@ Side *PieceHolder::get_side(Direction direction) {
 }
 
 PieceHolder::PieceHolder(Piece *piece_, int orientation_) {
-    assert(piece!= nullptr);
+    assert(piece_ != nullptr);
     assert(orientation_>=0 && orientation_<4);
 
     piece = piece_;
@@ -96,7 +96,26 @@ bool PieceHolder::is_a_piece() {
 }
 
 cv::Mat PieceHolder::get_image() {
-    return piece->get_image();
+    int rotate_code;
+    switch (orientation) {
+        case 0:
+            // no need for rotation;
+            return piece->get_image().clone();
+        case 1:
+            rotate_code = cv::ROTATE_90_COUNTERCLOCKWISE;
+            break;
+        case 2:
+            rotate_code = cv::ROTATE_180;
+            break;
+        case 3:
+            rotate_code = cv::ROTATE_90_CLOCKWISE;
+            break;
+        default:
+            throw std::runtime_error("unknown orientation");
+    }
+    cv::Mat to_return;
+    cv::rotate(piece->get_image(),to_return,rotate_code);
+    return to_return;
 }
 
 cv::Point PieceHolder::get_side_center(Direction direction) {
@@ -117,7 +136,34 @@ cv::Point PieceHolder::get_side_center(Direction direction) {
         default:
             throw std::runtime_error("unknown direction");
     }
-    cv::Point p1 = piece->get_point((orientation+offset)%4);
-    cv::Point p2 = piece->get_point((orientation+offset+1)%4);
+    cv::Point p1 = get_point((orientation+offset)%4);
+    cv::Point p2 = get_point((orientation+offset+1)%4);
     return (p1+p2)/2;
+}
+
+cv::Point PieceHolder::get_point(int index) {
+    assert(index>=0);
+    assert(index<4);
+    int rotate_code;
+    switch (orientation) {
+        case 0:
+            return piece->get_point((orientation+index)%4);
+        case 1:
+            rotate_code = cv::ROTATE_90_COUNTERCLOCKWISE;
+            break;
+        case 2:;
+            rotate_code = cv::ROTATE_180;
+            break;
+        case 3:
+            rotate_code = cv::ROTATE_90_CLOCKWISE;
+            break;
+        default:
+            throw std::runtime_error("unknown orientation");
+    }
+    cv::Point p1 = piece->get_point((orientation+index)%4);
+    std::vector<cv::Point> v_in, v_out;
+    v_in.push_back(p1);
+    cv::rotate(v_in,v_out,rotate_code);
+    return v_out[0];
+
 }
