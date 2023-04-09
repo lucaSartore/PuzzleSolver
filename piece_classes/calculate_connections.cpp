@@ -27,23 +27,32 @@ int main(){
     Piece::set_origin_path("../../dataset/blue_500pcs/divided");
     Piece p = Piece(0);
     PieceArray pa = PieceArray();
-    pa.grow_y();pa.grow_x();
-    pa.set(0,0,shared_ptr<Holder>(new PieceHolder(&p,0)));
-    pa.set(0,1,shared_ptr<Holder>(new PieceHolder(&p,0)));
-    pa.set(1,0,shared_ptr<Holder>(new PieceHolder(&p,0)));
-    pa.set(1,1,shared_ptr<Holder>(new PieceHolder(&p,0)));
 
+    pa.set(0,0,shared_ptr<Holder>(new PieceHolder(&p,0)));
     pa.insert_into_image(0,0);
-    pa.insert_into_image(0,1);
-    pa.insert_into_image(1,0);
-    pa.insert_into_image(1,1);
+
+    for(int i=1; i<100; i++){
+        pa.grow_y();
+        pa.grow_x();
+        pa.check_and_expand_image();
+
+        for(int x=0; x<i; x++){
+            pa.set(x,i,shared_ptr<Holder>(new PieceHolder(&p,0)));
+            pa.insert_into_image(x,i);
+        }
+        for(int y=0; y<i; y++){
+            pa.set(i,y,shared_ptr<Holder>(new PieceHolder(&p,0)));
+            pa.insert_into_image(i,y);
+        }
+        pa.set(i,i,shared_ptr<Holder>(new PieceHolder(&p,0)));
+        pa.insert_into_image(i,i);
+    }
     Mat image = pa.get_image();
-    line(image,Point(0,250),Point(5000,250),Scalar(0,0,255),20);
-    line(image,Point(250,0),Point(250,5000),Scalar(0,0,255),20);
     Mat resized;
-    //resize(image,resized,Size(1000,1000));
-    imshow("puzzle",image);
+    resize(image,resized,Size(950,950));
+    imshow("puzzle",resized);
     waitKey(0);
+
 
     /*
     // test for the orientation and get point finctions

@@ -37,7 +37,7 @@ public:
     /// build the image of the puzzle
     void build_image();
     /// check if the image needs to be grown, and eventually do so
-    void check_if_grow();
+    void check_and_expand_image();
     /// this function takes to image and 2 points, it then paste the source inamge on top of the destination image
     /// in a way that the 2 reference point will be one on top of the other
     /// by default the function will paste it on top, but there is the option of doing a bitwise or by using the flag

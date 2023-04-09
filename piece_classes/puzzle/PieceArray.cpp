@@ -9,13 +9,13 @@ using namespace cv;
 
 
 /// how many pixels the image will grow when it runs out of real estate for the new pieces
-#define GROWTH_CONSTANT 2000
+#define GROWTH_CONSTANT 1000
 /// the original dimension of the image
 #define STARTING_DIMENSIONS 5000
 /// the distance between the pieces and the borders
 #define BORDER_DISTANCE 250
 /// the number of pixels the fo margin there has to be before the image resolution is increase
-#define MARGIN_BEFORE_GROWTH 2000
+#define MARGIN_BEFORE_GROWTH 1000
 
 PieceArray::PieceArray() {
 
@@ -69,7 +69,7 @@ Holder *PieceArray::get(int x, int y) const{
     // get the value
     shared_ptr<Holder> to_return = pieces[x][y];
     if(to_return == nullptr){
-        cerr << "index at X: " << x << " y: " << y << " is null ptr" << endl;
+        //cerr << "index at X: " << x << " y: " << y << " is null ptr" << endl;
         throw std::runtime_error("specified index is null ptr");
     }
     return &(*to_return);
@@ -92,7 +92,7 @@ void PieceArray::remove(int x, int y) {
 void PieceArray::check_indexes(int x, int y) const {
     // check if indexes are in range
     if(x<0 || y<0 || x >= dim_x || y >= dim_y){
-        cerr << "index at X: " << x << " y: " << y << " is out of range for array with size: X: " << dim_x << " Y: " << dim_y << endl;
+        //cerr << "index at X: " << x << " y: " << y << " is out of range for array with size: X: " << dim_x << " Y: " << dim_y << endl;
         throw std::invalid_argument("index out of range");
     }
 }
@@ -176,7 +176,8 @@ void PieceArray::paste_on_top(const cv::Mat& source, cv::Mat& destination, cv::P
 
 }
 
-void PieceArray::check_if_grow() {
+void PieceArray::check_and_expand_image() {
+
     Mat image_gray;
     cvtColor(image,image_gray,COLOR_BGR2GRAY);
     image_gray = image_gray!=0;
@@ -194,7 +195,7 @@ void PieceArray::check_if_grow() {
         // creating new bigger image
         Mat new_image = Mat::zeros(Size(im_size.width + GROWTH_CONSTANT,im_size.height), CV_8UC3);
         // pasting the old piece on top of the old piece
-        paste_on_top(new_image,image,Point2i(0,im_size.height-1),Point2i(0, new_image.size().height-1));
+        paste_on_top(image,new_image,Point2i(0,im_size.height-1),Point2i(0, new_image.size().height-1));
         // changing the original image
         image = new_image;
     }
@@ -203,11 +204,11 @@ void PieceArray::check_if_grow() {
     im_size = image.size();
 
     // if need to grow the x res
-    if(y_1>im_size.width-MARGIN_BEFORE_GROWTH){
+    if(y_1>im_size.height-MARGIN_BEFORE_GROWTH){
         // creating new bigger image
         Mat new_image = Mat::zeros(Size(im_size.width,im_size.height + GROWTH_CONSTANT), CV_8UC3);
         // pasting the old piece on top of the old piece
-        paste_on_top(new_image,image,Point2i(0,0),Point2i(0, 0));
+        paste_on_top(image, new_image,Point2i(0,0),Point2i(0, 0));
         // changing the original image
         image = new_image;
     }
@@ -309,7 +310,6 @@ cv::Scalar PieceArray::get_random_color() {
     int r = out.at<Vec3b>(0, 0)[2];
 
     Scalar new_color = Scalar(b,g,r);
-    cout << new_color << endl;
     return new_color;
 }
 
