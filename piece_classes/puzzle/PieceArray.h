@@ -31,7 +31,15 @@ private:
     int dim_x;
     int dim_y;
     std::vector<std::vector<std::shared_ptr<Holder>>> pieces;
+    /// check if the index is or not inside the matrix, if not it throws an error
     void check_indexes(int x, int y) const;
+    /// build the image of the puzzle
+    void build_image();
+    /// check if the image needs to be grown, and eventually do so
+    void check_if_grow();
+    /// this function takes to image and 2 points, it then paste the source inamge on top of the destination image
+    /// in a way that the 2 reference point will be one on top of the other
+    void paste_on_top(cv::Mat& source, cv::Mat& destination, cv::Point2i pointSource, cv::Point2i pointDestination);
 public:
     /// returns the x dimension of the 2d array
     int get_dim_x() const;

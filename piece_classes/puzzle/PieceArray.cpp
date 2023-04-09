@@ -8,7 +8,17 @@
 #include "OutsideHolder.h"
 #include <memory>
 using namespace std;
+using namespace cv;
 
+
+/// how many pixels the image will grow when it runs out of real estate for the new pieces
+#define GROWTH_CONSTANT 2000
+/// the original dimension of the image
+#define STARTING_DIMENSIONS 5000
+/// the distance between the pieces and the borders
+#define BORDER_DISTANCE 250
+/// the number of pixels the fo margin there has to be before the image resolution is increase
+#define MARGIN_BEFORE_GROWTH 2000
 
 PieceArray::PieceArray() {
 
@@ -132,6 +142,70 @@ PieceArray::~PieceArray() {
 
 cv::Mat PieceArray::get_image() const {
     return image.clone();
+}
+
+void PieceArray::build_image() {
+
+}
+
+void PieceArray::paste_on_top(cv::Mat& source, cv::Mat& destination, cv::Point2i pointSource, cv::Point2i pointDestination) {
+
+    // Compute the translation vector to align the two points
+    cv::Point2i translation = pointDestination - pointSource;
+
+    // Create a region of interest in the destination image to paste the source image
+    cv::Rect roi(cv::Point2i(0, 0), source.size());
+    roi.x = std::max(0, -translation.x);
+    roi.y = std::max(0, -translation.y);
+    roi.width = std::min(source.cols, destination.cols - roi.x);
+    roi.height = std::min(source.rows, destination.rows - roi.y);
+
+    // Crop the source and destination images to the intersection of their ROIs
+    cv::Mat croppedSource = source(cv::Rect(roi.x - translation.x, roi.y - translation.y, roi.width, roi.height));
+    cv::Mat croppedDestination = destination(roi);
+
+    // Paste the cropped source image onto the cropped destination image
+    croppedSource.copyTo(croppedDestination);
+
+    // Copy the modified cropped destination image back into the original destination image
+    croppedDestination.copyTo(destination(roi));
+}
+
+void PieceArray::check_if_grow() {
+    Mat image_gray;
+    cvtColor(image,image_gray,COLOR_BGR2GRAY);
+    image_gray = image_gray!=0;
+    Rect bounding_rectangle = boundingRect(image_gray);
+    int x_0 = bounding_rectangle.x;
+    int y_0 = bounding_rectangle.y;
+    int x_1 = x_0 + bounding_rectangle.width;
+    int y_1 = y_0 + bounding_rectangle.height;
+
+
+    Size im_size = image.size();
+
+    // if need to grow the x res
+    if(x_1>im_size.width-MARGIN_BEFORE_GROWTH){
+        // creating new bigger image
+        Mat new_image = Mat::zeros(Size(im_size.width + GROWTH_CONSTANT,im_size.height), CV_8UC3);
+        // pasting the old piece on top of the old piece
+        paste_on_top(new_image,image,Point2i(0,im_size.height-1),Point2i(0, new_image.size().height-1));
+        // changing the original image
+        image = new_image;
+    }
+
+    // updating image size
+    im_size = image.size();
+
+    // if need to grow the x res
+    if(y_0<MARGIN_BEFORE_GROWTH){
+        // creating new bigger image
+        Mat new_image = Mat::zeros(Size(im_size.width,im_size.height + GROWTH_CONSTANT), CV_8UC3);
+        // pasting the old piece on top of the old piece
+        paste_on_top(new_image,image,Point2i(0,im_size.height-1),Point2i(0, new_image.size().height-1));
+        // changing the original image
+        image = new_image;
+    }
 }
 
 std::ostream& operator<<(std::ostream& os, const PieceArray& pa){
