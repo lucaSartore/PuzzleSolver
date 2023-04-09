@@ -1,7 +1,3 @@
-//
-// Created by luca on 4/4/23.
-//
-
 #include "PieceArray.h"
 #include "stdexcept"
 #include "UnknownHolder.h"

@@ -83,7 +83,7 @@ Side *PieceHolder::get_side(Direction direction) {
     return &piece->get_side((orientation+offset)%4);
 }
 
-PieceHolder::PieceHolder(Piece *piece_, int orientation_) {
+PieceHolder::PieceHolder(Piece *piece_, int orientation_): Holder(){
     assert(piece_ != nullptr);
     assert(orientation_>=0 && orientation_<4);
 

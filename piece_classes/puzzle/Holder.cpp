@@ -28,6 +28,18 @@ bool Holder::is_a_piece() {
     return false;
 }
 
+void Holder::set_center(cv::Point p) {
+    center = p;
+}
+
+cv::Point Holder::get_center() {
+    return center;
+}
+
+Holder::Holder() {
+    center = cv::Point(0,0);
+}
+
 Direction operator-(Direction direction){
     switch (direction) {
         case UP:
