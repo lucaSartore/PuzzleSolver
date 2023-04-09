@@ -40,6 +40,8 @@ private:
     /// this function takes to image and 2 points, it then paste the source inamge on top of the destination image
     /// in a way that the 2 reference point will be one on top of the other
     void paste_on_top(cv::Mat& source, cv::Mat& destination, cv::Point2i pointSource, cv::Point2i pointDestination);
+    /// insert the piece at the specified coordinates in the image
+    void insert_into_image(int x, int y);
 public:
     /// returns the x dimension of the 2d array
     int get_dim_x() const;

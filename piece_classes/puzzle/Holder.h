@@ -21,7 +21,7 @@ std::ostream& operator<<(std::ostream & os, Direction direction);
 
 class Holder {
 private:
-    cv::Point center;
+    cv::Point offset;
 public:
     /// say if this holder is an unknown holder or not
     virtual bool is_unknown();
@@ -34,10 +34,10 @@ public:
     /// return the side on the specified direction,
     /// it returns null ptr if the holder is an unknown holder
     virtual Side* get_side(Direction direction);
-    /// set the center of the piece;
-    void set_center(cv::Point p);
-    /// get the center of the piece;
-    cv::Point get_center();
+    /// set the offset of the piece;
+    void set_offset(cv::Point p);
+    /// get the offset of the piece;
+    cv::Point get_offset();
     Holder();
     virtual ~Holder() = default;
     virtual char get_debug_view() const;

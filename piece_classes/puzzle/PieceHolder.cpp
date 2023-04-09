@@ -167,3 +167,15 @@ cv::Point PieceHolder::get_point(int index) {
     return v_out[0];
 
 }
+
+cv::Point PieceHolder::get_side_center_with_offset(Direction direction) {
+    return this->get_side_center(direction) + this->get_offset();
+}
+
+cv::Point PieceHolder::get_center() {
+    cv::Point p1 = get_point(0);
+    cv::Point p2 = get_point(1);
+    cv::Point p3 = get_point(2);
+    cv::Point p4 = get_point(3);
+    return (p1+p2+p3+p4)/4;
+}

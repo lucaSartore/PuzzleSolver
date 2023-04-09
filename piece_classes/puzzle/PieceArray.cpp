@@ -204,6 +204,41 @@ void PieceArray::check_if_grow() {
     }
 }
 
+void PieceArray::insert_into_image(int x, int y) {
+    check_indexes(x,y);
+
+    // get the piece on the top and bottom of the piece i'm trying to place
+    Holder* piece_left = get(x-1,y);
+    Holder* piece_bottom = get(x,y-1);
+
+    Holder* this_piece = get(x,y);
+
+    if(piece_bottom->is_unknown() || piece_left->is_unknown() || this_piece->is_unknown()){
+        throw invalid_argument("one of the pieces involved is unknown!");
+    }
+
+    // default case: i need to place a corner
+    if(piece_left->is_outside() && piece_bottom->is_outside()){
+
+        return;
+    }
+
+    // default case: i need place a border vertically
+    if(piece_left->is_outside()){
+
+        return;
+    }
+
+    // default case: i need to place a border horizontally
+    if(piece_bottom->is_outside()){
+
+        return;
+    }
+
+    // base case: i need to place a normal piece
+
+}
+
 std::ostream& operator<<(std::ostream& os, const PieceArray& pa){
     int dim_x = pa.get_dim_x();
     int dim_y = pa.get_dim_y();

@@ -28,16 +28,16 @@ bool Holder::is_a_piece() {
     return false;
 }
 
-void Holder::set_center(cv::Point p) {
-    center = p;
+void Holder::set_offset(cv::Point p) {
+    offset = p;
 }
 
-cv::Point Holder::get_center() {
-    return center;
+cv::Point Holder::get_offset() {
+    return offset;
 }
 
 Holder::Holder() {
-    center = cv::Point(0,0);
+    offset = cv::Point(0, 0);
 }
 
 Direction operator-(Direction direction){

@@ -40,7 +40,7 @@ Piece::Piece(int piece_id, string path) {
         point = Point(x, y);
     }
 
-    //calculate center of the piece
+    //calculate offset of the piece
     Point center = (points[0]+points[1]+points[2]+points[3])/4;
 
     // create sides

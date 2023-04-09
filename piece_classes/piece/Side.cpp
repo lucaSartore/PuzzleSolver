@@ -62,7 +62,7 @@ Side::Side(Mat& shape, Piece* piece_, int piece_side_, Point p1, Point p2, Point
     line(border_shape,p1,p1+(p1-p2), Scalar(255),3);
     line(border_shape,p2,p2+(p2-p1), Scalar(255),3);
 
-    // connecting the lines to the center to make it a connected piece
+    // connecting the lines to the offset to make it a connected piece
     line(border_shape,p1,p1+(center-p1)/5, Scalar(255),3);
     line(border_shape,p2,p2+(center-p2)/5, Scalar(255),3);
 
