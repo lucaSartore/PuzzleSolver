@@ -24,6 +24,29 @@ using namespace cv;
 
 int main(){
 
+    Piece::set_origin_path("../../dataset/blue_500pcs/divided");
+    Piece p = Piece(0);
+    PieceArray pa = PieceArray();
+    pa.grow_y();pa.grow_x();
+    pa.set(0,0,shared_ptr<Holder>(new PieceHolder(&p,0)));
+    pa.set(0,1,shared_ptr<Holder>(new PieceHolder(&p,0)));
+    pa.set(1,0,shared_ptr<Holder>(new PieceHolder(&p,0)));
+    pa.set(1,1,shared_ptr<Holder>(new PieceHolder(&p,0)));
+
+    pa.insert_into_image(0,0);
+    pa.insert_into_image(0,1);
+    pa.insert_into_image(1,0);
+    pa.insert_into_image(1,1);
+    Mat image = pa.get_image();
+    line(image,Point(0,250),Point(5000,250),Scalar(0,0,255),20);
+    line(image,Point(250,0),Point(250,5000),Scalar(0,0,255),20);
+    Mat resized;
+    //resize(image,resized,Size(1000,1000));
+    imshow("puzzle",image);
+    waitKey(0);
+
+    /*
+    // test for the orientation and get point finctions
     int orientation = 2;
     Direction direction = RIGHT;
 
@@ -48,11 +71,11 @@ int main(){
         resize(side,resized,side.size()/2);
         imshow("Side", resized);
         waitKey(0);
-    }
-
+    }*/
 
 
     /*
+    // see the array functions with the debug print
     PieceArray array = PieceArray();
 
     cout << array << endl;
@@ -83,8 +106,10 @@ int main(){
 
     array.remove(3,1);
     cout << array << endl;
+    */
 
-
+    /*
+    // array creation
     Piece::set_origin_path("../../dataset/blue_500pcs/divided");
     Piece pieces[NUMBER_OF_PIECES];
 

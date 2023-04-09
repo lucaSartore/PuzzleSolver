@@ -30,6 +30,10 @@ PieceArray::PieceArray() {
     auto one_dim = vector<shared_ptr<Holder>>();
     one_dim.push_back(shared_ptr<Holder>(new UnknownHolder()));
     pieces.push_back(one_dim);
+
+    image = Mat::zeros(Size(STARTING_DIMENSIONS,STARTING_DIMENSIONS),CV_8UC3);
+
+    srand(time(NULL));
 }
 
 Holder *PieceArray::get(int x, int y) const{
@@ -145,27 +149,31 @@ void PieceArray::build_image() {
 
 }
 
-void PieceArray::paste_on_top(cv::Mat& source, cv::Mat& destination, cv::Point2i pointSource, cv::Point2i pointDestination) {
+void PieceArray::paste_on_top(const cv::Mat& source, cv::Mat& destination, cv::Point2i pointSource, cv::Point2i pointDestination,bool bitwise_or) {
 
     // Compute the translation vector to align the two points
     cv::Point2i translation = pointDestination - pointSource;
 
-    // Create a region of interest in the destination image to paste the source image
-    cv::Rect roi(cv::Point2i(0, 0), source.size());
-    roi.x = std::max(0, -translation.x);
-    roi.y = std::max(0, -translation.y);
-    roi.width = std::min(source.cols, destination.cols - roi.x);
-    roi.height = std::min(source.rows, destination.rows - roi.y);
+    cv::Mat croppedDestination = destination(
+            cv::Rect(
+                    translation.x,
+                    translation.y,
+                    source.size().width,
+                    source.size().height
+                     )
+            );
 
-    // Crop the source and destination images to the intersection of their ROIs
-    cv::Mat croppedSource = source(cv::Rect(roi.x - translation.x, roi.y - translation.y, roi.width, roi.height));
-    cv::Mat croppedDestination = destination(roi);
+    if(bitwise_or){
+        // use bitwise or to avoid contrasts
+        Mat result;
+        cv::bitwise_or(source,croppedDestination,result);
+        result.copyTo(croppedDestination);
+    }else{
+        // Paste the cropped source image onto the cropped destination image
+        source.copyTo(croppedDestination);
 
-    // Paste the cropped source image onto the cropped destination image
-    croppedSource.copyTo(croppedDestination);
+    }
 
-    // Copy the modified cropped destination image back into the original destination image
-    croppedDestination.copyTo(destination(roi));
 }
 
 void PieceArray::check_if_grow() {
@@ -210,11 +218,11 @@ void PieceArray::insert_into_image(int x, int y) {
 
     // get the piece on the top and bottom of the piece i'm trying to place
     Holder* piece_left = get(x-1,y);
-    Holder* piece_bottom = get(x,y-1);
+    Holder* piece_top = get(x, y - 1);
 
     Holder* this_piece = get(x,y);
 
-    if(piece_bottom->is_unknown() || piece_left->is_unknown()){
+    if(piece_top->is_unknown() || piece_left->is_unknown()){
         throw invalid_argument("one of the pieces involved is unknown!");
     }
     if(!this_piece->is_a_piece()){
@@ -225,31 +233,84 @@ void PieceArray::insert_into_image(int x, int y) {
 
     // vector that go form the right side of the current piece to the center
     Point left_to_center_vector = this_piece_cast->get_center()-this_piece_cast->get_side_center(LEFT);
-    // vector that go form the bottom side of the current piece to the center
-    Point bottom_to_center_vector = this_piece_cast->get_center()-this_piece_cast->get_side_center(DOWN);
+    // vector that go form the top side of the current piece to the center
+    Point top_to_center_vector = this_piece_cast->get_center()-this_piece_cast->get_side_center(UP);
 
-    // default case: i need to place a corner
-    if(piece_left->is_outside() && piece_bottom->is_outside())
-    // vector that go form the right side of the current piece to the center{
-        int center_x = BORDER_DISTANCE + left_to_center_vector.x;
-        int center_y = BORDER_DISTANCE + bottom_to_center_vector.y;
-        return;
+    int center_x,center_y;
+
+
+    if(piece_left->is_outside() && piece_top->is_outside()){
+        // default case: i need to place a corner
+
+        // calculating the point of where to put the new piece
+        center_x = BORDER_DISTANCE + left_to_center_vector.x;
+        center_y = BORDER_DISTANCE + top_to_center_vector.y;
+
+    }else if(piece_left->is_outside()){
+        // default case: i need place a border vertically
+
+        auto* piece_top_upcast = dynamic_cast<PieceHolder*>(piece_top);
+
+        center_x = BORDER_DISTANCE + left_to_center_vector.x;
+        center_y = (piece_top_upcast->get_side_center_with_offset(DOWN) + top_to_center_vector).y;
+    }else if(piece_top->is_outside()){
+        // default case: i need to place a border horizontally
+
+        auto* piece_left_upcast = dynamic_cast<PieceHolder*>(piece_left);
+
+        center_x = (piece_left_upcast->get_side_center_with_offset(RIGHT) + left_to_center_vector).x;
+        center_y = BORDER_DISTANCE + top_to_center_vector.y;
+    }else{
+        auto* piece_left_upcast = dynamic_cast<PieceHolder*>(piece_left);
+        auto* piece_top_upcast = dynamic_cast<PieceHolder*>(piece_top);
+
+        Point center_1 = piece_left_upcast->get_side_center_with_offset(RIGHT) + left_to_center_vector;
+        Point center_2 = piece_top_upcast->get_side_center_with_offset(DOWN) + top_to_center_vector;
+
+        Point center = (center_1+center_2)/2;
+
+        center_x = center.x;
+        center_y = center.y;
     }
 
-    // default case: i need place a border vertically
-    if(piece_left->is_outside()){
+    Point new_center_point = Point(center_x,center_y);
 
-        return;
-    }
+    // matrix to insert in the new puzzle
+    Mat to_paste;
+    cvtColor(this_piece_cast->get_image(),to_paste,COLOR_GRAY2BGR);
+    to_paste = to_paste!=0;
+    floodFill(to_paste,this_piece_cast->get_center(),get_random_color());
 
-    // default case: i need to place a border horizontally
-    if(piece_bottom->is_outside()){
 
-        return;
-    }
+    // pasting the piece in to the image
+    paste_on_top(
+            to_paste,
+            image,
+            this_piece_cast->get_center(),
+            new_center_point,
+            true
+    );
+
+    // updating the position of the piece
+    this_piece_cast->set_offset(new_center_point-this_piece_cast->get_center());
 
     // base case: i need to place a normal piece
 
+}
+
+cv::Scalar PieceArray::get_random_color() {
+    // HSV random color
+    Scalar color = Scalar (rand()%256, 255, 255);
+    Mat in = Mat(Size(1,1),CV_8UC3,color);
+    Mat out;
+    cvtColor(in,out,COLOR_HSV2BGR);
+    int b = out.at<Vec3b>(0, 0)[0];
+    int g = out.at<Vec3b>(0, 0)[1];
+    int r = out.at<Vec3b>(0, 0)[2];
+
+    Scalar new_color = Scalar(b,g,r);
+    cout << new_color << endl;
+    return new_color;
 }
 
 std::ostream& operator<<(std::ostream& os, const PieceArray& pa){
