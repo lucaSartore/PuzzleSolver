@@ -2,6 +2,7 @@
 #include "stdexcept"
 #include "UnknownHolder.h"
 #include "OutsideHolder.h"
+#include "PieceHolder.h"
 #include <memory>
 using namespace std;
 using namespace cv;
@@ -194,11 +195,11 @@ void PieceArray::check_if_grow() {
     im_size = image.size();
 
     // if need to grow the x res
-    if(y_0<MARGIN_BEFORE_GROWTH){
+    if(y_1>im_size.width-MARGIN_BEFORE_GROWTH){
         // creating new bigger image
         Mat new_image = Mat::zeros(Size(im_size.width,im_size.height + GROWTH_CONSTANT), CV_8UC3);
         // pasting the old piece on top of the old piece
-        paste_on_top(new_image,image,Point2i(0,im_size.height-1),Point2i(0, new_image.size().height-1));
+        paste_on_top(new_image,image,Point2i(0,0),Point2i(0, 0));
         // changing the original image
         image = new_image;
     }
@@ -213,13 +214,25 @@ void PieceArray::insert_into_image(int x, int y) {
 
     Holder* this_piece = get(x,y);
 
-    if(piece_bottom->is_unknown() || piece_left->is_unknown() || this_piece->is_unknown()){
+    if(piece_bottom->is_unknown() || piece_left->is_unknown()){
         throw invalid_argument("one of the pieces involved is unknown!");
     }
+    if(!this_piece->is_a_piece()){
+        throw invalid_argument("there is not a piece at the specified coordinates");
+    }
+
+    auto* this_piece_cast = dynamic_cast<PieceHolder*>(this_piece);
+
+    // vector that go form the right side of the current piece to the center
+    Point left_to_center_vector = this_piece_cast->get_center()-this_piece_cast->get_side_center(LEFT);
+    // vector that go form the bottom side of the current piece to the center
+    Point bottom_to_center_vector = this_piece_cast->get_center()-this_piece_cast->get_side_center(DOWN);
 
     // default case: i need to place a corner
-    if(piece_left->is_outside() && piece_bottom->is_outside()){
-
+    if(piece_left->is_outside() && piece_bottom->is_outside())
+    // vector that go form the right side of the current piece to the center{
+        int center_x = BORDER_DISTANCE + left_to_center_vector.x;
+        int center_y = BORDER_DISTANCE + bottom_to_center_vector.y;
         return;
     }
 
@@ -243,7 +256,7 @@ std::ostream& operator<<(std::ostream& os, const PieceArray& pa){
     int dim_x = pa.get_dim_x();
     int dim_y = pa.get_dim_y();
 
-    for(int y = dim_y-1; y>=0; y--){
+    for(int y = 0; y<dim_y; y++){
         for(int x = 0; x<dim_x; x++){
             os << pa.get(x,y)->get_debug_view() << " ";
         }
