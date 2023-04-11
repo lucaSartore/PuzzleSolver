@@ -8,3 +8,7 @@ char UnknownHolder::get_debug_view() const{
     return 'U';
 }
 
+bool UnknownHolder::is_unknown() {
+    return true;
+}
+

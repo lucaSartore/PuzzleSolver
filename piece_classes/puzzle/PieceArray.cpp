@@ -76,7 +76,9 @@ Holder *PieceArray::get(int x, int y) const{
     return &(*to_return);
 }
 
-void PieceArray::set(int x, int y, std::shared_ptr<Holder> to_be_set) {
+void PieceArray::set(int x, int y, std::shared_ptr<Holder> to_be_set,bool update_graphic) {
+
+    assert(to_be_set->is_a_piece());
 
     // check if need to create new raw/colon
     if(y==0  && x >= get_dim_x()){
@@ -93,8 +95,10 @@ void PieceArray::set(int x, int y, std::shared_ptr<Holder> to_be_set) {
 
     // inserting it in to the array
     pieces[x][y] = std::move(to_be_set);
-    // update the graph;
-    insert_into_image(x,y);
+    if(update_graphic){
+        // update the graph;
+        insert_into_image(x,y);
+    }
     // expand the image if to small
     check_and_expand_image();
 }
@@ -279,7 +283,6 @@ void PieceArray::insert_into_image(int x, int y) {
     Point top_to_center_vector = this_piece_cast->get_center()-this_piece_cast->get_side_center(UP);
 
     int center_x,center_y;
-
 
     if(piece_left->is_outside() && piece_top->is_outside()){
         // default case: i need to place a corner

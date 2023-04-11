@@ -24,6 +24,8 @@ using namespace cv;
 
 int main(){
 
+    /*
+    // test for the puzzle array visualization
     Piece::set_origin_path("../../dataset/blue_500pcs/divided");
     Piece p = Piece(0);
     PieceArray pa = PieceArray();
@@ -32,7 +34,6 @@ int main(){
 
 
     for(int i=1; i<10; i++){
-
 
         for(int x=0; x<i; x++){
             pa.set(x,i,shared_ptr<Holder>(new PieceHolder(&p,0)));
@@ -50,7 +51,6 @@ int main(){
     imshow("puzzle",resized);
     waitKey(0);
 
-    cout << "A1" << endl;
     pa.remove(0,9);
     pa.remove(0,8);
     pa.remove(9,7);
@@ -59,7 +59,7 @@ int main(){
     resize(image,resized,Size(950,950));
     imshow("puzzle",resized);
     waitKey(0);
-
+    */
 
     /*
     // test for the orientation and get point finctions
@@ -104,8 +104,10 @@ int main(){
 
     cout << array << endl;
 
-    auto h = shared_ptr<Holder>(new OutsideHolder());
-    array.set(3,1,h);
+    Piece::set_origin_path("../../dataset/blue_500pcs/divided");
+    Piece p = Piece(0);
+    auto h = shared_ptr<Holder>(new PieceHolder(&p,0));
+    array.set(0,0,h);
 
     cout << array << endl;
 
@@ -120,10 +122,10 @@ int main(){
     array.un_grow_y();
     cout << array << endl;
 
-    array.remove(3,1);
+    array.remove(0,0);
     cout << array << endl;
-    */
 
+    */
     /*
     // array creation
     Piece::set_origin_path("../../dataset/blue_500pcs/divided");

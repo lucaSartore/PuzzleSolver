@@ -59,7 +59,7 @@ public:
     /// return a piece_holder in one of the many position
     Holder* get(int x, int y) const;
     /// set a piece_holder in one position
-    void set(int x, int y, std::shared_ptr<Holder> to_be_set);
+    void set(int x, int y, std::shared_ptr<Holder> to_be_set,bool update_graphic = true);
     /// remove a piece form the puzzle
     void remove(int x, int y);
     /// grow the array by 1 in the X dimension

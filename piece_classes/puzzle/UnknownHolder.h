@@ -12,6 +12,7 @@ public:
     UnknownHolder() = default;
     virtual ~UnknownHolder() = default;
     virtual char get_debug_view() const;
+    bool is_unknown() override;
 };
 
 
