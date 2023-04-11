@@ -4,6 +4,8 @@
 
 #include "PieceHolder.h"
 
+// if a border gets compared with an outside piece, this is the compatibility value that it will get
+#define BORDER_COMPATIBILITY 0.6
 
 
 char PieceHolder::get_debug_view() const{
@@ -14,6 +16,7 @@ char PieceHolder::get_debug_view() const{
 // the function return the average of the compatibility of the know pieces
 // it return 0 if the possibility of a compatibility is 0, for example if we have a male-male cameraperson
 float PieceHolder::check_compatibility(Holder *up, Holder *down, Holder *left, Holder *right){
+
 
     Direction directions[] = {UP,DOWN,RIGHT,LEFT};
     Holder* holders[] = {up,down,right,left};
@@ -46,6 +49,9 @@ float PieceHolder::check_compatibility(Holder *up, Holder *down, Holder *left, H
         if(to_compare->is_outside()){
             if(my_side->get_kind() != SideKind::BORDER){
                 return  0.0;
+            }else{
+                average += 0.6;
+                count++;
             }
         }else{
             // otherwise the side is normal, and so i do to the normal compare between pieces
@@ -53,11 +59,13 @@ float PieceHolder::check_compatibility(Holder *up, Holder *down, Holder *left, H
             if(compatibility == 0.0){
                 return 0.0;
             }
-            average += compatibility;
+            average += (float)compatibility;
             count++;
         }
     }
-
+    if(count == 0){
+        throw std::runtime_error("all sides are unknown!");
+    }
     // return the average of the
     return  average/((float)count);
 }

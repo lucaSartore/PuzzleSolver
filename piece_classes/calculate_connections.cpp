@@ -26,11 +26,11 @@ using namespace cv;
 int main(){
 
 
-    Puzzle puzzle = Puzzle("../../dataset/test_2x3/divided",10);
+    Puzzle puzzle = Puzzle("../../dataset/test_2x3/divided",6);
 
     puzzle.array.grow_y();
     puzzle.array.grow_x();
-    //puzzle.set_min_compatibility(0);
+    puzzle.set_min_compatibility(0);
 
     auto bests = puzzle.get_best_fits(0,0);
 
