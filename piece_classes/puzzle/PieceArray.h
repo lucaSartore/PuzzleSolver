@@ -56,6 +56,8 @@ public:
     PieceArray();
     /// destructor
     ~PieceArray();
+    /// move constructor
+    PieceArray(PieceArray && other);
     /// return a piece_holder in one of the many position
     Holder* get(int x, int y) const;
     /// set a piece_holder in one position
@@ -72,6 +74,8 @@ public:
     void un_grow_y();
     /// return the image of the matrix of puzzle pieces
     cv::Mat get_image() const;
+    /// move equal operator
+    PieceArray& operator=(PieceArray&& other);
 };
 
 

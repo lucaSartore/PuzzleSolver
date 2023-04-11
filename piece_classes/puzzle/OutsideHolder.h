@@ -9,6 +9,7 @@ public:
     /// say if this holder is an outside holder or not
     bool is_outside() override;
     OutsideHolder();
+    ~OutsideHolder() override;
 };
 
 

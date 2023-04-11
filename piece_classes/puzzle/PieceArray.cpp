@@ -19,10 +19,6 @@ using namespace cv;
 #define MARGIN_BEFORE_GROWTH 1000
 
 PieceArray::PieceArray() {
-
-    // create the outside holder
-    outside_tile = new OutsideHolder();
-
     dim_x = 1;
     dim_y = 1;
     pieces = vector<vector<shared_ptr<Holder>>>();
@@ -35,6 +31,9 @@ PieceArray::PieceArray() {
     image = Mat::zeros(Size(STARTING_DIMENSIONS,STARTING_DIMENSIONS),CV_8UC3);
 
     srand(time(NULL));
+
+    // create the outside holder
+    outside_tile = new OutsideHolder();
 }
 
 Holder *PieceArray::get(int x, int y) const{
@@ -361,6 +360,42 @@ void PieceArray::reset_image() {
     image = Mat::zeros(Size(STARTING_DIMENSIONS,STARTING_DIMENSIONS),CV_8UC3);
     build_image();
 }
+
+PieceArray::PieceArray(PieceArray &&other) {
+    delete outside_tile;
+
+    image = std::move(other.image);
+    other.image = Mat();
+
+    outside_tile = other.outside_tile;
+    other.outside_tile = nullptr;
+
+    dim_x = other.dim_x;
+    dim_y = other.dim_y;
+
+    pieces = other.pieces;
+    other.pieces = vector<vector<shared_ptr<Holder>>>();
+}
+
+PieceArray &PieceArray::operator=(PieceArray &&other) {
+    if(this != &other){
+        delete outside_tile;
+
+        image = std::move(other.image);
+        other.image = Mat();
+
+        outside_tile = other.outside_tile;
+        other.outside_tile = nullptr;
+
+        dim_x = other.dim_x;
+        dim_y = other.dim_y;
+
+        pieces = other.pieces;
+        other.pieces = vector<vector<shared_ptr<Holder>>>();
+    }
+    return *this;
+}
+
 
 std::ostream& operator<<(std::ostream& os, const PieceArray& pa){
     int dim_x = pa.get_dim_x();

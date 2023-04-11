@@ -14,3 +14,5 @@ bool OutsideHolder::is_outside() {
 
 OutsideHolder::OutsideHolder(): Holder() {}
 
+OutsideHolder::~OutsideHolder(){}
+

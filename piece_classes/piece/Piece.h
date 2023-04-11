@@ -37,6 +37,8 @@ public:
     cv::Mat get_image();
     /// return one of the 4 point, based on the index
     cv::Point get_point(int index);
+    /// destructor
+    ~Piece() = default;
 };
 
 #endif //PUZZLE_SOLVER_PIECE_H

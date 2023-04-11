@@ -13,6 +13,7 @@
 #include "puzzle/PieceArray.h"
 #include "puzzle/PieceHolder.h"
 #include "puzzle/OutsideHolder.h"
+#include "puzzle/Puzzle.h"
 
 using namespace std;
 using namespace std::chrono;
@@ -23,6 +24,9 @@ using namespace cv;
 
 
 int main(){
+
+
+    Puzzle puzzle = Puzzle("../../dataset/blue_500pcs/divided",10);
 
     /*
     // test for the puzzle array visualization
