@@ -20,9 +20,16 @@
 
 class Puzzle {
 private:
+    // the array containing the current state of the puzzle
     PieceArray array;
+    // all the pieces of te puzzle
     Piece *pieces;
+    // the total number of pieces of the current puzzle
     int number_of_pieces;
+    // a value that define the minimum percentage of compatibility a piece needs to have in order to be considered a good candidate
+    float min_compatibility;
+    // a vector containing all the available pieces (aka: the one that are not already positioned in the puzzle)
+    std::vector<Piece*> available_pieces;
 public:
     /// constructor, parameters are;
     /// where to find the information about the pieces
@@ -31,8 +38,11 @@ public:
     Puzzle(std::string path, int number_of_pieces_);
     Puzzle() = delete;
     ~Puzzle();
-    // return a list containing the best fit for the asked position
-    // the list is sorted form best fit to worst fit
+    /// set the minimum compatibility a piece need to have in order
+    /// to be considered a possible candidate for a spot
+    void set_min_compatibility(float new_value);
+    /// return a list containing the best fit for the asked position
+    /// the list is sorted form best fit to worst fit
     std::list<std::tuple<float,Holder>> get_best_fits(int x, int y);
 };
 

@@ -22,9 +22,19 @@ Puzzle::Puzzle(std::string path, int number_of_pieces_) {
     for(int i=0; i<number_of_pieces_;i++){
         pieces[i] = Piece(i);
     }
+
+    min_compatibility = DEFAULT_MIN_COMPATIBILITY;
 }
 
 Puzzle::~Puzzle() {
     // free all the pieces from ram;
     delete[] pieces;
+}
+
+void Puzzle::set_min_compatibility(float new_value) {
+    min_compatibility = new_value;
+}
+
+std::list<std::tuple<float, Holder>> Puzzle::get_best_fits(int x, int y) {
+    return std::list<std::tuple<float, Holder>>();
 }
