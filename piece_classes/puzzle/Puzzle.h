@@ -19,7 +19,7 @@
 
 
 class Puzzle {
-private:
+public:
     // the array containing the current state of the puzzle
     PieceArray array;
     // all the pieces of te puzzle
@@ -43,7 +43,7 @@ public:
     void set_min_compatibility(float new_value);
     /// return a list containing the best fit for the asked position
     /// the list is sorted form best fit to worst fit
-    std::list<std::tuple<float,Holder>> get_best_fits(int x, int y);
+    std::list<std::tuple<float,std::shared_ptr<Holder>>> get_best_fits(int x, int y);
 };
 
 

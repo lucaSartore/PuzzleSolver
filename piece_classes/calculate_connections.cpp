@@ -28,6 +28,28 @@ int main(){
 
     Puzzle puzzle = Puzzle("../../dataset/blue_500pcs/divided",10);
 
+    puzzle.array.grow_y();
+    puzzle.array.grow_x();
+    //puzzle.set_min_compatibility(0);
+
+    auto bests = puzzle.get_best_fits(0,0);
+
+    cout << "Shores: " << endl;
+    for(auto elem: bests){
+        cout << "   " << std::get<0>(elem) << endl;
+    }
+
+    tuple<float,shared_ptr<Holder>> best_element = bests.front();
+
+
+    puzzle.array.set(0,0,std::get<1>(best_element));
+
+    Mat img = puzzle.array.get_image();
+    Mat resized;
+    resize(img,resized,Size(950,950));
+    imshow("puzzle",resized);
+    waitKey(0);
+
     /*
     // test for the puzzle array visualization
     Piece::set_origin_path("../../dataset/blue_500pcs/divided");

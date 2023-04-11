@@ -396,6 +396,17 @@ PieceArray &PieceArray::operator=(PieceArray &&other) {
     return *this;
 }
 
+float PieceArray::check_compatibility(int x, int y, Holder *to_check) {
+    // check if need to grow
+    check_indexes(x,y);
+    return  to_check->check_compatibility(
+            get(x,y-1),
+            get(x,y+1),
+            get(x-1,y),
+            get(x+1,y)
+            );
+}
+
 
 std::ostream& operator<<(std::ostream& os, const PieceArray& pa){
     int dim_x = pa.get_dim_x();

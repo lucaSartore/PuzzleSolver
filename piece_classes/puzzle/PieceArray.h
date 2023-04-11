@@ -76,6 +76,9 @@ public:
     cv::Mat get_image() const;
     /// move equal operator
     PieceArray& operator=(PieceArray&& other);
+    /// check how match a piece is compatible in a certain position
+    /// and return the compatibility with a float
+    float check_compatibility(int x, int y, Holder* to_check);
 };
 
 
