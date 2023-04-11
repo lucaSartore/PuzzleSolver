@@ -29,26 +29,33 @@ int main(){
     PieceArray pa = PieceArray();
 
     pa.set(0,0,shared_ptr<Holder>(new PieceHolder(&p,0)));
-    pa.insert_into_image(0,0);
 
-    for(int i=1; i<100; i++){
-        pa.grow_y();
-        pa.grow_x();
-        pa.check_and_expand_image();
+
+    for(int i=1; i<10; i++){
+
 
         for(int x=0; x<i; x++){
             pa.set(x,i,shared_ptr<Holder>(new PieceHolder(&p,0)));
-            pa.insert_into_image(x,i);
         }
         for(int y=0; y<i; y++){
             pa.set(i,y,shared_ptr<Holder>(new PieceHolder(&p,0)));
-            pa.insert_into_image(i,y);
+
         }
         pa.set(i,i,shared_ptr<Holder>(new PieceHolder(&p,0)));
-        pa.insert_into_image(i,i);
+
     }
     Mat image = pa.get_image();
     Mat resized;
+    resize(image,resized,Size(950,950));
+    imshow("puzzle",resized);
+    waitKey(0);
+
+    cout << "A1" << endl;
+    pa.remove(0,9);
+    pa.remove(0,8);
+    pa.remove(9,7);
+
+    image = pa.get_image();
     resize(image,resized,Size(950,950));
     imshow("puzzle",resized);
     waitKey(0);

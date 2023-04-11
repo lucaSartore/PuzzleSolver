@@ -22,6 +22,7 @@ std::ostream& operator<<(std::ostream & os, Direction direction);
 class Holder {
 private:
     cv::Point offset;
+    cv::Scalar color;
 public:
     /// say if this holder is an unknown holder or not
     virtual bool is_unknown();
@@ -38,6 +39,11 @@ public:
     void set_offset(cv::Point p);
     /// get the offset of the piece;
     cv::Point get_offset();
+    /// set the color of the current piece;
+    void set_color(cv::Scalar new_color);
+    /// return the current color of the piece;
+    cv::Scalar get_color();
+
     Holder();
     virtual ~Holder() = default;
     virtual char get_debug_view() const;

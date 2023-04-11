@@ -4,6 +4,8 @@
 
 #include "Holder.h"
 
+#include <utility>
+
 char Holder::get_debug_view() const{
     return 'H';
 }
@@ -38,6 +40,15 @@ cv::Point Holder::get_offset() {
 
 Holder::Holder() {
     offset = cv::Point(0, 0);
+    color = cv::Scalar(255,255,255);
+}
+
+void Holder::set_color(cv::Scalar new_color) {
+    color = std::move(new_color);
+}
+
+cv::Scalar Holder::get_color() {
+    return color;
 }
 
 Direction operator-(Direction direction){

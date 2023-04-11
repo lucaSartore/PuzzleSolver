@@ -4,6 +4,7 @@
 #include "OutsideHolder.h"
 #include "PieceHolder.h"
 #include <memory>
+#include <utility>
 using namespace std;
 using namespace cv;
 
@@ -76,17 +77,48 @@ Holder *PieceArray::get(int x, int y) const{
 }
 
 void PieceArray::set(int x, int y, std::shared_ptr<Holder> to_be_set) {
+
+    // check if need to create new raw/colon
+    if(y==0  && x >= get_dim_x()){
+        grow_x();
+    }
+    if(x==0  && y >= get_dim_y()){
+        grow_y();
+    }
     // check if in range
     check_indexes(x,y);
-    pieces[x][y] = to_be_set;
+
+    // set the random color
+    to_be_set->set_color(get_random_color());
+
+    // inserting it in to the array
+    pieces[x][y] = std::move(to_be_set);
+    // update the graph;
+    insert_into_image(x,y);
+    // expand the image if to small
+    check_and_expand_image();
 }
 
 void PieceArray::remove(int x, int y) {
+    // check if need to delete a raw/colon
+    if(y==0  && x >= get_dim_x()-1){
+        un_grow_x();
+        reset_image();
+        return;
+    }
+    if(x==0  && y >= get_dim_y()-1){
+        un_grow_y();
+        reset_image();
+        return;
+    }
     // check if in range
     check_indexes(x,y);
 
     // insert a new unknown value
     pieces[x][y] = shared_ptr<Holder>(new UnknownHolder());
+
+    // reset the preview image
+    reset_image();
 }
 
 void PieceArray::check_indexes(int x, int y) const {
@@ -146,7 +178,16 @@ cv::Mat PieceArray::get_image() const {
 }
 
 void PieceArray::build_image() {
-
+    for(int x=0; x<get_dim_x(); x++){
+        for(int y=0; y<get_dim_y(); y++){
+            try{
+                insert_into_image(x,y);
+            }catch (...){
+                // once i get an error, i continue with the next iteration of X value
+                break;
+            };
+        }
+    }
 }
 
 void PieceArray::paste_on_top(const cv::Mat& source, cv::Mat& destination, cv::Point2i pointSource, cv::Point2i pointDestination,bool bitwise_or) {
@@ -280,7 +321,7 @@ void PieceArray::insert_into_image(int x, int y) {
     Mat to_paste;
     cvtColor(this_piece_cast->get_image(),to_paste,COLOR_GRAY2BGR);
     to_paste = to_paste!=0;
-    floodFill(to_paste,this_piece_cast->get_center(),get_random_color());
+    floodFill(to_paste,this_piece_cast->get_center(), this_piece_cast->get_color());
 
 
     // pasting the piece in to the image
@@ -311,6 +352,11 @@ cv::Scalar PieceArray::get_random_color() {
 
     Scalar new_color = Scalar(b,g,r);
     return new_color;
+}
+
+void PieceArray::reset_image() {
+    image = Mat::zeros(Size(STARTING_DIMENSIONS,STARTING_DIMENSIONS),CV_8UC3);
+    build_image();
 }
 
 std::ostream& operator<<(std::ostream& os, const PieceArray& pa){
