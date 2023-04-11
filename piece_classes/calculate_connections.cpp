@@ -26,7 +26,7 @@ using namespace cv;
 int main(){
 
 
-    Puzzle puzzle = Puzzle("../../dataset/blue_500pcs/divided",10);
+    Puzzle puzzle = Puzzle("../../dataset/test_2x3/divided",10);
 
     puzzle.array.grow_y();
     puzzle.array.grow_x();
