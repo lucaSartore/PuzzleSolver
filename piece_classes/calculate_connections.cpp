@@ -37,8 +37,8 @@ int main(){
 
     ///*
 
-    //Puzzle puzzle = Puzzle("../../dataset/test_2x3/divided",6);
-    Puzzle puzzle = Puzzle("../../dataset/blue_500pcs/divided",500);
+    Puzzle puzzle = Puzzle("../../dataset/test_2x3/divided",6);
+    //Puzzle puzzle = Puzzle("../../dataset/blue_500pcs/divided",500);
 
     puzzle.array.grow_y();
     puzzle.array.grow_x();
@@ -48,8 +48,8 @@ int main(){
     puzzle.array.set(0,0, get_best(puzzle,0,0));
 
 
-    for(int i=1; i<5; i++){
-
+    for(int i=1; i<2; i++){
+        cout << i << endl;
         puzzle.array.grow_y();
         puzzle.array.grow_x();
 
@@ -72,7 +72,7 @@ int main(){
 
     Mat img = puzzle.array.get_image();
     Mat resized;
-    resize(img,resized,Size(3950,3950));
+    resize(img,resized,Size(950,950));
     imshow("puzzle",resized);
     waitKey(0);
     //*/

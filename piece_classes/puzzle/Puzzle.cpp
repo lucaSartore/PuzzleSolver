@@ -79,3 +79,7 @@ std::list<std::tuple<float,shared_ptr<Holder>>> Puzzle::get_best_fits(int x, int
 
     return best_fits;
 }
+
+bool Puzzle::solve_puzzle_recursive(Puzzle &puzzle) {
+    return false;
+}
