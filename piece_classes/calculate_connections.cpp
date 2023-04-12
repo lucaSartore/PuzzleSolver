@@ -23,34 +23,97 @@ using namespace cv;
 #define MINIMUM_COMPATIBILITY_PERCENTAGE 0.5
 
 
+shared_ptr<Holder> get_best(Puzzle& puzzle, int x, int y){
+
+    auto bests = puzzle.get_best_fits(x,y);
+    tuple<float,shared_ptr<Holder>> best_element = bests.front();
+    return std::get<1>(best_element);
+}
+
 int main(){
 
 
-    Puzzle puzzle = Puzzle("../../dataset/test_2x3/divided",6);
+
+
+    ///*
+
+    //Puzzle puzzle = Puzzle("../../dataset/test_2x3/divided",6);
+    Puzzle puzzle = Puzzle("../../dataset/blue_500pcs/divided",500);
 
     puzzle.array.grow_y();
     puzzle.array.grow_x();
     puzzle.set_min_compatibility(0);
 
-    auto bests = puzzle.get_best_fits(0,0);
 
-    cout << "Shores: " << endl;
-    for(auto elem: bests){
-        cout << "   " << std::get<0>(elem) << endl;
+    puzzle.array.set(0,0, get_best(puzzle,0,0));
+
+
+    for(int i=1; i<5; i++){
+
+        puzzle.array.grow_y();
+        puzzle.array.grow_x();
+
+        for(int x=0; x<i; x++){
+            puzzle.array.set(x,i, get_best(puzzle,x,i));
+        }
+        for(int y=0; y<i; y++){
+            puzzle.array.set(i,y, get_best(puzzle,i,y));
+        }
+        puzzle.array.set(i,i, get_best(puzzle,i,i));
+
     }
 
-    tuple<float,shared_ptr<Holder>> best_element = bests.front();
+    puzzle.array.grow_y();
+    puzzle.array.grow_x();
 
+    //for(int x=0; x<2; x++){puzzle.array.set(x,2, get_best(puzzle,x,2));}
 
-    puzzle.array.set(0,0,std::get<1>(best_element));
+    //for(int y=0; y<2; y++){puzzle.array.set(2,y, get_best(puzzle,2,y));}
 
     Mat img = puzzle.array.get_image();
     Mat resized;
-    resize(img,resized,Size(950,950));
+    resize(img,resized,Size(3950,3950));
     imshow("puzzle",resized);
     waitKey(0);
+    //*/
+
+
 
     /*
+
+    Puzzle puzzle = Puzzle("../../dataset/test_2x3/divided",6);
+
+    PieceHolder holder_0 = PieceHolder(&puzzle.pieces[4],0);
+    PieceHolder holder_1 = PieceHolder(&puzzle.pieces[4],1);
+    PieceHolder holder_2 = PieceHolder(&puzzle.pieces[4],2);
+    PieceHolder holder_3 = PieceHolder(&puzzle.pieces[4],3);
+
+
+    for(int index=0; index<4; index++) {
+        Mat im_0 = holder_0.get_image();
+        Mat im_1 = holder_1.get_image();
+        Mat im_2 = holder_2.get_image();
+        Mat im_3 = holder_3.get_image();
+
+        Point p_0 = holder_0.get_point(index);
+        Point p_1 = holder_1.get_point(index);
+        Point p_2 = holder_2.get_point(index);
+        Point p_3 = holder_3.get_point(index);
+
+        circle(im_0, p_0, 10, Scalar(127), -1);
+        circle(im_1, p_1, 10, Scalar(127), -1);
+        circle(im_2, p_2, 10, Scalar(127), -1);
+        circle(im_3, p_3, 10, Scalar(127), -1);
+
+        imshow("im_0", im_0);
+        imshow("im_1", im_1);
+        imshow("im_2", im_2);
+        imshow("im_3", im_3);
+        waitKey(0);
+    }
+
+    /*
+
     // test for the puzzle array visualization
     Piece::set_origin_path("../../dataset/blue_500pcs/divided");
     Piece p = Piece(0);
@@ -85,8 +148,8 @@ int main(){
     resize(image,resized,Size(950,950));
     imshow("puzzle",resized);
     waitKey(0);
-    */
 
+    */
     /*
     // test for the orientation and get point finctions
     int orientation = 2;

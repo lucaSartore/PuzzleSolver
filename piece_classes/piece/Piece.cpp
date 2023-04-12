@@ -132,4 +132,10 @@ cv::Point Piece::get_point(int index) {
     return points[index];
 }
 
+int Piece::get_preview_x_res() {
+    return ROTATION_RESOLUTION/PREVIEW_RESIZE_FACTOR;
+}
 
+int Piece::get_preview_y_res() {
+    return ROTATION_RESOLUTION/PREVIEW_RESIZE_FACTOR;
+}

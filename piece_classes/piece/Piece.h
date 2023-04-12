@@ -39,6 +39,10 @@ public:
     cv::Point get_point(int index);
     /// destructor
     ~Piece() = default;
+    /// return the x resolution of the preview image
+    int get_preview_x_res();
+    /// return the y resolution of the preview image
+    int get_preview_y_res();
 };
 
 #endif //PUZZLE_SOLVER_PIECE_H

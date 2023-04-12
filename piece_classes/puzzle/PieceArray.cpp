@@ -325,7 +325,6 @@ void PieceArray::insert_into_image(int x, int y) {
     to_paste = to_paste!=0;
     floodFill(to_paste,this_piece_cast->get_center(), this_piece_cast->get_color());
 
-
     // pasting the piece in to the image
     paste_on_top(
             to_paste,
