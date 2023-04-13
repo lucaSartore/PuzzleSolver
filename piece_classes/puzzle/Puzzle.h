@@ -19,6 +19,7 @@
 
 class PuzzlePointer{
 private:
+    std::list<std::tuple<int,int>> list_x_y;
     // the coordinates the pointer is pointing to right now
     int x,y;
     PieceArray* reference_array;
@@ -27,19 +28,23 @@ public:
     /// build a puzzle pointer structure, need to pass a pointer to the array this pointer is referring to
     explicit PuzzlePointer(PieceArray* reference_array_);
     /// return the current x position of the pointer
-    int get_x();
+    [[nodiscard]] int get_x() const;
     /// return the current y position of the pointer
-    int get_y();
+    [[nodiscard]] int get_y() const;
+
     /// advance the position by one
-    /// it throws an error if the puzzle is finished and is impossible to advance further
+    /// the function return false if the puzzle is finished and is impossible to advance further
+    /// it returns true otherwise
     /// it also throws an error if it find out that he is pointing to a point that has no
     /// clear next element, or a point with no actual piece in it
-    void next();
+
+    bool next();
     /// retreat the position by one
-    /// it throws an error if you try to call it when he is pointing to 0,0 (aka the beginning)
+    /// the function return false if you try to call it when he is pointing to 0,0 (aka the beginning)
+    /// it returns true otherwise
     /// it also throws an error if it find out that he is pointing to a point that has no
     /// clear next element, or a point with no actual piece in it
-    void prev();
+    bool prev();
 };
 
 class Puzzle {
@@ -68,8 +73,8 @@ public:
     /// set the minimum compatibility a piece need to have in order
     /// to be considered a possible candidate for a spot
     void set_min_compatibility(float new_value);
-    /// return a list containing the best fit for the asked position
-    /// the list is sorted form best fit to worst fit
+    /// return a list_x_y containing the best fit for the asked position
+    /// the list_x_y is sorted form best fit to worst fit
     std::list<std::tuple<float,std::shared_ptr<Holder>>> get_best_fits(int x, int y);
 };
 
