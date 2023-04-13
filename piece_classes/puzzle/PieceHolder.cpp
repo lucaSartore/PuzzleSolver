@@ -195,3 +195,7 @@ cv::Point PieceHolder::get_center() {
     cv::Point p4 = get_point(3);
     return (p1+p2+p3+p4)/4;
 }
+
+Piece *PieceHolder::get_piece() {
+    return piece;
+}

@@ -33,6 +33,8 @@ public:
     cv::Point get_side_center_with_offset(Direction direction);
     /// return the coordinates of one of the 4 points of the image, based on the specified index
     cv::Point  get_point(int index);
+    /// return the pointer to the original piece
+    Piece* get_piece();
 };
 
 

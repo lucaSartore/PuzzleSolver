@@ -32,8 +32,14 @@ shared_ptr<Holder> get_best(Puzzle& puzzle, int x, int y){
 
 int main(){
 
+    //Puzzle puzzle = Puzzle("../../dataset/test_2x3/divided",6);
+    Puzzle puzzle = Puzzle("../../dataset/blue_500pcs/divided",500);
 
-    ///*
+    puzzle.set_min_compatibility(0.5);
+
+    cout << puzzle.solve() << endl;
+
+    /*
 
     Puzzle puzzle = Puzzle("../../dataset/test_2x3/divided",6);
     //Puzzle puzzle = Puzzle("../../dataset/blue_500pcs/divided",500);
@@ -73,7 +79,7 @@ int main(){
     resize(img,resized,Size(950,950));
     imshow("puzzle",resized);
     waitKey(0);
-    //*/
+    */
 
 
 

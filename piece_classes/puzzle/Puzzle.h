@@ -45,6 +45,8 @@ public:
     bool prev();
 };
 
+std::ostream & operator<<(std::ostream& os, const PuzzlePointer & pp);
+
 class Puzzle {
 public:
     PuzzlePointer puzzle_pointer;
@@ -59,7 +61,9 @@ public:
     // a vector containing all the available pieces (aka: the one that are not already positioned in the puzzle)
     std::list<Piece*> available_pieces;
     // inductive function for solving a puzzle, it returns true if it manage to solve it false if not
-    static bool solve_puzzle_recursive(Puzzle& puzzle, int x_to_);
+    static bool solve_puzzle_recursive(Puzzle& puzzle);
+    // show the puzzle to the user
+    void show();
 public:
     /// constructor, parameters are;
     /// where to find the information about the pieces
@@ -74,6 +78,8 @@ public:
     /// return a list_x_y containing the best fit for the asked position
     /// the list_x_y is sorted form best fit to worst fit
     std::list<std::tuple<float,std::shared_ptr<Holder>>> get_best_fits(int x, int y);
+    /// slove the puzzle
+    bool solve();
 };
 
 
