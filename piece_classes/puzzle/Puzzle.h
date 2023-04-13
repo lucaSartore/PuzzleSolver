@@ -23,8 +23,9 @@ private:
     int x,y;
     PieceArray* reference_array;
 public:
+    PuzzlePointer();
     /// build a puzzle pointer structure, need to pass a pointer to the array this pointer is referring to
-    PuzzlePointer(PieceArray* reference_array_);
+    explicit PuzzlePointer(PieceArray* reference_array_);
     /// return the current x position of the pointer
     int get_x();
     /// return the current y position of the pointer

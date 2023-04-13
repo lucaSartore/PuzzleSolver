@@ -34,6 +34,9 @@ Puzzle::Puzzle(std::string path, int number_of_pieces_) {
     for(int i=0; i<number_of_pieces; i++){
         available_pieces.push_back(pieces+i);
     }
+
+    // create the pointer
+    puzzle_pointer = PuzzlePointer(&array);
 }
 
 Puzzle::~Puzzle() {
@@ -80,6 +83,16 @@ std::list<std::tuple<float,shared_ptr<Holder>>> Puzzle::get_best_fits(int x, int
     return best_fits;
 }
 
-bool Puzzle::solve_puzzle_recursive(Puzzle &puzzle) {
-    return false;
+
+
+PuzzlePointer::PuzzlePointer(PieceArray *reference_array_) {
+    reference_array = reference_array_;
+    x = 0;
+    y = 0;
+}
+
+PuzzlePointer::PuzzlePointer() {
+    reference_array = nullptr;
+    x = 0;
+    y = 0;
 }

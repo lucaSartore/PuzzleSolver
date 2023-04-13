@@ -33,8 +33,6 @@ shared_ptr<Holder> get_best(Puzzle& puzzle, int x, int y){
 int main(){
 
 
-
-
     ///*
 
     Puzzle puzzle = Puzzle("../../dataset/test_2x3/divided",6);
