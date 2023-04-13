@@ -3,218 +3,230 @@
 //
 
 #include <iostream>
-#include "graphic_piece/Side.h"
-#include "graphic_piece/PieceShape.h"
-#include "graphic_piece/util_piece.h"
-#include "logic_piece/PieceConnections.h"
+#include "piece/Side.h"
+#include "piece/Piece.h"
 #include <chrono>
 #include <memory>
-#include "full_puzzle_graph/PuzzleGraph.h"
 #include <atomic>
 #include <thread>
+#include "puzzle/Holder.h"
+#include "puzzle/PieceArray.h"
+#include "puzzle/PieceHolder.h"
+#include "puzzle/OutsideHolder.h"
+#include "puzzle/Puzzle.h"
 
 using namespace std;
 using namespace std::chrono;
+using namespace cv;
 
 #define NUMBER_OF_PIECES 500
 #define MINIMUM_COMPATIBILITY_PERCENTAGE 0.5
 
 
-void piece_comparer_thread(PieceConnections pieces_logic[], PieceShape pieces_shapes[], atomic<int> *index);
-void calculate_single_thread(bool debug = false);
-void calculate_multi_thread(int number_of_threads = 0);
-void simplify_graph();
+shared_ptr<Holder> get_best(Puzzle& puzzle, int x, int y){
+
+    auto bests = puzzle.get_best_fits(x,y);
+    tuple<float,shared_ptr<Holder>> best_element = bests.front();
+    return std::get<1>(best_element);
+}
 
 int main(){
-    //simplify_graph();
-    calculate_single_thread(true);
-    //calculate_multi_thread(2);
-}
+
+    //Puzzle puzzle = Puzzle("../../dataset/test_2x3/divided",6);
+    Puzzle puzzle = Puzzle("../../dataset/blue_500pcs/divided",500);
+
+    puzzle.set_min_compatibility(0.5);
+
+    cout << puzzle.solve() << endl;
+
+    /*
+
+    Puzzle puzzle = Puzzle("../../dataset/test_2x3/divided",6);
+    //Puzzle puzzle = Puzzle("../../dataset/blue_500pcs/divided",500);
+
+    puzzle.array.grow_y();
+    puzzle.array.grow_x();
+    puzzle.set_min_compatibility(0);
 
 
-void piece_comparer_thread(PieceConnections pieces_logic[], PieceShape pieces_shapes[], atomic<int> *index){
-    while (true) {
-        int piece_id = (*index)++;
+    puzzle.array.set(0,0, get_best(puzzle,0,0));
 
-        cout << "processing piece: " << piece_id << "/" << NUMBER_OF_PIECES << endl;
 
-        if (piece_id >= NUMBER_OF_PIECES - 1) {
-            return;
+    for(int i=1; i<2; i++){
+        cout << i << endl;
+        puzzle.array.grow_y();
+        puzzle.array.grow_x();
+
+        for(int x=0; x<i; x++){
+            puzzle.array.set(x,i, get_best(puzzle,x,i));
         }
-
-        for (int piece_side = 0; piece_side < 4; piece_side++) {
-            for (int other_piece_id = piece_id + 1; other_piece_id < NUMBER_OF_PIECES; other_piece_id++) {
-                for (int other_piece_side = 0; other_piece_side < 4; other_piece_side++) {
-
-                    // check for compatibility
-                    float compatibility = pieces_shapes[piece_id].get_side(piece_side).compare_to(
-                            pieces_shapes[other_piece_id].get_side(other_piece_side)
-                    );
-                    if (compatibility > MINIMUM_COMPATIBILITY_PERCENTAGE) {
-                        // add compatibility to the register;
-                        pieces_logic[piece_id].insert_matching_piece(other_piece_id,piece_side, other_piece_side);
-                        pieces_logic[other_piece_id].insert_matching_piece(piece_id,other_piece_side, piece_side);
-                    }
-                }
-            }
+        for(int y=0; y<i; y++){
+            puzzle.array.set(i,y, get_best(puzzle,i,y));
         }
-    }
-}
+        puzzle.array.set(i,i, get_best(puzzle,i,i));
 
-
-void simplify_graph(){
-    //PuzzleGraph pg = PuzzleGraph("../../dataset/tests/connections");
-    PuzzleGraph pg = PuzzleGraph("../../dataset/blue_500pcs/connections");
-
-    int excluded_pieces =1;
-    while (excluded_pieces) {
-        pg.calculate_distances();
-        excluded_pieces = pg.exclude_some_connections();
-        pg.reset_distances();
     }
 
+    puzzle.array.grow_y();
+    puzzle.array.grow_x();
 
-    for(int i=0; i<pg.number_of_pieces; i++){
-        cout << pg.pieces[i].to_string() << endl;
+    //for(int x=0; x<2; x++){puzzle.array.set(x,2, get_best(puzzle,x,2));}
+
+    //for(int y=0; y<2; y++){puzzle.array.set(2,y, get_best(puzzle,2,y));}
+
+    Mat img = puzzle.array.get_image();
+    Mat resized;
+    resize(img,resized,Size(950,950));
+    imshow("puzzle",resized);
+    waitKey(0);
+    */
+
+
+
+    /*
+
+    Puzzle puzzle = Puzzle("../../dataset/test_2x3/divided",6);
+
+    PieceHolder holder_0 = PieceHolder(&puzzle.pieces[4],0);
+    PieceHolder holder_1 = PieceHolder(&puzzle.pieces[4],1);
+    PieceHolder holder_2 = PieceHolder(&puzzle.pieces[4],2);
+    PieceHolder holder_3 = PieceHolder(&puzzle.pieces[4],3);
+
+
+    for(int index=0; index<4; index++) {
+        Mat im_0 = holder_0.get_image();
+        Mat im_1 = holder_1.get_image();
+        Mat im_2 = holder_2.get_image();
+        Mat im_3 = holder_3.get_image();
+
+        Point p_0 = holder_0.get_point(index);
+        Point p_1 = holder_1.get_point(index);
+        Point p_2 = holder_2.get_point(index);
+        Point p_3 = holder_3.get_point(index);
+
+        circle(im_0, p_0, 10, Scalar(127), -1);
+        circle(im_1, p_1, 10, Scalar(127), -1);
+        circle(im_2, p_2, 10, Scalar(127), -1);
+        circle(im_3, p_3, 10, Scalar(127), -1);
+
+        imshow("im_0", im_0);
+        imshow("im_1", im_1);
+        imshow("im_2", im_2);
+        imshow("im_3", im_3);
+        waitKey(0);
     }
 
-}
+    /*
+
+    // test for the puzzle array visualization
+    Piece::set_origin_path("../../dataset/blue_500pcs/divided");
+    Piece p = Piece(0);
+    PieceArray pa = PieceArray();
+
+    pa.set(0,0,shared_ptr<Holder>(new PieceHolder(&p,0)));
 
 
-void calculate_single_thread(bool debug){
-    // create array of piece shape
-    PieceShape::set_origin_path("../../dataset/blue_500pcs/divided");
-    PieceShape pieces_shapes[NUMBER_OF_PIECES];
+    for(int i=1; i<10; i++){
 
-    // create array of piece logic
-    PieceConnections pieces_logic[NUMBER_OF_PIECES];
+        for(int x=0; x<i; x++){
+            pa.set(x,i,shared_ptr<Holder>(new PieceHolder(&p,0)));
+        }
+        for(int y=0; y<i; y++){
+            pa.set(i,y,shared_ptr<Holder>(new PieceHolder(&p,0)));
+
+        }
+        pa.set(i,i,shared_ptr<Holder>(new PieceHolder(&p,0)));
+
+    }
+    Mat image = pa.get_image();
+    Mat resized;
+    resize(image,resized,Size(950,950));
+    imshow("puzzle",resized);
+    waitKey(0);
+
+    pa.remove(0,9);
+    pa.remove(0,8);
+    pa.remove(9,7);
+
+    image = pa.get_image();
+    resize(image,resized,Size(950,950));
+    imshow("puzzle",resized);
+    waitKey(0);
+
+    */
+    /*
+    // test for the orientation and get point finctions
+    int orientation = 2;
+    Direction direction = RIGHT;
+
+    Piece::set_origin_path("../../dataset/blue_500pcs/divided");
+    Piece p = Piece(0);
+
+
+    PieceArray pa = PieceArray();
+
+    pa.set(0,0,shared_ptr<Holder>(new PieceHolder(&p,orientation)));
+
+    Holder* h = pa.get(0,0);
+
+    if(h->is_a_piece()){
+        auto* ph = dynamic_cast<PieceHolder*>(h);
+        Mat image = ph->get_image().clone();
+        circle(image,ph->get_side_center(direction),10,Scalar(125),-1);
+        Mat side = ph->get_side(direction)->get_side_mask();
+        Mat resized;
+        resize(image,resized,image.size()*2/3);
+        imshow("Piece", resized);
+        resize(side,resized,side.size()/2);
+        imshow("Side", resized);
+        waitKey(0);
+    }*/
+
+
+    /*
+    // see the array functions with the debug print
+    PieceArray array = PieceArray();
+
+    cout << array << endl;
+
+    array.grow_x();array.grow_x();array.grow_x();
+
+    cout << array << endl;
+
+    array.grow_y();
+
+    cout << array << endl;
+
+    Piece::set_origin_path("../../dataset/blue_500pcs/divided");
+    Piece p = Piece(0);
+    auto h = shared_ptr<Holder>(new PieceHolder(&p,0));
+    array.set(0,0,h);
+
+    cout << array << endl;
+
+    array.grow_x();
+    array.grow_y();
+
+    cout << array << endl;
+
+    array.un_grow_x();
+    cout << array << endl;
+
+    array.un_grow_y();
+    cout << array << endl;
+
+    array.remove(0,0);
+    cout << array << endl;
+
+    */
+    /*
+    // array creation
+    Piece::set_origin_path("../../dataset/blue_500pcs/divided");
+    Piece pieces[NUMBER_OF_PIECES];
 
     // filling both array up with the respective index;
     for(int i=0; i<NUMBER_OF_PIECES;i++){
-        pieces_logic[i].became(i);
-        pieces_shapes[i] = PieceShape(i);
-    }
-
-    auto start = chrono::steady_clock::now();
-
-    // compare all the pieces_shapes one by one, and save the results in the piece logic
-    for(int piece_id=0; piece_id<NUMBER_OF_PIECES;piece_id++){
-        //cout << "done piece: " << piece_id << "/" << NUMBER_OF_PIECES << endl;
-        for(int piece_side=0; piece_side<4; piece_side++){
-
-            // if this side is a border i don't need to compare it with others
-            if(pieces_shapes[piece_id].get_side(piece_side).get_kind() == BORDER){
-                continue;
-            }
-
-            for(int other_piece_id=piece_id+1; other_piece_id<500;other_piece_id++){
-                for(int other_piece_side=0; other_piece_side<4; other_piece_side++){
-
-                    // check for compatibility
-                    float compatibility = pieces_shapes[piece_id].get_side(piece_side).compare_to(
-                            pieces_shapes[other_piece_id].get_side(other_piece_side)
-                    );
-                    if(compatibility > MINIMUM_COMPATIBILITY_PERCENTAGE){
-                        if(debug){
-                            pieces_shapes[piece_id].get_side(piece_side).compare_to(
-                                    pieces_shapes[other_piece_id].get_side(other_piece_side),
-                                    true
-                            );
-                        }
-                        // add compatibility to the register;
-                        pieces_logic[piece_id].insert_matching_piece(other_piece_id,piece_side,other_piece_side);
-                        pieces_logic[other_piece_id].insert_matching_piece(piece_id,other_piece_side,piece_side);
-                    }
-                }
-            }
-
-            // debug: see with pieces get no connections
-            if(pieces_logic[piece_id].get_matching_piece_to_side(piece_side).empty()){
-                cout << "not found match for piece " << piece_id << " with side " << piece_side << endl;
-                pieces_shapes[piece_id].show_debug(piece_side);
-                /*pieces_shapes[piece_id].get_side(piece_side).compare_to(
-                        pieces_shapes[80].get_side(1),
-                        true
-                );*/
-            }
-
-        }
-    }
-
-    auto end = chrono::steady_clock::now();
-
-    cout << "Execution time in seconds [single threaded]: "
-         << chrono::duration_cast<chrono::seconds>(end - start).count()
-         << " sec";
-
-    // save the connections information to the disk
-    for(auto & i : pieces_logic){
-        i.save_as_file("../../dataset/blue_500pcs/connections");
-    }
+        pieces[i] = Piece(i);
+    }*/
 }
 
-
-void calculate_multi_thread(int number_of_threads){
-    // create array of piece shape
-    PieceShape::set_origin_path("../../dataset/blue_500pcs/divided");
-    PieceShape pieces_shapes[NUMBER_OF_PIECES];
-
-    // create array of piece logic
-    PieceConnections pieces_logic[NUMBER_OF_PIECES];
-
-    // filling both array up with the respective index;
-    for(int i=0; i<NUMBER_OF_PIECES;i++){
-        pieces_logic[i].became(i);
-        pieces_shapes[i] = PieceShape(i);
-    }
-
-    // create a shared index
-    atomic<int> index;
-
-    unsigned  int processor_count;
-    if(number_of_threads == 0){
-        // find how many cores are available
-        processor_count = std::thread::hardware_concurrency();
-    }else{
-        processor_count = number_of_threads;
-    }
-
-
-
-    // make share the number is detected correctly
-    assert(processor_count != 0);
-
-    auto *threads = new thread[processor_count];
-
-    auto start = chrono::steady_clock::now();
-
-    // launch all threads
-    for(int i=0; i<processor_count; i++){
-        threads[i] = thread(piece_comparer_thread,pieces_logic,pieces_shapes, &index);
-    }
-
-    // showing debug
-    while (index < NUMBER_OF_PIECES){
-        cout << "processing: " << index << "/" << NUMBER_OF_PIECES << endl;
-        std::this_thread::sleep_for (std::chrono::milliseconds (100));
-    }
-
-    // join all threads
-    for(int i=0; i<processor_count; i++){
-        threads[i].join();
-    }
-
-    auto end = chrono::steady_clock::now();
-
-    cout << "Execution time in seconds [multi threaded]: "
-         << chrono::duration_cast<chrono::seconds>(end - start).count()
-         << " sec";
-
-    // free the memory allocated
-    delete[] threads;
-
-    // save the connections information to the disk
-    for(auto & i : pieces_logic){
-        i.save_as_file("../../dataset/blue_500pcs/connections");
-    }
-}

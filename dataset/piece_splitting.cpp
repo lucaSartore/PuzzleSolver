@@ -16,7 +16,7 @@ using namespace cv;
 /// how many pixel of margin the function keeps when cropping an image
 #define CROP_MARGIN (50*ppi/1200)
 /// the threshold that gets applied to the original mask, in order to split the pieces from the background
-#define THRESHOLD 25
+#define THRESHOLD 40
 /// kernel of the morphologyEx open filter that will be apply to the mask
 #define MORPH_OPEN_KERNEL (10*ppi/1200)
 /// kernel of the morphologyEx open filter that will be apply to the mask
@@ -49,9 +49,9 @@ int split_pieces_into_single_images(const std::string& input_path,const std::str
 
         // expand the image border so that it could crop the pieces without "overflowing" and throwing an error
         int width = image.size().width, height = image.size().height;
-        Size new_size = Size(width + 2*CROP_MARGIN,height + 2*CROP_MARGIN);
+        Size new_size = Size(width + 2*CROP_MARGIN+2,height + 2*CROP_MARGIN+2);
         temp = Mat::zeros(new_size,image.type());
-        cv::Mat middle_image = Mat(temp, cv::Rect(CROP_MARGIN, CROP_MARGIN, width,height));
+        cv::Mat middle_image = Mat(temp, cv::Rect(CROP_MARGIN+1, CROP_MARGIN+1, width,height));
         image.copyTo(middle_image);
         image = temp;
 
@@ -83,7 +83,6 @@ int split_pieces_into_single_images(const std::string& input_path,const std::str
         // split the pieces and get the data
         Mat individual_pieces, stats, center;
         int number_of_pieces = connectedComponentsWithStats(mask, individual_pieces, stats, center);
-
         // for each individual piece
         for(int i=1; i<number_of_pieces; i++){
 
@@ -92,6 +91,20 @@ int split_pieces_into_single_images(const std::string& input_path,const std::str
             int y1 = -CROP_MARGIN + stats.at<int>(i, cv::CC_STAT_TOP);
             int x2 = CROP_MARGIN*2 + x1 + stats.at<int>(i, cv::CC_STAT_WIDTH);
             int y2 = CROP_MARGIN*2 + y1 + stats.at<int>(i, cv::CC_STAT_HEIGHT);
+
+            // anti crash range check
+            if(x1 < 0 || x2 < 0 || y1 < 0 || y2 < 0 ){
+                continue;
+            }
+            int dim_x = mask.size().width;
+            if(x1 >= dim_x || x2 >= dim_x ){
+                continue;
+            }
+            int dim_y = mask.size().height;
+            if(y1 >= dim_y || y2 >= dim_y ){
+                continue;
+            }
+
             // area to understand if the considered mask is actually a piece of puzzle or just a tiny dot
             int area = stats.at<int>(i  , cv::CC_STAT_AREA);
 
