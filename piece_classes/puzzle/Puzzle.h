@@ -42,8 +42,6 @@ public:
     /// retreat the position by one
     /// the function return false if you try to call it when he is pointing to 0,0 (aka the beginning)
     /// it returns true otherwise
-    /// it also throws an error if it find out that he is pointing to a point that has no
-    /// clear next element, or a point with no actual piece in it
     bool prev();
 };
 
