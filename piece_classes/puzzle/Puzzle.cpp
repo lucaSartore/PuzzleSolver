@@ -128,7 +128,7 @@ void Puzzle::show() {
     cv::Mat resized;
     resize(img,resized,cv::Size(950,950));
     imshow("puzzle",resized);
-    cv::waitKey(0);
+    cv::waitKey(1);
 }
 
 // as convention when i call the function puzzle pointer need to point to the first empty element that needs to be fit
