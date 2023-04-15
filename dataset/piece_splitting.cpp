@@ -64,7 +64,7 @@ int split_pieces_into_single_images(const std::string& input_path,const std::str
         // to remove with better images
 
 
-        blur(mask,temp, Size (21,21));
+        blur(mask,temp, Size (7,7));
         mask = temp;
 
         //applying a threshold
