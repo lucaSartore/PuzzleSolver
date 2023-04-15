@@ -16,7 +16,7 @@ using namespace cv;
 /// how many pixel of margin the function keeps when cropping an image
 #define CROP_MARGIN (50*ppi/1200)
 /// the threshold that gets applied to the original mask, in order to split the pieces from the background
-#define THRESHOLD 40
+#define THRESHOLD 100
 /// kernel of the morphologyEx open filter that will be apply to the mask
 #define MORPH_OPEN_KERNEL (10*ppi/1200)
 /// kernel of the morphologyEx open filter that will be apply to the mask
@@ -57,14 +57,23 @@ int split_pieces_into_single_images(const std::string& input_path,const std::str
 
         Mat mask = image.clone();
 
-
         // converting mask to gray
         cvtColor(mask, temp, COLOR_BGR2GRAY);
         mask = temp;
 
-        // applying a threshold
+        // to remove with better images
+
+
+        blur(mask,temp, Size (7,7));
+        mask = temp;
+
+        //applying a threshold
         threshold(mask, temp, THRESHOLD, 255, THRESH_BINARY);
         mask = temp;
+
+        // unsung flood feel form the borders to remove the possible black pixels inside the pieces
+        floodFill(mask,Point(0,0),100);
+        mask = mask != 100;
 
         // create a matrix kernel for the filter
         kernel = Mat::zeros(Size(MORPH_OPEN_KERNEL,MORPH_OPEN_KERNEL),CV_8U) == 0;
