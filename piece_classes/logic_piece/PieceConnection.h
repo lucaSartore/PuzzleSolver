@@ -2,22 +2,21 @@
 // Created by luca on 3/21/23.
 //
 
-#ifndef PIECECLASS_PIECECONNECTIONS_H
-#define PIECECLASS_PIECECONNECTIONS_H
+#ifndef PIECECLASS_PIECECONNECTION_H
+#define PIECECLASS_PIECECONNECTION_H
 
 #include <iostream>
 #include <mutex>
 
 
-struct Connection{
-    int side;
-    float shore;
-    Connection(int side_, float shore_);
+class Connection{
+public:
+    float shores[4];
     Connection();
 };
 
 /// this class is used to store the information about the connections pieces have
-class PieceConnections {
+class PieceConnection {
 private:
     // the total number of pieces
     static int number_of_pieces;
@@ -34,20 +33,20 @@ public:
     /// allows to get the number of pieces in the simulation, this is important
     /// to allocate the correct amount of memory when creating the array
     static int get_number_of_pieces();
-    /// this function save the data inside the PieceConnections in to a file with the name specified in the path
+    /// this function save the data inside the PieceConnection in to a file with the name specified in the path
     void save_as_file(std::string path);
     /// zero parameter constructor;
-    PieceConnections();
+    PieceConnection();
     /// one parameter constructor, it initialize with matching_pieces empty
-    explicit PieceConnections(int id);
+    explicit PieceConnection(int id);
     /// this is a constructor that create a piece form some data saved by the `save_as_file` path
-    explicit PieceConnections(std::string path, int id);
+    explicit PieceConnection(std::string path, int id);
     /// distructor
-    ~PieceConnections();
+    ~PieceConnection();
     /// return the ids of the current piece
     int get_piece_id() const;
     /// allows ypu to insert a new element in the the piece's compatible pieces
-    void insert_matching_piece(int side_this_piece,int other_piece_id,const  Connection &new_connection);
+    void insert_matching_piece(int side_this_piece,int other_piece_id,int other_piece_side, float shore);
     /// turn the piece into an empty piece with the specified index
     void became(int id);
     /// turn the piece into the saved piece with the specified id and path
@@ -60,6 +59,6 @@ public:
 /// testing function for saving file
 void test_file_save();
 
-std::ostream & operator<<(const std::ostream& os,const PieceConnections& piece);
+std::ostream & operator<<(const std::ostream& os,const PieceConnection& piece);
 
-#endif //PIECECLASS_PIECECONNECTIONS_H
+#endif //PIECECLASS_PIECECONNECTION_H

@@ -17,7 +17,7 @@ add_executable(
         graphic_piece/util_piece.h
 
         logic_piece/PieceConnections.cpp
-        logic_piece/PieceConnections.h
+        logic_piece/PieceConnection.h
 
 )
 target_link_libraries( PieceClass ${OpenCV_LIBS} )

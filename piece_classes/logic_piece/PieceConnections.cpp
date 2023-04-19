@@ -1,4 +1,4 @@
-#include "PieceConnections.h"
+#include "PieceConnection.h"
 #include <fstream>
 #include <iostream>
 #include <iterator>
@@ -8,48 +8,96 @@
 
 using namespace std;
 
-int PieceConnections::number_of_pieces = 0;
+int PieceConnection::number_of_pieces = 0;
 
-void PieceConnections::save_as_file(string path) {
+void PieceConnection::save_as_file(string path) {
 
+    // saving file as txt for readability [debug only]
+    string second_path = path;
+    second_path += std::to_string(piece_id) + ".txt";
+    FILE* debug_file = fopen(second_path.c_str(),"w");
+    fprintf(debug_file,"%s",to_string().c_str());
+    fclose(debug_file);
+
+    // calculate path
+    path += std::to_string(piece_id) + ".bin";
+
+    // open as binary
+    FILE* file = fopen(path.c_str(),"wb");
+
+    // salve all the values
+    for(auto this_side: connections){
+        for(int piece = 0; piece < number_of_pieces; piece++){
+            for(auto shore: this_side[piece].shores){
+                fwrite(&shore,sizeof(float),1,file);
+            }
+        }
+    }
+
+    // close file
+    fclose(file);
 }
 
-PieceConnections::PieceConnections(string path, int id): PieceConnections() {
+PieceConnection::PieceConnection(string path, int id): PieceConnection() {
     this->became(path,id);
 }
 
-void PieceConnections::became(string path, int id) {
+void PieceConnection::became(string path, int id) {
+    // calculate path
+    path += std::to_string(id) + ".bin";
 
+    // open as binary
+    FILE* file;
+    if(!(file = fopen(path.c_str(),"rb"))){
+        throw runtime_error("file not found");
+    }
+
+    // salve all the values
+    for(auto this_side: connections){
+        for(int piece = 0; piece < number_of_pieces; piece++){
+            for(auto &shore: this_side[piece].shores){
+                if(!feof(file)){
+                    fread(&shore,sizeof(float),1,file);
+                }else{
+                    throw runtime_error("binary file not compatible");
+                }
+            }
+        }
+    }
+
+    // close file
+    fclose(file);
 }
 
 
-int PieceConnections::get_piece_id() const{
+int PieceConnection::get_piece_id() const{
     return piece_id;
 }
 
 
-ostream & operator<<(ostream& os, PieceConnections& piece){
+ostream & operator<<(ostream& os, PieceConnection& piece){
     os << piece.to_string();
     return os;
 }
 
-string PieceConnections::get_side_as_string(int side) const {
+string PieceConnection::get_side_as_string(int side) const {
     assert(side>=0);
     assert(side<4);
     string s = string("{");
     for(int i=0; i<number_of_pieces; i++){
-        auto elem = connections[i];
-        s+=  std::to_string(i) + "_" + std::to_string(elem->side) + ": " +  std::to_string(elem->shore) + ", ";
+        auto elem = connections[side][i];
+        for(int side_other=0; side_other < 4; side_other++)
+        s+= std::to_string(i) + "_" + std::to_string(side_other) + ": " + std::to_string(elem.shores[side_other]) + ", ";
     }
     s+= "}";
     return std::move(s);
 }
 
 
-PieceConnections::PieceConnections(int id): PieceConnections() {
+PieceConnection::PieceConnection(int id): PieceConnection() {
     this->became(id);
 }
-void PieceConnections::became(int id) {
+void PieceConnection::became(int id) {
     mut.lock();
 
     // insert new piece id
@@ -64,45 +112,46 @@ void PieceConnections::became(int id) {
 
     mut.unlock();
 }
-PieceConnections::PieceConnections() {
+PieceConnection::PieceConnection() {
     piece_id = 0;
-    for(auto c: connections){
+    for(auto &c: connections){
         c = new Connection[number_of_pieces];
     }
 }
 
-string PieceConnections::to_string() {
-
+string PieceConnection::to_string() {
     string s;
 
     s += "piece_id: " + std::to_string(piece_id) +
-            "\nside 0 neighbor: " + get_side_as_string(0) +
-            "\nside 1 neighbor: " + get_side_as_string(1) +
-            "\nside 2 neighbor: " + get_side_as_string(2) +
-            "\nside 3 neighbor: " + get_side_as_string(3);
+            "\nside 0: " + get_side_as_string(0) +
+            "\nside 1: " + get_side_as_string(1) +
+            "\nside 2: " + get_side_as_string(2) +
+            "\nside 3: " + get_side_as_string(3);
 
     return s;
 }
 
-void PieceConnections::set_number_of_pieces(int new_val) {
+void PieceConnection::set_number_of_pieces(int new_val) {
     number_of_pieces = new_val;
 }
 
-int PieceConnections::get_number_of_pieces() {
+int PieceConnection::get_number_of_pieces() {
     return number_of_pieces;
 }
 
-void PieceConnections::insert_matching_piece(int side_this_piece, int other_piece_id, const Connection &new_connection) {
+void PieceConnection::insert_matching_piece(int side_this_piece,int other_piece_id,int other_piece_side, float shore) {
     assert(side_this_piece>=0);
     assert(side_this_piece<4);
+    assert(other_piece_side>=0);
+    assert(other_piece_side<4);
     assert(other_piece_id>=0);
-    mut.lock();
     assert(other_piece_id<number_of_pieces);
-    connections[side_this_piece][other_piece_id] = new_connection;
+    mut.lock();
+    connections[side_this_piece][other_piece_id].shores[other_piece_side] = shore;
     mut.unlock();
 }
 
-PieceConnections::~PieceConnections() {
+PieceConnection::~PieceConnection() {
     for(auto p: connections){
         delete[] p;
     }
@@ -110,12 +159,12 @@ PieceConnections::~PieceConnections() {
 
 /// testing function for saving file
 void test_file_save(){
-    PieceConnections p1(10);
+    PieceConnection p1(10);
 
 
     p1.save_as_file(".");
 
-    PieceConnections p2(".",10);
+    PieceConnection p2(".", 10);
 
     p2.save_as_file("..");
 
@@ -128,16 +177,8 @@ void test_file_save(){
 
 
 
-
-Connection::Connection(int side_, float shore_) {
-    assert(side_>=0);
-    assert(side_<4);
-
-    side = side_;
-    shore = shore_;
-}
-
 Connection::Connection() {
-    side = 0;
-    shore = -1;
+    for(auto &d: shores){
+        d = 0;
+    }
 }
