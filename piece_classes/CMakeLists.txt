@@ -19,9 +19,5 @@ add_executable(
         logic_piece/PieceConnections.cpp
         logic_piece/PieceConnections.h
 
-        full_puzzle_graph/PieceNode.h
-        full_puzzle_graph/PieceNode.cpp
-        full_puzzle_graph/PuzzleGraph.h
-        full_puzzle_graph/PuzzleGraph.cpp
 )
 target_link_libraries( PieceClass ${OpenCV_LIBS} )

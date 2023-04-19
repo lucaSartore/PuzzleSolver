@@ -8,6 +8,7 @@
 
 using namespace std;
 
+int PieceConnections::number_of_pieces = 0;
 
 void PieceConnections::save_as_file(string path) {
 
@@ -26,12 +27,6 @@ int PieceConnections::get_piece_id() const{
     return piece_id;
 }
 
-Connection &PieceConnections::get_matching_piece_to_side(int side){
-    // check that the side is in range
-    assert(side >= 0);
-    assert(side <= 3);
-    return *connections[side];
-}
 
 ostream & operator<<(ostream& os, PieceConnections& piece){
     os << piece.to_string();
@@ -44,37 +39,35 @@ string PieceConnections::get_side_as_string(int side) const {
     string s = string("{");
     for(int i=0; i<number_of_pieces; i++){
         auto elem = connections[i];
-        s+=  std::to_string(elem->piece_id) + "_" + std::to_string(elem->side) + ": " +  std::to_string(elem->shore) + ", ";
+        s+=  std::to_string(i) + "_" + std::to_string(elem->side) + ": " +  std::to_string(elem->shore) + ", ";
     }
     s+= "}";
     return std::move(s);
 }
 
-void PieceConnections::insert_matching_piece(int side_this_piece, Connection &new_connection) {
-    assert(side_this_piece>=0);
-    assert(side_this_piece<4);
-
-    assert(new_connection.side>=0);
-    assert(new_connection.side<4);
-
-    assert(other_piece_id != piece_id);
-    mut.lock();
-    mut.unlock();
-}
 
 PieceConnections::PieceConnections(int id): PieceConnections() {
     this->became(id);
 }
 void PieceConnections::became(int id) {
+    mut.lock();
+
+    // insert new piece id
     piece_id = id;
-    for(auto e: matching_pieces){
-        e = set<tuple<int,int>>();
+
+    // reset all the connections
+    for(auto c: connections){
+        for(int i=0; i<number_of_pieces; i++){
+            c[i] = Connection();
+        }
     }
+
+    mut.unlock();
 }
 PieceConnections::PieceConnections() {
     piece_id = 0;
-    for(auto e: matching_pieces){
-        e = set<tuple<int,int>>();
+    for(auto c: connections){
+        c = new Connection[number_of_pieces];
     }
 }
 
@@ -91,19 +84,34 @@ string PieceConnections::to_string() {
     return s;
 }
 
+void PieceConnections::set_number_of_pieces(int new_val) {
+    number_of_pieces = new_val;
+}
+
+int PieceConnections::get_number_of_pieces() {
+    return number_of_pieces;
+}
+
+void PieceConnections::insert_matching_piece(int side_this_piece, int other_piece_id, const Connection &new_connection) {
+    assert(side_this_piece>=0);
+    assert(side_this_piece<4);
+    assert(other_piece_id>=0);
+    mut.lock();
+    assert(other_piece_id<number_of_pieces);
+    connections[side_this_piece][other_piece_id] = new_connection;
+    mut.unlock();
+}
+
+PieceConnections::~PieceConnections() {
+    for(auto p: connections){
+        delete[] p;
+    }
+}
+
 /// testing function for saving file
 void test_file_save(){
     PieceConnections p1(10);
 
-    p1.insert_matching_piece(11,1,2);
-    p1.insert_matching_piece(12,2,2);
-    p1.insert_matching_piece(13,3,0);
-    p1.insert_matching_piece(14,1,3);
-    p1.insert_matching_piece(15,2,1);
-    p1.insert_matching_piece(16,1,0);
-    p1.insert_matching_piece(17,2,2);
-    p1.insert_matching_piece(18,3,1);
-    p1.insert_matching_piece(19,0,0);
 
     p1.save_as_file(".");
 
@@ -119,9 +127,17 @@ void test_file_save(){
 }
 
 
-Connection::Connection(int piece_, int side_) {
+
+
+Connection::Connection(int side_, float shore_) {
     assert(side_>=0);
     assert(side_<4);
-    assert(piece_>=0);
-    assert(piece_<PieceConnections::g)
+
+    side = side_;
+    shore = shore_;
+}
+
+Connection::Connection() {
+    side = 0;
+    shore = -1;
 }

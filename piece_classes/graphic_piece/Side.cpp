@@ -9,7 +9,6 @@
 #include "Side.h"
 #include "iostream"
 #include "util_piece.h"
-#include "../full_puzzle_graph/PieceNode.h"
 #include "math.h"
 
 #include <algorithm>
