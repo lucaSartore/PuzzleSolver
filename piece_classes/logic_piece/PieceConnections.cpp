@@ -10,22 +10,7 @@ using namespace std;
 
 
 void PieceConnections::save_as_file(string path) {
-    mut.lock();
-    path += "/" + std::to_string(piece_id)+".txt";
-    ofstream file(path);
-    if (file.is_open()) {
-        file << piece_id << endl; // write piece id to file
-        for (int i = 0; i < 4; i++) {
-            for (auto& tuple : matching_pieces[i]) {
-                file << get<0>(tuple) << " " << get<1>(tuple) << " ";
-            }
-            file << endl;
-        }
-        file.close();
-    }else{
-        cerr << "impossible to open file: " << path << endl;
-    }
-    mut.unlock();
+
 }
 
 PieceConnections::PieceConnections(string path, int id): PieceConnections() {
@@ -33,28 +18,7 @@ PieceConnections::PieceConnections(string path, int id): PieceConnections() {
 }
 
 void PieceConnections::became(string path, int id) {
-    mut.lock();
-    path += "/" + std::to_string(id) + ".txt";
-    ifstream file(path);
-    if (file.is_open()) {
-        file >> piece_id;
-        string line;
-        getline(file, line);
-        for (auto & matching_piece : matching_pieces) {
-            int a,b;
-            getline(file, line);
 
-            istringstream iss(line);
-
-            while (iss >> a >> b) {
-                matching_piece.insert(make_tuple(a, b));
-            }
-
-        }
-        file.close();    } else {
-        cerr << "Error: could not open file " << path << endl;
-    }
-    mut.unlock();
 }
 
 
@@ -62,17 +26,15 @@ int PieceConnections::get_piece_id() const{
     return piece_id;
 }
 
-set<tuple<int,int>> &PieceConnections::get_matching_piece_to_side(int side){
+Connection &PieceConnections::get_matching_piece_to_side(int side){
     // check that the side is in range
     assert(side >= 0);
     assert(side <= 3);
-    return matching_pieces[side];
+    return *connections[side];
 }
 
 ostream & operator<<(ostream& os, PieceConnections& piece){
-
     os << piece.to_string();
-
     return os;
 }
 
@@ -80,23 +42,23 @@ string PieceConnections::get_side_as_string(int side) const {
     assert(side>=0);
     assert(side<4);
     string s = string("{");
-    for(auto e: matching_pieces[side]){
-        s+= std::to_string(get<0>(e)) + "_" + std::to_string(get<1>(e)) + ", ";
+    for(int i=0; i<number_of_pieces; i++){
+        auto elem = connections[i];
+        s+=  std::to_string(elem->piece_id) + "_" + std::to_string(elem->side) + ": " +  std::to_string(elem->shore) + ", ";
     }
     s+= "}";
     return std::move(s);
 }
 
-void PieceConnections::insert_matching_piece(int other_piece_id,int side_this_piece, int side_other_piece) {
+void PieceConnections::insert_matching_piece(int side_this_piece, Connection &new_connection) {
     assert(side_this_piece>=0);
     assert(side_this_piece<4);
 
-    assert(side_other_piece>=0);
-    assert(side_other_piece<4);
+    assert(new_connection.side>=0);
+    assert(new_connection.side<4);
 
     assert(other_piece_id != piece_id);
     mut.lock();
-    matching_pieces[side_this_piece].insert(tuple<int,int>(other_piece_id,side_other_piece));
     mut.unlock();
 }
 
@@ -157,3 +119,9 @@ void test_file_save(){
 }
 
 
+Connection::Connection(int piece_, int side_) {
+    assert(side_>=0);
+    assert(side_<4);
+    assert(piece_>=0);
+    assert(piece_<PieceConnections::g)
+}
