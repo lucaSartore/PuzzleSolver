@@ -14,13 +14,13 @@ void PieceConnection::save_as_file(string path) {
 
     // saving file as txt for readability [debug only]
     string second_path = path;
-    second_path += std::to_string(piece_id) + ".txt";
+    second_path += "/" +std::to_string(piece_id) + ".txt";
     FILE* debug_file = fopen(second_path.c_str(),"w");
     fprintf(debug_file,"%s",to_string().c_str());
     fclose(debug_file);
 
     // calculate path
-    path += std::to_string(piece_id) + ".bin";
+    path += "/" + std::to_string(piece_id) + ".bin";
 
     // open as binary
     FILE* file = fopen(path.c_str(),"wb");
@@ -44,7 +44,7 @@ PieceConnection::PieceConnection(string path, int id): PieceConnection() {
 
 void PieceConnection::became(string path, int id) {
     // calculate path
-    path += std::to_string(id) + ".bin";
+    path += "/" + std::to_string(id) + ".bin";
 
     // open as binary
     FILE* file;

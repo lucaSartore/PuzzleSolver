@@ -16,7 +16,7 @@
 using namespace std;
 using namespace std::chrono;
 
-#define NUMBER_OF_PIECES 10
+#define NUMBER_OF_PIECES 500
 #define MINIMUM_COMPATIBILITY_PERCENTAGE 0
 
 
@@ -138,6 +138,8 @@ void calculate_single_thread(bool debug){
 
 
 void calculate_multi_thread(int number_of_threads){
+    PieceConnection::set_number_of_pieces(NUMBER_OF_PIECES);
+
     // create array of piece shape
     PieceShape::set_origin_path("../../dataset/blue_500pcs/divided");
     PieceShape pieces_shapes[NUMBER_OF_PIECES];
