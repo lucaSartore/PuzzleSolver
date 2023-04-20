@@ -25,7 +25,6 @@ void calculate_single_thread(bool debug = false);
 void calculate_multi_thread(int number_of_threads = 0);
 
 int main(){
-    //simplify_graph();
     calculate_single_thread();
     //calculate_multi_thread(2);
 }
@@ -62,7 +61,7 @@ void piece_comparer_thread(PieceConnection pieces_connections[], PieceShape piec
 }
 
 
-
+// errors!
 void calculate_single_thread(bool debug){
     // create array of piece shape
     PieceConnection::set_number_of_pieces(NUMBER_OF_PIECES);
@@ -131,12 +130,11 @@ void calculate_single_thread(bool debug){
     }
 
     PieceConnection pc = PieceConnection("../../dataset/blue_500pcs/connections",0);
-
-    cout << pc.to_string() << endl;
-    cout << pieces_connections[0].to_string() << endl;
 }
 
 
+
+// errors!
 void calculate_multi_thread(int number_of_threads){
     PieceConnection::set_number_of_pieces(NUMBER_OF_PIECES);
 
