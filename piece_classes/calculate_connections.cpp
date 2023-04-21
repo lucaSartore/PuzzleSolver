@@ -11,7 +11,7 @@
 #include <memory>
 #include <atomic>
 #include <thread>
-
+#include "groped_pieces/GroupedPieces.h"
 
 using namespace std;
 using namespace std::chrono;
@@ -24,7 +24,20 @@ void piece_comparer_thread(PieceConnection pieces_connections[], PieceShape piec
 void calculate_single_thread(bool debug = false);
 void calculate_multi_thread(int number_of_threads = 0);
 
+
 int main(){
+
+    GroupedPieces<1> a = GroupedPieces<1>();
+    GroupedPieces<1> b = GroupedPieces<1>();
+    GroupedPieces<1> c = GroupedPieces<1>();
+    GroupedPieces<1> d = GroupedPieces<1>();
+
+    GroupedPieces<2> test = GroupedPieces<2>(&a,&b,&c,&d);
+
+    GroupedPieces<3> test2 = GroupedPieces<3>(&test,&test,&test,&test);
+
+    return 0;
+
     calculate_single_thread();
     //calculate_multi_thread(2);
 }

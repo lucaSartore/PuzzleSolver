@@ -19,5 +19,9 @@ add_executable(
         logic_piece/PieceConnections.cpp
         logic_piece/PieceConnection.h
 
+        groped_pieces/GroupedPieces.tpp
+        groped_pieces/GroupedPieces.h
+        groped_pieces/Direction.cpp
+        groped_pieces/Direction.h
 )
 target_link_libraries( PieceClass ${OpenCV_LIBS} )

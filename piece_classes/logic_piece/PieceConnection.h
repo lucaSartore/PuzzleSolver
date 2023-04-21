@@ -15,10 +15,10 @@ public:
     Connection();
 };
 
-/// this class is used to store the information about the connections pieces have
+/// this class is used to store the information about the connections piece have
 class PieceConnection {
 private:
-    // the total number of pieces
+    // the total number of piece
     static int number_of_pieces;
     // the id of this piece
     int piece_id;
@@ -27,10 +27,10 @@ private:
     std::string get_side_as_string(int side) const;
     std::mutex mut;
 public:
-    /// allows to set the number of pieces in the simulation, this is important
+    /// allows to set the number of piece in the simulation, this is important
     /// to allocate the correct amount of memory when creating the array
     static void set_number_of_pieces(int new_val);
-    /// allows to get the number of pieces in the simulation, this is important
+    /// allows to get the number of piece in the simulation, this is important
     /// to allocate the correct amount of memory when creating the array
     static int get_number_of_pieces();
     /// this function save the data inside the PieceConnection in to a file with the name specified in the path
@@ -45,7 +45,7 @@ public:
     ~PieceConnection();
     /// return the ids of the current piece
     int get_piece_id() const;
-    /// allows ypu to insert a new element in the the piece's compatible pieces
+    /// allows ypu to insert a new element in the the piece's compatible piece
     void insert_matching_piece(int side_this_piece,int other_piece_id,int other_piece_side, float shore);
     /// turn the piece into an empty piece with the specified index
     void became(int id);
@@ -53,6 +53,8 @@ public:
     void became(std::string path, int id);
     /// return a string representation of the current piece
     std::string to_string();
+    /// let you compare this piece with an other piece.
+    float compare(int this_piece_side, int other_piece_id, int other_piece_side);
 };
 
 

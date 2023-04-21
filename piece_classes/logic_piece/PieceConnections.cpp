@@ -157,6 +157,10 @@ PieceConnection::~PieceConnection() {
     }
 }
 
+float PieceConnection::compare(int this_piece_side, int other_piece_id, int other_piece_side) {
+    return connections[this_piece_side][other_piece_id].shores[other_piece_side];
+}
+
 /// testing function for saving file
 void test_file_save(){
     PieceConnection p1(10);
