@@ -5,6 +5,8 @@
 #include "GroupedPieces.h"
 #include <cmath>
 #include <algorithm>
+#include <iostream>
+#include <assert.h>
 
 using namespace std;
 
@@ -50,28 +52,69 @@ std::set<int> &GroupedPieces<N>::get_ids() {
 template<int N>
 GroupedPieces<N>::GroupedPieces(GroupedPieces<N - 1> *top_left, GroupedPieces<N - 1> *top_right, GroupedPieces<N - 1> *bottom_right, GroupedPieces<N - 1> *bottom_left) {
 
-    cout << "AAAAA" << endl;
+    // make share pointer aren't null
+    assert(top_left != nullptr);
+    assert(top_right != nullptr);
+    assert(bottom_right != nullptr);
+    assert(bottom_left != nullptr);
 
-    /*
-    // conacat. all the set
-    std::merge(top_left->get_ids().begin(), top_left->get_ids().end(),
+    //reset default ids set
+    ids = {};
+
+    // concat all the sets
+    std::set<int> t1 = {},t2 = {};
+    std::set_union(top_left->get_ids().begin(), top_left->get_ids().end(),
                top_right->get_ids().begin(), top_right->get_ids().end(),
-               bottom_right->get_ids().begin(), bottom_right->get_ids().end(),
-               bottom_left->get_ids().begin(), bottom_left->get_ids().end(),
-               std::inserter(ids, ids.begin()));
+               std::inserter(t1, t1.begin()));
+    std::set_union(bottom_right->get_ids().begin(), bottom_right->get_ids().end(),
+                   bottom_left->get_ids().begin(), bottom_left->get_ids().end(),
+                   std::inserter(t2, t2.begin()));
+    std::set_union(t1.begin(), t1.end(),
+                   t2.begin(), t2.end(),
+                   std::inserter(ids, ids.begin()));
 
     // check if the different ids are the expected number, otherwise it mean that one piece is duplicated, so this is not a valid piece
     float expected_pieces = pow(4.0,N-1);
-
-    cout << "subs: " << endl;
-    for(auto e: ids){
-        cout << e << ", ";
-    }
-    cout << endl;
-
     if(ids.size() != std::round(expected_pieces)){
         throw std::invalid_argument("some pieces are repeated");
-    }*/
+    }
+
+    // insert the pointers to the respective tiles
+    set_bottom_left(bottom_left);
+    set_bottom_right(bottom_right);
+    set_top_left(top_right);
+    set_top_left(top_left);
+}
+
+template<>
+GroupedPieces<2>::GroupedPieces(GroupedPieces<1> *top_left, GroupedPieces<1> *top_right, GroupedPieces<1> *bottom_right, GroupedPieces<1> *bottom_left) {
+
+    // make share pointer aren't null
+    assert(top_left != nullptr);
+    assert(top_right != nullptr);
+    assert(bottom_right != nullptr);
+    assert(bottom_left != nullptr);
+
+
+    // make array empty
+    ids = {};
+
+    // insert the single data
+    ids.insert(top_left->get_id());
+    ids.insert(top_right->get_id());
+    ids.insert(bottom_right->get_id());
+    ids.insert(bottom_left->get_id());
+
+    // check if all ids are different, otherwise throw an error
+    if(ids.size() != 4){
+        throw std::invalid_argument("some pieces are repeated");
+    }
+
+    // insert the pointers to the respective tiles
+    set_bottom_left(bottom_left);
+    set_bottom_right(bottom_right);
+    set_top_left(top_right);
+    set_top_left(top_left);
 }
 
 
@@ -130,4 +173,13 @@ int GroupedPieces<1>::direction_to_side_index(Direction direction) {
     }
     // sum the 2 with module 4 to do
     return (n+orientation)%4;
+}
+
+GroupedPieces<1>::GroupedPieces(PieceConnection *reference_piece, int orientation_) {
+    assert(orientation_>=0);
+    assert(orientation_<4);
+    assert(reference_piece != nullptr);
+
+    orientation = orientation_;
+    piece = reference_piece;
 }

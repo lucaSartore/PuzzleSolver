@@ -43,6 +43,7 @@ PieceConnection::PieceConnection(string path, int id): PieceConnection() {
 }
 
 void PieceConnection::became(string path, int id) {
+    piece_id = id;
     // calculate path
     path += "/" + std::to_string(id) + ".bin";
 

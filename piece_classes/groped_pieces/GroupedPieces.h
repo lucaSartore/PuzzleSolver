@@ -67,9 +67,11 @@ public:
     float compare_to(Direction direction, GroupedPieces<1> &other);
     /// get the shore that this group has overall, the shore represent how much the piece match, and go from 0 to 1
     float get_shore();
+    /// build a piece connection, by giving his original piece
+    GroupedPieces<1>(PieceConnection* reference_piece, int orientation_);
 };
 
-// include file for correct template definition
+// include file for correct template generation by the compiler
 #include "GroupedPieces.tpp"
 
 #endif //PIECECLASS_GROUPEDPIECES_H

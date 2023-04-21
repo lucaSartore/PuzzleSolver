@@ -27,14 +27,38 @@ void calculate_multi_thread(int number_of_threads = 0);
 
 int main(){
 
-    GroupedPieces<1> a = GroupedPieces<1>();
-    GroupedPieces<1> b = GroupedPieces<1>();
-    GroupedPieces<1> c = GroupedPieces<1>();
-    GroupedPieces<1> d = GroupedPieces<1>();
 
+    /*
+    set<int> a = {1};
+    set<int> b = {1};
+    set<int> c = {};
+
+    std::set_union(a.begin(), a.end(),
+                   b.begin(), b.end(),
+                   std::inserter(c, c.begin()));
+
+    for(auto e: c){
+        cout << e << " ";
+    }*/
+
+    string path = "../../dataset/blue_500pcs/connections";
+    PieceConnection pc1 = PieceConnection(path,0);
+    PieceConnection pc2 = PieceConnection(path,1);
+    PieceConnection pc3 = PieceConnection(path,2);
+    PieceConnection pc4 = PieceConnection(path,3);
+
+    GroupedPieces<1> a = GroupedPieces<1>(&pc1,0);
+    GroupedPieces<1> b = GroupedPieces<1>(&pc2,0);
+    GroupedPieces<1> c = GroupedPieces<1>(&pc3,0);
+    GroupedPieces<1> d = GroupedPieces<1>(&pc4,0);
+
+    cout << "1" << endl;
     GroupedPieces<2> test = GroupedPieces<2>(&a,&b,&c,&d);
-
+    cout << "2" << endl;
     GroupedPieces<3> test2 = GroupedPieces<3>(&test,&test,&test,&test);
+    cout << "3" << endl;
+
+
 
     return 0;
 
