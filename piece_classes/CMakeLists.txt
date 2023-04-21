@@ -23,5 +23,7 @@ add_executable(
         groped_pieces/GroupedPieces.h
         groped_pieces/Direction.cpp
         groped_pieces/Direction.h
+        groped_pieces/Shore.cpp
+        groped_pieces/Shore.h
 )
 target_link_libraries( PieceClass ${OpenCV_LIBS} )
