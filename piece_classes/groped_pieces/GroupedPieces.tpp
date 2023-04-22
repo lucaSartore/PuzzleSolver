@@ -8,6 +8,9 @@
 #include <iostream>
 #include <assert.h>
 
+// the threshold after witch a component get removed because of poor connections
+#define AVREGE_SHORE_THRESHOLD 0.4
+
 using namespace std;
 
 template<int N>
@@ -32,16 +35,18 @@ GroupedPieces<N - 1> *GroupedPieces<N>::get_bottom_left() {
 
 
 
-float GroupedPieces<1>::get_shore() {
-    return 1;
+Shore GroupedPieces<1>::get_shore() {
+    return shore;
 }
 
-float GroupedPieces<1>::compare_to(Direction direction, GroupedPieces<1> &other) {
-    return piece->compare(
+Shore GroupedPieces<1>::compare_to(Direction direction, GroupedPieces<1> &other) {
+    float s = piece->compare(
             direction_to_side_index(direction),
             other.get_id(),
             other.direction_to_side_index(-direction) // note: -direction means opposite direction (-UP == DOWN)
             );
+    // shore with number = 1 and the percentage as shore
+    return Shore(s);
 }
 
 template<int N>
@@ -82,7 +87,7 @@ GroupedPieces<N>::GroupedPieces(GroupedPieces<N - 1> *top_left, GroupedPieces<N 
     // insert the pointers to the respective tiles
     set_bottom_left(bottom_left);
     set_bottom_right(bottom_right);
-    set_top_left(top_right);
+    set_top_right(top_right);
     set_top_left(top_left);
 }
 
@@ -113,8 +118,12 @@ GroupedPieces<2>::GroupedPieces(GroupedPieces<1> *top_left, GroupedPieces<1> *to
     // insert the pointers to the respective tiles
     set_bottom_left(bottom_left);
     set_bottom_right(bottom_right);
-    set_top_left(top_right);
+    set_top_right(top_right);
     set_top_left(top_left);
+
+    // calculating the avrege shore
+    calculate_shore();
+
 }
 
 
@@ -152,6 +161,46 @@ std::set<int> GroupedPieces<1>::get_ids() {
     return set;
 }
 
+template<int N>
+void GroupedPieces<N>::calculate_shore() {
+    // reset the current shore;
+    shore = Shore();
+
+    // comparing top border
+    shore += get_top_left()->compare_to(RIGHT,*get_top_right());
+    // comparing right border
+    shore += get_top_right()->compare_to(DOWN,*get_bottom_right());
+    // comparing bottom border
+    shore += get_bottom_right()->compare_to(LEFT,*get_bottom_left());
+    // comparing bottom border
+    shore += get_bottom_left()->compare_to(UP,*get_top_left());
+
+    // trowing an error if the piece is impossible
+    if(shore.get_shore() == 0){
+        throw invalid_argument("impossible combination");
+    }
+    // trowing an error if the piece is impossible
+    if(shore.get_shore() <= AVREGE_SHORE_THRESHOLD){
+        throw invalid_argument("combination shore too low");
+    }
+
+    // adding the avrege of the 4 sub components
+    shore += get_top_left()->get_shore();
+    shore += get_top_left()->get_shore();
+    shore += get_top_left()->get_shore();
+    shore += get_top_left()->get_shore();
+
+    // trowing an error if the piece is impossible
+    if(shore.get_shore() == 0){
+        throw invalid_argument("impossible combination");
+    }
+    // trowing an error if the piece is impossible
+    if(shore.get_shore() <= AVREGE_SHORE_THRESHOLD){
+        throw invalid_argument("combination shore too low");
+    }
+
+}
+
 
 int GroupedPieces<1>::direction_to_side_index(Direction direction) {
     int n;
@@ -182,4 +231,7 @@ GroupedPieces<1>::GroupedPieces(PieceConnection *reference_piece, int orientatio
 
     orientation = orientation_;
     piece = reference_piece;
+
+    // shore of 1 with 0 as number (don't affect future calculation)
+    shore = Shore();
 }

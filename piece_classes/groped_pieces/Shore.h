@@ -19,7 +19,7 @@ public:
     /// default constructor, gives a shore with `shore` = 1 and `number` = 0
     Shore();
     /// create a new shore, `number` will be 1
-    Shore(float shore_);
+    explicit Shore(float shore_);
     /// get the shore of the piece
     float get_shore()const;
     /// sum operator, this make a weighted of `shore`, using `number` as weight

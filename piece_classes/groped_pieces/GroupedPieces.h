@@ -4,7 +4,7 @@
 
 #ifndef PIECECLASS_GROUPEDPIECES_H
 #define PIECECLASS_GROUPEDPIECES_H
-
+#include "Shore.h"
 
 #include "../logic_piece/PieceConnection.h"
 #include "Direction.h"
@@ -13,8 +13,8 @@
 template<int N>
 class GroupedPieces {
 private:
-    /// the average shore of the 4 sub-tile and the connection between them
-    float shore;
+    /// the weighted average shore of the 4 sub-tile and the connection between them
+    Shore shore;
     /// a set that contains all the pieces in this group, is useful to avoid repeating pieces
     std::set<int> ids;
     /// 4 pointers that points to the 4 sub components this group is made of
@@ -36,13 +36,15 @@ private:
     inline void set_bottom_right(GroupedPieces<N-1>*new_val);
     /// set the bottom left component
     inline void set_bottom_left(GroupedPieces<N-1>*new_val);
+    /// calculate the average shore and update it
+    void calculate_shore();
 public:
     /// return reference to set of all ids contained in the group
     std::set<int>& get_ids();
     /// compare this group with an other, need to specify the direction t
-    float compare_to(Direction direction, GroupedPieces<N> &other);
+    Shore compare_to(Direction direction, GroupedPieces<N> &other);
     /// get the shore that this group has overall, the shore represent how much the piece match, and go from 0 to 1
-    float get_shore();
+    Shore get_shore();
     /// create a Group of pieces using 4 sub components
     GroupedPieces<N>(GroupedPieces<N-1> *top_left, GroupedPieces<N-1> *top_right, GroupedPieces<N-1> *bottom_right, GroupedPieces<N-1> *bottom_left);
 };
@@ -52,6 +54,8 @@ public:
 template<>
 class GroupedPieces<1> {
 private:
+    /// the weighted average shore of the 4 sub-tile and the connection between them
+    Shore shore;
     /// reference to all the piece and their meta data
     PieceConnection* piece;
     /// integer from 0 to 3 thad define the orientation of the current piece
@@ -64,9 +68,9 @@ public:
     /// return the id of the current group
     int get_id();
     /// compare this side, at the specified orientation with the other piece, at his specified Direction
-    float compare_to(Direction direction, GroupedPieces<1> &other);
+    Shore compare_to(Direction direction, GroupedPieces<1> &other);
     /// get the shore that this group has overall, the shore represent how much the piece match, and go from 0 to 1
-    float get_shore();
+    Shore get_shore();
     /// build a piece connection, by giving his original piece
     GroupedPieces<1>(PieceConnection* reference_piece, int orientation_);
 };
