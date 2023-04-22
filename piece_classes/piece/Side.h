@@ -27,14 +27,14 @@ private:
     int side_lenght;
 public:
 
-    // disable copy constructor, since all the pieces will be the same in all the program it make mor sense to use pointers
+    // disable copy constructor, since all the piece will be the same in all the program it make mor sense to use pointers
     Side(Side& other) = delete;
 
     Side();
     // constructor
     Side(cv::Mat& piece_mask, Piece* piece_, int piece_side_, cv::Point p1, cv::Point p2, cv::Point center);
 
-    // a comparing function that returns a percentage thad indicate how match the 2 pieces are comparable
+    // a comparing function that returns a percentage thad indicate how match the 2 piece are comparable
     float compare_to(const Side &other, bool debug = false)const ;
 
     // get the kind of the border
