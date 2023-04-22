@@ -6,10 +6,10 @@
 #include <cmath>
 #include <algorithm>
 #include <iostream>
-#include <assert.h>
+#include <cassert>
 
 // the threshold after witch a component get removed because of poor connections
-#define AVREGE_SHORE_THRESHOLD 0.4
+#define AVREGE_SHORE_THRESHOLD 0.7
 
 using namespace std;
 
@@ -33,11 +33,6 @@ GroupedPieces<N - 1> *GroupedPieces<N>::get_bottom_left() {
     return sub_components[3];
 }
 
-
-
-Shore GroupedPieces<1>::get_shore() {
-    return shore;
-}
 
 Shore GroupedPieces<1>::compare_to(Direction direction, GroupedPieces<1> &other) {
     float s = piece->compare(
@@ -100,7 +95,6 @@ GroupedPieces<2>::GroupedPieces(GroupedPieces<1> *top_left, GroupedPieces<1> *to
     assert(bottom_right != nullptr);
     assert(bottom_left != nullptr);
 
-
     // make array empty
     ids = {};
 
@@ -115,6 +109,7 @@ GroupedPieces<2>::GroupedPieces(GroupedPieces<1> *top_left, GroupedPieces<1> *to
         throw std::invalid_argument("some pieces are repeated");
     }
 
+
     // insert the pointers to the respective tiles
     set_bottom_left(bottom_left);
     set_bottom_right(bottom_right);
@@ -123,7 +118,6 @@ GroupedPieces<2>::GroupedPieces(GroupedPieces<1> *top_left, GroupedPieces<1> *to
 
     // calculating the avrege shore
     calculate_shore();
-
 }
 
 
@@ -149,8 +143,6 @@ void GroupedPieces<N>::set_bottom_left(GroupedPieces<N - 1> *new_val) {
 
 
 
-
-
 int GroupedPieces<1>::get_id() {
     return piece->get_piece_id();
 }
@@ -159,6 +151,15 @@ std::set<int> GroupedPieces<1>::get_ids() {
     auto set =  std::set<int>();
     set.insert(get_id());
     return set;
+}
+
+template<int N>
+Shore GroupedPieces<N>::get_shore() {
+    return Shore();
+}
+
+Shore GroupedPieces<1>::get_shore() {
+    return shore;
 }
 
 template<int N>

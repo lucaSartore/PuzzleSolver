@@ -16,7 +16,7 @@
 using namespace std;
 using namespace std::chrono;
 
-#define NUMBER_OF_PIECES 500
+#define NUMBER_OF_PIECES 100
 #define MINIMUM_COMPATIBILITY_PERCENTAGE 0
 
 
@@ -27,37 +27,48 @@ void calculate_multi_thread(int number_of_threads = 0);
 
 int main(){
 
-
-    /*
-    set<int> a = {1};
-    set<int> b = {1};
-    set<int> c = {};
-
-    std::set_union(a.begin(), a.end(),
-                   b.begin(), b.end(),
-                   std::inserter(c, c.begin()));
-
-    for(auto e: c){
-        cout << e << " ";
-    }*/
-
     string path = "../../dataset/blue_500pcs/connections";
-    PieceConnection pc1 = PieceConnection(path,0);
-    PieceConnection pc2 = PieceConnection(path,1);
-    PieceConnection pc3 = PieceConnection(path,2);
-    PieceConnection pc4 = PieceConnection(path,3);
 
-    GroupedPieces<1> a = GroupedPieces<1>(&pc1,0);
-    GroupedPieces<1> b = GroupedPieces<1>(&pc2,0);
-    GroupedPieces<1> c = GroupedPieces<1>(&pc3,0);
-    GroupedPieces<1> d = GroupedPieces<1>(&pc4,0);
+    PieceConnection pieces[NUMBER_OF_PIECES];
 
-    cout << "1" << endl;
-    GroupedPieces<2> test = GroupedPieces<2>(&a,&b,&c,&d);
-    cout << "2" << endl;
-    GroupedPieces<3> test2 = GroupedPieces<3>(&test,&test,&test,&test);
-    cout << "3" << endl;
+    // load all the pieces
+    for(int i=0; i<NUMBER_OF_PIECES; i++){
+        pieces[i].became(path,i);
+    }
 
+    // empty list of element 1;
+    std::list<GroupedPieces<1>> group_lev_1 = {};
+
+    for(auto &piece: pieces){
+        for(int orientation=0; orientation<4; orientation++){
+            // creating the array with all the possible pieces
+            group_lev_1.emplace_front(&piece,orientation);
+        }
+    }
+
+    // empty list of element 2;
+    std::list<GroupedPieces<2>> group_lev_2 = {};
+
+    int c=0;
+    // creating list of potential options
+    for(auto &first: group_lev_1){
+        for(auto &second: group_lev_1){
+            for(auto &third: group_lev_1){
+                for(auto &fourth: group_lev_1){
+                    try{
+                        group_lev_2.emplace_front(&first,&second,&third,&fourth);
+                    }catch(invalid_argument &e){
+                        //cout << "invalid" << endl;
+                    }
+                    //cout << "shore: " << group_lev_2.front().get_shore().get_shore() << endl;
+                    c++;
+
+                }
+            }
+            cout << (float) c/(400.0*400.0*400.0*400.0) * 100 << "%" << endl;
+            cout << c <<" tested combination. " << group_lev_2.size() << " possible found" << endl;
+        }
+    }
 
 
     return 0;
