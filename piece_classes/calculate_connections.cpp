@@ -12,20 +12,26 @@
 #include <atomic>
 #include <thread>
 #include "groped_pieces/GroupedPieces.h"
+#include "puzzle/Puzzle.h"
 
 using namespace std;
 using namespace std::chrono;
 
-#define NUMBER_OF_PIECES 100
+#define NUMBER_OF_PIECES 30
 #define MINIMUM_COMPATIBILITY_PERCENTAGE 0
 
 
 void piece_comparer_thread(PieceConnection pieces_connections[], PieceShape pieces_shapes[], atomic<int> *index);
 void calculate_single_thread(bool debug = false);
 void calculate_multi_thread(int number_of_threads = 0);
-
+void test_piece_array();
 
 int main(){
+
+    test_piece_array();
+    return 0;
+
+    calculate_single_thread();
 
     string path = "../../dataset/blue_500pcs/connections";
 
@@ -174,7 +180,8 @@ void calculate_single_thread(bool debug){
 
     // save the connections information to the disk
     for(auto & i : pieces_connections){
-        i.save_as_file("../../dataset/blue_500pcs/connections");
+        //i.save_as_file("../../dataset/blue_500pcs/connections");
+        cout << i.to_string() << endl;
     }
 
     PieceConnection pc = PieceConnection("../../dataset/blue_500pcs/connections",0);
@@ -246,6 +253,16 @@ void calculate_multi_thread(int number_of_threads){
 
     // save the connections information to the disk
     for(auto & i : pieces_logic){
-        i.save_as_file("../../dataset/blue_500pcs/connections");
+        cout << i.to_string() << endl;
+        //i.save_as_file("../../dataset/blue_500pcs/connections");
     }
+}
+
+void test_piece_array(){
+    Puzzle puzzle = Puzzle("../../dataset/test_2x3/divided",6);
+    //Puzzle puzzle = Puzzle("../../dataset/blue_500pcs/divided",500);
+
+    puzzle.set_min_compatibility(0.5);
+
+    cout << puzzle.solve() << endl;
 }

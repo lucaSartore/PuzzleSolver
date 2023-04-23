@@ -1,19 +1,17 @@
 
 #include "Side.h"
-#include "Piece.h"
+#include "PieceShape.h"
 #include <fstream>
 #include <utility>
-
-using namespace std;
-using namespace cv;
-
-string Piece::origin_path = "";
 
 /// how much the original image will be resized for the preview
 #define PREVIEW_RESIZE_FACTOR 4
 #define ROTATION_RESOLUTION 2000
 
-Piece::Piece(int piece_id, string path) {
+
+string PieceShape::origin_path = "";
+
+PieceShape::PieceShape(int piece_id, string path) {
     string piece_path = path + string("/") + to_string(piece_id) + string(".jpeg");
     string data_path = path + string("/") + to_string(piece_id) + string(".txt");
 
@@ -40,14 +38,13 @@ Piece::Piece(int piece_id, string path) {
         point = Point(x, y);
     }
 
-    //calculate offset of the piece
+    //calculate center of the piece
     Point center = (points[0]+points[1]+points[2]+points[3])/4;
 
     // create sides
     for(int i=0; i<4; i++){
         sides[i] = Side(piece, this,i,points[i],points[(i+1)%4],center);
     }
-
 
     Mat new_piece = Mat::zeros(ROTATION_RESOLUTION,ROTATION_RESOLUTION,CV_8U);
 
@@ -92,19 +89,19 @@ Piece::Piece(int piece_id, string path) {
 
 }
 
-Piece::Piece(int piece_id): Piece(piece_id, origin_path){}
+PieceShape::PieceShape(int piece_id): PieceShape(piece_id, origin_path){}
 
-void Piece::set_origin_path(string path) {
+void PieceShape::set_origin_path(string path) {
     origin_path = std::move(path);
 }
 
-Side &Piece::get_side(int index) {
+Side &PieceShape::get_side(int index) {
     assert(index >= 0);
     assert(index <4);
     return sides[index];
 }
 
-void Piece::show_debug(int side_to_highlight) {
+void PieceShape::show_debug(int side_to_highlight) {
     Mat to_show;
     cvtColor(piece,to_show,COLOR_GRAY2BGR);
     for(int i=0; i<4; i++){
@@ -122,20 +119,22 @@ void Piece::show_debug(int side_to_highlight) {
     waitKey(0);
 }
 
-cv::Mat Piece::get_image() {
+
+cv::Mat PieceShape::get_image() {
     return this->piece;
 }
 
-cv::Point Piece::get_point(int index) {
+cv::Point PieceShape::get_point(int index) {
     assert(index>=0);
     assert(index<4);
     return points[index];
 }
 
-int Piece::get_preview_x_res() {
+int PieceShape::get_preview_x_res() {
     return ROTATION_RESOLUTION/PREVIEW_RESIZE_FACTOR;
 }
 
-int Piece::get_preview_y_res() {
+int PieceShape::get_preview_y_res() {
     return ROTATION_RESOLUTION/PREVIEW_RESIZE_FACTOR;
 }
+

@@ -5,9 +5,9 @@
 #define PUZZLE_SOLVER_CORNER_H
 
 #include <opencv2/opencv.hpp>
+using namespace cv;
 
-
-class Piece;
+class PieceShape;
 
 typedef enum{BORDER,MALE,FEMALE}SideKind;
 
@@ -16,9 +16,9 @@ private:
     // the resolution if the comparison mask, if has to be about equal to the PPI of the image
     static int compare_res;
     // a image containing the shape of the border ready compared it with others
-    cv::Mat border_shape;
+    Mat border_shape;
     // pointer to the original piece
-    Piece* piece;
+    PieceShape* piece;
     // an integer referring on witch side the of the original piece this border appear to
     int piece_side;
     // an enum that defines with kind of border this one si
@@ -32,7 +32,7 @@ public:
 
     Side();
     // constructor
-    Side(cv::Mat& piece_mask, Piece* piece_, int piece_side_, cv::Point p1, cv::Point p2, cv::Point center);
+    Side(Mat& piece_mask, PieceShape* piece_, int piece_side_, Point p1, Point p2, Point center);
 
     // a comparing function that returns a percentage thad indicate how match the 2 piece are comparable
     float compare_to(const Side &other, bool debug = false)const ;
@@ -41,7 +41,7 @@ public:
     SideKind get_kind();
 
     // return the piece this border appertains to
-    Piece &get_piece();
+    PieceShape &get_piece();
 
     // set the comparison resolution that has to be used in the side to side cameraperson
     static void set_compare_res(int res);
@@ -49,11 +49,6 @@ public:
 
     // get the comparing res
     static int get_compare_res();
-
-    /// get the mask of the current side;
-    cv::Mat get_side_mask(){
-        return border_shape.clone();
-    }
 
 };
 

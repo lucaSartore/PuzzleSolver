@@ -5,19 +5,16 @@
 #ifndef PIECECLASS_HOLDER_H
 #define PIECECLASS_HOLDER_H
 
-#include "../piece/Piece.h"
-#include "../piece/Side.h"
+#include "../graphic_piece/PieceShape.h"
+#include "../graphic_piece/Side.h"
+
+// shorter alias
+typedef PieceShape Piece;
+
 #include <opencv2/opencv.hpp>
 
 
-/// the possible directions in the puzzle array
-typedef enum Direction{UP, LEFT,DOWN, RIGHT} Direction;
-
-/// the minus sign is used to find the opposite direction to another
-/// for examole -UP == DOWN, -LEFT == RIGHT, and so on
-Direction operator-(Direction direction);
-std::ostream& operator<<(std::ostream & os, Direction direction);
-
+#include "../groped_pieces/Direction.h"
 
 class Holder {
 private:

@@ -6,9 +6,12 @@
 #define PIECECLASS_PUZZLE_H
 
 #include "PieceArray.h"
-#include "../piece/Piece.h"
+#include "../graphic_piece/PieceShape.h"
 #include <list>
 #include "Holder.h"
+
+// short name
+typedef PieceShape Piece;
 
 /// the maximum number of piece that will be considered of every spot
 /// if more pieces fit they will be excluded
