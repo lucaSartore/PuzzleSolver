@@ -1,8 +1,5 @@
 #include "PieceArray.h"
 #include "stdexcept"
-#include "UnknownHolder.h"
-#include "OutsideHolder.h"
-#include "PieceHolder.h"
 #include <memory>
 #include <utility>
 using namespace std;
@@ -21,79 +18,42 @@ using namespace cv;
 PieceArray::PieceArray() {
     dim_x = 1;
     dim_y = 1;
-    pieces = vector<vector<shared_ptr<Holder>>>();
+    pieces = vector<vector<Holder>>();
 
     // start with a 1*1 array with a null ptr inside
-    auto one_dim = vector<shared_ptr<Holder>>();
-    one_dim.push_back(shared_ptr<Holder>(new UnknownHolder()));
+    auto one_dim = vector<Holder>();
+    // insert a default Holder
+    one_dim.emplace_back();
     pieces.push_back(one_dim);
 
     image = Mat::zeros(Size(STARTING_DIMENSIONS,STARTING_DIMENSIONS),CV_8UC3);
 
     srand(time(NULL));
-
-    // create the outside holder
-    outside_tile = new OutsideHolder();
 }
 
-Holder *PieceArray::get(int x, int y) const{
-
-
-
+Holder *PieceArray::get(int x, int y){
     // check if in range
     try{
         check_indexes(x,y);
     }catch (...){
-        // if they are outside, but by one border at most, i return a border, otherwise is an error
-        try{
-            check_indexes(x-1,y);
-            return outside_tile;
-        }catch(...){}
-        try{
-            check_indexes(x+1,y);
-            return outside_tile;
-        }catch(...){}
-        try{
-            check_indexes(x,y-1);
-            return outside_tile;
-        }catch(...){}
-        try{
-            check_indexes(x,y+1);
-            return outside_tile;
-        }catch(...){}
-        // if none of them succeed, i throw the normal error
-        check_indexes(x,y);
+        return nullptr;
     }
-
-
     // get the value
-    shared_ptr<Holder> to_return = pieces[x][y];
-    if(to_return == nullptr){
-        //cerr << "index at X: " << x << " y: " << y << " is null ptr" << endl;
-        throw std::runtime_error("specified index is null ptr");
-    }
-    return &(*to_return);
+    return &pieces[x][y];
 }
 
-void PieceArray::set(int x, int y, std::shared_ptr<Holder> to_be_set,bool update_graphic) {
+void PieceArray::set(int x, int y, Holder &&to_be_set,bool update_graphic) {
 
-    assert(to_be_set->is_a_piece());
 
-    // check if need to create new raw/colon
-    if(y==0  && x >= get_dim_x()){
-        grow_x();
-    }
-    if(x==0  && y >= get_dim_y()){
-        grow_y();
-    }
     // check if in range
     check_indexes(x,y);
 
     // set the random color
-    to_be_set->set_color(get_random_color());
+    to_be_set.set_color(get_random_color());
 
     // inserting it in to the array
-    pieces[x][y] = std::move(to_be_set);
+    pieces[x][y] = to_be_set;
+
     if(update_graphic){
         // update the graph;
         insert_into_image(x,y);
@@ -102,40 +62,18 @@ void PieceArray::set(int x, int y, std::shared_ptr<Holder> to_be_set,bool update
     check_and_expand_image();
 }
 
-void PieceArray::remove(int x, int y) {
-    // check if need to delete a raw/colon
-    if(y==0  && x >= get_dim_x()-1){
-        un_grow_x();
-        reset_image();
-        return;
-    }
-    if(x==0  && y >= get_dim_y()-1){
-        un_grow_y();
-        reset_image();
-        return;
-    }
-    // check if in range
-    check_indexes(x,y);
-
-    // insert a new unknown value
-    pieces[x][y] = shared_ptr<Holder>(new UnknownHolder());
-
-    // reset the preview image
-    reset_image();
-}
 
 void PieceArray::check_indexes(int x, int y) const {
     // check if indexes are in range
     if(x<0 || y<0 || x >= dim_x || y >= dim_y){
-        //cerr << "index at X: " << x << " y: " << y << " is out of range for array with size: X: " << dim_x << " Y: " << dim_y << endl;
         throw std::invalid_argument("index out of range");
     }
 }
 
 void PieceArray::grow_x() {
-    auto new_colon = vector<shared_ptr<Holder>>();
+    auto new_colon = vector<Holder>();
     for(int i=0; i<dim_y; i++){
-        new_colon.push_back(shared_ptr<Holder>(new UnknownHolder()));
+        new_colon.emplace_back();
     }
     pieces.push_back(new_colon);
     dim_x++;
@@ -143,7 +81,7 @@ void PieceArray::grow_x() {
 
 void PieceArray::grow_y() {
     for(int i=0; i<dim_x; i++){
-        pieces[i].push_back(shared_ptr<Holder>(new UnknownHolder()));
+        pieces[i].emplace_back();
     }
     dim_y++;
 }
@@ -172,9 +110,6 @@ void PieceArray::un_grow_y() {
     }
 }
 
-PieceArray::~PieceArray() {
-    delete outside_tile;
-}
 
 cv::Mat PieceArray::get_image() const {
     return image.clone();
@@ -267,49 +202,40 @@ void PieceArray::insert_into_image(int x, int y) {
 
     Holder* this_piece = get(x,y);
 
-    if(piece_top->is_unknown() || piece_left->is_unknown()){
-        throw invalid_argument("one of the pieces involved is unknown!");
-    }
-    if(!this_piece->is_a_piece()){
-        throw invalid_argument("there is not a piece at the specified coordinates");
-    }
-
-    auto* this_piece_cast = dynamic_cast<PieceHolder*>(this_piece);
-
     // vector that go form the right side of the current piece to the center
-    Point left_to_center_vector = this_piece_cast->get_center()-this_piece_cast->get_side_center(LEFT);
+    Point left_to_center_vector = this_piece->get_center() - this_piece->get_side_center(LEFT);
     // vector that go form the top side of the current piece to the center
-    Point top_to_center_vector = this_piece_cast->get_center()-this_piece_cast->get_side_center(UP);
+    Point top_to_center_vector = this_piece->get_center() - this_piece->get_side_center(UP);
 
     int center_x,center_y;
 
-    if(piece_left->is_outside() && piece_top->is_outside()){
+    // building on top corner
+    if(piece_left == nullptr && piece_top == nullptr){
         // default case: i need to place a corner
 
         // calculating the point of where to put the new piece
         center_x = BORDER_DISTANCE + left_to_center_vector.x;
         center_y = BORDER_DISTANCE + top_to_center_vector.y;
-
-    }else if(piece_left->is_outside()){
+    }
+    // building on the left side
+    else if(piece_left == nullptr){
         // default case: i need place a border vertically
 
-        auto* piece_top_upcast = dynamic_cast<PieceHolder*>(piece_top);
-
         center_x = BORDER_DISTANCE + left_to_center_vector.x;
-        center_y = (piece_top_upcast->get_side_center_with_offset(DOWN) + top_to_center_vector).y;
-    }else if(piece_top->is_outside()){
+        center_y = (piece_top->get_side_center_with_offset(DOWN) + top_to_center_vector).y;
+    }
+    // building on the top side
+    else if(piece_top == nullptr){
         // default case: i need to place a border horizontally
 
-        auto* piece_left_upcast = dynamic_cast<PieceHolder*>(piece_left);
-
-        center_x = (piece_left_upcast->get_side_center_with_offset(RIGHT) + left_to_center_vector).x;
+        center_x = (piece_left->get_side_center_with_offset(RIGHT) + left_to_center_vector).x;
         center_y = BORDER_DISTANCE + top_to_center_vector.y;
-    }else{
-        auto* piece_left_upcast = dynamic_cast<PieceHolder*>(piece_left);
-        auto* piece_top_upcast = dynamic_cast<PieceHolder*>(piece_top);
+    }
+    // building in the middle
+    else{
 
-        Point center_1 = piece_left_upcast->get_side_center_with_offset(RIGHT) + left_to_center_vector;
-        Point center_2 = piece_top_upcast->get_side_center_with_offset(DOWN) + top_to_center_vector;
+        Point center_1 = piece_left->get_side_center_with_offset(RIGHT) + left_to_center_vector;
+        Point center_2 = piece_top->get_side_center_with_offset(DOWN) + top_to_center_vector;
 
         Point center = (center_1+center_2)/2;
 
@@ -321,21 +247,21 @@ void PieceArray::insert_into_image(int x, int y) {
 
     // matrix to insert in the new puzzle
     Mat to_paste;
-    cvtColor(this_piece_cast->get_image(),to_paste,COLOR_GRAY2BGR);
+    cvtColor(this_piece->get_image(), to_paste, COLOR_GRAY2BGR);
     to_paste = to_paste!=0;
-    floodFill(to_paste,this_piece_cast->get_center(), this_piece_cast->get_color());
+    floodFill(to_paste, this_piece->get_center(), this_piece->get_color());
 
     // pasting the piece in to the image
     paste_on_top(
             to_paste,
             image,
-            this_piece_cast->get_center(),
+            this_piece->get_center(),
             new_center_point,
             true
     );
 
     // updating the position of the piece
-    this_piece_cast->set_offset(new_center_point-this_piece_cast->get_center());
+    this_piece->set_offset(new_center_point - this_piece->get_center());
 
     // base case: i need to place a normal piece
 
@@ -361,51 +287,30 @@ void PieceArray::reset_image() {
 }
 
 PieceArray::PieceArray(PieceArray &&other) {
-    delete outside_tile;
-
     image = std::move(other.image);
     other.image = Mat();
-
-    outside_tile = other.outside_tile;
-    other.outside_tile = nullptr;
 
     dim_x = other.dim_x;
     dim_y = other.dim_y;
 
     pieces = other.pieces;
-    other.pieces = vector<vector<shared_ptr<Holder>>>();
+    other.pieces = vector<vector<Holder>>();
 }
 
 PieceArray &PieceArray::operator=(PieceArray &&other) {
     if(this != &other){
-        delete outside_tile;
 
         image = std::move(other.image);
         other.image = Mat();
-
-        outside_tile = other.outside_tile;
-        other.outside_tile = nullptr;
 
         dim_x = other.dim_x;
         dim_y = other.dim_y;
 
         pieces = other.pieces;
-        other.pieces = vector<vector<shared_ptr<Holder>>>();
+        other.pieces = vector<vector<Holder>>();
     }
     return *this;
 }
-
-float PieceArray::check_compatibility(int x, int y, Holder *to_check) {
-    // check if need to grow
-    check_indexes(x,y);
-    return  to_check->check_compatibility(
-            get(x,y-1),
-            get(x,y+1),
-            get(x-1,y),
-            get(x+1,y)
-            );
-}
-
 
 std::ostream& operator<<(std::ostream& os, const PieceArray& pa){
     int dim_x = pa.get_dim_x();
@@ -413,7 +318,7 @@ std::ostream& operator<<(std::ostream& os, const PieceArray& pa){
 
     for(int y = 0; y<dim_y; y++){
         for(int x = 0; x<dim_x; x++){
-            os << pa.get(x,y)->get_debug_view() << " ";
+            os << "X" << " ";
         }
         os << endl;
     }

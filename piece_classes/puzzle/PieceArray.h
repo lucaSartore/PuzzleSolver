@@ -12,25 +12,12 @@
 #include <opencv2/opencv.hpp>
 
 
-/*
-
- the puzzle must grow automatically when inserting a piece that is bigger than is outside the maximum dimension by 1
- the puzzle must throw an error if i try to place a piece that is outside of the dimension of the puzzle by 2 or more
- the puzzle must shrink automatically when calling a remove piece at the corner
- the puzzle must trow an error if calling a remove piece that is not in a corner
-
-
-
- */
-
-
 class PieceArray {
 private:
     cv::Mat image;
-    Holder* outside_tile;
     int dim_x;
     int dim_y;
-    std::vector<std::vector<std::shared_ptr<Holder>>> pieces;
+    std::vector<std::vector<Holder>> pieces;
     /// check if the index is or not inside the matrix, if not it throws an error
     void check_indexes(int x, int y) const;
     /// build the image of the puzzle
@@ -54,16 +41,13 @@ public:
     int get_dim_y() const;
     /// create an empty piece array
     PieceArray();
-    /// destructor
-    ~PieceArray();
     /// move constructor
     PieceArray(PieceArray && other);
     /// return a piece_holder in one of the many position
-    Holder* get(int x, int y) const;
+    /// if the coordinates are out of bound it returns null ptd
+    Holder* get(int x, int y);
     /// set a piece_holder in one position
-    void set(int x, int y, std::shared_ptr<Holder> to_be_set,bool update_graphic = true);
-    /// remove a piece form the puzzle
-    void remove(int x, int y);
+    void set(int x, int y, Holder && to_be_set,bool update_graphic = true);
     /// grow the array by 1 in the X dimension
     void grow_x();
     /// grow the array by 1 in the Y dimension
@@ -76,14 +60,8 @@ public:
     cv::Mat get_image() const;
     /// move equal operator
     PieceArray& operator=(PieceArray&& other);
-    /// check how match a piece is compatible in a certain position
-    /// and return the compatibility with a float
-    float check_compatibility(int x, int y, Holder* to_check);
 };
 
-
 std::ostream& operator<<(std::ostream& os, const PieceArray& pa);
-
-
 
 #endif //PIECECLASS_PIECEARRAY_H
