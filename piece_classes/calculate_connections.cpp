@@ -305,8 +305,4 @@ void test_piece_array(){
     waitKey(0);
 
 
-
-
-
-
 }
