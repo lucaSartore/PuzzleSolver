@@ -12,7 +12,7 @@
 #include <atomic>
 #include <thread>
 #include "groped_pieces/GroupedPieces.h"
-#include "puzzle/Puzzle.h"
+#include "puzzle/PieceArray.h"
 
 using namespace std;
 using namespace std::chrono;
@@ -29,6 +29,7 @@ void test_piece_array();
 int main(){
 
     test_piece_array();
+
     return 0;
 
     calculate_single_thread();
@@ -259,10 +260,53 @@ void calculate_multi_thread(int number_of_threads){
 }
 
 void test_piece_array(){
-    Puzzle puzzle = Puzzle("../../dataset/test_2x3/divided",6);
-    //Puzzle puzzle = Puzzle("../../dataset/blue_500pcs/divided",500);
 
-    puzzle.set_min_compatibility(0.5);
+    PieceShape::set_origin_path("../../dataset/test_2x3/divided");
+    PieceShape pieces_shapes[6];
 
-    cout << puzzle.solve() << endl;
+
+    // filling both array up with the respective index;
+    for(int i=0; i<6;i++){
+        pieces_shapes[i] = PieceShape(i);
+    }
+
+    PieceArray pa = PieceArray();
+
+    Holder base = Holder(&pieces_shapes[4], 0);
+    pa.set(0,0,std::move(base));
+
+
+    imshow("puzzle", pa.get_image());
+    waitKey(0);
+
+    pa.grow_x();
+
+    base = Holder(&pieces_shapes[5], 3);
+    pa.set(1,0,std::move(base));
+
+
+    imshow("puzzle", pa.get_image());
+    waitKey(0);
+
+    pa.grow_y();
+
+    base = Holder(&pieces_shapes[3], 3);
+    pa.set(0,1,std::move(base));
+
+
+    imshow("puzzle", pa.get_image());
+    waitKey(0);
+
+    base = Holder(&pieces_shapes[2], 0);
+    pa.set(1,1,std::move(base));
+
+
+    imshow("puzzle", pa.get_image());
+    waitKey(0);
+
+
+
+
+
+
 }

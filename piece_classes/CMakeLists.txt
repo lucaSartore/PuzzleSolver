@@ -28,16 +28,9 @@ add_executable(
 
         puzzle/Holder.cpp
         puzzle/Holder.h
-        puzzle/OutsideHolder.cpp
-        puzzle/OutsideHolder.h
         puzzle/PieceArray.cpp
         puzzle/PieceArray.h
-        puzzle/PieceHolder.cpp
-        puzzle/PieceHolder.h
-        puzzle/UnknownHolder.cpp
-        puzzle/UnknownHolder.h
-        puzzle/Puzzle.cpp
-        puzzle/Puzzle.h
+
 
 )
 target_link_libraries( PieceClass ${OpenCV_LIBS} )
