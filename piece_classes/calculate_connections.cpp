@@ -28,6 +28,7 @@ void test_piece_array();
 
 int main(){
 
+
     test_piece_array();
 
     return 0;
