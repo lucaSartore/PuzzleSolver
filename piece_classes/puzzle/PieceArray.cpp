@@ -322,7 +322,7 @@ PieceArray::PieceArray(PieceArray &other) {
 
     dim_x = other.dim_x;
     dim_y = other.dim_y;
-    cout << "a" << endl;
+
     pieces = other.pieces;
 }
 
@@ -331,7 +331,7 @@ void PieceArray::attach_right(const PieceArray &other) {
     if(dim_y != other.dim_y){
         throw invalid_argument("the 2 pieces MUST have the same y dimension");
     }
-    cout << has_been_completed << " " << other.has_been_completed << endl;
+
     if(!has_been_completed || !other.has_been_completed){
         throw invalid_argument("both array mus be completed before merging them!");
     }
@@ -347,7 +347,7 @@ void PieceArray::attach_bottom(const PieceArray &other) {
     if(dim_x != other.dim_x){
         throw invalid_argument("the 2 pieces MUST have the same x dimension");
     }
-    cout << has_been_completed << " " << other.has_been_completed << endl;
+
     if(!has_been_completed || !other.has_been_completed){
         throw invalid_argument("both array mus be completed before merging them!");
     }

@@ -308,12 +308,7 @@ void test_piece_array(){
     pa.set(1,1,std::move(base));
 
 
-    cout << "copying start" << endl;
     PieceArray pa2 = pa;
-    cout << "copying end" << endl;
-
-
-    cout << "attaching" << endl;
 
 
     pa.attach_bottom(pa2);
