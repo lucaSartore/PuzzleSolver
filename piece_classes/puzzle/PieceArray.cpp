@@ -30,7 +30,7 @@ PieceArray::PieceArray() {
 
     image = Mat::zeros(Size(STARTING_DIMENSIONS,STARTING_DIMENSIONS),CV_8UC3);
 
-    srand(time(NULL));
+    //srand(time(NULL));
 }
 
 Holder *PieceArray::get(int x, int y){

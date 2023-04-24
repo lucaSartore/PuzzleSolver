@@ -17,8 +17,8 @@
 using namespace std;
 using namespace std::chrono;
 
-#define NUMBER_OF_PIECES 6
-#define MINIMUM_COMPATIBILITY_PERCENTAGE 0.3
+#define NUMBER_OF_PIECES 16
+#define MINIMUM_COMPATIBILITY_PERCENTAGE 0.4
 
 
 void piece_comparer_thread(PieceConnection pieces_connections[], PieceShape pieces_shapes[], atomic<int> *index);
@@ -29,18 +29,21 @@ void test_grouped_piece_2_constructor();
 
 int main(){
 
-    test_piece_array(); return 0;
+    //test_piece_array(); return 0;
 
     //calculate_single_thread();return 0;
 
-    string path = "../../dataset/test_2x3/connections";
+    string path = "../../dataset/test_4x4/connections";
 
     PieceConnection::set_number_of_pieces(NUMBER_OF_PIECES);
     PieceConnection pieces[NUMBER_OF_PIECES];
+    PieceShape shapes[NUMBER_OF_PIECES];
+
 
     // load all the pieces
     for(int i=0; i<NUMBER_OF_PIECES; i++){
         pieces[i].became(path,i);
+        shapes[i] = PieceShape(i,"../../dataset/test_4x4/divided");
     }
 
     // empty list of element 1;
@@ -72,11 +75,44 @@ int main(){
 
                 }
             }
-            //cout << (float) c/(NUMBER_OF_PIECES*NUMBER_OF_PIECES*NUMBER_OF_PIECES*NUMBER_OF_PIECES*4*4*4*4) * 100 << "%" << endl;
-            //cout << c <<" tested combination. " << group_lev_2.size() << " possible found" << endl;
+            cout << (float) c/(NUMBER_OF_PIECES*NUMBER_OF_PIECES*NUMBER_OF_PIECES*NUMBER_OF_PIECES*4*4*4*4) * 100 << "%" << endl;
+            cout << c <<" tested combination. " << group_lev_2.size() << " possible found" << endl;
         }
     }
 
+    // empty list of element 2;
+    std::list<GroupedPieces<3>> group_lev_3 = {};
+
+    unsigned long n = group_lev_2.size();
+
+    c=0;
+    // creating list of potential options
+    for(auto &first: group_lev_2){
+        for(auto &second: group_lev_2){
+            for(auto &third: group_lev_2){
+                for(auto &fourth: group_lev_2){
+                    try{
+                        group_lev_3.emplace_front(&first,&second,&third,&fourth);
+                        //cout << "shore: " << group_lev_2.front().get_shore().get_shore() << endl;
+                    }catch(invalid_argument &e){
+                        //cout << "invalid" << endl;
+                    }
+                    c++;
+
+                }
+            }
+            cout << (float) c/(float)(n*n*n*n) * 100 << "%" << endl;
+            cout << c <<" tested combination. " << group_lev_3.size() << " possible found" << endl;
+        }
+    }
+
+
+
+    for(auto component: group_lev_2){
+        auto pa = component.get_piece_array(shapes);
+        imshow("test", pa.get_image());
+        waitKey(0);
+    }
 
     return 0;
 
@@ -119,7 +155,7 @@ void piece_comparer_thread(PieceConnection pieces_connections[], PieceShape piec
 // errors!
 void calculate_single_thread(bool debug){
 
-    string path = "../../dataset/test_2x3";
+    string path = "../../dataset/test_4x4";
 
     // create array of piece shape
     PieceConnection::set_number_of_pieces(NUMBER_OF_PIECES);

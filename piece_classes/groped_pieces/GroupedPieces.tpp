@@ -33,6 +33,33 @@ GroupedPieces<N - 1> *GroupedPieces<N>::get_bottom_left() {
     return sub_components[3];
 }
 
+template<int N>
+Shore GroupedPieces<N>::compare_to(Direction direction, GroupedPieces<N> &other){
+    Shore s;
+    switch (direction) {
+        case RIGHT:
+            s += this->get_top_right()->compare_to(direction,*other.get_top_left());
+            s += this->get_bottom_right()->compare_to(direction,*other.get_bottom_left());
+            break;
+        case LEFT:
+            s += this->get_top_left()->compare_to(direction,*other.get_top_right());
+            s += this->get_bottom_left()->compare_to(direction,*other.get_bottom_right());
+            break;
+        case UP:
+            s += this->get_top_left()->compare_to(direction,*other.get_bottom_left());
+            s += this->get_top_right()->compare_to(direction,*other.get_bottom_right());
+            break;
+        case DOWN:
+            s += this->get_bottom_left()->compare_to(direction,*other.get_top_left());
+            s += this->get_bottom_right()->compare_to(direction,*other.get_top_right());
+            break;
+        default:
+            throw std::runtime_error("unknown direction");
+    }
+
+    return s;
+}
+
 
 Shore GroupedPieces<1>::compare_to(Direction direction, GroupedPieces<1> &other) {
     float s = piece->compare(
@@ -238,3 +265,29 @@ GroupedPieces<1>::GroupedPieces(PieceConnection *reference_piece, int orientatio
     // shore of 1 with 0 as number (don't affect future calculation)
     shore = Shore();
 }
+
+template<int N>
+PieceArray GroupedPieces<N>::get_piece_array(PieceShape* shapes){
+    // getting the four sub array
+    PieceArray top_left = std::move(get_top_left()->get_piece_array(shapes));
+    PieceArray top_right = std::move(get_top_right()->get_piece_array(shapes));
+    PieceArray bottom_left = std::move(get_bottom_left()->get_piece_array(shapes));
+    PieceArray bottom_right = std::move(get_bottom_right()->get_piece_array(shapes));
+
+    // summing them in to one sub component
+    top_left.attach_right(top_right);
+    bottom_left.attach_right(bottom_right);
+    top_left.attach_bottom(bottom_left);
+
+    // return final piece
+    return std::move(top_left);
+}
+
+
+PieceArray GroupedPieces<1>::get_piece_array(PieceShape *shapes) {
+    PieceArray pa = PieceArray();
+    Holder ph = Holder(&shapes[get_id()],orientation);
+    pa.set(0,0,std::move(ph));
+    return std::move(pa);
+}
+

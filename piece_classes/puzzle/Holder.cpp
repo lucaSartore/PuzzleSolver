@@ -16,7 +16,7 @@ cv::Point Holder::get_offset() {
     return offset;
 }
 
-Holder::Holder(Piece *piece_, int orientation_) {
+Holder::Holder(PieceShape *piece_, int orientation_) {
     assert(piece_ != nullptr);
     assert(orientation_>=0 && orientation_<4);
 
@@ -128,7 +128,7 @@ cv::Point Holder::get_center() {
     return (p1+p2+p3+p4)/4;
 }
 
-Piece *Holder::get_piece() {
+PieceShape *Holder::get_piece() {
     return piece;
 }
 

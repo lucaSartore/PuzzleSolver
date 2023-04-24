@@ -8,8 +8,6 @@
 #include "../graphic_piece/PieceShape.h"
 #include "../graphic_piece/Side.h"
 
-// shorter alias
-typedef PieceShape Piece;
 
 #include <opencv2/opencv.hpp>
 
@@ -20,7 +18,7 @@ class Holder {
 private:
     cv::Point offset;
     cv::Scalar color;
-    Piece* piece;
+    PieceShape* piece;
     int orientation;
 public:
     /// set the offset of the piece;
@@ -34,7 +32,7 @@ public:
     /// zero parameter constrictor
     Holder();
     /// constructor
-    Holder(Piece *piece_, int orientation_);
+    Holder(PieceShape *piece_, int orientation_);
     /// destructor
     ~Holder() = default;
     /// return the image held in this holder
@@ -49,7 +47,7 @@ public:
     /// return the coordinates of one of the 4 points of the image, based on the specified index
     cv::Point  get_point(int index);
     /// return the pointer to the original piece
-    Piece* get_piece();
+    PieceShape* get_piece();
 };
 
 
