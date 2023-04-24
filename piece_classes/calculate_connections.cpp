@@ -17,26 +17,25 @@
 using namespace std;
 using namespace std::chrono;
 
-#define NUMBER_OF_PIECES 30
-#define MINIMUM_COMPATIBILITY_PERCENTAGE 0
+#define NUMBER_OF_PIECES 6
+#define MINIMUM_COMPATIBILITY_PERCENTAGE 0.3
 
 
 void piece_comparer_thread(PieceConnection pieces_connections[], PieceShape pieces_shapes[], atomic<int> *index);
 void calculate_single_thread(bool debug = false);
 void calculate_multi_thread(int number_of_threads = 0);
 void test_piece_array();
+void test_grouped_piece_2_constructor();
 
 int main(){
 
 
-    test_piece_array();
 
-    return 0;
+    //calculate_single_thread();return 0;
 
-    calculate_single_thread();
+    string path = "../../dataset/test_2x3/connections";
 
-    string path = "../../dataset/blue_500pcs/connections";
-
+    PieceConnection::set_number_of_pieces(NUMBER_OF_PIECES);
     PieceConnection pieces[NUMBER_OF_PIECES];
 
     // load all the pieces
@@ -65,15 +64,15 @@ int main(){
                 for(auto &fourth: group_lev_1){
                     try{
                         group_lev_2.emplace_front(&first,&second,&third,&fourth);
+                        //cout << "shore: " << group_lev_2.front().get_shore().get_shore() << endl;
                     }catch(invalid_argument &e){
                         //cout << "invalid" << endl;
                     }
-                    //cout << "shore: " << group_lev_2.front().get_shore().get_shore() << endl;
                     c++;
 
                 }
             }
-            cout << (float) c/(400.0*400.0*400.0*400.0) * 100 << "%" << endl;
+            cout << (float) c/(NUMBER_OF_PIECES*NUMBER_OF_PIECES*NUMBER_OF_PIECES*NUMBER_OF_PIECES*4*4*4*4) * 100 << "%" << endl;
             cout << c <<" tested combination. " << group_lev_2.size() << " possible found" << endl;
         }
     }
@@ -119,9 +118,12 @@ void piece_comparer_thread(PieceConnection pieces_connections[], PieceShape piec
 
 // errors!
 void calculate_single_thread(bool debug){
+
+    string path = "../../dataset/test_2x3";
+
     // create array of piece shape
     PieceConnection::set_number_of_pieces(NUMBER_OF_PIECES);
-    PieceShape::set_origin_path("../../dataset/blue_500pcs/divided");
+    PieceShape::set_origin_path(path + "/divided");
     PieceShape pieces_shapes[NUMBER_OF_PIECES];
 
     // create array of piece logic
@@ -181,12 +183,17 @@ void calculate_single_thread(bool debug){
     cout << "out2\n";
 
     // save the connections information to the disk
+    int c=0;
     for(auto & i : pieces_connections){
-        //i.save_as_file("../../dataset/blue_500pcs/connections");
+        i.save_as_file(path + "/connections");
+        PieceConnection temp = PieceConnection();
+        temp.became(path + "/connections",c);
+        assert(temp.to_string() == i.to_string());
         cout << i.to_string() << endl;
+        cout << temp.to_string() << endl;
+        c++;
     }
 
-    PieceConnection pc = PieceConnection("../../dataset/blue_500pcs/connections",0);
 }
 
 
@@ -305,5 +312,25 @@ void test_piece_array(){
     imshow("puzzle", pa.get_image());
     waitKey(0);
 
+
+}
+
+void test_grouped_piece_2_constructor(){
+    string path = "../../dataset/test_2x3/connections";
+
+    PieceConnection::set_number_of_pieces(NUMBER_OF_PIECES);
+    PieceConnection pieces[NUMBER_OF_PIECES];
+
+    // load all the pieces
+    for(int i=0; i<NUMBER_OF_PIECES; i++){
+        pieces[i].became(path,i);
+    }
+
+    GroupedPieces<1> top_left = GroupedPieces<1>(&pieces[4],0);
+    GroupedPieces<1> top_right = GroupedPieces<1>(&pieces[5],3);
+    GroupedPieces<1> bottom_left = GroupedPieces<1>(&pieces[3],3);
+    GroupedPieces<1> bottom_right = GroupedPieces<1>(&pieces[2],0);
+
+    GroupedPieces<2> sq =  GroupedPieces<2>(&top_left,&top_right,&bottom_right,&bottom_left);
 
 }

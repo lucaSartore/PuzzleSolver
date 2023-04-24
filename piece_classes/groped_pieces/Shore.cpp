@@ -20,13 +20,12 @@ float Shore::get_shore()const{
 
 void Shore::operator+=(const Shore &other) {
     int other_number = other.number;
+    float other_shore = other.shore;
 
     // if both shore are zero return immediately to avoid zero division
     if(number == 0 && other_number == 0){
         return;
     }
-
-    float other_shore = other.shore;
 
     // a connection that is impossible (aka, shore is 0) has to remain impossible even of other
     // shore are grate
@@ -37,13 +36,18 @@ void Shore::operator+=(const Shore &other) {
     }
 
     // calculate new shore whit weighted average
-    shore = (shore*number + other_shore*other_number)/(number+other_number);
+    shore = (shore*(float)number + other_shore*(float)other_number)/(float)(number+other_number);
     // sum numbers
     number+= other_number;
+
 }
 
 Shore Shore::operator+(const Shore &other) const {
     Shore r = *this;
     r+=other;
     return r;
+}
+
+std::ostream& operator<<(std::ostream &os, const Shore & s){
+    return os << "shore: " << s.shore << " num: " << s.number;
 }

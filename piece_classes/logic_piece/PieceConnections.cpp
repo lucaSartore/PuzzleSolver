@@ -43,6 +43,11 @@ PieceConnection::PieceConnection(string path, int id): PieceConnection() {
 }
 
 void PieceConnection::became(string path, int id) {
+
+    if(number_of_pieces == 0){
+        cerr << "WARNING: number of pieces is set to 0. you need to set it to the correct value!" << endl;
+    }
+
     piece_id = id;
     // calculate path
     path += "/" + std::to_string(id) + ".bin";

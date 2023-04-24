@@ -9,7 +9,7 @@
 #include <cassert>
 
 // the threshold after witch a component get removed because of poor connections
-#define AVREGE_SHORE_THRESHOLD 0.7
+#define AVREGE_SHORE_THRESHOLD 0.5
 
 using namespace std;
 
@@ -40,6 +40,7 @@ Shore GroupedPieces<1>::compare_to(Direction direction, GroupedPieces<1> &other)
             other.get_id(),
             other.direction_to_side_index(-direction) // note: -direction means opposite direction (-UP == DOWN)
             );
+    //cout << "Comparing: " << this->get_id() << " and: " << other.get_id() << " Direction: " << direction << " result: " << s << endl;
     // shore with number = 1 and the percentage as shore
     return Shore(s);
 }
@@ -84,6 +85,8 @@ GroupedPieces<N>::GroupedPieces(GroupedPieces<N - 1> *top_left, GroupedPieces<N 
     set_bottom_right(bottom_right);
     set_top_right(top_right);
     set_top_left(top_left);
+
+    calculate_shore();
 }
 
 template<>
@@ -166,7 +169,6 @@ template<int N>
 void GroupedPieces<N>::calculate_shore() {
     // reset the current shore;
     shore = Shore();
-
     // comparing top border
     shore += get_top_left()->compare_to(RIGHT,*get_top_right());
     // comparing right border

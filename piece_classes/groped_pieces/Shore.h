@@ -5,6 +5,7 @@
 #ifndef PIECECLASS_SHORE_H
 #define PIECECLASS_SHORE_H
 
+#include "iostream"
 
 /// this class keeps track of the shore of each possible combination of pieces,
 /// need to keep track of the average shore, and the number of pieces the shore keeps track of
@@ -16,6 +17,8 @@ private:
     /// the number of connections this shore is representing
     int number;
 public:
+    friend std::ostream& operator<<(std::ostream &os, const Shore & s);
+
     /// default constructor, gives a shore with `shore` = 1 and `number` = 0
     Shore();
     /// create a new shore, `number` will be 1
@@ -28,5 +31,6 @@ public:
     Shore operator+(const Shore &other) const;
 };
 
+std::ostream& operator<<(std::ostream &os, const Shore & s);
 
 #endif //PIECECLASS_SHORE_H
