@@ -14,6 +14,8 @@
 
 class PieceArray {
 private:
+    // boolean flag that defines if the piece array has been completed (aka: if the all points in the array are filled)
+    bool has_been_completed;
     cv::Mat image;
     int dim_x;
     int dim_y;
@@ -34,6 +36,7 @@ private:
     static cv::Scalar get_random_color();
     /// reset the image, and rebuild it
     void reset_image();
+
 public:
     /// returns the x dimension of the 2d array
     int get_dim_x() const;
@@ -41,10 +44,13 @@ public:
     int get_dim_y() const;
     /// create an empty piece array
     PieceArray();
+    /// copy constructor
+    PieceArray(PieceArray & other);
     /// move constructor
     PieceArray(PieceArray && other);
     /// return a piece_holder in one of the many position
     /// if the coordinates are out of bound it returns null ptd
+    /// if the coordinates point to an uninitialized point, it return nullptr
     Holder* get(int x, int y);
     /// set a piece_holder in one position
     void set(int x, int y, Holder && to_be_set,bool update_graphic = true);
@@ -58,8 +64,13 @@ public:
     void un_grow_y();
     /// return the image of the matrix of puzzle pieces
     cv::Mat get_image() const;
-    /// move equal operator
-    PieceArray& operator=(PieceArray&& other);
+    /// function for attaching one piece array to the right of this one, note: the 2 array MUST have the
+    /// same y dimension, and they must be completed
+    void attach_right(const PieceArray& other);
+
+    /// function for attaching one piece array to the bottom of this one, note: the 2 array MUST have the
+    /// same x dimension, and they must be completed
+    void attach_bottom(const PieceArray& other);
 };
 
 std::ostream& operator<<(std::ostream& os, const PieceArray& pa);

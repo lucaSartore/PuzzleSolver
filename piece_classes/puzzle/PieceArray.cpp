@@ -16,6 +16,8 @@ using namespace cv;
 #define MARGIN_BEFORE_GROWTH 1000
 
 PieceArray::PieceArray() {
+    has_been_completed = false;
+
     dim_x = 1;
     dim_y = 1;
     pieces = vector<vector<Holder>>();
@@ -38,8 +40,13 @@ Holder *PieceArray::get(int x, int y){
     }catch (...){
         return nullptr;
     }
-    // get the value
-    return &pieces[x][y];
+    auto to_return = &pieces[x][y];
+
+    // if the upper piece is uninitialized i return a null pointer
+    if(to_return->get_piece() == nullptr){
+        return nullptr;
+    }
+    return to_return;
 }
 
 void PieceArray::set(int x, int y, Holder &&to_be_set,bool update_graphic) {
@@ -47,6 +54,11 @@ void PieceArray::set(int x, int y, Holder &&to_be_set,bool update_graphic) {
 
     // check if in range
     check_indexes(x,y);
+
+    // updating is completed if we are at the last step!
+    if(x==dim_x-1 && y == dim_y-1){
+        has_been_completed = true;
+    }
 
     // set the random color
     to_be_set.set_color(get_random_color());
@@ -60,6 +72,8 @@ void PieceArray::set(int x, int y, Holder &&to_be_set,bool update_graphic) {
     }
     // expand the image if to small
     check_and_expand_image();
+
+
 }
 
 
@@ -77,6 +91,7 @@ void PieceArray::grow_x() {
     }
     pieces.push_back(new_colon);
     dim_x++;
+    has_been_completed = false;
 }
 
 void PieceArray::grow_y() {
@@ -84,6 +99,7 @@ void PieceArray::grow_y() {
         pieces[i].emplace_back();
     }
     dim_y++;
+    has_been_completed = false;
 }
 
 int PieceArray::get_dim_x() const{
@@ -287,29 +303,65 @@ void PieceArray::reset_image() {
 }
 
 PieceArray::PieceArray(PieceArray &&other) {
+    has_been_completed = other.has_been_completed;
+
     image = std::move(other.image);
     other.image = Mat();
 
     dim_x = other.dim_x;
     dim_y = other.dim_y;
 
-    pieces = other.pieces;
+    pieces = std::move(other.pieces);
     other.pieces = vector<vector<Holder>>();
 }
 
-PieceArray &PieceArray::operator=(PieceArray &&other) {
-    if(this != &other){
+PieceArray::PieceArray(PieceArray &other) {
+    has_been_completed = other.has_been_completed;
 
-        image = std::move(other.image);
-        other.image = Mat();
+    image = other.image.clone();
 
-        dim_x = other.dim_x;
-        dim_y = other.dim_y;
+    dim_x = other.dim_x;
+    dim_y = other.dim_y;
+    cout << "a" << endl;
+    pieces = other.pieces;
+}
 
-        pieces = other.pieces;
-        other.pieces = vector<vector<Holder>>();
+void PieceArray::attach_right(const PieceArray &other) {
+
+    if(dim_y != other.dim_y){
+        throw invalid_argument("the 2 pieces MUST have the same y dimension");
     }
-    return *this;
+    cout << has_been_completed << " " << other.has_been_completed << endl;
+    if(!has_been_completed || !other.has_been_completed){
+        throw invalid_argument("both array mus be completed before merging them!");
+    }
+
+    for(auto y_colum: other.pieces){
+        pieces.push_back(y_colum);
+        dim_x++;
+    }
+    reset_image();
+}
+
+void PieceArray::attach_bottom(const PieceArray &other) {
+    if(dim_x != other.dim_x){
+        throw invalid_argument("the 2 pieces MUST have the same x dimension");
+    }
+    cout << has_been_completed << " " << other.has_been_completed << endl;
+    if(!has_been_completed || !other.has_been_completed){
+        throw invalid_argument("both array mus be completed before merging them!");
+    }
+
+    for(int i=0; i<dim_x; i++){
+        pieces[i].insert(
+                pieces[i].end(),
+                std::make_move_iterator(other.pieces[i].begin()),
+                std::make_move_iterator(other.pieces[i].end())
+        );
+    }
+    dim_y += other.dim_y;
+
+    reset_image();
 }
 
 std::ostream& operator<<(std::ostream& os, const PieceArray& pa){

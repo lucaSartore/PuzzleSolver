@@ -29,7 +29,7 @@ void test_grouped_piece_2_constructor();
 
 int main(){
 
-
+    test_piece_array(); return 0;
 
     //calculate_single_thread();return 0;
 
@@ -72,8 +72,8 @@ int main(){
 
                 }
             }
-            cout << (float) c/(NUMBER_OF_PIECES*NUMBER_OF_PIECES*NUMBER_OF_PIECES*NUMBER_OF_PIECES*4*4*4*4) * 100 << "%" << endl;
-            cout << c <<" tested combination. " << group_lev_2.size() << " possible found" << endl;
+            //cout << (float) c/(NUMBER_OF_PIECES*NUMBER_OF_PIECES*NUMBER_OF_PIECES*NUMBER_OF_PIECES*4*4*4*4) * 100 << "%" << endl;
+            //cout << c <<" tested combination. " << group_lev_2.size() << " possible found" << endl;
         }
     }
 
@@ -284,17 +284,14 @@ void test_piece_array(){
     pa.set(0,0,std::move(base));
 
 
-    imshow("puzzle", pa.get_image());
-    waitKey(0);
+    //imshow("puzzle", pa.get_image());waitKey(0);
 
     pa.grow_x();
 
-    base = Holder(&pieces_shapes[5], 3);
-    pa.set(1,0,std::move(base));
+    base = Holder(&pieces_shapes[5], 3);pa.set(1,0,std::move(base));
 
 
-    imshow("puzzle", pa.get_image());
-    waitKey(0);
+    //imshow("puzzle", pa.get_image());waitKey(0);
 
     pa.grow_y();
 
@@ -302,17 +299,32 @@ void test_piece_array(){
     pa.set(0,1,std::move(base));
 
 
-    imshow("puzzle", pa.get_image());
-    waitKey(0);
+    //imshow("puzzle", pa.get_image());waitKey(0);
+
+
+    //imshow("puzzle", pa.get_image());waitKey(0);
 
     base = Holder(&pieces_shapes[2], 0);
     pa.set(1,1,std::move(base));
 
 
-    imshow("puzzle", pa.get_image());
-    waitKey(0);
+    cout << "copying start" << endl;
+    PieceArray pa2 = pa;
+    cout << "copying end" << endl;
 
 
+    cout << "attaching" << endl;
+
+
+    pa.attach_bottom(pa2);
+    pa.attach_bottom(pa2);
+
+    PieceArray pa3 = pa;
+
+    pa.attach_right(pa3);
+
+
+    imshow("puzzle", pa.get_image());waitKey(0);
 }
 
 void test_grouped_piece_2_constructor(){

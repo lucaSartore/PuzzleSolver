@@ -138,4 +138,3 @@ Holder::Holder() {
     piece = nullptr;
     orientation = 0;
 }
-
