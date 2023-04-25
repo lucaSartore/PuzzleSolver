@@ -25,6 +25,8 @@ add_executable(
         groped_pieces/Direction.h
         groped_pieces/Shore.cpp
         groped_pieces/Shore.h
+        groped_pieces/errors.cpp
+        groped_pieces/errors.h
 
         puzzle/Holder.cpp
         puzzle/Holder.h
@@ -32,6 +34,7 @@ add_executable(
         puzzle/PieceArray.h
         puzzle/PieceImmage.cpp
         puzzle/PieceImage.h
+
 
 
 )

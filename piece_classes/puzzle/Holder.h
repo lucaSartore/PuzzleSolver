@@ -35,10 +35,10 @@ public:
     ~Holder() = default;
     /// return the image held in this holder
     cv::Mat get_image_resized();
-    /// return the coordinates (relative to the image obtained with `get_image`) of the offset
+    /// return the coordinates (relative to the image obtained with `get_preview_image`) of the offset
     /// of the side at the specified direction
     cv::Point get_side_center(Direction direction,bool resized);
-    /// return the coordinates (relative to the image obtained with `get_image`) of the offset of the piece
+    /// return the coordinates (relative to the image obtained with `get_preview_image`) of the offset of the piece
     cv::Point get_center(bool resized);
     /// same as `get_side_center` but keeps track of where the piece is placed in the piece array using the offset
     cv::Point get_side_center_with_offset(Direction direction, bool resized);

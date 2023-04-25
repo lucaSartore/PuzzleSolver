@@ -14,6 +14,7 @@
 
 class PieceArray {
 private:
+
     // boolean flag that defines if the piece array has been completed (aka: if the all points in the array are filled)
     bool has_been_completed;
     cv::Mat image;
@@ -23,7 +24,7 @@ private:
     /// check if the index is or not inside the matrix, if not it throws an error
     void check_indexes(int x, int y) const;
     /// build the image of the puzzle
-    void build_image();
+    void build_preview_image();
     /// check if the image needs to be grown, and eventually do so
     void check_and_expand_image();
     /// this function takes to image and 2 points, it then paste the source inamge on top of the destination image
@@ -31,7 +32,7 @@ private:
     /// by default the function will paste it on top, but there is the option of doing a bitwise or by using the flag
     static void paste_on_top(const cv::Mat& source, cv::Mat& destination, cv::Point2i pointSource, cv::Point2i pointDestination, bool bitwise_or = false);
     /// insert the piece at the specified coordinates in the image
-    void insert_into_image(int x, int y);
+    void insert_into_preview_image(int x, int y);
     /// get a random (but very saturate color)
     static cv::Scalar get_random_color();
     /// reset the image, and rebuild it
@@ -63,7 +64,7 @@ public:
     /// un grow the array by 1 in the Y dimension
     void un_grow_y();
     /// return the image of the matrix of puzzle pieces
-    cv::Mat get_image();
+    cv::Mat get_preview_image();
     /// function for attaching one piece array to the right of this one, note: the 2 array MUST have the
     /// same y dimension, and they must be completed
     void attach_right(const PieceArray& other);

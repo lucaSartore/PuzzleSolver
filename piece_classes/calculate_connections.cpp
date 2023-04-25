@@ -13,6 +13,8 @@
 #include <thread>
 #include "groped_pieces/GroupedPieces.h"
 #include "puzzle/PieceArray.h"
+#include <time.h>
+
 
 using namespace std;
 using namespace std::chrono;
@@ -29,7 +31,9 @@ void test_grouped_piece_2_constructor();
 
 int main(){
 
-    test_piece_array(); return 0;
+    //srand(time(NULL));
+
+    //test_piece_array(); return 0;
 
     //calculate_single_thread();return 0;
 
@@ -59,14 +63,16 @@ int main(){
     // empty list of element 2;
     std::list<GroupedPieces<2>> group_lev_2 = {};
 
+    auto start = chrono::steady_clock::now();
+
     int c=0;
     // creating list of potential options
-    for(auto &first: group_lev_1){
-        for(auto &second: group_lev_1){
-            for(auto &third: group_lev_1){
-                for(auto &fourth: group_lev_1){
+    for(auto &top_left: group_lev_1){
+        for(auto &top_right: group_lev_1){
+            for(auto &bottom_right: group_lev_1){
+                for(auto &bottom_left: group_lev_1){
                     try{
-                        group_lev_2.emplace_front(&first,&second,&third,&fourth);
+                        group_lev_2.emplace_front(&top_left, &top_right, &bottom_right, &bottom_left);
                         //cout << "shore: " << group_lev_2.front().get_shore().get_shore() << endl;
                     }catch(invalid_argument &e){
                         //cout << "invalid" << endl;
@@ -79,6 +85,14 @@ int main(){
             cout << c <<" tested combination. " << group_lev_2.size() << " possible found" << endl;
         }
     }
+
+    auto end = chrono::steady_clock::now();
+
+    cout << "Execution time for finding all 2x2 pieces [single threaded]: "
+         << chrono::duration_cast<chrono::seconds>(end - start).count() // baseline: 100 sec
+         << " sec" << endl;
+
+    return 0;
 
     // empty list of element 2;
     std::list<GroupedPieces<3>> group_lev_3 = {};
@@ -107,10 +121,9 @@ int main(){
     }
 
 
-
     for(auto component: group_lev_2){
         auto pa = component.get_piece_array(shapes);
-        imshow("test", pa.get_image());
+        imshow("test", pa.get_preview_image());
         waitKey(0);
     }
 
@@ -320,14 +333,14 @@ void test_piece_array(){
     pa.set(0,0,std::move(base));
 
 
-    //imshow("puzzle", pa.get_image());waitKey(0);
+    //imshow("puzzle", pa.get_preview_image());waitKey(0);
 
     pa.grow_x();
 
     base = Holder(&pieces_images[5], 3);pa.set(1, 0, std::move(base));
 
 
-    //imshow("puzzle", pa.get_image());waitKey(0);
+    //imshow("puzzle", pa.get_preview_image());waitKey(0);
 
     pa.grow_y();
 
@@ -335,10 +348,10 @@ void test_piece_array(){
     pa.set(0,1,std::move(base));
 
 
-    //imshow("puzzle", pa.get_image());waitKey(0);
+    //imshow("puzzle", pa.get_preview_image());waitKey(0);
 
 
-    //imshow("puzzle", pa.get_image());waitKey(0);
+    //imshow("puzzle", pa.get_preview_image());waitKey(0);
 
     base = Holder(&pieces_images[2], 0);
     pa.set(1,1,std::move(base));
@@ -355,7 +368,7 @@ void test_piece_array(){
     pa.attach_right(pa3);
 
 
-    imshow("puzzle", pa.get_image());waitKey(0);
+    imshow("puzzle", pa.get_preview_image());waitKey(0);
 }
 
 void test_grouped_piece_2_constructor(){

@@ -48,7 +48,10 @@ public:
     Shore compare_to(Direction direction, GroupedPieces<N> &other);
     /// get the shore that this group has overall, the shore represent how much the piece match, and go from 0 to 1
     Shore get_shore();
-    /// create a Group of pieces using 4 sub components
+    /// create a Group of pieces using 4 sub components.
+    /// this create the piece by placing all pieces one by one starting from the top left, going clockwise
+    /// the function throws an error if one of the piece is impossible (and in that case it tells you witch piece, see errors.h)
+    /// or it throws an error if they all match, but the avrege shore si too low.
     GroupedPieces<N>(GroupedPieces<N-1> *top_left, GroupedPieces<N-1> *top_right, GroupedPieces<N-1> *bottom_right, GroupedPieces<N-1> *bottom_left);
     /// return a piece array that represent this subset of pieces, you need to pass him
     /// an array containing all the pieces loaded

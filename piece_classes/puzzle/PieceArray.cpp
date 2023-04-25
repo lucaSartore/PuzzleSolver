@@ -123,16 +123,16 @@ void PieceArray::un_grow_y() {
 }
 
 
-cv::Mat PieceArray::get_image(){
+cv::Mat PieceArray::get_preview_image(){
     reset_image();
     return image.clone();
 }
 
-void PieceArray::build_image() {
+void PieceArray::build_preview_image() {
     for(int x=0; x<get_dim_x(); x++){
         for(int y=0; y<get_dim_y(); y++){
             try{
-                insert_into_image(x,y);
+                insert_into_preview_image(x, y);
             }catch (...){
                 // once i get an error, i continue with the next iteration of X value
                 break;
@@ -206,7 +206,7 @@ void PieceArray::check_and_expand_image() {
     }
 }
 
-void PieceArray::insert_into_image(int x, int y) {
+void PieceArray::insert_into_preview_image(int x, int y) {
     check_indexes(x,y);
 
     // get the piece on the top and bottom of the piece i'm trying to place
@@ -296,7 +296,7 @@ cv::Scalar PieceArray::get_random_color() {
 
 void PieceArray::reset_image() {
     image = Mat::zeros(Size(STARTING_DIMENSIONS,STARTING_DIMENSIONS),CV_8UC3);
-    build_image();
+    build_preview_image();
 }
 
 PieceArray::PieceArray(PieceArray &&other) {
