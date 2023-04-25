@@ -7,6 +7,8 @@
 #include <algorithm>
 #include <iostream>
 #include <cassert>
+#include "grouped_pieces_errors.h"
+
 
 // the threshold after witch a component get removed because of poor connections
 #define AVREGE_SHORE_THRESHOLD 0.5
@@ -130,14 +132,26 @@ GroupedPieces<2>::GroupedPieces(GroupedPieces<1> *top_left, GroupedPieces<1> *to
 
     // insert the single data
     ids.insert(top_left->get_id());
-    ids.insert(top_right->get_id());
-    ids.insert(bottom_right->get_id());
-    ids.insert(bottom_left->get_id());
 
-    // check if all ids are different, otherwise throw an error
-    if(ids.size() != 4){
-        throw std::invalid_argument("some pieces are repeated");
+    // inserting new component in set
+    ids.insert(top_right->get_id());
+    // if some components are repeated (aka same id) the combination is invalid
+    if(ids.size() != 2){
+        throw TopRightIsImpossible();
     }
+
+    // inserting new component in set
+    ids.insert(bottom_right->get_id());
+    if(ids.size() != 3){
+        throw BottomRightIsImpossible();
+    }
+
+    // inserting new component in set
+    ids.insert(bottom_left->get_id());
+    if(ids.size() != 4){
+        throw BottomLeftIsImpossible();
+    }
+
 
 
     // insert the pointers to the respective tiles
@@ -196,39 +210,52 @@ template<int N>
 void GroupedPieces<N>::calculate_shore() {
     // reset the current shore;
     shore = Shore();
+
+
     // comparing top border
     shore += get_top_left()->compare_to(RIGHT,*get_top_right());
-    // comparing right border
-    shore += get_top_right()->compare_to(DOWN,*get_bottom_right());
-    // comparing bottom border
-    shore += get_bottom_right()->compare_to(LEFT,*get_bottom_left());
-    // comparing bottom border
-    shore += get_bottom_left()->compare_to(UP,*get_top_left());
-
     // trowing an error if the piece is impossible
     if(shore.get_shore() == 0){
-        throw invalid_argument("impossible combination");
+        throw TopRightIsImpossible();
     }
+
+
+    // comparing right border
+    shore += get_top_right()->compare_to(DOWN,*get_bottom_right());
+    // trowing an error if the piece is impossible
+    if(shore.get_shore() == 0){
+        throw BottomRightIsImpossible();
+    }
+
+
+    // comparing bottom border
+    shore += get_bottom_right()->compare_to(LEFT,*get_bottom_left());
+    // trowing an error if the piece is impossible
+    if(shore.get_shore() == 0){
+        throw BottomLeftIsImpossible();
+    }
+
+
+    // comparing bottom border
+    shore += get_bottom_left()->compare_to(UP,*get_top_left());
+    // trowing an error if the piece is impossible
+    if(shore.get_shore() == 0){
+        throw BottomLeftIsImpossible();
+    }
+
+
     // trowing an error if the piece is impossible
     if(shore.get_shore() <= AVREGE_SHORE_THRESHOLD){
-        throw invalid_argument("combination shore too low");
+        throw AvregeIsToLow();
     }
 
     // adding the avrege of the 4 sub components
     shore += get_top_left()->get_shore();
-    shore += get_top_left()->get_shore();
-    shore += get_top_left()->get_shore();
-    shore += get_top_left()->get_shore();
+    shore += get_top_right()->get_shore();
+    shore += get_bottom_right()->get_shore();
+    shore += get_bottom_left()->get_shore();
 
-    // trowing an error if the piece is impossible
-    if(shore.get_shore() == 0){
-        throw invalid_argument("impossible combination");
-    }
-    // trowing an error if the piece is impossible
-    if(shore.get_shore() <= AVREGE_SHORE_THRESHOLD){
-        throw invalid_argument("combination shore too low");
-    }
-
+    // no need to check again for the shore, since the added shore are for shore higher than the threshold
 }
 
 

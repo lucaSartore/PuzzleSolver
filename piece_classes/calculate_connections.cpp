@@ -14,6 +14,7 @@
 #include "groped_pieces/GroupedPieces.h"
 #include "puzzle/PieceArray.h"
 #include <time.h>
+#include "groped_pieces/grouped_pieces_errors.h"
 
 
 using namespace std;
@@ -73,23 +74,34 @@ int main(){
                 for(auto &bottom_left: group_lev_1){
                     try{
                         group_lev_2.emplace_front(&top_left, &top_right, &bottom_right, &bottom_left);
-                        //cout << "shore: " << group_lev_2.front().get_shore().get_shore() << endl;
-                    }catch(invalid_argument &e){
-                        //cout << "invalid" << endl;
+                    }catch(AvregeIsToLow &e){
+                        // if avrege is to low: do nothing and go on with the next piece
+                    }catch(BottomLeftIsImpossible &e) {
+                        // if bottom left is impossible: do nothing and go on with the next piece
+                    }catch(BottomRightIsImpossible &e) {
+                        // if bottom right is impossible: no need to check all bottom left combinations
+                        // so i jump to the bottom left loop
+                        goto END_BOTTOM_LEFT_LOOP;
+                    }catch(TopRightIsImpossible &e) {
+                        // if top right is impossible: no need to check all bottom left combinations
+                        // so i jump to the rop right loop
+                        goto END_BOTTOM_RIGHT_LOOP;
                     }
-                    c++;
 
                 }
+                END_BOTTOM_LEFT_LOOP:;
             }
-            cout << (float) c/(NUMBER_OF_PIECES*NUMBER_OF_PIECES*NUMBER_OF_PIECES*NUMBER_OF_PIECES*4*4*4*4) * 100 << "%" << endl;
-            cout << c <<" tested combination. " << group_lev_2.size() << " possible found" << endl;
+            END_BOTTOM_RIGHT_LOOP:;
         }
+        c++;
+        cout << (float) c/(NUMBER_OF_PIECES*4) * 100 << "%" << endl;
+        cout << group_lev_2.size() << " possible combinations found" << endl;
     }
 
     auto end = chrono::steady_clock::now();
 
     cout << "Execution time for finding all 2x2 pieces [single threaded]: "
-         << chrono::duration_cast<chrono::seconds>(end - start).count() // baseline: 100 sec
+         << chrono::duration_cast<chrono::seconds>(end - start).count() // baseline: 100 sec // 236 comb
          << " sec" << endl;
 
     return 0;
