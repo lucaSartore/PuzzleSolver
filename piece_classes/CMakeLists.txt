@@ -30,6 +30,8 @@ add_executable(
         puzzle/Holder.h
         puzzle/PieceArray.cpp
         puzzle/PieceArray.h
+        puzzle/PieceImmage.cpp
+        puzzle/PieceImage.h
 
 
 )
