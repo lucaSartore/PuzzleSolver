@@ -29,7 +29,7 @@ void test_grouped_piece_2_constructor();
 
 int main(){
 
-    //test_piece_array(); return 0;
+    test_piece_array(); return 0;
 
     //calculate_single_thread();return 0;
 
@@ -37,13 +37,13 @@ int main(){
 
     PieceConnection::set_number_of_pieces(NUMBER_OF_PIECES);
     PieceConnection pieces[NUMBER_OF_PIECES];
-    PieceShape shapes[NUMBER_OF_PIECES];
+    PieceImage shapes[NUMBER_OF_PIECES];
 
 
     // load all the pieces
     for(int i=0; i<NUMBER_OF_PIECES; i++){
         pieces[i].became(path,i);
-        shapes[i] = PieceShape(i,"../../dataset/test_4x4/divided");
+        shapes[i] = PieceImage(i,"../../dataset/test_4x4/divided");
     }
 
     // empty list of element 1;
@@ -305,18 +305,18 @@ void calculate_multi_thread(int number_of_threads){
 
 void test_piece_array(){
 
-    PieceShape::set_origin_path("../../dataset/test_2x3/divided");
-    PieceShape pieces_shapes[6];
+    PieceImage::set_origin_path("../../dataset/test_2x3/divided");
+    PieceImage pieces_images[6];
 
 
     // filling both array up with the respective index;
     for(int i=0; i<6;i++){
-        pieces_shapes[i] = PieceShape(i);
+        pieces_images[i] = PieceImage(i);
     }
 
     PieceArray pa = PieceArray();
 
-    Holder base = Holder(&pieces_shapes[4], 0);
+    Holder base = Holder(&pieces_images[4], 0);
     pa.set(0,0,std::move(base));
 
 
@@ -324,14 +324,14 @@ void test_piece_array(){
 
     pa.grow_x();
 
-    base = Holder(&pieces_shapes[5], 3);pa.set(1,0,std::move(base));
+    base = Holder(&pieces_images[5], 3);pa.set(1, 0, std::move(base));
 
 
     //imshow("puzzle", pa.get_image());waitKey(0);
 
     pa.grow_y();
 
-    base = Holder(&pieces_shapes[3], 3);
+    base = Holder(&pieces_images[3], 3);
     pa.set(0,1,std::move(base));
 
 
@@ -340,7 +340,7 @@ void test_piece_array(){
 
     //imshow("puzzle", pa.get_image());waitKey(0);
 
-    base = Holder(&pieces_shapes[2], 0);
+    base = Holder(&pieces_images[2], 0);
     pa.set(1,1,std::move(base));
 
 

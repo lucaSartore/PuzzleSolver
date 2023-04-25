@@ -48,6 +48,10 @@ public:
     int get_preview_x_res();
     /// return the y resolution of the preview image
     int get_preview_y_res();
+    /// return the x resolution of the full size image
+    int get_full_x_res();
+    /// return the y resolution of the full size image
+    int get_full_y_res();
 };
 
 

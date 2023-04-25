@@ -267,7 +267,7 @@ GroupedPieces<1>::GroupedPieces(PieceConnection *reference_piece, int orientatio
 }
 
 template<int N>
-PieceArray GroupedPieces<N>::get_piece_array(PieceShape* shapes){
+PieceArray GroupedPieces<N>::get_piece_array(PieceImage* shapes){
     // getting the four sub array
     PieceArray top_left = std::move(get_top_left()->get_piece_array(shapes));
     PieceArray top_right = std::move(get_top_right()->get_piece_array(shapes));
@@ -284,7 +284,7 @@ PieceArray GroupedPieces<N>::get_piece_array(PieceShape* shapes){
 }
 
 
-PieceArray GroupedPieces<1>::get_piece_array(PieceShape *shapes) {
+PieceArray GroupedPieces<1>::get_piece_array(PieceImage *shapes) {
     PieceArray pa = PieceArray();
     Holder ph = Holder(&shapes[get_id()],orientation);
     pa.set(0,0,std::move(ph));

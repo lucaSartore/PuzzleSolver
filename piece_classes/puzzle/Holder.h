@@ -5,9 +5,7 @@
 #ifndef PIECECLASS_HOLDER_H
 #define PIECECLASS_HOLDER_H
 
-#include "../graphic_piece/PieceShape.h"
-#include "../graphic_piece/Side.h"
-
+#include "PieceImage.h"
 
 #include <opencv2/opencv.hpp>
 
@@ -18,7 +16,7 @@ class Holder {
 private:
     cv::Point offset;
     cv::Scalar color;
-    PieceShape* piece;
+    PieceImage* piece;
     int orientation;
 public:
     /// set the offset of the piece;
@@ -32,22 +30,22 @@ public:
     /// zero parameter constrictor
     Holder();
     /// constructor
-    Holder(PieceShape *piece_, int orientation_);
+    Holder(PieceImage *piece_, int orientation_);
     /// destructor
     ~Holder() = default;
     /// return the image held in this holder
-    cv::Mat get_image();
+    cv::Mat get_image_resized();
     /// return the coordinates (relative to the image obtained with `get_image`) of the offset
     /// of the side at the specified direction
-    cv::Point get_side_center(Direction direction);
+    cv::Point get_side_center(Direction direction,bool resized);
     /// return the coordinates (relative to the image obtained with `get_image`) of the offset of the piece
-    cv::Point get_center();
+    cv::Point get_center(bool resized);
     /// same as `get_side_center` but keeps track of where the piece is placed in the piece array using the offset
-    cv::Point get_side_center_with_offset(Direction direction);
+    cv::Point get_side_center_with_offset(Direction direction, bool resized);
     /// return the coordinates of one of the 4 points of the image, based on the specified index
-    cv::Point  get_point(int index);
+    cv::Point  get_point(int index,bool resized);
     /// return the pointer to the original piece
-    PieceShape* get_piece();
+    PieceImage* get_piece();
 };
 
 

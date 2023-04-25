@@ -88,7 +88,6 @@ PieceImage::PieceImage(int piece_id, std::string path) {
     for(int i=0; i<4; i++){
         points_resized[i] = points[i] / PREVIEW_RESIZE_FACTOR;
     }
-
 }
 
 void PieceImage::set_origin_path(std::string path) {
@@ -125,5 +124,13 @@ int PieceImage::get_preview_x_res() {
 
 int PieceImage::get_preview_y_res() {
     return ROTATION_RESOLUTION/PREVIEW_RESIZE_FACTOR;
+}
+
+int PieceImage::get_full_x_res() {
+    return ROTATION_RESOLUTION;
+}
+
+int PieceImage::get_full_y_res() {
+    return ROTATION_RESOLUTION;
 }
 

@@ -49,7 +49,7 @@ Holder *PieceArray::get(int x, int y){
     return to_return;
 }
 
-void PieceArray::set(int x, int y, Holder &&to_be_set,bool update_graphic) {
+void PieceArray::set(int x, int y, Holder &&to_be_set) {
 
 
     // check if in range
@@ -66,10 +66,6 @@ void PieceArray::set(int x, int y, Holder &&to_be_set,bool update_graphic) {
     // inserting it in to the array
     pieces[x][y] = to_be_set;
 
-    if(update_graphic){
-        // update the graph;
-        insert_into_image(x,y);
-    }
     // expand the image if to small
     check_and_expand_image();
 
@@ -127,7 +123,8 @@ void PieceArray::un_grow_y() {
 }
 
 
-cv::Mat PieceArray::get_image() const {
+cv::Mat PieceArray::get_image(){
+    reset_image();
     return image.clone();
 }
 
@@ -219,9 +216,9 @@ void PieceArray::insert_into_image(int x, int y) {
     Holder* this_piece = get(x,y);
 
     // vector that go form the right side of the current piece to the center
-    Point left_to_center_vector = this_piece->get_center() - this_piece->get_side_center(LEFT);
+    Point left_to_center_vector = this_piece->get_center(true) - this_piece->get_side_center(LEFT,true);
     // vector that go form the top side of the current piece to the center
-    Point top_to_center_vector = this_piece->get_center() - this_piece->get_side_center(UP);
+    Point top_to_center_vector = this_piece->get_center(true) - this_piece->get_side_center(UP,true);
 
     int center_x,center_y;
 
@@ -238,20 +235,20 @@ void PieceArray::insert_into_image(int x, int y) {
         // default case: i need place a border vertically
 
         center_x = BORDER_DISTANCE + left_to_center_vector.x;
-        center_y = (piece_top->get_side_center_with_offset(DOWN) + top_to_center_vector).y;
+        center_y = (piece_top->get_side_center_with_offset(DOWN,true) + top_to_center_vector).y;
     }
     // building on the top side
     else if(piece_top == nullptr){
         // default case: i need to place a border horizontally
 
-        center_x = (piece_left->get_side_center_with_offset(RIGHT) + left_to_center_vector).x;
+        center_x = (piece_left->get_side_center_with_offset(RIGHT,true) + left_to_center_vector).x;
         center_y = BORDER_DISTANCE + top_to_center_vector.y;
     }
     // building in the middle
     else{
 
-        Point center_1 = piece_left->get_side_center_with_offset(RIGHT) + left_to_center_vector;
-        Point center_2 = piece_top->get_side_center_with_offset(DOWN) + top_to_center_vector;
+        Point center_1 = piece_left->get_side_center_with_offset(RIGHT,true) + left_to_center_vector;
+        Point center_2 = piece_top->get_side_center_with_offset(DOWN,true) + top_to_center_vector;
 
         Point center = (center_1+center_2)/2;
 
@@ -263,21 +260,21 @@ void PieceArray::insert_into_image(int x, int y) {
 
     // matrix to insert in the new puzzle
     Mat to_paste;
-    cvtColor(this_piece->get_image(), to_paste, COLOR_GRAY2BGR);
+    cvtColor(this_piece->get_image_resized(), to_paste, COLOR_GRAY2BGR);
     to_paste = to_paste!=0;
-    floodFill(to_paste, this_piece->get_center(), this_piece->get_color());
+    floodFill(to_paste, this_piece->get_center(true), this_piece->get_color());
 
     // pasting the piece in to the image
     paste_on_top(
             to_paste,
             image,
-            this_piece->get_center(),
+            this_piece->get_center(true),
             new_center_point,
             true
     );
 
     // updating the position of the piece
-    this_piece->set_offset(new_center_point - this_piece->get_center());
+    this_piece->set_offset(new_center_point - this_piece->get_center(true));
 
     // base case: i need to place a normal piece
 
@@ -340,7 +337,6 @@ void PieceArray::attach_right(const PieceArray &other) {
         pieces.push_back(y_colum);
         dim_x++;
     }
-    reset_image();
 }
 
 void PieceArray::attach_bottom(const PieceArray &other) {
@@ -360,8 +356,6 @@ void PieceArray::attach_bottom(const PieceArray &other) {
         );
     }
     dim_y += other.dim_y;
-
-    reset_image();
 }
 
 std::ostream& operator<<(std::ostream& os, const PieceArray& pa){

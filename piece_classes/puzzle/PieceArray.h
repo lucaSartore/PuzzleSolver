@@ -53,7 +53,7 @@ public:
     /// if the coordinates point to an uninitialized point, it return nullptr
     Holder* get(int x, int y);
     /// set a piece_holder in one position
-    void set(int x, int y, Holder && to_be_set,bool update_graphic = true);
+    void set(int x, int y, Holder && to_be_set);
     /// grow the array by 1 in the X dimension
     void grow_x();
     /// grow the array by 1 in the Y dimension
@@ -63,7 +63,7 @@ public:
     /// un grow the array by 1 in the Y dimension
     void un_grow_y();
     /// return the image of the matrix of puzzle pieces
-    cv::Mat get_image() const;
+    cv::Mat get_image();
     /// function for attaching one piece array to the right of this one, note: the 2 array MUST have the
     /// same y dimension, and they must be completed
     void attach_right(const PieceArray& other);

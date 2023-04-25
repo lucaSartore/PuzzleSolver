@@ -6,7 +6,7 @@
 
 //#include <utility>
 
-
+using namespace cv;
 
 void Holder::set_offset(cv::Point p) {
     offset = p;
@@ -16,7 +16,7 @@ cv::Point Holder::get_offset() {
     return offset;
 }
 
-Holder::Holder(PieceShape *piece_, int orientation_) {
+Holder::Holder(PieceImage *piece_, int orientation_) {
     assert(piece_ != nullptr);
     assert(orientation_>=0 && orientation_<4);
 
@@ -34,12 +34,12 @@ cv::Scalar Holder::get_color() {
     return color;
 }
 
-cv::Mat Holder::get_image() {
+cv::Mat Holder::get_image_resized() {
     int rotate_code;
     switch (orientation) {
         case 0:
             // no need for rotation;
-            return piece->get_image().clone();
+            return piece->get_image_resized().clone();
         case 1:
             rotate_code = cv::ROTATE_90_COUNTERCLOCKWISE;
             break;
@@ -53,12 +53,12 @@ cv::Mat Holder::get_image() {
             throw std::runtime_error("unknown orientation");
     }
     cv::Mat to_return;
-    cv::rotate(piece->get_image(),to_return,rotate_code);
+    cv::rotate(piece->get_image_resized(),to_return,rotate_code);
     return to_return;
 }
 
 
-cv::Point Holder::get_side_center(Direction direction) {
+cv::Point Holder::get_side_center(Direction direction,bool resized) {
     int offset;
     switch (direction) {
         case UP:
@@ -76,17 +76,28 @@ cv::Point Holder::get_side_center(Direction direction) {
         default:
             throw std::runtime_error("unknown direction");
     }
-    cv::Point p1 = get_point((offset)%4);
-    cv::Point p2 = get_point((offset+1)%4);
+    cv::Point p1 = get_point((offset)%4,resized);
+    cv::Point p2 = get_point((offset+1)%4,resized);
     return (p1+p2)/2;
 }
 
-cv::Point Holder::get_point(int index) {
+cv::Point Holder::get_point(int index,bool resized) {
     assert(index>=0);
     assert(index<4);
-    cv::Point og_point = piece->get_point((orientation+index)%4);
-    int res_x = piece->get_preview_x_res();
-    int res_y = piece->get_preview_y_res();
+
+    cv::Point og_point;
+    int res_x;
+    int res_y;
+    if(resized){
+        og_point = piece->get_point_resized((orientation+index)%4);
+        res_x = piece->get_preview_x_res();
+        res_y = piece->get_preview_y_res();
+    }else{
+        og_point = piece->get_point((orientation+index)%4);
+        res_x = piece->get_full_x_res();
+        res_y = piece->get_full_y_res();
+    }
+
     int x,y;
     switch (orientation) {
         case 0:
@@ -116,19 +127,19 @@ cv::Point Holder::get_point(int index) {
 
 }
 
-cv::Point Holder::get_side_center_with_offset(Direction direction) {
-    return this->get_side_center(direction) + this->get_offset();
+cv::Point Holder::get_side_center_with_offset(Direction direction, bool resized) {
+    return this->get_side_center(direction,resized) + this->get_offset();
 }
 
-cv::Point Holder::get_center() {
-    cv::Point p1 = get_point(0);
-    cv::Point p2 = get_point(1);
-    cv::Point p3 = get_point(2);
-    cv::Point p4 = get_point(3);
+cv::Point Holder::get_center(bool resized) {
+    cv::Point p1 = get_point(0,resized);
+    cv::Point p2 = get_point(1,resized);
+    cv::Point p3 = get_point(2,resized);
+    cv::Point p4 = get_point(3,resized);
     return (p1+p2+p3+p4)/4;
 }
 
-PieceShape *Holder::get_piece() {
+PieceImage *Holder::get_piece() {
     return piece;
 }
 
