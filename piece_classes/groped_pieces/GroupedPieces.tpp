@@ -41,24 +41,43 @@ Shore GroupedPieces<N>::compare_to(Direction direction, GroupedPieces<N> &other)
     switch (direction) {
         case RIGHT:
             s += this->get_top_right()->compare_to(direction,*other.get_top_left());
+            // early evaluation to save time
+            if(s.get_shore() == 0){
+                return s;
+            }
             s += this->get_bottom_right()->compare_to(direction,*other.get_bottom_left());
             break;
         case LEFT:
             s += this->get_top_left()->compare_to(direction,*other.get_top_right());
+            // early evaluation to save time
+            if(s.get_shore() == 0){
+                return s;
+            }
             s += this->get_bottom_left()->compare_to(direction,*other.get_bottom_right());
             break;
         case UP:
             s += this->get_top_left()->compare_to(direction,*other.get_bottom_left());
+            // early evaluation to save time
+            if(s.get_shore() == 0){
+                return s;
+            }
             s += this->get_top_right()->compare_to(direction,*other.get_bottom_right());
             break;
         case DOWN:
             s += this->get_bottom_left()->compare_to(direction,*other.get_top_left());
+            // early evaluation to save time
+            if(s.get_shore() == 0){
+                return s;
+            }
             s += this->get_bottom_right()->compare_to(direction,*other.get_top_right());
             break;
         default:
             throw std::runtime_error("unknown direction");
     }
-
+    //cout << direction << " " << s << endl;
+    //if(direction == UP && s.get_shore() == 0.0){
+    //    s = Shore(1);
+    //}
     return s;
 }
 
@@ -88,26 +107,6 @@ GroupedPieces<N>::GroupedPieces(GroupedPieces<N - 1> *top_left, GroupedPieces<N 
     assert(bottom_right != nullptr);
     assert(bottom_left != nullptr);
 
-    //reset default ids set
-    ids = {};
-
-    // concat all the sets
-    std::set<int> t1 = {},t2 = {};
-    std::set_union(top_left->get_ids().begin(), top_left->get_ids().end(),
-               top_right->get_ids().begin(), top_right->get_ids().end(),
-               std::inserter(t1, t1.begin()));
-    std::set_union(bottom_right->get_ids().begin(), bottom_right->get_ids().end(),
-                   bottom_left->get_ids().begin(), bottom_left->get_ids().end(),
-                   std::inserter(t2, t2.begin()));
-    std::set_union(t1.begin(), t1.end(),
-                   t2.begin(), t2.end(),
-                   std::inserter(ids, ids.begin()));
-
-    // check if the different ids are the expected number, otherwise it mean that one piece is duplicated, so this is not a valid piece
-    float expected_pieces = pow(4.0,N-1);
-    if(ids.size() != std::round(expected_pieces)){
-        throw std::invalid_argument("some pieces are repeated");
-    }
 
     // insert the pointers to the respective tiles
     set_bottom_left(bottom_left);
@@ -116,6 +115,43 @@ GroupedPieces<N>::GroupedPieces(GroupedPieces<N - 1> *top_left, GroupedPieces<N 
     set_top_left(top_left);
 
     calculate_shore();
+
+    //return;
+
+    //reset default ids set
+    ids = {};
+
+    // adding top left ids
+    ids.insert(top_left->get_ids().begin(),top_left->get_ids().end());
+
+    // adding top right ids
+    ids.insert(top_right->get_ids().begin(),top_right->get_ids().end());
+    // check if the different ids are the expected number, otherwise it mean that one piece is duplicated
+    // so the top right is not a valid piece
+    float expected_pieces = pow(4.0,N-1)*0.5;
+    if(ids.size() != std::round(expected_pieces)){
+        throw TopRightIsImpossible();
+    }
+
+
+    // adding bottom right ids
+    ids.insert(bottom_right->get_ids().begin(),bottom_right->get_ids().end());
+    // check if the different ids are the expected number, otherwise it mean that one piece is duplicated
+    // so the bottom left is not a valid piece
+    expected_pieces = pow(4.0,N-1)*0.75;
+    if(ids.size() != std::round(expected_pieces)){
+        throw BottomRightIsImpossible();
+    }
+
+
+    // adding bottom left ids
+    ids.insert(bottom_left->get_ids().begin(),bottom_left->get_ids().end());
+    // check if the different ids are the expected number, otherwise it mean that one piece is duplicated
+    // so the bottom left is not a valid piece
+    expected_pieces = pow(4.0,N-1);
+    if(ids.size() != std::round(expected_pieces)){
+        throw BottomLeftIsImpossible();
+    }
 }
 
 template<>
@@ -126,6 +162,16 @@ GroupedPieces<2>::GroupedPieces(GroupedPieces<1> *top_left, GroupedPieces<1> *to
     assert(top_right != nullptr);
     assert(bottom_right != nullptr);
     assert(bottom_left != nullptr);
+
+    // insert the pointers to the respective tiles
+    set_bottom_left(bottom_left);
+    set_bottom_right(bottom_right);
+    set_top_right(top_right);
+    set_top_left(top_left);
+
+
+    // calculating the avrege shore
+    calculate_shore();
 
     // make array empty
     ids = {};
@@ -152,16 +198,6 @@ GroupedPieces<2>::GroupedPieces(GroupedPieces<1> *top_left, GroupedPieces<1> *to
         throw BottomLeftIsImpossible();
     }
 
-
-
-    // insert the pointers to the respective tiles
-    set_bottom_left(bottom_left);
-    set_bottom_right(bottom_right);
-    set_top_right(top_right);
-    set_top_left(top_left);
-
-    // calculating the avrege shore
-    calculate_shore();
 }
 
 
@@ -235,14 +271,12 @@ void GroupedPieces<N>::calculate_shore() {
         throw BottomLeftIsImpossible();
     }
 
-
     // comparing bottom border
     shore += get_bottom_left()->compare_to(UP,*get_top_left());
     // trowing an error if the piece is impossible
     if(shore.get_shore() == 0){
         throw BottomLeftIsImpossible();
     }
-
 
     // trowing an error if the piece is impossible
     if(shore.get_shore() <= AVREGE_SHORE_THRESHOLD){
@@ -313,7 +347,7 @@ PieceArray GroupedPieces<N>::get_piece_array(PieceImage* shapes){
 
 PieceArray GroupedPieces<1>::get_piece_array(PieceImage *shapes) {
     PieceArray pa = PieceArray();
-    Holder ph = Holder(&shapes[get_id()],orientation);
+    PreviewHolder ph = PreviewHolder(&shapes[get_id()], orientation);
     pa.set(0,0,std::move(ph));
     return std::move(pa);
 }

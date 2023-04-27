@@ -5,7 +5,7 @@
 #ifndef PIECECLASS_PIECEARRAY_H
 #define PIECECLASS_PIECEARRAY_H
 
-#include "Holder.h"
+#include "PreviewHolder.h"
 #include "vector"
 #include <iostream>
 #include <memory>
@@ -20,7 +20,7 @@ private:
     cv::Mat image;
     int dim_x;
     int dim_y;
-    std::vector<std::vector<Holder>> pieces;
+    std::vector<std::vector<PreviewHolder>> pieces;
     /// check if the index is or not inside the matrix, if not it throws an error
     void check_indexes(int x, int y) const;
     /// build the image of the puzzle
@@ -33,6 +33,8 @@ private:
     static void paste_on_top(const cv::Mat& source, cv::Mat& destination, cv::Point2i pointSource, cv::Point2i pointDestination, bool bitwise_or = false);
     /// insert the piece at the specified coordinates in the image
     void insert_into_preview_image(int x, int y);
+    /// insert the piece at the specified in the image with the objective of calculating the shore
+    void insert_into_shoring_image(int x, int y);
     /// get a random (but very saturate color)
     static cv::Scalar get_random_color();
     /// reset the image, and rebuild it
@@ -52,9 +54,9 @@ public:
     /// return a piece_holder in one of the many position
     /// if the coordinates are out of bound it returns null ptd
     /// if the coordinates point to an uninitialized point, it return nullptr
-    Holder* get(int x, int y);
+    PreviewHolder* get(int x, int y);
     /// set a piece_holder in one position
-    void set(int x, int y, Holder && to_be_set);
+    void set(int x, int y, PreviewHolder && to_be_set);
     /// grow the array by 1 in the X dimension
     void grow_x();
     /// grow the array by 1 in the Y dimension
@@ -72,6 +74,9 @@ public:
     /// function for attaching one piece array to the bottom of this one, note: the 2 array MUST have the
     /// same x dimension, and they must be completed
     void attach_bottom(const PieceArray& other);
+
+    /// make a deeper analysis of the pieces, and give a percentage describing how well the pieces match
+    float get_compatibility_shore(bool debut = false);
 };
 
 std::ostream& operator<<(std::ostream& os, const PieceArray& pa);

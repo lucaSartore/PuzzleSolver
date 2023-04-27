@@ -6,7 +6,7 @@
 #define PIECECLASS_GROUPEDPIECES_H
 #include "Shore.h"
 #include "../puzzle/PieceArray.h"
-#include "../puzzle/Holder.h"
+#include "../puzzle/PreviewHolder.h"
 #include "../puzzle/PieceImage.h"
 
 #include "../logic_piece/PieceConnection.h"

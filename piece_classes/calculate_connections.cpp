@@ -21,7 +21,7 @@ using namespace std;
 using namespace std::chrono;
 
 #define NUMBER_OF_PIECES 16
-#define MINIMUM_COMPATIBILITY_PERCENTAGE 0.4
+#define MINIMUM_COMPATIBILITY_PERCENTAGE 0.25
 
 
 void piece_comparer_thread(PieceConnection pieces_connections[], PieceShape pieces_shapes[], atomic<int> *index);
@@ -34,7 +34,7 @@ int main(){
 
     //srand(time(NULL));
 
-    //test_piece_array(); return 0;
+    test_piece_array(); return 0;
 
     //calculate_single_thread();return 0;
 
@@ -69,9 +69,11 @@ int main(){
     int c=0;
     // creating list of potential options
     for(auto &top_left: group_lev_1){
+    //auto top_left = GroupedPieces<1>(&pieces[14],2);
         for(auto &top_right: group_lev_1){
             for(auto &bottom_right: group_lev_1){
                 for(auto &bottom_left: group_lev_1){
+
                     try{
                         group_lev_2.emplace_front(&top_left, &top_right, &bottom_right, &bottom_left);
                     }catch(AvregeIsToLow &e){
@@ -104,7 +106,13 @@ int main(){
          << chrono::duration_cast<chrono::seconds>(end - start).count() // baseline: 100 sec // 236 comb
          << " sec" << endl;
 
-    return 0;
+
+    for(auto component: group_lev_2){
+        //auto pa = component.get_piece_array(shapes);imshow("test", pa.get_preview_image());waitKey(0);
+    }
+
+
+
 
     // empty list of element 2;
     std::list<GroupedPieces<3>> group_lev_3 = {};
@@ -113,31 +121,47 @@ int main(){
 
     c=0;
     // creating list of potential options
-    for(auto &first: group_lev_2){
-        for(auto &second: group_lev_2){
-            for(auto &third: group_lev_2){
-                for(auto &fourth: group_lev_2){
+    for(auto &top_left: group_lev_2){
+        for(auto &top_right: group_lev_2){
+            for(auto &bottom_right: group_lev_2){
+                for(auto &bottom_left: group_lev_2){
                     try{
-                        group_lev_3.emplace_front(&first,&second,&third,&fourth);
-                        //cout << "shore: " << group_lev_2.front().get_shore().get_shore() << endl;
-                    }catch(invalid_argument &e){
-                        //cout << "invalid" << endl;
+                        group_lev_3.emplace_front(&top_left, &top_right, &bottom_right, &bottom_left);
+                    }catch(AvregeIsToLow &e){
+                        // if avrege is to low: do nothing and go on with the next piece
+                    }catch(BottomLeftIsImpossible &e) {
+                        // if bottom left is impossible: do nothing and go on with the next piece
+                    }catch(BottomRightIsImpossible &e) {
+                        // if bottom right is impossible: no need to check all bottom left combinations
+                        // so i jump to the bottom left loop
+                        goto END_BOTTOM_LEFT_LOOP2;
+                    }catch(TopRightIsImpossible &e) {
+                        // if top right is impossible: no need to check all bottom left combinations
+                        // so i jump to the rop right loop
+                        goto END_BOTTOM_RIGHT_LOOP2;
                     }
-                    c++;
 
                 }
+                END_BOTTOM_LEFT_LOOP2:;
             }
-            cout << (float) c/(float)(n*n*n*n) * 100 << "%" << endl;
-            cout << c <<" tested combination. " << group_lev_3.size() << " possible found" << endl;
+            END_BOTTOM_RIGHT_LOOP2:;
         }
+        c++;
+        cout << (float)c/(float)n * 100 << "%" << endl;
+        cout << group_lev_3.size() << " possible combinations found" << endl;
     }
+    cout << "Execution time for finding all 4x4 pieces [single threaded]: "
+         << chrono::duration_cast<chrono::seconds>(end - start).count()
+         << " sec" << endl;
 
 
-    for(auto component: group_lev_2){
+    for(auto component: group_lev_3){
         auto pa = component.get_piece_array(shapes);
         imshow("test", pa.get_preview_image());
         waitKey(0);
     }
+
+
 
     return 0;
 
@@ -341,7 +365,7 @@ void test_piece_array(){
 
     PieceArray pa = PieceArray();
 
-    Holder base = Holder(&pieces_images[4], 0);
+    PreviewHolder base = PreviewHolder(&pieces_images[4], 0);
     pa.set(0,0,std::move(base));
 
 
@@ -349,14 +373,14 @@ void test_piece_array(){
 
     pa.grow_x();
 
-    base = Holder(&pieces_images[5], 3);pa.set(1, 0, std::move(base));
+    base = PreviewHolder(&pieces_images[5], 3);pa.set(1, 0, std::move(base));
 
 
     //imshow("puzzle", pa.get_preview_image());waitKey(0);
 
     pa.grow_y();
 
-    base = Holder(&pieces_images[3], 3);
+    base = PreviewHolder(&pieces_images[3], 3);
     pa.set(0,1,std::move(base));
 
 
@@ -365,7 +389,7 @@ void test_piece_array(){
 
     //imshow("puzzle", pa.get_preview_image());waitKey(0);
 
-    base = Holder(&pieces_images[2], 0);
+    base = PreviewHolder(&pieces_images[2], 0);
     pa.set(1,1,std::move(base));
 
 

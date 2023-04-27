@@ -15,16 +15,27 @@ using namespace cv;
 /// the number of pixels the fo margin there has to be before the image resolution is increase
 #define MARGIN_BEFORE_GROWTH 1000
 
+
+// SAME CONSTANTS AS BEFORE, BUT FOR WHEN THE IMAGE IS CREATED JUST FOR EVALUATING, NOT FOR SHOWING IT
+/// how many pixels the image will grow when it runs out of real estate for the new pieces
+#define GROWTH_CONSTANT_SHORING 4000
+/// the original dimension of the image
+#define STARTING_DIMENSIONS_SHORING 10000
+/// the distance between the pieces and the borders
+#define BORDER_DISTANCE_SHORING 1000
+/// the number of pixels the fo margin there has to be before the image resolution is increase
+#define MARGIN_BEFORE_GROWTH_SHORING 4000
+
 PieceArray::PieceArray() {
     has_been_completed = false;
 
     dim_x = 1;
     dim_y = 1;
-    pieces = vector<vector<Holder>>();
+    pieces = vector<vector<PreviewHolder>>();
 
     // start with a 1*1 array with a null ptr inside
-    auto one_dim = vector<Holder>();
-    // insert a default Holder
+    auto one_dim = vector<PreviewHolder>();
+    // insert a default PreviewHolder
     one_dim.emplace_back();
     pieces.push_back(one_dim);
 
@@ -33,7 +44,7 @@ PieceArray::PieceArray() {
     //srand(time(NULL));
 }
 
-Holder *PieceArray::get(int x, int y){
+PreviewHolder *PieceArray::get(int x, int y){
     // check if in range
     try{
         check_indexes(x,y);
@@ -49,7 +60,7 @@ Holder *PieceArray::get(int x, int y){
     return to_return;
 }
 
-void PieceArray::set(int x, int y, Holder &&to_be_set) {
+void PieceArray::set(int x, int y, PreviewHolder &&to_be_set) {
 
 
     // check if in range
@@ -81,7 +92,7 @@ void PieceArray::check_indexes(int x, int y) const {
 }
 
 void PieceArray::grow_x() {
-    auto new_colon = vector<Holder>();
+    auto new_colon = vector<PreviewHolder>();
     for(int i=0; i<dim_y; i++){
         new_colon.emplace_back();
     }
@@ -210,10 +221,10 @@ void PieceArray::insert_into_preview_image(int x, int y) {
     check_indexes(x,y);
 
     // get the piece on the top and bottom of the piece i'm trying to place
-    Holder* piece_left = get(x-1,y);
-    Holder* piece_top = get(x, y - 1);
+    PreviewHolder* piece_left = get(x - 1, y);
+    PreviewHolder* piece_top = get(x, y - 1);
 
-    Holder* this_piece = get(x,y);
+    PreviewHolder* this_piece = get(x, y);
 
     // vector that go form the right side of the current piece to the center
     Point left_to_center_vector = this_piece->get_center(true) - this_piece->get_side_center(LEFT,true);
@@ -275,9 +286,6 @@ void PieceArray::insert_into_preview_image(int x, int y) {
 
     // updating the position of the piece
     this_piece->set_offset(new_center_point - this_piece->get_center(true));
-
-    // base case: i need to place a normal piece
-
 }
 
 cv::Scalar PieceArray::get_random_color() {
@@ -309,7 +317,7 @@ PieceArray::PieceArray(PieceArray &&other) {
     dim_y = other.dim_y;
 
     pieces = std::move(other.pieces);
-    other.pieces = vector<vector<Holder>>();
+    other.pieces = vector<vector<PreviewHolder>>();
 }
 
 PieceArray::PieceArray(PieceArray &other) {
@@ -356,6 +364,26 @@ void PieceArray::attach_bottom(const PieceArray &other) {
         );
     }
     dim_y += other.dim_y;
+}
+
+float PieceArray::get_compatibility_shore(bool debut) {
+    // maje shyre that the piece has been compleated
+    assert(has_been_completed);
+
+    // reset the image
+    image = Mat::zeros(Size(STARTING_DIMENSIONS_SHORING,STARTING_DIMENSIONS_SHORING),CV_8U);
+
+    // build the image by following row and colu
+    for(int x=0; x<get_dim_x(); x++){
+        for(int y=0; y<get_dim_y(); y++){
+            insert_into_preview_image(x, y);
+
+        }
+    }
+}
+
+void PieceArray::insert_into_shoring_image(int x, int y) {
+
 }
 
 std::ostream& operator<<(std::ostream& os, const PieceArray& pa){

@@ -1,10 +1,8 @@
 //
-// Created by luca on 4/4/23.
+// Created by luca on 4/27/23.
 //
 
 #include "Holder.h"
-
-//#include <utility>
 
 using namespace cv;
 
@@ -23,15 +21,6 @@ Holder::Holder(PieceImage *piece_, int orientation_) {
     piece = piece_;
     orientation = orientation_;
     offset = cv::Point(0, 0);
-    color = cv::Scalar(255,255,255);
-}
-
-void Holder::set_color(cv::Scalar new_color) {
-    color = std::move(new_color);
-}
-
-cv::Scalar Holder::get_color() {
-    return color;
 }
 
 cv::Mat Holder::get_image_resized() {
@@ -58,7 +47,7 @@ cv::Mat Holder::get_image_resized() {
 }
 
 
-cv::Point Holder::get_side_center(Direction direction,bool resized) {
+cv::Point Holder::get_side_center(Direction direction, bool resized) {
     int offset;
     switch (direction) {
         case UP:
@@ -81,7 +70,7 @@ cv::Point Holder::get_side_center(Direction direction,bool resized) {
     return (p1+p2)/2;
 }
 
-cv::Point Holder::get_point(int index,bool resized) {
+cv::Point Holder::get_point(int index, bool resized) {
     assert(index>=0);
     assert(index<4);
 
@@ -145,7 +134,29 @@ PieceImage *Holder::get_piece() {
 
 Holder::Holder() {
     offset = Point();
-    color = Scalar(255,255,255);
     piece = nullptr;
     orientation = 0;
+}
+
+cv::Mat Holder::get_image() {
+    int rotate_code;
+    switch (orientation) {
+        case 0:
+            // no need for rotation;
+            return piece->get_image_resized().clone();
+        case 1:
+            rotate_code = cv::ROTATE_90_COUNTERCLOCKWISE;
+            break;
+        case 2:
+            rotate_code = cv::ROTATE_180;
+            break;
+        case 3:
+            rotate_code = cv::ROTATE_90_CLOCKWISE;
+            break;
+        default:
+            throw std::runtime_error("unknown orientation");
+    }
+    cv::Mat to_return;
+    cv::rotate(piece->get_image(),to_return,rotate_code);
+    return to_return;
 }
