@@ -17,6 +17,8 @@ private:
     cv::Mat rotated_image;
     /// the coordinates of the 4 corners after rotations
     cv::Point rotated_points[4];
+    /// rotate the rotated image by an angle (in rad) and also change rhe coordinates
+    void rotate_by(float angle);
 public:
     /// default constructor
     ShoringHolder();
@@ -30,6 +32,11 @@ public:
     void move_to(ShoringHolder& other, Direction direction);
     /// move the current so that it will two pieces to the top and left
     void move_to(ShoringHolder& top_piece, ShoringHolder& left_piece);
+    /// return the point (that has been previously rotated) at the specified index
+    cv::Point get_rotated_point(int index);
+    /// return the point (that has been previously rotated) at the specified index
+    /// and also contains the offset that has been set
+    cv::Point get_rotated_point_with_offset(int index);
 };
 
 
