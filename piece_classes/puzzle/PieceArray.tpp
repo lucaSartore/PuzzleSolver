@@ -26,16 +26,17 @@ using namespace cv;
 /// the number of pixels the fo margin there has to be before the image resolution is increase
 #define MARGIN_BEFORE_GROWTH_SHORING 4000
 
-PieceArray::PieceArray() {
+template<class T>
+PieceArray<T>::PieceArray() {
     has_been_completed = false;
 
     dim_x = 1;
     dim_y = 1;
-    pieces = vector<vector<PreviewHolder>>();
+    pieces = vector<vector<T>>();
 
     // start with a 1*1 array with a null ptr inside
-    auto one_dim = vector<PreviewHolder>();
-    // insert a default PreviewHolder
+    auto one_dim = vector<T>();
+    // insert a default Holder
     one_dim.emplace_back();
     pieces.push_back(one_dim);
 
@@ -43,8 +44,8 @@ PieceArray::PieceArray() {
 
     //srand(time(NULL));
 }
-
-PreviewHolder *PieceArray::get(int x, int y){
+template<class T>
+T *PieceArray<T>::get(int x, int y){
     // check if in range
     try{
         check_indexes(x,y);
@@ -60,7 +61,8 @@ PreviewHolder *PieceArray::get(int x, int y){
     return to_return;
 }
 
-void PieceArray::set(int x, int y, PreviewHolder &&to_be_set) {
+template<class T>
+void PieceArray<T>::set(int x, int y, T &&to_be_set) {
 
 
     // check if in range
@@ -79,20 +81,19 @@ void PieceArray::set(int x, int y, PreviewHolder &&to_be_set) {
 
     // expand the image if to small
     check_and_expand_image();
-
-
 }
 
-
-void PieceArray::check_indexes(int x, int y) const {
+template<class T>
+void PieceArray<T>::check_indexes(int x, int y) const {
     // check if indexes are in range
     if(x<0 || y<0 || x >= dim_x || y >= dim_y){
         throw std::invalid_argument("index out of range");
     }
 }
 
-void PieceArray::grow_x() {
-    auto new_colon = vector<PreviewHolder>();
+template<class T>
+void PieceArray<T>::grow_x() {
+    auto new_colon = vector<T>();
     for(int i=0; i<dim_y; i++){
         new_colon.emplace_back();
     }
@@ -101,7 +102,8 @@ void PieceArray::grow_x() {
     has_been_completed = false;
 }
 
-void PieceArray::grow_y() {
+template<class T>
+void PieceArray<T>::grow_y() {
     for(int i=0; i<dim_x; i++){
         pieces[i].emplace_back();
     }
@@ -109,22 +111,26 @@ void PieceArray::grow_y() {
     has_been_completed = false;
 }
 
-int PieceArray::get_dim_x() const{
+template<class T>
+int PieceArray<T>::get_dim_x() const{
     return dim_x;
 }
 
-int PieceArray::get_dim_y() const  {
+template<class T>
+int PieceArray<T>::get_dim_y() const  {
     return dim_y;
 }
 
-void PieceArray::un_grow_x() {
+template<class T>
+void PieceArray <T>::un_grow_x() {
     if(dim_x != 0){
         pieces.pop_back();
         dim_x--;
     }
 }
 
-void PieceArray::un_grow_y() {
+template<class T>
+void PieceArray<T>::un_grow_y() {
     if(dim_y != 0){
         for(int i=0; i<dim_x; i++){
             pieces[i].pop_back();
@@ -133,17 +139,18 @@ void PieceArray::un_grow_y() {
     }
 }
 
-
-cv::Mat PieceArray::get_preview_image(){
+template<class T>
+cv::Mat PieceArray<T>::get_preview_image(){
     reset_image();
     return image.clone();
 }
 
-void PieceArray::build_preview_image() {
+template<class T>
+void PieceArray<T>::build_image() {
     for(int x=0; x<get_dim_x(); x++){
         for(int y=0; y<get_dim_y(); y++){
             try{
-                insert_into_preview_image(x, y);
+                insert_into_image(x, y);
             }catch (...){
                 // once i get an error, i continue with the next iteration of X value
                 break;
@@ -152,7 +159,8 @@ void PieceArray::build_preview_image() {
     }
 }
 
-void PieceArray::paste_on_top(const cv::Mat& source, cv::Mat& destination, cv::Point2i pointSource, cv::Point2i pointDestination,bool bitwise_or) {
+template<class T>
+void PieceArray<T>::paste_on_top(const cv::Mat& source, cv::Mat& destination, cv::Point2i pointSource, cv::Point2i pointDestination,bool bitwise_or) {
 
     // Compute the translation vector to align the two points
     cv::Point2i translation = pointDestination - pointSource;
@@ -179,7 +187,8 @@ void PieceArray::paste_on_top(const cv::Mat& source, cv::Mat& destination, cv::P
 
 }
 
-void PieceArray::check_and_expand_image() {
+template<class T>
+void PieceArray<T>::check_and_expand_image() {
 
     Mat image_gray;
     cvtColor(image,image_gray,COLOR_BGR2GRAY);
@@ -217,7 +226,8 @@ void PieceArray::check_and_expand_image() {
     }
 }
 
-void PieceArray::insert_into_preview_image(int x, int y) {
+template<>
+void PieceArray<PreviewHolder>::insert_into_image(int x, int y) {
     check_indexes(x,y);
 
     // get the piece on the top and bottom of the piece i'm trying to place
@@ -288,7 +298,8 @@ void PieceArray::insert_into_preview_image(int x, int y) {
     this_piece->set_offset(new_center_point - this_piece->get_center(true));
 }
 
-cv::Scalar PieceArray::get_random_color() {
+template<class T>
+cv::Scalar PieceArray<T>::get_random_color() {
     // HSV random color
     Scalar color = Scalar (rand()%256, 255, 255);
     Mat in = Mat(Size(1,1),CV_8UC3,color);
@@ -302,12 +313,14 @@ cv::Scalar PieceArray::get_random_color() {
     return new_color;
 }
 
-void PieceArray::reset_image() {
+template<class T>
+void PieceArray<T>::reset_image() {
     image = Mat::zeros(Size(STARTING_DIMENSIONS,STARTING_DIMENSIONS),CV_8UC3);
-    build_preview_image();
+    build_image();
 }
 
-PieceArray::PieceArray(PieceArray &&other) {
+template<class T>
+PieceArray<T>::PieceArray(PieceArray<T> &&other) {
     has_been_completed = other.has_been_completed;
 
     image = std::move(other.image);
@@ -317,10 +330,10 @@ PieceArray::PieceArray(PieceArray &&other) {
     dim_y = other.dim_y;
 
     pieces = std::move(other.pieces);
-    other.pieces = vector<vector<PreviewHolder>>();
+    other.pieces = vector<vector<T>>();
 }
-
-PieceArray::PieceArray(PieceArray &other) {
+template<class T>
+PieceArray<T>::PieceArray(PieceArray<T> &other) {
     has_been_completed = other.has_been_completed;
 
     image = other.image.clone();
@@ -331,7 +344,8 @@ PieceArray::PieceArray(PieceArray &other) {
     pieces = other.pieces;
 }
 
-void PieceArray::attach_right(const PieceArray &other) {
+template<class T>
+void PieceArray<T>::attach_right(const PieceArray<T> &other) {
 
     if(dim_y != other.dim_y){
         throw invalid_argument("the 2 pieces MUST have the same y dimension");
@@ -347,7 +361,8 @@ void PieceArray::attach_right(const PieceArray &other) {
     }
 }
 
-void PieceArray::attach_bottom(const PieceArray &other) {
+template<class T>
+void PieceArray<T>::attach_bottom(const PieceArray<T> &other) {
     if(dim_x != other.dim_x){
         throw invalid_argument("the 2 pieces MUST have the same x dimension");
     }
@@ -366,36 +381,4 @@ void PieceArray::attach_bottom(const PieceArray &other) {
     dim_y += other.dim_y;
 }
 
-float PieceArray::get_compatibility_shore(bool debut) {
-    // maje shyre that the piece has been compleated
-    assert(has_been_completed);
-
-    // reset the image
-    image = Mat::zeros(Size(STARTING_DIMENSIONS_SHORING,STARTING_DIMENSIONS_SHORING),CV_8U);
-
-    // build the image by following row and colu
-    for(int x=0; x<get_dim_x(); x++){
-        for(int y=0; y<get_dim_y(); y++){
-            insert_into_preview_image(x, y);
-
-        }
-    }
-}
-
-void PieceArray::insert_into_shoring_image(int x, int y) {
-
-}
-
-std::ostream& operator<<(std::ostream& os, const PieceArray& pa){
-    int dim_x = pa.get_dim_x();
-    int dim_y = pa.get_dim_y();
-
-    for(int y = 0; y<dim_y; y++){
-        for(int x = 0; x<dim_x; x++){
-            os << "X" << " ";
-        }
-        os << endl;
-    }
-    return os;
-}
 

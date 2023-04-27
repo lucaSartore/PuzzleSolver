@@ -29,7 +29,7 @@ add_executable(
 
         puzzle/PreviewHolder.cpp
         puzzle/PreviewHolder.h
-        puzzle/PieceArray.cpp
+        puzzle/PieceArray.tpp
         puzzle/PieceArray.h
         puzzle/PieceImmage.cpp
         puzzle/PieceImage.h

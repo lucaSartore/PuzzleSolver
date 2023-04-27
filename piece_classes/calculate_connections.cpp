@@ -363,7 +363,7 @@ void test_piece_array(){
         pieces_images[i] = PieceImage(i);
     }
 
-    PieceArray pa = PieceArray();
+    PieceArray<PreviewHolder> pa = PieceArray<PreviewHolder>();
 
     PreviewHolder base = PreviewHolder(&pieces_images[4], 0);
     pa.set(0,0,std::move(base));
