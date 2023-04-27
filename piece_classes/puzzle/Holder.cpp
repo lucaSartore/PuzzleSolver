@@ -3,6 +3,7 @@
 //
 
 #include "Holder.h"
+#include "point_indexes.h"
 
 using namespace cv;
 
