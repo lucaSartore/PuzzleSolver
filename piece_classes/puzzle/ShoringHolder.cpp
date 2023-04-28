@@ -221,9 +221,12 @@ void ShoringHolder::move_to(ShoringHolder &top_piece, ShoringHolder &left_piece)
     // same concept as the other move_to function, but this time using the center as offset
     Point others_p1 = left_piece.get_rotated_point_with_offset(BOTTOM_RIGHT_PIECE_CORNER);
     Point others_p2 = top_piece.get_rotated_point_with_offset(BOTTOM_RIGHT_PIECE_CORNER);
+    Point this_p1 = get_rotated_point(BOTTOM_LEFT_PIECE_CORNER);
+    Point this_p2 = get_rotated_point(TOP_RIGHT_PIECE_CORNER);
 
-    Point middle = (others_p1+others_p2)/2;
+    Point others_middle = (others_p1+others_p2)/2;
+    Point this_middle = (this_p1+this_p2)/2;
 
-    Point offset = middle- get_center(false);
+    Point offset = others_middle- this_middle;
     set_offset(offset);
 }
