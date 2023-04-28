@@ -474,7 +474,9 @@ void test_piece_array_shore(){
     base = ShoringHolder(&pieces_images[2], 0);
     pa.set(1,1,std::move(base));
     image_og = pa.get_preview_image();
-    imwrite("/home/luca/Desktop/a.png",image_og);
+
+    cout << "shore: " << pa.get_shore() << endl;
+
     resize(image_og,resized,image_og.size()/8);
     imshow("puzzle", resized);waitKey(0);
 
@@ -488,7 +490,8 @@ void test_piece_array_shore(){
 
     //pa.attach_right(pa3);
 
-    cout << pa.get_dim_y() << endl;
+
+    cout << "shore: " << pa.get_shore() << endl;
 
     image_og = pa.get_preview_image();
     resize(image_og,resized,image_og.size()/8);

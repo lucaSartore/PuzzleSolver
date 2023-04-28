@@ -3,6 +3,7 @@
 #include "ShoringHolder.h"
 #include <memory>
 #include <utility>
+#include "point_indexes.h"
 
 using namespace std;
 using namespace cv;
@@ -18,15 +19,8 @@ using namespace cv;
 #define MARGIN_BEFORE_GROWTH 2000
 
 
-// SAME CONSTANTS AS BEFORE, BUT FOR WHEN THE IMAGE IS CREATED JUST FOR EVALUATING, NOT FOR SHOWING IT
-/// how many pixels the image will grow when it runs out of real estate for the new pieces
-#define GROWTH_CONSTANT_SHORING 4000
-/// the original dimension of the image
-#define STARTING_DIMENSIONS_SHORING 10000
-/// the distance between the pieces and the borders
-#define BORDER_DISTANCE_SHORING 1000
-/// the number of pixels the fo margin there has to be before the image resolution is increase
-#define MARGIN_BEFORE_GROWTH_SHORING 4000
+/// the amount of pixels a piece will be dilated and eroded in order to remove the cracks
+#define DILAT_EROS_CRACKS_REMOVAL 5
 
 template<class T>
 PieceArray<T>::PieceArray() {
@@ -163,7 +157,7 @@ void PieceArray<T>::build_image() {
 }
 
 template<class T>
-void PieceArray<T>::paste_on_top(const cv::Mat& source, cv::Mat& destination, cv::Point2i pointSource, cv::Point2i pointDestination,bool bitwise_or) {
+void PieceArray<T>::paste_on_top(const cv::Mat& source, cv::Mat& destination, cv::Point2i pointSource, cv::Point2i pointDestination,PateOnTopMethod method) {
 
     // Compute the translation vector to align the two points
     cv::Point2i translation = pointDestination - pointSource;
@@ -177,17 +171,27 @@ void PieceArray<T>::paste_on_top(const cv::Mat& source, cv::Mat& destination, cv
                      )
             );
 
-    if(bitwise_or){
-        // use bitwise or to avoid contrasts
-        Mat result;
-        cv::bitwise_or(source,croppedDestination,result);
-        result.copyTo(croppedDestination);
-    }else{
-        // Paste the cropped source image onto the cropped destination image
-        source.copyTo(croppedDestination);
 
+    Mat result;
+
+    switch (method) {
+        case OR:
+            cv::bitwise_or(source,croppedDestination,result);
+            break;
+        case SUM:
+            result = source+croppedDestination;
+            break;
+        case XOR:
+            cv::bitwise_xor(source,croppedDestination,result);
+            break;
+        case OVERWRITE:
+            result = source;
+            break;
+        default:
+            throw runtime_error("unknown method");
     }
 
+    result.copyTo(croppedDestination);
 }
 
 template<class T>
@@ -210,7 +214,7 @@ void PieceArray<T>::check_and_expand_image() {
         // creating new bigger image
         Mat new_image = Mat::zeros(Size(im_size.width + GROWTH_CONSTANT,im_size.height), CV_8UC3);
         // pasting the old piece on top of the old piece
-        paste_on_top(image,new_image,Point2i(0,im_size.height-1),Point2i(0, new_image.size().height-1));
+        paste_on_top(image,new_image,Point2i(0,im_size.height-1),Point2i(0, new_image.size().height-1),OVERWRITE);
         // changing the original image
         image = new_image;
     }
@@ -223,7 +227,7 @@ void PieceArray<T>::check_and_expand_image() {
         // creating new bigger image
         Mat new_image = Mat::zeros(Size(im_size.width,im_size.height + GROWTH_CONSTANT), CV_8UC3);
         // pasting the old piece on top of the old piece
-        paste_on_top(image, new_image,Point2i(0,0),Point2i(0, 0));
+        paste_on_top(image, new_image,Point2i(0,0),Point2i(0, 0),OVERWRITE);
         // changing the original image
         image = new_image;
     }
@@ -294,7 +298,7 @@ void PieceArray<PreviewHolder>::insert_into_image(int x, int y) {
             image,
             this_piece->get_center(true),
             new_center_point,
-            true
+            OR
     );
 
     // updating the position of the piece
@@ -304,8 +308,6 @@ void PieceArray<PreviewHolder>::insert_into_image(int x, int y) {
 template<>
 void PieceArray<ShoringHolder>::insert_into_image(int x, int y) {
     check_indexes(x,y);
-
-    cout << "insering into image x y: " << x << " " << y << endl;
 
     // get the piece on the top and bottom of the piece i'm trying to place
     ShoringHolder* piece_left = get(x - 1, y);
@@ -349,12 +351,11 @@ void PieceArray<ShoringHolder>::insert_into_image(int x, int y) {
 
     Point new_center_point = this_piece->get_rotated_center_with_offset();
 
+
     // matrix to insert in the new puzzle
     Mat to_paste;
     cvtColor(this_piece->get_rotated_image(), to_paste, COLOR_GRAY2BGR);
     to_paste = to_paste!=0;
-    floodFill(to_paste, this_piece->get_rotated_center(), this_piece->get_color());
-
 
     // pasting the piece in to the image
     paste_on_top(
@@ -362,12 +363,8 @@ void PieceArray<ShoringHolder>::insert_into_image(int x, int y) {
             image,
             this_piece->get_center(false),
             new_center_point,
-            true
+            XOR
     );
-
-    for(int i=0;i<4;i++){
-        circle(image,this_piece->get_rotated_point_with_offset(i),10,Scalar(255,255,255),1);
-    }
 
 
 }
@@ -457,3 +454,63 @@ void PieceArray<T>::attach_bottom(const PieceArray<T> &other) {
 }
 
 
+template<>
+float PieceArray<ShoringHolder>::get_shore() {
+    // calculating the image
+    reset_image();
+
+    // creating gray mask
+    Mat img_gray;
+    cvtColor(image,img_gray,COLOR_BGR2GRAY);
+    img_gray = img_gray > 0;
+
+    // kernel for erosion and dilatations
+    Mat kernel = Mat::ones(DILAT_EROS_CRACKS_REMOVAL,DILAT_EROS_CRACKS_REMOVAL*2,CV_8U) == 1;
+
+    // expanding and eroding the black mask to get a version with no craks
+    Mat gray_with_no_cracks,temp;
+    dilate(img_gray,temp,kernel);
+    erode(temp,gray_with_no_cracks,kernel);
+
+    // mask containing pieces that are outside of the considered area;
+    Mat outside_mask = gray_with_no_cracks.clone();
+    floodFill(outside_mask,Point(0,0),44);
+    outside_mask = outside_mask == 44;
+
+    // matrix showing where pieces dose not fit;
+    Mat errors;
+    bitwise_xor(img_gray,outside_mask,errors);
+
+    // image containing a "share" delimited by the 4 external points
+    Mat square_mask = Mat::zeros(img_gray.size(),CV_8U);
+
+    Point p1,p2;
+
+    p1 = get(0,0)->get_rotated_point_with_offset(TOP_LEFT_PIECE_CORNER);
+    p2 = get(dim_x-1,0)->get_rotated_point_with_offset(TOP_RIGHT_PIECE_CORNER);
+    line(square_mask,p1,p2,Scalar(255),3);
+
+    p1 = get(dim_x-1,dim_y-1)->get_rotated_point_with_offset(BOTTOM_RIGHT_PIECE_CORNER);
+    line(square_mask,p1,p2,Scalar(255),3);
+
+    p2 = get(0,dim_y-1)->get_rotated_point_with_offset(BOTTOM_LEFT_PIECE_CORNER);
+    line(square_mask,p1,p2,Scalar(255),3);
+
+    p1 = get(0,0)->get_rotated_point_with_offset(TOP_LEFT_PIECE_CORNER);
+    line(square_mask,p1,p2,Scalar(255),3);
+
+
+    floodFill(square_mask,Point(0,0),255);
+
+
+    // removing black pixels thad end up been outside of the 4 cornners
+    bitwise_or(errors,square_mask,temp);
+    errors = temp;
+
+    //Mat resized;resize(errors,resized,errors.size()/8);imshow("errors", resized);waitKey(0);
+
+    int bad_pixels = countNonZero(errors==0);
+    int total_pixels = countNonZero(square_mask==0);
+
+    return (float)(total_pixels-bad_pixels)/(float)total_pixels;
+}

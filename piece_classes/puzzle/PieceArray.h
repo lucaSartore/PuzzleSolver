@@ -11,6 +11,8 @@
 #include <memory>
 #include <opencv2/opencv.hpp>
 
+typedef enum PateOnTopMethod{OR,SUM,XOR,OVERWRITE}PateOnTopMethod;
+
 template<class T>
 class PieceArray {
 private:
@@ -30,7 +32,7 @@ private:
     /// this function takes to image and 2 points, it then paste the source inamge on top of the destination image
     /// in a way that the 2 reference point will be one on top of the other
     /// by default the function will paste it on top, but there is the option of doing a bitwise or by using the flag
-    static void paste_on_top(const cv::Mat& source, cv::Mat& destination, cv::Point2i pointSource, cv::Point2i pointDestination, bool bitwise_or = false);
+    static void paste_on_top(const cv::Mat& source, cv::Mat& destination, cv::Point2i pointSource, cv::Point2i pointDestination, PateOnTopMethod method);
     /// insert the piece at the specified coordinates in the image
     void insert_into_image(int x, int y);
     /// get a random (but very saturate color)
@@ -71,7 +73,11 @@ public:
     /// function for attaching one piece array to the bottom of this one, note: the 2 array MUST have the
     /// same x dimension, and they must be completed
     void attach_bottom(const PieceArray<T>& other);
+    /// return a shore, form 0 to 1 that describes how well the pieces fits together
+    float get_shore();
+
 };
+
 
 #include "PieceArray.tpp"
 
