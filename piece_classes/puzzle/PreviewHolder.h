@@ -13,12 +13,7 @@
 
 class PreviewHolder: public Holder{
 private:
-    cv::Scalar color;
 public:
-    /// set the color of the current piece;
-    void set_color(cv::Scalar new_color);
-    /// return the current color of the piece;
-    cv::Scalar get_color();
     /// zero parameter constrictor
     PreviewHolder();
     /// constructor

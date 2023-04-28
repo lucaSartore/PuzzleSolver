@@ -13,6 +13,7 @@
 
 class ShoringHolder: public Holder{
 private:
+public:
     /// the image after rotation
     cv::Mat rotated_image;
     /// the coordinates of the 4 corners after rotations
@@ -37,6 +38,12 @@ public:
     /// return the point (that has been previously rotated) at the specified index
     /// and also contains the offset that has been set
     cv::Point get_rotated_point_with_offset(int index);
+    /// return the center of the piece, considering the rotation
+    cv::Point get_rotated_center();
+    /// return the center of the piece, considering the rotation and the offset
+    cv::Point get_rotated_center_with_offset();
+    /// return the piece mask that has been rotated;
+    cv::Mat get_rotated_image();
 };
 
 

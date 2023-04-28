@@ -28,13 +28,15 @@ void piece_comparer_thread(PieceConnection pieces_connections[], PieceShape piec
 void calculate_single_thread(bool debug = false);
 void calculate_multi_thread(int number_of_threads = 0);
 void test_piece_array();
+void test_piece_array_shore();
 void test_grouped_piece_2_constructor();
 
 int main(){
 
     //srand(time(NULL));
 
-    test_piece_array(); return 0;
+    //test_piece_array(); return 0;
+    test_piece_array_shore(); return 0;
 
     //calculate_single_thread();return 0;
 
@@ -425,4 +427,70 @@ void test_grouped_piece_2_constructor(){
 
     GroupedPieces<2> sq =  GroupedPieces<2>(&top_left,&top_right,&bottom_right,&bottom_left);
 
+}
+
+
+void test_piece_array_shore(){
+
+    Mat image_og;
+    Mat resized;
+
+    PieceImage::set_origin_path("../../dataset/test_2x3/divided");
+    PieceImage pieces_images[6];
+
+
+    // filling both array up with the respective index;
+    for(int i=0; i<6;i++){
+        pieces_images[i] = PieceImage(i);
+    }
+
+    PieceArray<ShoringHolder> pa = PieceArray<ShoringHolder>();
+
+    ShoringHolder base = ShoringHolder(&pieces_images[4], 0);
+    base.rotate_by(-0.1);
+    pa.set(0,0,std::move(base));
+
+
+
+    image_og = pa.get_preview_image();
+    resize(image_og,resized,image_og.size()/8);
+    imshow("puzzle", resized);waitKey(0);
+
+    pa.grow_x();
+
+    base = ShoringHolder(&pieces_images[5], 3);pa.set(1, 0, std::move(base));
+
+
+    image_og = pa.get_preview_image();
+    resize(image_og,resized,image_og.size()/8);
+    imshow("puzzle", resized);waitKey(0);
+
+
+    pa.grow_y();
+
+    base = ShoringHolder(&pieces_images[3], 3);
+    pa.set(0,1,std::move(base));
+
+    base = ShoringHolder(&pieces_images[2], 0);
+    pa.set(1,1,std::move(base));
+    image_og = pa.get_preview_image();
+    imwrite("/home/luca/Desktop/a.png",image_og);
+    resize(image_og,resized,image_og.size()/8);
+    imshow("puzzle", resized);waitKey(0);
+
+    PieceArray pa2 = pa;
+
+
+    pa.attach_bottom(pa2);
+    //pa.attach_bottom(pa2);
+
+    //PieceArray pa3 = pa;
+
+    //pa.attach_right(pa3);
+
+    cout << pa.get_dim_y() << endl;
+
+    image_og = pa.get_preview_image();
+    resize(image_og,resized,image_og.size()/8);
+    imshow("puzzle", resized);waitKey(0);
 }

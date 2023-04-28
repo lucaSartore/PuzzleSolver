@@ -1,19 +1,21 @@
 #include "PieceArray.h"
 #include "stdexcept"
+#include "ShoringHolder.h"
 #include <memory>
 #include <utility>
+
 using namespace std;
 using namespace cv;
 
 
 /// how many pixels the image will grow when it runs out of real estate for the new pieces
-#define GROWTH_CONSTANT 1000
+#define GROWTH_CONSTANT 2000
 /// the original dimension of the image
 #define STARTING_DIMENSIONS 5000
 /// the distance between the pieces and the borders
 #define BORDER_DISTANCE 250
 /// the number of pixels the fo margin there has to be before the image resolution is increase
-#define MARGIN_BEFORE_GROWTH 1000
+#define MARGIN_BEFORE_GROWTH 2000
 
 
 // SAME CONSTANTS AS BEFORE, BUT FOR WHEN THE IMAGE IS CREATED JUST FOR EVALUATING, NOT FOR SHOWING IT
@@ -63,8 +65,6 @@ T *PieceArray<T>::get(int x, int y){
 
 template<class T>
 void PieceArray<T>::set(int x, int y, T &&to_be_set) {
-
-
     // check if in range
     check_indexes(x,y);
 
@@ -141,6 +141,7 @@ void PieceArray<T>::un_grow_y() {
 
 template<class T>
 cv::Mat PieceArray<T>::get_preview_image(){
+    assert(has_been_completed);
     reset_image();
     return image.clone();
 }
@@ -151,11 +152,13 @@ void PieceArray<T>::build_image() {
         for(int y=0; y<get_dim_y(); y++){
             try{
                 insert_into_image(x, y);
+                check_and_expand_image();
             }catch (...){
                 // once i get an error, i continue with the next iteration of X value
                 break;
             };
         }
+
     }
 }
 
@@ -297,6 +300,78 @@ void PieceArray<PreviewHolder>::insert_into_image(int x, int y) {
     // updating the position of the piece
     this_piece->set_offset(new_center_point - this_piece->get_center(true));
 }
+
+template<>
+void PieceArray<ShoringHolder>::insert_into_image(int x, int y) {
+    check_indexes(x,y);
+
+    cout << "insering into image x y: " << x << " " << y << endl;
+
+    // get the piece on the top and bottom of the piece i'm trying to place
+    ShoringHolder* piece_left = get(x - 1, y);
+    ShoringHolder* piece_top = get(x, y - 1);
+
+    ShoringHolder* this_piece = get(x, y);
+
+    int center_x,center_y;
+
+    // building on top corner
+    if(piece_left == nullptr && piece_top == nullptr){
+        // default case: i need to place a corner
+
+        // vector that go form the right side of the current piece to the center
+        Point left_to_center_vector = this_piece->get_center(true) - this_piece->get_side_center(LEFT,true);
+        // vector that go form the top side of the current piece to the center
+        Point top_to_center_vector = this_piece->get_center(true) - this_piece->get_side_center(UP,true);
+
+        // calculating the point of where to put the new piece
+        center_x = BORDER_DISTANCE + left_to_center_vector.x;
+        center_y = BORDER_DISTANCE + top_to_center_vector.y;
+
+        this_piece->set_offset(Point(center_x,center_y));
+    }
+        // building on the left side
+    else if(piece_left == nullptr){
+        this_piece->align_to(*piece_top,UP);
+        this_piece->move_to(*piece_top,UP);
+    }
+        // building on the top side
+    else if(piece_top == nullptr){
+        this_piece->align_to(*piece_left,LEFT);
+        this_piece->move_to(*piece_left,LEFT);
+    }
+        // building in the middle
+    else{
+        this_piece->align_to(*piece_top,*piece_left);
+        this_piece->move_to(*piece_top,*piece_left);
+    }
+
+
+    Point new_center_point = this_piece->get_rotated_center_with_offset();
+
+    // matrix to insert in the new puzzle
+    Mat to_paste;
+    cvtColor(this_piece->get_rotated_image(), to_paste, COLOR_GRAY2BGR);
+    to_paste = to_paste!=0;
+    floodFill(to_paste, this_piece->get_rotated_center(), this_piece->get_color());
+
+
+    // pasting the piece in to the image
+    paste_on_top(
+            to_paste,
+            image,
+            this_piece->get_center(false),
+            new_center_point,
+            true
+    );
+
+    for(int i=0;i<4;i++){
+        circle(image,this_piece->get_rotated_point_with_offset(i),10,Scalar(255,255,255),1);
+    }
+
+
+}
+
 
 template<class T>
 cv::Scalar PieceArray<T>::get_random_color() {

@@ -144,7 +144,7 @@ cv::Mat Holder::get_image() {
     switch (orientation) {
         case 0:
             // no need for rotation;
-            return piece->get_image_resized().clone();
+            return piece->get_image().clone();
         case 1:
             rotate_code = cv::ROTATE_90_COUNTERCLOCKWISE;
             break;
@@ -160,4 +160,12 @@ cv::Mat Holder::get_image() {
     cv::Mat to_return;
     cv::rotate(piece->get_image(),to_return,rotate_code);
     return to_return;
+}
+
+void Holder::set_color(cv::Scalar new_color) {
+    color = std::move(new_color);
+}
+
+cv::Scalar Holder::get_color() {
+    return color;
 }

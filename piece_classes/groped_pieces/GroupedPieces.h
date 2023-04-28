@@ -7,6 +7,7 @@
 #include "Shore.h"
 #include "../puzzle/PieceArray.h"
 #include "../puzzle/PreviewHolder.h"
+#include "../puzzle/ShoringHolder.h"
 #include "../puzzle/PieceImage.h"
 
 #include "../logic_piece/PieceConnection.h"

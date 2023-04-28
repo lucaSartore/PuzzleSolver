@@ -21,6 +21,7 @@ private:
     cv::Point offset;
     PieceImage* piece;
     int orientation;
+    cv::Scalar color;
 public:
     /// set the offset of the piece;
     void set_offset(cv::Point p);
@@ -47,6 +48,10 @@ public:
     cv::Point  get_point(int index,bool resized);
     /// return the pointer to the original piece
     PieceImage* get_piece();
+    /// set the color of the current piece;
+    void set_color(cv::Scalar new_color);
+    /// return the current color of the piece;
+    cv::Scalar get_color();
 };
 
 
