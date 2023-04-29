@@ -56,7 +56,8 @@ public:
     GroupedPieces<N>(GroupedPieces<N-1> *top_left, GroupedPieces<N-1> *top_right, GroupedPieces<N-1> *bottom_right, GroupedPieces<N-1> *bottom_left);
     /// return a piece array that represent this subset of pieces, you need to pass him
     /// an array containing all the pieces loaded
-    PieceArray<PreviewHolder> get_piece_array(PieceImage* shapes);
+    template<class T>
+    PieceArray<T> get_piece_array(PieceImage* shapes);
 };
 
 
@@ -85,7 +86,8 @@ public:
     GroupedPieces<1>(PieceConnection* reference_piece, int orientation_);
     /// return a piece array that represent this subset of pieces, you need to pass him
     /// an array containing all the pieces loaded
-    PieceArray<PreviewHolder> get_piece_array(PieceImage* shapes);
+    template<class T>
+    PieceArray<T> get_piece_array(PieceImage* shapes);
 };
 
 // include file for correct template generation by the compiler

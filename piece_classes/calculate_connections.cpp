@@ -36,7 +36,7 @@ int main(){
     //srand(time(NULL));
 
     //test_piece_array(); return 0;
-    test_piece_array_shore(); return 0;
+    //test_piece_array_shore(); return 0;
 
     //calculate_single_thread();return 0;
 
@@ -109,9 +109,26 @@ int main(){
          << " sec" << endl;
 
 
+    //removing elements that do not met the minimum percentage
+
+    auto remove_condition = [&shapes](GroupedPieces<2> group) { return group.template get_piece_array<ShoringHolder>(shapes).get_shore() < 0.96; };
+
+    // Use std::remove_if to filter the list
+    group_lev_2.erase(std::remove_if(group_lev_2.begin(), group_lev_2.end(), remove_condition), group_lev_2.end());
+
+    cout << "new_length: " << group_lev_2.size();
+
+    /*
     for(auto component: group_lev_2){
-        //auto pa = component.get_piece_array(shapes);imshow("test", pa.get_preview_image());waitKey(0);
-    }
+        auto pa_shoring = component.template get_piece_array<ShoringHolder>(shapes);
+        float shore = pa_shoring.get_shore();
+        cout << "shore: " << shore << endl;
+        if(shore>0.95){
+            auto pa_preview = component.template get_piece_array<PreviewHolder>(shapes);
+            imshow("good",pa_preview.get_preview_image());
+            waitKey(0);
+        }
+    }*/
 
 
 
@@ -158,7 +175,7 @@ int main(){
 
 
     for(auto component: group_lev_3){
-        auto pa = component.get_piece_array(shapes);
+        PieceArray<PreviewHolder> pa = component.get_piece_array<PreviewHolder>(shapes);
         imshow("test", pa.get_preview_image());
         waitKey(0);
     }

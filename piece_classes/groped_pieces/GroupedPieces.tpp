@@ -328,12 +328,13 @@ GroupedPieces<1>::GroupedPieces(PieceConnection *reference_piece, int orientatio
 }
 
 template<int N>
-PieceArray<PreviewHolder> GroupedPieces<N>::get_piece_array(PieceImage* shapes){
+template<class T>
+PieceArray<T> GroupedPieces<N>::get_piece_array(PieceImage *shapes) {
     // getting the four sub array
-    PieceArray<PreviewHolder> top_left = std::move(get_top_left()->get_piece_array(shapes));
-    PieceArray<PreviewHolder> top_right = std::move(get_top_right()->get_piece_array(shapes));
-    PieceArray<PreviewHolder> bottom_left = std::move(get_bottom_left()->get_piece_array(shapes));
-    PieceArray<PreviewHolder> bottom_right = std::move(get_bottom_right()->get_piece_array(shapes));
+    PieceArray<T> top_left = std::move(get_top_left()->template get_piece_array<T>(shapes));
+    PieceArray<T> top_right = std::move(get_top_right()->template get_piece_array<T>(shapes));
+    PieceArray<T> bottom_left = std::move(get_bottom_left()->template get_piece_array<T>(shapes));
+    PieceArray<T> bottom_right = std::move(get_bottom_right()->template get_piece_array<T>(shapes));
 
     // summing them in to one sub component
     top_left.attach_right(top_right);
@@ -345,9 +346,10 @@ PieceArray<PreviewHolder> GroupedPieces<N>::get_piece_array(PieceImage* shapes){
 }
 
 
-PieceArray<PreviewHolder> GroupedPieces<1>::get_piece_array(PieceImage *shapes) {
-    PieceArray<PreviewHolder> pa = PieceArray<PreviewHolder>();
-    PreviewHolder ph = PreviewHolder(&shapes[get_id()], orientation);
+template<class T>
+PieceArray<T> GroupedPieces<1>::get_piece_array(PieceImage *shapes) {
+    PieceArray<T> pa = PieceArray<T>();
+    T ph = T(&shapes[get_id()], orientation);
     pa.set(0,0,std::move(ph));
     return std::move(pa);
 }
