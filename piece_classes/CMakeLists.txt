@@ -25,11 +25,20 @@ add_executable(
         groped_pieces/Direction.h
         groped_pieces/Shore.cpp
         groped_pieces/Shore.h
+        groped_pieces/grouped_pieces_errors.h
 
+        puzzle/PreviewHolder.cpp
+        puzzle/PreviewHolder.h
+        puzzle/PieceArray.tpp
+        puzzle/PieceArray.h
+        puzzle/PieceImmage.cpp
+        puzzle/PieceImage.h
+        puzzle/ShoringHolder.cpp
+        puzzle/ShoringHolder.h
         puzzle/Holder.cpp
         puzzle/Holder.h
-        puzzle/PieceArray.cpp
-        puzzle/PieceArray.h
+        puzzle/point_indexes.h
+
 
 
 )

@@ -40,7 +40,7 @@ public:
     /// return one of the 4 point, based on the index
     cv::Point get_point(int index);
     /// destructor
-    ~PieceShape()    = default;
+    ~PieceShape()  = default;
     /// return the x resolution of the preview image
     int get_preview_x_res();
     /// return the y resolution of the preview image

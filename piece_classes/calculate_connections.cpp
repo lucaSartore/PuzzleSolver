@@ -13,23 +13,30 @@
 #include <thread>
 #include "groped_pieces/GroupedPieces.h"
 #include "puzzle/PieceArray.h"
+#include <time.h>
+#include "groped_pieces/grouped_pieces_errors.h"
+
 
 using namespace std;
 using namespace std::chrono;
 
 #define NUMBER_OF_PIECES 16
-#define MINIMUM_COMPATIBILITY_PERCENTAGE 0.4
+#define MINIMUM_COMPATIBILITY_PERCENTAGE 0.25
 
 
 void piece_comparer_thread(PieceConnection pieces_connections[], PieceShape pieces_shapes[], atomic<int> *index);
 void calculate_single_thread(bool debug = false);
 void calculate_multi_thread(int number_of_threads = 0);
 void test_piece_array();
+void test_piece_array_shore();
 void test_grouped_piece_2_constructor();
 
 int main(){
 
+    //srand(time(NULL));
+
     //test_piece_array(); return 0;
+    //test_piece_array_shore(); return 0;
 
     //calculate_single_thread();return 0;
 
@@ -37,13 +44,13 @@ int main(){
 
     PieceConnection::set_number_of_pieces(NUMBER_OF_PIECES);
     PieceConnection pieces[NUMBER_OF_PIECES];
-    PieceShape shapes[NUMBER_OF_PIECES];
+    PieceImage shapes[NUMBER_OF_PIECES];
 
 
     // load all the pieces
     for(int i=0; i<NUMBER_OF_PIECES; i++){
         pieces[i].became(path,i);
-        shapes[i] = PieceShape(i,"../../dataset/test_4x4/divided");
+        shapes[i] = PieceImage(i,"../../dataset/test_4x4/divided");
     }
 
     // empty list of element 1;
@@ -59,26 +66,72 @@ int main(){
     // empty list of element 2;
     std::list<GroupedPieces<2>> group_lev_2 = {};
 
+    auto start = chrono::steady_clock::now();
+
     int c=0;
     // creating list of potential options
-    for(auto &first: group_lev_1){
-        for(auto &second: group_lev_1){
-            for(auto &third: group_lev_1){
-                for(auto &fourth: group_lev_1){
+    for(auto &top_left: group_lev_1){
+    //auto top_left = GroupedPieces<1>(&pieces[14],2);
+        for(auto &top_right: group_lev_1){
+            for(auto &bottom_right: group_lev_1){
+                for(auto &bottom_left: group_lev_1){
+
                     try{
-                        group_lev_2.emplace_front(&first,&second,&third,&fourth);
-                        //cout << "shore: " << group_lev_2.front().get_shore().get_shore() << endl;
-                    }catch(invalid_argument &e){
-                        //cout << "invalid" << endl;
+                        group_lev_2.emplace_front(&top_left, &top_right, &bottom_right, &bottom_left);
+                    }catch(AvregeIsToLow &e){
+                        // if avrege is to low: do nothing and go on with the next piece
+                    }catch(BottomLeftIsImpossible &e) {
+                        // if bottom left is impossible: do nothing and go on with the next piece
+                    }catch(BottomRightIsImpossible &e) {
+                        // if bottom right is impossible: no need to check all bottom left combinations
+                        // so i jump to the bottom left loop
+                        goto END_BOTTOM_LEFT_LOOP;
+                    }catch(TopRightIsImpossible &e) {
+                        // if top right is impossible: no need to check all bottom left combinations
+                        // so i jump to the rop right loop
+                        goto END_BOTTOM_RIGHT_LOOP;
                     }
-                    c++;
 
                 }
+                END_BOTTOM_LEFT_LOOP:;
             }
-            cout << (float) c/(NUMBER_OF_PIECES*NUMBER_OF_PIECES*NUMBER_OF_PIECES*NUMBER_OF_PIECES*4*4*4*4) * 100 << "%" << endl;
-            cout << c <<" tested combination. " << group_lev_2.size() << " possible found" << endl;
+            END_BOTTOM_RIGHT_LOOP:;
         }
+        c++;
+        cout << (float) c/(NUMBER_OF_PIECES*4) * 100 << "%" << endl;
+        cout << group_lev_2.size() << " possible combinations found" << endl;
     }
+
+    auto end = chrono::steady_clock::now();
+
+    cout << "Execution time for finding all 2x2 pieces [single threaded]: "
+         << chrono::duration_cast<chrono::seconds>(end - start).count() // baseline: 100 sec // 236 comb
+         << " sec" << endl;
+
+
+    //removing elements that do not met the minimum percentage
+
+    auto remove_condition = [&shapes](GroupedPieces<2> group) { return group.template get_piece_array<ShoringHolder>(shapes).get_shore() < 0.96; };
+
+    // Use std::remove_if to filter the list
+    group_lev_2.erase(std::remove_if(group_lev_2.begin(), group_lev_2.end(), remove_condition), group_lev_2.end());
+
+    cout << "new_length: " << group_lev_2.size();
+
+    /*
+    for(auto component: group_lev_2){
+        auto pa_shoring = component.template get_piece_array<ShoringHolder>(shapes);
+        float shore = pa_shoring.get_shore();
+        cout << "shore: " << shore << endl;
+        if(shore>0.95){
+            auto pa_preview = component.template get_piece_array<PreviewHolder>(shapes);
+            imshow("good",pa_preview.get_preview_image());
+            waitKey(0);
+        }
+    }*/
+
+
+
 
     // empty list of element 2;
     std::list<GroupedPieces<3>> group_lev_3 = {};
@@ -87,32 +140,47 @@ int main(){
 
     c=0;
     // creating list of potential options
-    for(auto &first: group_lev_2){
-        for(auto &second: group_lev_2){
-            for(auto &third: group_lev_2){
-                for(auto &fourth: group_lev_2){
+    for(auto &top_left: group_lev_2){
+        for(auto &top_right: group_lev_2){
+            for(auto &bottom_right: group_lev_2){
+                for(auto &bottom_left: group_lev_2){
                     try{
-                        group_lev_3.emplace_front(&first,&second,&third,&fourth);
-                        //cout << "shore: " << group_lev_2.front().get_shore().get_shore() << endl;
-                    }catch(invalid_argument &e){
-                        //cout << "invalid" << endl;
+                        group_lev_3.emplace_front(&top_left, &top_right, &bottom_right, &bottom_left);
+                    }catch(AvregeIsToLow &e){
+                        // if avrege is to low: do nothing and go on with the next piece
+                    }catch(BottomLeftIsImpossible &e) {
+                        // if bottom left is impossible: do nothing and go on with the next piece
+                    }catch(BottomRightIsImpossible &e) {
+                        // if bottom right is impossible: no need to check all bottom left combinations
+                        // so i jump to the bottom left loop
+                        goto END_BOTTOM_LEFT_LOOP2;
+                    }catch(TopRightIsImpossible &e) {
+                        // if top right is impossible: no need to check all bottom left combinations
+                        // so i jump to the rop right loop
+                        goto END_BOTTOM_RIGHT_LOOP2;
                     }
-                    c++;
 
                 }
+                END_BOTTOM_LEFT_LOOP2:;
             }
-            cout << (float) c/(float)(n*n*n*n) * 100 << "%" << endl;
-            cout << c <<" tested combination. " << group_lev_3.size() << " possible found" << endl;
+            END_BOTTOM_RIGHT_LOOP2:;
         }
+        c++;
+        cout << (float)c/(float)n * 100 << "%" << endl;
+        cout << group_lev_3.size() << " possible combinations found" << endl;
     }
+    cout << "Execution time for finding all 4x4 pieces [single threaded]: "
+         << chrono::duration_cast<chrono::seconds>(end - start).count()
+         << " sec" << endl;
 
 
-
-    for(auto component: group_lev_2){
-        auto pa = component.get_piece_array(shapes);
-        imshow("test", pa.get_image());
+    for(auto component: group_lev_3){
+        PieceArray<PreviewHolder> pa = component.get_piece_array<PreviewHolder>(shapes);
+        imshow("test", pa.get_preview_image());
         waitKey(0);
     }
+
+
 
     return 0;
 
@@ -305,42 +373,42 @@ void calculate_multi_thread(int number_of_threads){
 
 void test_piece_array(){
 
-    PieceShape::set_origin_path("../../dataset/test_2x3/divided");
-    PieceShape pieces_shapes[6];
+    PieceImage::set_origin_path("../../dataset/test_2x3/divided");
+    PieceImage pieces_images[6];
 
 
     // filling both array up with the respective index;
     for(int i=0; i<6;i++){
-        pieces_shapes[i] = PieceShape(i);
+        pieces_images[i] = PieceImage(i);
     }
 
-    PieceArray pa = PieceArray();
+    PieceArray<PreviewHolder> pa = PieceArray<PreviewHolder>();
 
-    Holder base = Holder(&pieces_shapes[4], 0);
+    PreviewHolder base = PreviewHolder(&pieces_images[4], 0);
     pa.set(0,0,std::move(base));
 
 
-    //imshow("puzzle", pa.get_image());waitKey(0);
+    //imshow("puzzle", pa.get_preview_image());waitKey(0);
 
     pa.grow_x();
 
-    base = Holder(&pieces_shapes[5], 3);pa.set(1,0,std::move(base));
+    base = PreviewHolder(&pieces_images[5], 3);pa.set(1, 0, std::move(base));
 
 
-    //imshow("puzzle", pa.get_image());waitKey(0);
+    //imshow("puzzle", pa.get_preview_image());waitKey(0);
 
     pa.grow_y();
 
-    base = Holder(&pieces_shapes[3], 3);
+    base = PreviewHolder(&pieces_images[3], 3);
     pa.set(0,1,std::move(base));
 
 
-    //imshow("puzzle", pa.get_image());waitKey(0);
+    //imshow("puzzle", pa.get_preview_image());waitKey(0);
 
 
-    //imshow("puzzle", pa.get_image());waitKey(0);
+    //imshow("puzzle", pa.get_preview_image());waitKey(0);
 
-    base = Holder(&pieces_shapes[2], 0);
+    base = PreviewHolder(&pieces_images[2], 0);
     pa.set(1,1,std::move(base));
 
 
@@ -355,7 +423,7 @@ void test_piece_array(){
     pa.attach_right(pa3);
 
 
-    imshow("puzzle", pa.get_image());waitKey(0);
+    imshow("puzzle", pa.get_preview_image());waitKey(0);
 }
 
 void test_grouped_piece_2_constructor(){
@@ -376,4 +444,73 @@ void test_grouped_piece_2_constructor(){
 
     GroupedPieces<2> sq =  GroupedPieces<2>(&top_left,&top_right,&bottom_right,&bottom_left);
 
+}
+
+
+void test_piece_array_shore(){
+
+    Mat image_og;
+    Mat resized;
+
+    PieceImage::set_origin_path("../../dataset/test_2x3/divided");
+    PieceImage pieces_images[6];
+
+
+    // filling both array up with the respective index;
+    for(int i=0; i<6;i++){
+        pieces_images[i] = PieceImage(i);
+    }
+
+    PieceArray<ShoringHolder> pa = PieceArray<ShoringHolder>();
+
+    ShoringHolder base = ShoringHolder(&pieces_images[4], 0);
+    base.rotate_by(-0.1);
+    pa.set(0,0,std::move(base));
+
+
+
+    image_og = pa.get_preview_image();
+    resize(image_og,resized,image_og.size()/8);
+    imshow("puzzle", resized);waitKey(0);
+
+    pa.grow_x();
+
+    base = ShoringHolder(&pieces_images[5], 3);pa.set(1, 0, std::move(base));
+
+
+    image_og = pa.get_preview_image();
+    resize(image_og,resized,image_og.size()/8);
+    imshow("puzzle", resized);waitKey(0);
+
+
+    pa.grow_y();
+
+    base = ShoringHolder(&pieces_images[3], 3);
+    pa.set(0,1,std::move(base));
+
+    base = ShoringHolder(&pieces_images[2], 0);
+    pa.set(1,1,std::move(base));
+    image_og = pa.get_preview_image();
+
+    cout << "shore: " << pa.get_shore() << endl;
+
+    resize(image_og,resized,image_og.size()/8);
+    imshow("puzzle", resized);waitKey(0);
+
+    PieceArray pa2 = pa;
+
+
+    pa.attach_bottom(pa2);
+    //pa.attach_bottom(pa2);
+
+    //PieceArray pa3 = pa;
+
+    //pa.attach_right(pa3);
+
+
+    cout << "shore: " << pa.get_shore() << endl;
+
+    image_og = pa.get_preview_image();
+    resize(image_og,resized,image_og.size()/8);
+    imshow("puzzle", resized);waitKey(0);
 }
