@@ -17,22 +17,22 @@ using namespace std;
 
 template<int N>
 GroupedPieces<N - 1> *GroupedPieces<N>::get_top_left() {
-    return sub_components[0];
+    return sub_components[(0+orientation)%4];
 }
 
 template<int N>
 GroupedPieces<N - 1> *GroupedPieces<N>::get_top_right() {
-    return sub_components[1];
+    return sub_components[(1+orientation)%4];
 }
 
 template<int N>
 GroupedPieces<N - 1> *GroupedPieces<N>::get_bottom_right() {
-    return sub_components[2];
+    return sub_components[(2+orientation)%4];
 }
 
 template<int N>
 GroupedPieces<N - 1> *GroupedPieces<N>::get_bottom_left() {
-    return sub_components[3];
+    return sub_components[(3+orientation)%4];
 }
 
 template<int N>
@@ -107,16 +107,7 @@ GroupedPieces<N>::GroupedPieces(GroupedPieces<N - 1> *top_left, GroupedPieces<N 
     assert(bottom_right != nullptr);
     assert(bottom_left != nullptr);
 
-
-    // insert the pointers to the respective tiles
-    set_bottom_left(bottom_left);
-    set_bottom_right(bottom_right);
-    set_top_right(top_right);
-    set_top_left(top_left);
-
-    calculate_shore();
-
-    //return;
+    orientation = 0;
 
     //reset default ids set
     ids = {};
@@ -130,7 +121,7 @@ GroupedPieces<N>::GroupedPieces(GroupedPieces<N - 1> *top_left, GroupedPieces<N 
     // so the top right is not a valid piece
     float expected_pieces = pow(4.0,N-1)*0.5;
     if(ids.size() != std::round(expected_pieces)){
-        throw TopRightIsImpossible();
+        throw TopRightImpossibleCombination();
     }
 
 
@@ -140,7 +131,7 @@ GroupedPieces<N>::GroupedPieces(GroupedPieces<N - 1> *top_left, GroupedPieces<N 
     // so the bottom left is not a valid piece
     expected_pieces = pow(4.0,N-1)*0.75;
     if(ids.size() != std::round(expected_pieces)){
-        throw BottomRightIsImpossible();
+        throw BottomRightImpossibleCombination();
     }
 
 
@@ -150,8 +141,16 @@ GroupedPieces<N>::GroupedPieces(GroupedPieces<N - 1> *top_left, GroupedPieces<N 
     // so the bottom left is not a valid piece
     expected_pieces = pow(4.0,N-1);
     if(ids.size() != std::round(expected_pieces)){
-        throw BottomLeftIsImpossible();
+        throw BottomLeftImpossibleCombination();
     }
+
+    // insert the pointers to the respective tiles
+    set_bottom_left(bottom_left);
+    set_bottom_right(bottom_right);
+    set_top_right(top_right);
+    set_top_left(top_left);
+
+    calculate_shore();
 }
 
 template<>
@@ -163,15 +162,7 @@ GroupedPieces<2>::GroupedPieces(GroupedPieces<1> *top_left, GroupedPieces<1> *to
     assert(bottom_right != nullptr);
     assert(bottom_left != nullptr);
 
-    // insert the pointers to the respective tiles
-    set_bottom_left(bottom_left);
-    set_bottom_right(bottom_right);
-    set_top_right(top_right);
-    set_top_left(top_left);
-
-
-    // calculating the avrege shore
-    calculate_shore();
+    orientation = 0;
 
     // make array empty
     ids = {};
@@ -183,42 +174,51 @@ GroupedPieces<2>::GroupedPieces(GroupedPieces<1> *top_left, GroupedPieces<1> *to
     ids.insert(top_right->get_id());
     // if some components are repeated (aka same id) the combination is invalid
     if(ids.size() != 2){
-        throw TopRightIsImpossible();
+        throw TopRightImpossibleCombination();
     }
 
     // inserting new component in set
     ids.insert(bottom_right->get_id());
     if(ids.size() != 3){
-        throw BottomRightIsImpossible();
+        throw BottomRightImpossibleCombination();
     }
 
     // inserting new component in set
     ids.insert(bottom_left->get_id());
     if(ids.size() != 4){
-        throw BottomLeftIsImpossible();
+        throw BottomLeftImpossibleCombination();
     }
 
+    // insert the pointers to the respective tiles
+    set_bottom_left(bottom_left);
+    set_bottom_right(bottom_right);
+    set_top_right(top_right);
+    set_top_left(top_left);
+
+
+    // calculating the avrege shore
+    calculate_shore();
 }
 
 
 template<int N>
 void GroupedPieces<N>::set_top_left(GroupedPieces<N - 1> *new_val) {
-    sub_components[0] = new_val;
+    sub_components[(0+orientation)%4] = new_val;
 }
 
 template<int N>
 void GroupedPieces<N>::set_top_right(GroupedPieces<N - 1> *new_val) {
-    sub_components[1] = new_val;
+    sub_components[(1+orientation)%4] = new_val;
 }
 
 template<int N>
 void GroupedPieces<N>::set_bottom_right(GroupedPieces<N - 1> *new_val) {
-    sub_components[2] = new_val;
+    sub_components[(2+orientation)%4] = new_val;
 }
 
 template<int N>
 void GroupedPieces<N>::set_bottom_left(GroupedPieces<N - 1> *new_val) {
-    sub_components[3] = new_val;
+    sub_components[(3+orientation)%4] = new_val;
 }
 
 
@@ -243,6 +243,22 @@ Shore GroupedPieces<1>::get_shore() {
 }
 
 template<int N>
+GroupedPieces<N>::GroupedPieces() {
+    shore = Shore(0);
+    orientation = 0;
+    sub_components[0] = nullptr;
+    sub_components[1] = nullptr;
+    sub_components[2] = nullptr;
+    sub_components[3] = nullptr;
+}
+GroupedPieces<1>::GroupedPieces() {
+    shore = Shore(0);
+    orientation = 0;
+    piece = nullptr;
+}
+
+
+template<int N>
 void GroupedPieces<N>::calculate_shore() {
     // reset the current shore;
     shore = Shore();
@@ -252,7 +268,7 @@ void GroupedPieces<N>::calculate_shore() {
     shore += get_top_left()->compare_to(RIGHT,*get_top_right());
     // trowing an error if the piece is impossible
     if(shore.get_shore() == 0){
-        throw TopRightIsImpossible();
+        throw TopRightImpossibleFit();
     }
 
 
@@ -260,7 +276,7 @@ void GroupedPieces<N>::calculate_shore() {
     shore += get_top_right()->compare_to(DOWN,*get_bottom_right());
     // trowing an error if the piece is impossible
     if(shore.get_shore() == 0){
-        throw BottomRightIsImpossible();
+        throw BottomRightImpossibleFit();
     }
 
 
@@ -268,14 +284,14 @@ void GroupedPieces<N>::calculate_shore() {
     shore += get_bottom_right()->compare_to(LEFT,*get_bottom_left());
     // trowing an error if the piece is impossible
     if(shore.get_shore() == 0){
-        throw BottomLeftIsImpossible();
+        throw BottomLeftImpossibleFit();
     }
 
     // comparing bottom border
     shore += get_bottom_left()->compare_to(UP,*get_top_left());
     // trowing an error if the piece is impossible
     if(shore.get_shore() == 0){
-        throw BottomLeftIsImpossible();
+        throw BottomLeftImpossibleFit();
     }
 
     // trowing an error if the piece is impossible
@@ -315,16 +331,40 @@ int GroupedPieces<1>::direction_to_side_index(Direction direction) {
     return (n+orientation)%4;
 }
 
-GroupedPieces<1>::GroupedPieces(PieceConnection *reference_piece, int orientation_) {
-    assert(orientation_>=0);
-    assert(orientation_<4);
+GroupedPieces<1>::GroupedPieces(PieceConnection *reference_piece) {
     assert(reference_piece != nullptr);
 
-    orientation = orientation_;
+    orientation = 0;
     piece = reference_piece;
 
     // shore of 1 with 0 as number (don't affect future calculation)
     shore = Shore();
+}
+
+
+
+
+
+
+
+
+
+
+
+void GroupedPieces<1>::rotate_by(int rotate_by) {
+    assert(rotate_by>=0);
+    assert(rotate_by<4);
+    orientation = (orientation+rotate_by)%4;
+}
+template<int N>
+void GroupedPieces<N>::rotate_by(int rotate_by) {
+    assert(rotate_by>=0);
+    assert(rotate_by<4);
+    orientation = (orientation+rotate_by)%4;
+
+    for(auto e: sub_components){
+        e->rotate_by(rotate_by);
+    }
 }
 
 template<int N>

@@ -21,6 +21,8 @@ private:
     Shore shore;
     /// a set that contains all the pieces in this group, is useful to avoid repeating pieces
     std::set<int> ids;
+    /// flag to keep track of how match a piece is rotated, go from 0 to 3;
+    int orientation;
     /// 4 pointers that points to the 4 sub components this group is made of
     /// they are in the order: top-left, top-right, bottom-right, bottom-left
     GroupedPieces<N-1>* sub_components[4];
@@ -43,6 +45,8 @@ private:
     /// calculate the average shore and update it
     void calculate_shore();
 public:
+    /// rotate the current piece by 90 degrees times the argument passed
+    void rotate_by(int rotate_by);
     /// return reference to set of all ids contained in the group
     std::set<int>& get_ids();
     /// compare this group with an other, need to specify the direction t
@@ -58,6 +62,8 @@ public:
     /// an array containing all the pieces loaded
     template<class T>
     PieceArray<T> get_piece_array(PieceImage* shapes);
+    /// default constructor (initialize empty group)
+    GroupedPieces<N>();
 };
 
 
@@ -74,6 +80,8 @@ private:
     /// turns a direction into the matching side of this piece
     int direction_to_side_index(Direction direction);
 public:
+    /// rotate the current piece by 90 degrees times the argument passed
+    void rotate_by(int rotate_by);
     /// return set containing the id of the piece
     std::set<int> get_ids();
     /// return the id of the current group
@@ -83,11 +91,13 @@ public:
     /// get the shore that this group has overall, the shore represent how much the piece match, and go from 0 to 1
     Shore get_shore();
     /// build a piece connection, by giving his original piece
-    GroupedPieces<1>(PieceConnection* reference_piece, int orientation_);
+    explicit GroupedPieces<1>(PieceConnection* reference_piece);
     /// return a piece array that represent this subset of pieces, you need to pass him
     /// an array containing all the pieces loaded
     template<class T>
     PieceArray<T> get_piece_array(PieceImage* shapes);
+    /// default constructor, initialize empty group
+    GroupedPieces<1>();
 };
 
 // include file for correct template generation by the compiler

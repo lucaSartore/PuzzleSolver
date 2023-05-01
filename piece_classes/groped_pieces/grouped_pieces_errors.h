@@ -16,15 +16,29 @@
 /// execution return when the avrege shore of all the pieces is to low
 class AvregeIsToLow: public std::exception{};
 
-/// execution returned when the top right piece dose not match with the top left, so testing all other combinations is useless
-class TopRightIsImpossible: public std::exception{};
+/// execution returned when the top right piece dose not match with the top left
+/// so testing all other combinations is useless
+class TopRightImpossibleFit: public std::exception{};
 
-/// execution returned when the bottom right piece dose not match with the top right, so testing all other combinations is useless
-class BottomRightIsImpossible:  public std::exception{};
+/// execution returned when the bottom right piece dose not match with the top right
+/// so testing all other combinations is useless
+class BottomRightImpossibleFit: public std::exception{};
 
-/// execution returned when the bottom left piece dose not match with the top left, so testing all other combinations is useless
-class BottomLeftIsImpossible:  public std::exception{};
+/// execution returned when the bottom left piece has inside a piece already contained in the group,
+/// so is useless to test different rotations of the same piece
+class BottomLeftImpossibleFit: public std::exception{};
 
+/// execution returned when the top right piece has inside a piece already contained in the group,
+/// so is useless to test different rotations of the same piece
+class TopRightImpossibleCombination: public std::exception{};
+
+/// execution returned when the bottom right piece has inside a piece already contained in the group,
+/// so is useless to test different rotations of the same piece
+class BottomRightImpossibleCombination: public std::exception{};
+
+/// execution returned when the bottom left piece has inside a piece already contained in the group,
+/// so is useless to test different rotations of the same piece
+class BottomLeftImpossibleCombination: public std::exception{};
 
 
 

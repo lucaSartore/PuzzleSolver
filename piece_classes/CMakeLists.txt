@@ -26,6 +26,8 @@ add_executable(
         groped_pieces/Shore.cpp
         groped_pieces/Shore.h
         groped_pieces/grouped_pieces_errors.h
+        groped_pieces/GroupedPiecesHolder.tpp
+        groped_pieces/GroupedPiecesHolder.h
 
         puzzle/PreviewHolder.cpp
         puzzle/PreviewHolder.h
