@@ -69,6 +69,7 @@ PieceImage::PieceImage(int piece_id, std::string path) {
     //put the piece back on place
     piece = new_piece;
 
+
     // transform the coordinates as well
 
     // translating my coordinates to the new form
@@ -79,6 +80,17 @@ PieceImage::PieceImage(int piece_id, std::string path) {
     cv::transform(points_vector,points_vector_transformed,transform);
     for(int i=0; i<4; i++){
         points[i] = points_vector_transformed[i];
+    }
+
+    Point image_center = (points[0]+points[1]+points[2]+points[3])/4;
+    // DEBUG: put number of piece on top:
+    putText(piece, to_string(piece_id), image_center-Point(20,-20), FONT_HERSHEY_COMPLEX,4, cv::Scalar(0, 0, 0),13);
+    // line to avoid floadfeel daling
+    cv::line(piece,image_center-Point(0,2),image_center+Point(0,50),Scalar(255,255,255),3);
+    //
+    for(int i=0; i<4; i++){
+        Point side_point = (points[i]+points[(i+1)%4]+image_center*4)/6-Point(20,-20);
+        putText(piece, to_string(i), side_point, FONT_HERSHEY_COMPLEX,3, cv::Scalar(0, 0, 0),7);
     }
 
     // doing resize for faster operations later

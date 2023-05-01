@@ -27,21 +27,22 @@ private:
     /// they are in the order: top-left, top-right, bottom-right, bottom-left
     GroupedPieces<N-1>* sub_components[4];
     /// return the top left component
-    inline GroupedPieces<N-1>* get_top_left();
+    /// the recursive iteration is the iteration of the previous aggregation of 4 pieces
+    inline GroupedPieces<N-1>* get_top_left(int recursive_orientation);
     /// return the top right component
-    inline GroupedPieces<N-1>* get_top_right();
+    inline GroupedPieces<N-1>* get_top_right(int recursive_orientation);
     /// return the bottom right component
-    inline GroupedPieces<N-1>* get_bottom_right();
+    inline GroupedPieces<N-1>* get_bottom_right(int recursive_orientation);
     /// return the bottom left component
-    inline GroupedPieces<N-1>* get_bottom_left();
+    inline GroupedPieces<N-1>* get_bottom_left(int recursive_orientation);
     /// set the rop left component
-    inline void set_top_left(GroupedPieces<N-1>* new_val);
+    inline void set_top_left(GroupedPieces<N-1>* new_val,int recursive_orientation=0);
     /// set the top right component
-    inline void set_top_right(GroupedPieces<N-1>*new_val);
+    inline void set_top_right(GroupedPieces<N-1>*new_val,int recursive_orientation=0);
     /// set the bottom right component
-    inline void set_bottom_right(GroupedPieces<N-1>*new_val);
+    inline void set_bottom_right(GroupedPieces<N-1>*new_val,int recursive_orientation=0);
     /// set the bottom left component
-    inline void set_bottom_left(GroupedPieces<N-1>*new_val);
+    inline void set_bottom_left(GroupedPieces<N-1>*new_val,int recursive_orientation=0);
     /// calculate the average shore and update it
     void calculate_shore();
 public:
@@ -50,7 +51,7 @@ public:
     /// return reference to set of all ids contained in the group
     std::set<int>& get_ids();
     /// compare this group with an other, need to specify the direction t
-    Shore compare_to(Direction direction, GroupedPieces<N> &other);
+    Shore compare_to(Direction direction, GroupedPieces<N> &other,int recursive_orientation_this,int recursive_orientation_other);
     /// get the shore that this group has overall, the shore represent how much the piece match, and go from 0 to 1
     Shore get_shore();
     /// create a Group of pieces using 4 sub components.
@@ -61,7 +62,7 @@ public:
     /// return a piece array that represent this subset of pieces, you need to pass him
     /// an array containing all the pieces loaded
     template<class T>
-    PieceArray<T> get_piece_array(PieceImage* shapes);
+    PieceArray<T> get_piece_array(PieceImage* shapes,int recursive_orientation=0);
     /// default constructor (initialize empty group)
     GroupedPieces<N>();
 };
@@ -78,7 +79,7 @@ private:
     /// integer from 0 to 3 thad define the orientation of the current piece
     int orientation;
     /// turns a direction into the matching side of this piece
-    int direction_to_side_index(Direction direction);
+    int direction_to_side_index(Direction direction,int recursive_orientation);
 public:
     /// rotate the current piece by 90 degrees times the argument passed
     void rotate_by(int rotate_by);
@@ -87,7 +88,7 @@ public:
     /// return the id of the current group
     int get_id();
     /// compare this side, at the specified orientation with the other piece, at his specified Direction
-    Shore compare_to(Direction direction, GroupedPieces<1> &other);
+    Shore compare_to(Direction direction, GroupedPieces<1> &other,int recursive_orientation,int recursive_orientation_other);
     /// get the shore that this group has overall, the shore represent how much the piece match, and go from 0 to 1
     Shore get_shore();
     /// build a piece connection, by giving his original piece
@@ -95,7 +96,7 @@ public:
     /// return a piece array that represent this subset of pieces, you need to pass him
     /// an array containing all the pieces loaded
     template<class T>
-    PieceArray<T> get_piece_array(PieceImage* shapes);
+    PieceArray<T> get_piece_array(PieceImage* shapes,int recursive_orientation=0);
     /// default constructor, initialize empty group
     GroupedPieces<1>();
 };

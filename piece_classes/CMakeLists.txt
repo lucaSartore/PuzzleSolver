@@ -8,6 +8,7 @@ add_executable(
         PieceClass
 
         calculate_connections.cpp
+        util.h
 
         graphic_piece/Side.cpp
         graphic_piece/Side.h

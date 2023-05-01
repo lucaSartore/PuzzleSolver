@@ -8,6 +8,9 @@
 #include <iostream>
 #include <cassert>
 #include "grouped_pieces_errors.h"
+#include "../util.h"
+
+extern PieceImage* piece_image_global;
 
 
 // the threshold after witch a component get removed because of poor connections
@@ -16,60 +19,60 @@
 using namespace std;
 
 template<int N>
-GroupedPieces<N - 1> *GroupedPieces<N>::get_top_left() {
-    return sub_components[(0+orientation)%4];
+GroupedPieces<N - 1> *GroupedPieces<N>::get_top_left(int recursive_orientation) {
+    return sub_components[(0+orientation+recursive_orientation)%4];
 }
 
 template<int N>
-GroupedPieces<N - 1> *GroupedPieces<N>::get_top_right() {
-    return sub_components[(1+orientation)%4];
+GroupedPieces<N - 1> *GroupedPieces<N>::get_top_right(int recursive_orientation) {
+    return sub_components[(1+orientation+recursive_orientation)%4];
 }
 
 template<int N>
-GroupedPieces<N - 1> *GroupedPieces<N>::get_bottom_right() {
-    return sub_components[(2+orientation)%4];
+GroupedPieces<N - 1> *GroupedPieces<N>::get_bottom_right(int recursive_orientation) {
+    return sub_components[(2+orientation+recursive_orientation)%4];
 }
 
 template<int N>
-GroupedPieces<N - 1> *GroupedPieces<N>::get_bottom_left() {
-    return sub_components[(3+orientation)%4];
+GroupedPieces<N - 1> *GroupedPieces<N>::get_bottom_left(int recursive_orientation) {
+    return sub_components[(3+orientation+recursive_orientation)%4];
 }
 
 template<int N>
-Shore GroupedPieces<N>::compare_to(Direction direction, GroupedPieces<N> &other){
+Shore GroupedPieces<N>::compare_to(Direction direction, GroupedPieces<N> &other,int recursive_orientation,int recursive_orientation_other){
     Shore s;
     switch (direction) {
         case RIGHT:
-            s += this->get_top_right()->compare_to(direction,*other.get_top_left());
+            s += this->get_top_right(recursive_orientation)->compare_to(direction,*other.get_top_left(recursive_orientation),recursive_orientation+orientation,recursive_orientation_other+other.orientation);
             // early evaluation to save time
             if(s.get_shore() == 0){
                 return s;
             }
-            s += this->get_bottom_right()->compare_to(direction,*other.get_bottom_left());
+            s += this->get_bottom_right(recursive_orientation)->compare_to(direction,*other.get_bottom_left(recursive_orientation),recursive_orientation+orientation,recursive_orientation_other+other.orientation);
             break;
         case LEFT:
-            s += this->get_top_left()->compare_to(direction,*other.get_top_right());
+            s += this->get_top_left(recursive_orientation)->compare_to(direction,*other.get_top_right(recursive_orientation),recursive_orientation+orientation,recursive_orientation_other+other.orientation);
             // early evaluation to save time
             if(s.get_shore() == 0){
                 return s;
             }
-            s += this->get_bottom_left()->compare_to(direction,*other.get_bottom_right());
+            s += this->get_bottom_left(recursive_orientation)->compare_to(direction,*other.get_bottom_right(recursive_orientation),recursive_orientation+orientation,recursive_orientation_other+other.orientation);
             break;
         case UP:
-            s += this->get_top_left()->compare_to(direction,*other.get_bottom_left());
+            s += this->get_top_left(recursive_orientation)->compare_to(direction,*other.get_bottom_left(recursive_orientation),recursive_orientation+orientation,recursive_orientation_other+other.orientation);
             // early evaluation to save time
             if(s.get_shore() == 0){
                 return s;
             }
-            s += this->get_top_right()->compare_to(direction,*other.get_bottom_right());
+            s += this->get_top_right(recursive_orientation)->compare_to(direction,*other.get_bottom_right(recursive_orientation),recursive_orientation+orientation,recursive_orientation_other+other.orientation);
             break;
         case DOWN:
-            s += this->get_bottom_left()->compare_to(direction,*other.get_top_left());
+            s += this->get_bottom_left(recursive_orientation)->compare_to(direction,*other.get_top_left(recursive_orientation),recursive_orientation+orientation,recursive_orientation_other+other.orientation);
             // early evaluation to save time
             if(s.get_shore() == 0){
                 return s;
             }
-            s += this->get_bottom_right()->compare_to(direction,*other.get_top_right());
+            s += this->get_bottom_right(recursive_orientation)->compare_to(direction,*other.get_top_right(recursive_orientation),recursive_orientation+orientation,recursive_orientation_other+other.orientation);
             break;
         default:
             throw std::runtime_error("unknown direction");
@@ -82,11 +85,18 @@ Shore GroupedPieces<N>::compare_to(Direction direction, GroupedPieces<N> &other)
 }
 
 
-Shore GroupedPieces<1>::compare_to(Direction direction, GroupedPieces<1> &other) {
+Shore GroupedPieces<1>::compare_to(Direction direction, GroupedPieces<1> &other, int recursive_orientation,int recursive_orientation_other) {
+
+
+    int this_piece_side = direction_to_side_index(direction,recursive_orientation);
+    int other_piece_side = other.direction_to_side_index(-direction,recursive_orientation_other); // NOTE: -direction means opposite direction (-UP == DOWN)
+
+    //cout << "comparing piece: " << get_id() << "-" << this_piece_side << " with piece: " << other.get_id() << "-" << other_piece_side << " direction: " << direction << endl;
+
     float s = piece->compare(
-            direction_to_side_index(direction),
+            this_piece_side,
             other.get_id(),
-            other.direction_to_side_index(-direction) // note: -direction means opposite direction (-UP == DOWN)
+            other_piece_side
             );
     //cout << "Comparing: " << this->get_id() << " and: " << other.get_id() << " Direction: " << direction << " result: " << s << endl;
     // shore with number = 1 and the percentage as shore
@@ -144,6 +154,25 @@ GroupedPieces<N>::GroupedPieces(GroupedPieces<N - 1> *top_left, GroupedPieces<N 
         throw BottomLeftImpossibleCombination();
     }
 
+    /*
+    auto bli = bottom_left->template get_piece_array<PreviewHolder>(piece_image_global).get_preview_image();
+    auto bri = bottom_right->template get_piece_array<PreviewHolder>(piece_image_global).get_preview_image();
+    auto tli = top_left->template get_piece_array<PreviewHolder>(piece_image_global).get_preview_image();
+    auto tri = top_right->template get_piece_array<PreviewHolder>(piece_image_global).get_preview_image();
+
+    crop_image_to_remove_black_gb(bli);
+    crop_image_to_remove_black_gb(bri);
+    crop_image_to_remove_black_gb(tli);
+    crop_image_to_remove_black_gb(tri);
+
+    imshow("bottom_left",bli);
+    imshow("bottom_right",bri);
+    imshow("top_left",tli);
+    imshow("top_right",tri);
+    //waitKey(0);
+     */
+
+
     // insert the pointers to the respective tiles
     set_bottom_left(bottom_left);
     set_bottom_right(bottom_right);
@@ -189,6 +218,7 @@ GroupedPieces<2>::GroupedPieces(GroupedPieces<1> *top_left, GroupedPieces<1> *to
         throw BottomLeftImpossibleCombination();
     }
 
+
     // insert the pointers to the respective tiles
     set_bottom_left(bottom_left);
     set_bottom_right(bottom_right);
@@ -202,23 +232,23 @@ GroupedPieces<2>::GroupedPieces(GroupedPieces<1> *top_left, GroupedPieces<1> *to
 
 
 template<int N>
-void GroupedPieces<N>::set_top_left(GroupedPieces<N - 1> *new_val) {
-    sub_components[(0+orientation)%4] = new_val;
+void GroupedPieces<N>::set_top_left(GroupedPieces<N - 1> *new_val, int recursive_orientation) {
+    sub_components[(0+orientation+recursive_orientation)%4] = new_val;
 }
 
 template<int N>
-void GroupedPieces<N>::set_top_right(GroupedPieces<N - 1> *new_val) {
-    sub_components[(1+orientation)%4] = new_val;
+void GroupedPieces<N>::set_top_right(GroupedPieces<N - 1> *new_val, int recursive_orientation) {
+    sub_components[(1+orientation)%4+recursive_orientation] = new_val;
 }
 
 template<int N>
-void GroupedPieces<N>::set_bottom_right(GroupedPieces<N - 1> *new_val) {
-    sub_components[(2+orientation)%4] = new_val;
+void GroupedPieces<N>::set_bottom_right(GroupedPieces<N - 1> *new_val, int recursive_orientation) {
+    sub_components[(2+orientation)%4+recursive_orientation] = new_val;
 }
 
 template<int N>
-void GroupedPieces<N>::set_bottom_left(GroupedPieces<N - 1> *new_val) {
-    sub_components[(3+orientation)%4] = new_val;
+void GroupedPieces<N>::set_bottom_left(GroupedPieces<N - 1> *new_val, int recursive_orientation) {
+    sub_components[(3+orientation)%4+recursive_orientation] = new_val;
 }
 
 
@@ -265,7 +295,7 @@ void GroupedPieces<N>::calculate_shore() {
 
 
     // comparing top border
-    shore += get_top_left()->compare_to(RIGHT,*get_top_right());
+    shore += get_top_left(0)->compare_to(RIGHT,*get_top_right(0),orientation,orientation);
     // trowing an error if the piece is impossible
     if(shore.get_shore() == 0){
         throw TopRightImpossibleFit();
@@ -273,7 +303,7 @@ void GroupedPieces<N>::calculate_shore() {
 
 
     // comparing right border
-    shore += get_top_right()->compare_to(DOWN,*get_bottom_right());
+    shore += get_top_right(0)->compare_to(DOWN,*get_bottom_right(0),orientation,orientation);
     // trowing an error if the piece is impossible
     if(shore.get_shore() == 0){
         throw BottomRightImpossibleFit();
@@ -281,14 +311,14 @@ void GroupedPieces<N>::calculate_shore() {
 
 
     // comparing bottom border
-    shore += get_bottom_right()->compare_to(LEFT,*get_bottom_left());
+    shore += get_bottom_right(0)->compare_to(LEFT,*get_bottom_left(0),orientation,orientation);
     // trowing an error if the piece is impossible
     if(shore.get_shore() == 0){
         throw BottomLeftImpossibleFit();
     }
 
     // comparing bottom border
-    shore += get_bottom_left()->compare_to(UP,*get_top_left());
+    shore += get_bottom_left(0)->compare_to(UP,*get_top_left(0),orientation,orientation);
     // trowing an error if the piece is impossible
     if(shore.get_shore() == 0){
         throw BottomLeftImpossibleFit();
@@ -300,16 +330,16 @@ void GroupedPieces<N>::calculate_shore() {
     }
 
     // adding the avrege of the 4 sub components
-    shore += get_top_left()->get_shore();
-    shore += get_top_right()->get_shore();
-    shore += get_bottom_right()->get_shore();
-    shore += get_bottom_left()->get_shore();
+    shore += get_top_left(0)->get_shore();
+    shore += get_top_right(0)->get_shore();
+    shore += get_bottom_right(0)->get_shore();
+    shore += get_bottom_left(0)->get_shore();
 
     // no need to check again for the shore, since the added shore are for shore higher than the threshold
 }
 
 
-int GroupedPieces<1>::direction_to_side_index(Direction direction) {
+int GroupedPieces<1>::direction_to_side_index(Direction direction, int recursive_orientation) {
     int n;
     switch (direction) {
         case UP:
@@ -328,7 +358,7 @@ int GroupedPieces<1>::direction_to_side_index(Direction direction) {
             throw std::runtime_error("unknown direction!");
     }
     // sum the 2 with module 4 to do
-    return (n+orientation)%4;
+    return (n+orientation+recursive_orientation)%4;
 }
 
 GroupedPieces<1>::GroupedPieces(PieceConnection *reference_piece) {
@@ -342,39 +372,29 @@ GroupedPieces<1>::GroupedPieces(PieceConnection *reference_piece) {
 }
 
 
-
-
-
-
-
-
-
-
-
-void GroupedPieces<1>::rotate_by(int rotate_by) {
-    assert(rotate_by>=0);
-    assert(rotate_by<4);
-    orientation = (orientation+rotate_by)%4;
-}
 template<int N>
 void GroupedPieces<N>::rotate_by(int rotate_by) {
     assert(rotate_by>=0);
     assert(rotate_by<4);
     orientation = (orientation+rotate_by)%4;
+}
 
-    for(auto e: sub_components){
-        e->rotate_by(rotate_by);
-    }
+//void rotate_by(int rotate_by);
+//template<>
+void GroupedPieces<1>::rotate_by(int rotate_by) {
+    assert(rotate_by>=0);
+    assert(rotate_by<4);
+    orientation = (orientation+rotate_by)%4;
 }
 
 template<int N>
 template<class T>
-PieceArray<T> GroupedPieces<N>::get_piece_array(PieceImage *shapes) {
+PieceArray<T> GroupedPieces<N>::get_piece_array(PieceImage *shapes,int recursive_orientation) {
     // getting the four sub array
-    PieceArray<T> top_left = std::move(get_top_left()->template get_piece_array<T>(shapes));
-    PieceArray<T> top_right = std::move(get_top_right()->template get_piece_array<T>(shapes));
-    PieceArray<T> bottom_left = std::move(get_bottom_left()->template get_piece_array<T>(shapes));
-    PieceArray<T> bottom_right = std::move(get_bottom_right()->template get_piece_array<T>(shapes));
+    PieceArray<T> top_left = std::move(get_top_left(recursive_orientation)->template get_piece_array<T>(shapes,recursive_orientation+orientation));
+    PieceArray<T> top_right = std::move(get_top_right(recursive_orientation)->template get_piece_array<T>(shapes,recursive_orientation+orientation));
+    PieceArray<T> bottom_left = std::move(get_bottom_left(recursive_orientation)->template get_piece_array<T>(shapes,recursive_orientation+orientation));
+    PieceArray<T> bottom_right = std::move(get_bottom_right(recursive_orientation)->template get_piece_array<T>(shapes,recursive_orientation+orientation));
 
     // summing them in to one sub component
     top_left.attach_right(top_right);
@@ -387,9 +407,9 @@ PieceArray<T> GroupedPieces<N>::get_piece_array(PieceImage *shapes) {
 
 
 template<class T>
-PieceArray<T> GroupedPieces<1>::get_piece_array(PieceImage *shapes) {
+PieceArray<T> GroupedPieces<1>::get_piece_array(PieceImage *shapes,int recursive_orientation) {
     PieceArray<T> pa = PieceArray<T>();
-    T ph = T(&shapes[get_id()], orientation);
+    T ph = T(&shapes[get_id()], (orientation+recursive_orientation)%4);
     pa.set(0,0,std::move(ph));
     return std::move(pa);
 }

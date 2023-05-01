@@ -32,6 +32,8 @@ void test_piece_array_shore();
 void test_grouped_piece_2_constructor();
 void test_grouped_piece_holder();
 
+PieceImage* piece_image_global;
+
 int main(){
 
     //srand(time(NULL));
@@ -47,6 +49,8 @@ int main(){
     PieceConnection::set_number_of_pieces(NUMBER_OF_PIECES);
     PieceConnection pieces[NUMBER_OF_PIECES];
     PieceImage piece_images[NUMBER_OF_PIECES];
+
+    piece_image_global = piece_images;
 
 
     // load all the pieces
@@ -182,8 +186,21 @@ int main(){
 
     cout << "new_lenght: " << list_lev_2.size() << endl;
 
+    //for(auto e: list_lev_2){auto pa = e.get_piece_array<PreviewHolder>(piece_images);imshow("a",pa.get_preview_image());waitKey(0);}
+
     // creating the list with rotated elements
     GroupedPiecesHolder<2> group_level_2 = GroupedPiecesHolder(list_lev_2);
+
+
+
+    /*
+    for(int i=0; i<group_level_2.get_length(); i++){
+        for(int side=0; side<4;side++){
+            auto pa = group_level_2.get(i,side).get_piece_array<PreviewHolder>(piece_images);
+            imshow("a",pa.get_preview_image());
+            waitKey(0);
+        }
+    }*/
 
     // empty list of element 2;
     std::list<GroupedPieces<3>> list_lev_3 = {};
@@ -206,14 +223,9 @@ int main(){
                             // bottom right 4 possible orientations
                             for (int bottom_right_orientation = 0;bottom_right_orientation < 4; bottom_right_orientation++) {
                                 // bottom left 4 possible orientations
-                                for (int bottom_left_orientation = 0;
-                                     bottom_left_orientation < 4; bottom_left_orientation++) {
+                                for (int bottom_left_orientation = 0; bottom_left_orientation < 4; bottom_left_orientation++) {
 
-                                    //cout << top_left_index << endl;
-                                    //cout << top_right_index << " " << top_right_orientation << endl;
-                                    //cout << bottom_right_index << " " << bottom_right_orientation << endl;
-                                    //cout << bottom_left_index << " " << bottom_left_orientation << endl;
-
+                                    cout << "\n\n\n";
 
                                     auto top_left = &group_level_2.get(top_left_index, top_left_orientation);
                                     auto top_right = &group_level_2.get(top_right_index, top_right_orientation);
@@ -223,18 +235,18 @@ int main(){
                                     try {
                                         list_lev_3.emplace_front(top_left, top_right, bottom_right, bottom_left);
                                     } catch (AvregeIsToLow &e) {
-                                        //cout << "AvregeIsToLow" << endl;
+                                        //cout << "AvregeIsToLow" << endl;waitKey(0);
                                         // if avrege is to low: do nothing and go on with the next piece
                                     } catch (BottomLeftImpossibleFit &e) {
-                                        //cout << "BottomLeftImpossibleFit" << endl;
+                                        //cout << "BottomLeftImpossibleFit" << endl;waitKey(0);
                                         // if bottom left is impossible: do nothing and go on with the next piece
                                     } catch (BottomRightImpossibleFit &e) {
-                                        //cout << "BottomRightImpossibleFit" << endl;
+                                        //cout << "BottomRightImpossibleFit" << endl;waitKey(0);
                                         // if bottom right is impossible: no need to check all bottom left combinations
                                         // so i jump out of the bottom left orientation loop
                                         goto EXIT_BOTTOM_LEFT_ORIENTATION_LOOP2;
                                     } catch (TopRightImpossibleFit &e) {
-                                        //cout << "TopRightImpossibleFit" << endl;
+                                        //cout << "TopRightImpossibleFit" << endl;waitKey(0);
                                         // if top right is impossible: no need to check all bottom left combinations
                                         // so i jump to the bottom left orientation loop
                                         goto EXIT_BOTTOM_RIGHT_ORIENTATION_LOOP2;
@@ -481,11 +493,12 @@ void test_piece_array(){
     PieceImage::set_origin_path("../../dataset/test_2x3/divided");
     PieceImage pieces_images[6];
 
-
     // filling both array up with the respective index;
     for(int i=0; i<6;i++){
         pieces_images[i] = PieceImage(i);
     }
+
+    imshow("AAAAAAA",pieces_images->get_image());
 
     PieceArray<PreviewHolder> pa = PieceArray<PreviewHolder>();
 

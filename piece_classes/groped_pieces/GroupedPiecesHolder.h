@@ -39,6 +39,8 @@ GroupedPiecesHolder<N>::~GroupedPiecesHolder() {
     delete[] pieces;
 }
 
+extern PieceImage* piece_image_global;
+
 template<int N>
 GroupedPiecesHolder<N>::GroupedPiecesHolder(std::list<GroupedPieces<N>> &list) {
     // calcolate size
@@ -49,10 +51,24 @@ GroupedPiecesHolder<N>::GroupedPiecesHolder(std::list<GroupedPieces<N>> &list) {
 
     // creating the list, and making the piece rotated
     int i=0;
-    for(auto &e: list){
+    for(auto &element: list){
         for(int orientation=0; orientation<4; orientation++){
-            get(i,orientation) = e;
-            get(i,orientation).rotate_by(orientation);
+            // creating a new element, rotating it, ans inert it in the new array
+            auto new_element = element;
+            new_element.rotate_by(orientation);
+            get(i,orientation) = new_element;
+
+            /*
+            if(N == 2){
+                auto pa = get(i,orientation).template get_piece_array<PreviewHolder>(piece_image_global);
+                imshow("new_element",pa.get_preview_image());
+
+                if(orientation>0){
+                    auto pa = get(i,orientation-1).template get_piece_array<PreviewHolder>(piece_image_global);
+                    imshow("prev",pa.get_preview_image());
+                }
+                waitKey(0);
+            }*/
         }
         i++;
     }

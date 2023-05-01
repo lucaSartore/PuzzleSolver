@@ -16,7 +16,6 @@ typedef enum PateOnTopMethod{OR,SUM,XOR,OVERWRITE}PateOnTopMethod;
 template<class T>
 class PieceArray {
 private:
-
     // boolean flag that defines if the piece array has been completed (aka: if the all points in the array are filled)
     bool has_been_completed;
     cv::Mat image;
