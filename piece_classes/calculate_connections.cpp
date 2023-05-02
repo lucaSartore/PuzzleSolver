@@ -289,6 +289,7 @@ int main(){
          << " sec" << endl;
 
 
+
     for(auto component: list_lev_3){
         PieceArray<PreviewHolder> pa = component.get_piece_array<PreviewHolder>(piece_images);
         imshow("test", pa.get_preview_image());
