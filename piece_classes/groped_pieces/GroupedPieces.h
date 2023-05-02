@@ -5,14 +5,21 @@
 #ifndef PIECECLASS_GROUPEDPIECES_H
 #define PIECECLASS_GROUPEDPIECES_H
 #include "Shore.h"
-#include "../puzzle/PieceArray.h"
-#include "../puzzle/PreviewHolder.h"
-#include "../puzzle/ShoringHolder.h"
-#include "../puzzle/PieceImage.h"
+#include "../puzzle_preview//PieceArray.h"
+#include "../puzzle_preview/PreviewHolder.h"
+#include "../puzzle_preview/ShoringHolder.h"
+#include "../puzzle_preview/PieceImage.h"
 
 #include "../logic_piece/PieceConnection.h"
 #include "Direction.h"
 #include <set>
+
+/// this is the maximum level of group pieces that will be compiled.
+/// this define the biggest size of puzzle that ca be solved
+/// for exaple if N = 10 the side of the puzzle has to be at most
+/// 2^N = 1024 pieces, so the maximum number of pieces will be about 1M
+#define MAX_GroupedPieces_LEVEL 10
+
 // generic implementation of the group
 template<int N>
 class GroupedPieces {

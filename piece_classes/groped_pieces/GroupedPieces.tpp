@@ -10,8 +10,6 @@
 #include "grouped_pieces_errors.h"
 #include "../util.h"
 
-extern PieceImage* piece_image_global;
-
 
 // the threshold after witch a component get removed because of poor connections
 #define AVREGE_SHORE_THRESHOLD 0.5
@@ -153,24 +151,6 @@ GroupedPieces<N>::GroupedPieces(GroupedPieces<N - 1> *top_left, GroupedPieces<N 
     if(ids.size() != std::round(expected_pieces)){
         throw BottomLeftImpossibleCombination();
     }
-
-    /*
-    auto bli = bottom_left->template get_piece_array<PreviewHolder>(piece_image_global).get_preview_image();
-    auto bri = bottom_right->template get_piece_array<PreviewHolder>(piece_image_global).get_preview_image();
-    auto tli = top_left->template get_piece_array<PreviewHolder>(piece_image_global).get_preview_image();
-    auto tri = top_right->template get_piece_array<PreviewHolder>(piece_image_global).get_preview_image();
-
-    crop_image_to_remove_black_gb(bli);
-    crop_image_to_remove_black_gb(bri);
-    crop_image_to_remove_black_gb(tli);
-    crop_image_to_remove_black_gb(tri);
-
-    imshow("bottom_left",bli);
-    imshow("bottom_right",bri);
-    imshow("top_left",tli);
-    imshow("top_right",tri);
-    //waitKey(0);
-     */
 
 
     // insert the pointers to the respective tiles

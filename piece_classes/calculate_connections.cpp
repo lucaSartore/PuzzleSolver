@@ -12,7 +12,7 @@
 #include <atomic>
 #include <thread>
 #include "groped_pieces/GroupedPieces.h"
-#include "puzzle/PieceArray.h"
+#include "puzzle_preview/PieceArray.h"
 #include <time.h>
 #include "groped_pieces/grouped_pieces_errors.h"
 #include "groped_pieces/GroupedPiecesHolder.h"
@@ -77,36 +77,26 @@ int main(){
 
     int c=0;
     int number_of_pieces = group_level_1.get_length();
-    // top left element get chosen from all pieces
+    // need to test all possible combination, in this scenario the top left index is always the lower
+    // this is to avoid repetition of the same piece with different orientations
     for(int top_left_index=0; top_left_index<number_of_pieces; top_left_index++){
-
-
-        // rop right element get chosen from all pieces that are grater then the top left in the list order (to avoid duplicates)
         for(int top_right_index = top_left_index+1; top_right_index<number_of_pieces; top_right_index++){
-            // bottom right element get chosen from all pieces that are grater then the top left in the list order (to avoid duplicates)
-            for (int bottom_right_index = top_left_index + 1;bottom_right_index < number_of_pieces; bottom_right_index++) {
-                // bottom left element get chosen from all pieces that are grater then the top left in the list order (to avoid duplicates)
-                for (int bottom_left_index = top_left_index + 1;bottom_left_index < number_of_pieces; bottom_left_index++) {
+            for (int bottom_right_index = top_left_index+1;bottom_right_index < number_of_pieces; bottom_right_index++) {
+                for (int bottom_left_index = top_left_index+1;bottom_left_index < number_of_pieces; bottom_left_index++) {
+
+                    // test all 4^4 possible orientation of the pieces
                     for (int top_left_orientation = 0; top_left_orientation < 4; top_left_orientation++) {
-                        // top left 4 possible orientations
                         for (int top_right_orientation = 0; top_right_orientation < 4; top_right_orientation++) {
-                            // bottom right 4 possible orientations
                             for (int bottom_right_orientation = 0;bottom_right_orientation < 4; bottom_right_orientation++) {
-                                // bottom left 4 possible orientations
-                                for (int bottom_left_orientation = 0;
-                                     bottom_left_orientation < 4; bottom_left_orientation++) {
+                                for (int bottom_left_orientation = 0;bottom_left_orientation < 4; bottom_left_orientation++) {
 
-                                    //cout << top_left_index << endl;
-                                    //cout << top_right_index << " " << top_right_orientation << endl;
-                                    //cout << bottom_right_index << " " << bottom_right_orientation << endl;
-                                    //cout << bottom_left_index << " " << bottom_left_orientation << endl;
-
-
+                                    // get pointer to the 4 pieces
                                     auto top_left = &group_level_1.get(top_left_index, top_left_orientation);
                                     auto top_right = &group_level_1.get(top_right_index, top_right_orientation);
                                     auto bottom_right = &group_level_1.get(bottom_right_index, bottom_right_orientation);
                                     auto bottom_left = &group_level_1.get(bottom_left_index, bottom_left_orientation);
 
+                                    // based on the kind of error i get when trying to build the piece i can skip some of the for loop
                                     try {
                                         list_lev_2.emplace_front(top_left, top_right, bottom_right, bottom_left);
                                     } catch (AvregeIsToLow &e) {
@@ -162,7 +152,7 @@ int main(){
     auto end = chrono::steady_clock::now();
 
     cout << "Execution time for finding all 2x2 pieces [single threaded]: "
-         << chrono::duration_cast<chrono::seconds>(end - start).count() // baseline: 100 sec // 236 comb
+         << chrono::duration_cast<chrono::seconds>(end - start).count()
          << " sec" << endl;
 
 
@@ -176,15 +166,13 @@ int main(){
     }*/
 
 
+    cout << "filtering the results..." << endl;
 
     //removing elements that do not met the minimum percentage
-
     auto remove_condition = [&piece_images](GroupedPieces<2> group) { return group.template get_piece_array<ShoringHolder>(piece_images).get_shore() < 0.96; };
+    //list_lev_2.erase(std::remove_if(list_lev_2.begin(), list_lev_2.end(), remove_condition), list_lev_2.end());
 
-    // Use std::remove_if to filter the list
-    list_lev_2.erase(std::remove_if(list_lev_2.begin(), list_lev_2.end(), remove_condition), list_lev_2.end());
-
-    cout << "new_lenght: " << list_lev_2.size() << endl;
+    cout << "new_length after filter: " << list_lev_2.size() << endl;
 
     //for(auto e: list_lev_2){auto pa = e.get_piece_array<PreviewHolder>(piece_images);imshow("a",pa.get_preview_image());waitKey(0);}
 
@@ -192,15 +180,6 @@ int main(){
     GroupedPiecesHolder<2> group_level_2 = GroupedPiecesHolder(list_lev_2);
 
 
-
-    /*
-    for(int i=0; i<group_level_2.get_length(); i++){
-        for(int side=0; side<4;side++){
-            auto pa = group_level_2.get(i,side).get_piece_array<PreviewHolder>(piece_images);
-            imshow("a",pa.get_preview_image());
-            waitKey(0);
-        }
-    }*/
 
     // empty list of element 2;
     std::list<GroupedPieces<3>> list_lev_3 = {};
@@ -224,8 +203,6 @@ int main(){
                             for (int bottom_right_orientation = 0;bottom_right_orientation < 4; bottom_right_orientation++) {
                                 // bottom left 4 possible orientations
                                 for (int bottom_left_orientation = 0; bottom_left_orientation < 4; bottom_left_orientation++) {
-
-                                    cout << "\n\n\n";
 
                                     auto top_left = &group_level_2.get(top_left_index, top_left_orientation);
                                     auto top_right = &group_level_2.get(top_right_index, top_right_orientation);
@@ -506,14 +483,14 @@ void test_piece_array(){
     pa.set(0,0,std::move(base));
 
 
-    //imshow("puzzle", pa.get_preview_image());waitKey(0);
+    //imshow("puzzle_preview", pa.get_preview_image());waitKey(0);
 
     pa.grow_x();
 
     base = PreviewHolder(&pieces_images[5], 3);pa.set(1, 0, std::move(base));
 
 
-    //imshow("puzzle", pa.get_preview_image());waitKey(0);
+    //imshow("puzzle_preview", pa.get_preview_image());waitKey(0);
 
     pa.grow_y();
 
@@ -521,10 +498,10 @@ void test_piece_array(){
     pa.set(0,1,std::move(base));
 
 
-    //imshow("puzzle", pa.get_preview_image());waitKey(0);
+    //imshow("puzzle_preview", pa.get_preview_image());waitKey(0);
 
 
-    //imshow("puzzle", pa.get_preview_image());waitKey(0);
+    //imshow("puzzle_preview", pa.get_preview_image());waitKey(0);
 
     base = PreviewHolder(&pieces_images[2], 0);
     pa.set(1,1,std::move(base));
@@ -541,7 +518,7 @@ void test_piece_array(){
     pa.attach_right(pa3);
 
 
-    imshow("puzzle", pa.get_preview_image());waitKey(0);
+    imshow("puzzle_preview", pa.get_preview_image());waitKey(0);
 }
 
 void test_grouped_piece_2_constructor(){
@@ -604,7 +581,7 @@ void test_piece_array_shore(){
 
     image_og = pa.get_preview_image();
     resize(image_og,resized,image_og.size()/8);
-    imshow("puzzle", resized);waitKey(0);
+    imshow("puzzle_preview", resized);waitKey(0);
 
     pa.grow_x();
 
@@ -613,7 +590,7 @@ void test_piece_array_shore(){
 
     image_og = pa.get_preview_image();
     resize(image_og,resized,image_og.size()/8);
-    imshow("puzzle", resized);waitKey(0);
+    imshow("puzzle_preview", resized);waitKey(0);
 
 
     pa.grow_y();
@@ -628,7 +605,7 @@ void test_piece_array_shore(){
     cout << "shore: " << pa.get_shore() << endl;
 
     resize(image_og,resized,image_og.size()/8);
-    imshow("puzzle", resized);waitKey(0);
+    imshow("puzzle_preview", resized);waitKey(0);
 
     PieceArray pa2 = pa;
 
@@ -645,7 +622,7 @@ void test_piece_array_shore(){
 
     image_og = pa.get_preview_image();
     resize(image_og,resized,image_og.size()/8);
-    imshow("puzzle", resized);waitKey(0);
+    imshow("puzzle_preview", resized);waitKey(0);
 }
 
 void test_grouped_piece_holder(){

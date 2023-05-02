@@ -30,17 +30,22 @@ add_executable(
         groped_pieces/GroupedPiecesHolder.tpp
         groped_pieces/GroupedPiecesHolder.h
 
-        puzzle/PreviewHolder.cpp
-        puzzle/PreviewHolder.h
-        puzzle/PieceArray.tpp
-        puzzle/PieceArray.h
-        puzzle/PieceImmage.cpp
-        puzzle/PieceImage.h
-        puzzle/ShoringHolder.cpp
-        puzzle/ShoringHolder.h
-        puzzle/Holder.cpp
-        puzzle/Holder.h
-        puzzle/point_indexes.h
+        groped_pieces/impossible_combinations_graph/ImpossibleCombinationsGraph.cpp
+        groped_pieces/impossible_combinations_graph/ImpossibleCombinationsGraph.h
+        groped_pieces/impossible_combinations_graph/Node.cpp
+        groped_pieces/impossible_combinations_graph/GroupedPiecesNode.h
+
+        puzzle_preview/PreviewHolder.cpp
+        puzzle_preview/PreviewHolder.h
+        puzzle_preview/PieceArray.tpp
+        puzzle_preview/PieceArray.h
+        puzzle_preview/PieceImmage.cpp
+        puzzle_preview/PieceImage.h
+        puzzle_preview/ShoringHolder.cpp
+        puzzle_preview/ShoringHolder.h
+        puzzle_preview/Holder.cpp
+        puzzle_preview/Holder.h
+        puzzle_preview/point_indexes.h
 
 
 

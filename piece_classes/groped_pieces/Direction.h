@@ -8,7 +8,7 @@
 
 #include <iostream>
 
-/// the possible directions in the puzzle array
+/// the possible directions in the puzzle_preview array
 typedef enum Direction{UP, LEFT,DOWN, RIGHT} Direction;
 
 /// the minus sign is used to find the opposite direction to another

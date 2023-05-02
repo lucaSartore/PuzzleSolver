@@ -22,7 +22,7 @@ using namespace cv;
 /// kernel of the morphologyEx open filter that will be apply to the mask
 #define MORPH_CLOSED_KERNEL (12*ppi/1200)
 
-/// this function take as input a input_path where some scansion of a puzzle is made
+/// this function take as input a input_path where some scansion of a puzzle_preview is made
 /// and split them into many single pieces
 int split_pieces_into_single_images(const std::string& input_path,const std::string& output_path,const int ppi, bool enable_image_view){
 
@@ -114,7 +114,7 @@ int split_pieces_into_single_images(const std::string& input_path,const std::str
                 continue;
             }
 
-            // area to understand if the considered mask is actually a piece of puzzle or just a tiny dot
+            // area to understand if the considered mask is actually a piece of puzzle_preview or just a tiny dot
             int area = stats.at<int>(i  , cv::CC_STAT_AREA);
 
             // the piece has to be big enough
