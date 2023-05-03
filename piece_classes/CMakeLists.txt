@@ -22,12 +22,6 @@ add_executable(
         logic_piece/PieceConnection.h
 
 
-        groped_pieces/impossible_combinations_graph/ImpossibleCombinationsGraph.cpp
-        groped_pieces/impossible_combinations_graph/ImpossibleCombinationsGraph.h
-        groped_pieces/impossible_combinations_graph/GroupedPiecesNode.cpp
-        groped_pieces/impossible_combinations_graph/GroupedPiecesNode.h
-
-
         groped_pieces/GroupedPieces.tpp
         groped_pieces/GroupedPieces.h
         groped_pieces/Direction.cpp

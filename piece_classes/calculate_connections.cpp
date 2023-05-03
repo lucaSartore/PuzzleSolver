@@ -12,7 +12,7 @@
 #include <atomic>
 #include <thread>
 #include "groped_pieces/GroupedPieces.h"
-#include "puzzle/PieceArray.h"
+#include "puzzle_preview/PieceArray.h"
 #include <time.h>
 #include "groped_pieces/grouped_pieces_errors.h"
 #include "groped_pieces/GroupedPiecesHolder.h"
