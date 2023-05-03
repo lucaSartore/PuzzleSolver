@@ -16,7 +16,6 @@ typedef enum PateOnTopMethod{OR,SUM,XOR,OVERWRITE}PateOnTopMethod;
 template<class T>
 class PieceArray {
 private:
-
     // boolean flag that defines if the piece array has been completed (aka: if the all points in the array are filled)
     bool has_been_completed;
     cv::Mat image;
@@ -25,7 +24,7 @@ private:
     std::vector<std::vector<T>> pieces;
     /// check if the index is or not inside the matrix, if not it throws an error
     void check_indexes(int x, int y) const;
-    /// build the image of the puzzle
+    /// build the image of the puzzle_preview
     void build_image();
     /// check if the image needs to be grown, and eventually do so
     void check_and_expand_image();
@@ -65,7 +64,7 @@ public:
     void un_grow_x();
     /// un grow the array by 1 in the Y dimension
     void un_grow_y();
-    /// return the image of the matrix of puzzle pieces
+    /// return the image of the matrix of puzzle_preview pieces
     cv::Mat get_preview_image();
     /// function for attaching one piece array to the right of this one, note: the 2 array MUST have the
     /// same y dimension, and they must be completed

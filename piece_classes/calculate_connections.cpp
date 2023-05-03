@@ -12,10 +12,10 @@
 #include <atomic>
 #include <thread>
 #include "groped_pieces/GroupedPieces.h"
-#include "puzzle/PieceArray.h"
+#include "puzzle_preview/PieceArray.h"
 #include <time.h>
 #include "groped_pieces/grouped_pieces_errors.h"
-
+#include "groped_pieces/GroupedPiecesHolder.h"
 
 using namespace std;
 using namespace std::chrono;
@@ -30,6 +30,9 @@ void calculate_multi_thread(int number_of_threads = 0);
 void test_piece_array();
 void test_piece_array_shore();
 void test_grouped_piece_2_constructor();
+void test_grouped_piece_holder();
+
+PieceImage* piece_image_global;
 
 int main(){
 
@@ -37,69 +40,123 @@ int main(){
 
     //test_piece_array(); return 0;
     //test_piece_array_shore(); return 0;
-
+    //test_grouped_piece_2_constructor(); return 0;
     //calculate_single_thread();return 0;
+    //test_grouped_piece_holder(); return 0;
 
     string path = "../../dataset/test_4x4/connections";
 
     PieceConnection::set_number_of_pieces(NUMBER_OF_PIECES);
     PieceConnection pieces[NUMBER_OF_PIECES];
-    PieceImage shapes[NUMBER_OF_PIECES];
+    PieceImage piece_images[NUMBER_OF_PIECES];
+
+    piece_image_global = piece_images;
 
 
     // load all the pieces
     for(int i=0; i<NUMBER_OF_PIECES; i++){
         pieces[i].became(path,i);
-        shapes[i] = PieceImage(i,"../../dataset/test_4x4/divided");
+        piece_images[i] = PieceImage(i, "../../dataset/test_4x4/divided");
     }
 
     // empty list of element 1;
-    std::list<GroupedPieces<1>> group_lev_1 = {};
+    std::list<GroupedPieces<1>> list_lev_1 = {};
 
+    // creating list with elements of size 1;
     for(auto &piece: pieces){
-        for(int orientation=0; orientation<4; orientation++){
-            // creating the array with all the possible pieces
-            group_lev_1.emplace_front(&piece,orientation);
-        }
+        list_lev_1.emplace_back(&piece);
     }
 
+    // creating the list with rotated elements
+    GroupedPiecesHolder<1> group_level_1 = GroupedPiecesHolder(list_lev_1);
+
     // empty list of element 2;
-    std::list<GroupedPieces<2>> group_lev_2 = {};
+    std::list<GroupedPieces<2>> list_lev_2 = {};
 
     auto start = chrono::steady_clock::now();
 
     int c=0;
-    // creating list of potential options
-    for(auto &top_left: group_lev_1){
-    //auto top_left = GroupedPieces<1>(&pieces[14],2);
-        for(auto &top_right: group_lev_1){
-            for(auto &bottom_right: group_lev_1){
-                for(auto &bottom_left: group_lev_1){
+    int number_of_pieces = group_level_1.get_length();
+    // top left element get chosen from all pieces
+    for(int top_left_index=0; top_left_index<number_of_pieces; top_left_index++){
 
-                    try{
-                        group_lev_2.emplace_front(&top_left, &top_right, &bottom_right, &bottom_left);
-                    }catch(AvregeIsToLow &e){
-                        // if avrege is to low: do nothing and go on with the next piece
-                    }catch(BottomLeftIsImpossible &e) {
-                        // if bottom left is impossible: do nothing and go on with the next piece
-                    }catch(BottomRightIsImpossible &e) {
-                        // if bottom right is impossible: no need to check all bottom left combinations
-                        // so i jump to the bottom left loop
-                        goto END_BOTTOM_LEFT_LOOP;
-                    }catch(TopRightIsImpossible &e) {
-                        // if top right is impossible: no need to check all bottom left combinations
-                        // so i jump to the rop right loop
-                        goto END_BOTTOM_RIGHT_LOOP;
+
+        // rop right element get chosen from all pieces that are grater then the top left in the list order (to avoid duplicates)
+        for(int top_right_index = top_left_index+1; top_right_index<number_of_pieces; top_right_index++){
+            // bottom right element get chosen from all pieces that are grater then the top left in the list order (to avoid duplicates)
+            for (int bottom_right_index = top_left_index + 1;bottom_right_index < number_of_pieces; bottom_right_index++) {
+                // bottom left element get chosen from all pieces that are grater then the top left in the list order (to avoid duplicates)
+                for (int bottom_left_index = top_left_index + 1;bottom_left_index < number_of_pieces; bottom_left_index++) {
+                    for (int top_left_orientation = 0; top_left_orientation < 4; top_left_orientation++) {
+                        // top left 4 possible orientations
+                        for (int top_right_orientation = 0; top_right_orientation < 4; top_right_orientation++) {
+                            // bottom right 4 possible orientations
+                            for (int bottom_right_orientation = 0;bottom_right_orientation < 4; bottom_right_orientation++) {
+                                // bottom left 4 possible orientations
+                                for (int bottom_left_orientation = 0;
+                                     bottom_left_orientation < 4; bottom_left_orientation++) {
+
+                                    //cout << top_left_index << endl;
+                                    //cout << top_right_index << " " << top_right_orientation << endl;
+                                    //cout << bottom_right_index << " " << bottom_right_orientation << endl;
+                                    //cout << bottom_left_index << " " << bottom_left_orientation << endl;
+
+
+                                    auto top_left = &group_level_1.get(top_left_index, top_left_orientation);
+                                    auto top_right = &group_level_1.get(top_right_index, top_right_orientation);
+                                    auto bottom_right = &group_level_1.get(bottom_right_index, bottom_right_orientation);
+                                    auto bottom_left = &group_level_1.get(bottom_left_index, bottom_left_orientation);
+
+                                    try {
+                                        list_lev_2.emplace_front(top_left, top_right, bottom_right, bottom_left);
+                                    } catch (AvregeIsToLow &e) {
+                                        //cout << "AvregeIsToLow" << endl;
+                                        // if avrege is to low: do nothing and go on with the next piece
+                                    } catch (BottomLeftImpossibleFit &e) {
+                                        //cout << "BottomLeftImpossibleFit" << endl;
+                                        // if bottom left is impossible: do nothing and go on with the next piece
+                                    } catch (BottomRightImpossibleFit &e) {
+                                        //cout << "BottomRightImpossibleFit" << endl;
+                                        // if bottom right is impossible: no need to check all bottom left combinations
+                                        // so i jump out of the bottom left orientation loop
+                                        goto EXIT_BOTTOM_LEFT_ORIENTATION_LOOP;
+                                    } catch (TopRightImpossibleFit &e) {
+                                        //cout << "TopRightImpossibleFit" << endl;
+                                        // if top right is impossible: no need to check all bottom left combinations
+                                        // so i jump to the bottom left orientation loop
+                                        goto EXIT_BOTTOM_RIGHT_ORIENTATION_LOOP;
+                                    } catch (BottomLeftImpossibleCombination &e) {
+                                        //cout << "BottomLeftImpossibleCombination" << endl;
+                                        // if bottom left is an impossible combination, i don't need to check all his orientations
+                                        // so i jump out of the top right orientation loops
+                                        goto EXIT_TOP_RIGHT_ORIENTATION_LOOP;
+                                    } catch (BottomRightImpossibleCombination &e) {
+                                        //cout << "BottomRightImpossibleCombination" << endl;
+                                        // if bottom right is an impossible combination, i don't need to check all his orientations
+                                        // so i jump out of the bottom left index loops
+                                        goto EXIT_BOTTOM_LEFT_INDEX_LOOP;
+                                    } catch (TopRightImpossibleCombination &e) {
+                                        //cout << "TopRightImpossibleCombination" << endl;
+                                        // if top right is an impossible combination, i don't need to check all his orientations
+                                        // so i jump out of the bottom right index loops
+                                        goto EXIT_BOTTOM_RIGHT_INDEX_LOOP;
+                                    }
+                                }
+                                EXIT_BOTTOM_LEFT_ORIENTATION_LOOP:;
+                            }
+                            EXIT_BOTTOM_RIGHT_ORIENTATION_LOOP:;
+                        }
+                        EXIT_TOP_RIGHT_ORIENTATION_LOOP:;
                     }
-
                 }
-                END_BOTTOM_LEFT_LOOP:;
+                EXIT_BOTTOM_LEFT_INDEX_LOOP:;
             }
-            END_BOTTOM_RIGHT_LOOP:;
+            EXIT_BOTTOM_RIGHT_INDEX_LOOP:;
         }
+        EXIT_TOP_RIGHT_INDEX_LOOP:;
         c++;
-        cout << (float) c/(NUMBER_OF_PIECES*4) * 100 << "%" << endl;
-        cout << group_lev_2.size() << " possible combinations found" << endl;
+        cout << (float) c/(float)number_of_pieces * 100 << "%" << endl;
+        cout << list_lev_2.size() << " possible combinations found" << endl;
     }
 
     auto end = chrono::steady_clock::now();
@@ -109,82 +166,143 @@ int main(){
          << " sec" << endl;
 
 
-    //removing elements that do not met the minimum percentage
-
-    auto remove_condition = [&shapes](GroupedPieces<2> group) { return group.template get_piece_array<ShoringHolder>(shapes).get_shore() < 0.96; };
-
-    // Use std::remove_if to filter the list
-    group_lev_2.erase(std::remove_if(group_lev_2.begin(), group_lev_2.end(), remove_condition), group_lev_2.end());
-
-    cout << "new_length: " << group_lev_2.size();
-
-    /*
-    for(auto component: group_lev_2){
-        auto pa_shoring = component.template get_piece_array<ShoringHolder>(shapes);
-        float shore = pa_shoring.get_shore();
-        cout << "shore: " << shore << endl;
-        if(shore>0.95){
-            auto pa_preview = component.template get_piece_array<PreviewHolder>(shapes);
-            imshow("good",pa_preview.get_preview_image());
-            waitKey(0);
+    /*for(auto elem: list_lev_2){
+        for(auto id: elem.get_ids()){
+            cout << id << endl;
         }
+        auto pa = elem.get_piece_array<PreviewHolder>(piece_images);
+        imshow("a",pa.get_preview_image());
+        waitKey(0);
     }*/
 
 
 
+    //removing elements that do not met the minimum percentage
+
+    auto remove_condition = [&piece_images](GroupedPieces<2> group) { return group.template get_piece_array<ShoringHolder>(piece_images).get_shore() < 0.96; };
+
+    // Use std::remove_if to filter the list
+    //list_lev_2.erase(std::remove_if(list_lev_2.begin(), list_lev_2.end(), remove_condition), list_lev_2.end());
+
+    cout << "new_lenght: " << list_lev_2.size() << endl;
+
+    //for(auto e: list_lev_2){auto pa = e.get_piece_array<PreviewHolder>(piece_images);imshow("a",pa.get_preview_image());waitKey(0);}
+
+    // creating the list with rotated elements
+    GroupedPiecesHolder<2> group_level_2 = GroupedPiecesHolder(list_lev_2);
+
+
+    cout << "let's gooo!!!" << endl;
+    /*
+    for(int i=0; i<group_level_2.get_length(); i++){
+        for(int side=0; side<4;side++){
+            auto pa = group_level_2.get(i,side).get_piece_array<PreviewHolder>(piece_images);
+            imshow("a",pa.get_preview_image());
+            waitKey(0);
+        }
+    }*/
 
     // empty list of element 2;
-    std::list<GroupedPieces<3>> group_lev_3 = {};
+    std::list<GroupedPieces<3>> list_lev_3 = {};
 
-    unsigned long n = group_lev_2.size();
+    start = chrono::steady_clock::now();
 
     c=0;
-    // creating list of potential options
-    for(auto &top_left: group_lev_2){
-        for(auto &top_right: group_lev_2){
-            for(auto &bottom_right: group_lev_2){
-                for(auto &bottom_left: group_lev_2){
-                    try{
-                        group_lev_3.emplace_front(&top_left, &top_right, &bottom_right, &bottom_left);
-                    }catch(AvregeIsToLow &e){
-                        // if avrege is to low: do nothing and go on with the next piece
-                    }catch(BottomLeftIsImpossible &e) {
-                        // if bottom left is impossible: do nothing and go on with the next piece
-                    }catch(BottomRightIsImpossible &e) {
-                        // if bottom right is impossible: no need to check all bottom left combinations
-                        // so i jump to the bottom left loop
-                        goto END_BOTTOM_LEFT_LOOP2;
-                    }catch(TopRightIsImpossible &e) {
-                        // if top right is impossible: no need to check all bottom left combinations
-                        // so i jump to the rop right loop
-                        goto END_BOTTOM_RIGHT_LOOP2;
-                    }
+    number_of_pieces = group_level_2.get_length();
+    // top left element get chosen from all pieces
+    for(int top_left_index=0; top_left_index<number_of_pieces; top_left_index++){
+        // rop right element get chosen from all pieces that are grater then the top left in the list order (to avoid duplicates)
+        for(int top_right_index = top_left_index+1; top_right_index<number_of_pieces; top_right_index++){
+            // bottom right element get chosen from all pieces that are grater then the top left in the list order (to avoid duplicates)
+            for (int bottom_right_index = top_left_index + 1;bottom_right_index < number_of_pieces; bottom_right_index++) {
+                // bottom left element get chosen from all pieces that are grater then the top left in the list order (to avoid duplicates)
+                for (int bottom_left_index = top_left_index + 1;bottom_left_index < number_of_pieces; bottom_left_index++) {
+                    for (int top_left_orientation = 0; top_left_orientation < 4; top_left_orientation++) {
+                        // top left 4 possible orientations
+                        for (int top_right_orientation = 0; top_right_orientation < 4; top_right_orientation++) {
+                            // bottom right 4 possible orientations
+                            for (int bottom_right_orientation = 0;bottom_right_orientation < 4; bottom_right_orientation++) {
+                                // bottom left 4 possible orientations
+                                for (int bottom_left_orientation = 0; bottom_left_orientation < 4; bottom_left_orientation++) {
 
+                                    auto top_left = &group_level_2.get(top_left_index, top_left_orientation);
+                                    auto top_right = &group_level_2.get(top_right_index, top_right_orientation);
+                                    auto bottom_right = &group_level_2.get(bottom_right_index, bottom_right_orientation);
+                                    auto bottom_left = &group_level_2.get(bottom_left_index, bottom_left_orientation);
+
+                                    try {
+                                        list_lev_3.emplace_front(top_left, top_right, bottom_right, bottom_left);
+                                    } catch (AvregeIsToLow &e) {
+                                        //cout << "AvregeIsToLow" << endl;waitKey(0);
+                                        // if avrege is to low: do nothing and go on with the next piece
+                                    } catch (BottomLeftImpossibleFit &e) {
+                                        //cout << "BottomLeftImpossibleFit" << endl;waitKey(0);
+                                        // if bottom left is impossible: do nothing and go on with the next piece
+                                    } catch (BottomRightImpossibleFit &e) {
+                                        //cout << "BottomRightImpossibleFit" << endl;waitKey(0);
+                                        // if bottom right is impossible: no need to check all bottom left combinations
+                                        // so i jump out of the bottom left orientation loop
+                                        goto EXIT_BOTTOM_LEFT_ORIENTATION_LOOP2;
+                                    } catch (TopRightImpossibleFit &e) {
+                                        //cout << "TopRightImpossibleFit" << endl;waitKey(0);
+                                        // if top right is impossible: no need to check all bottom left combinations
+                                        // so i jump to the bottom left orientation loop
+                                        goto EXIT_BOTTOM_RIGHT_ORIENTATION_LOOP2;
+                                    } catch (BottomLeftImpossibleCombination &e) {
+                                        //cout << "BottomLeftImpossibleCombination" << endl;
+                                        // if bottom left is an impossible combination, i don't need to check all his orientations
+                                        // so i jump out of the top right orientation loops
+                                        goto EXIT_TOP_RIGHT_ORIENTATION_LOOP2;
+                                    } catch (BottomRightImpossibleCombination &e) {
+                                        //cout << "BottomRightImpossibleCombination" << endl;
+                                        // if bottom right is an impossible combination, i don't need to check all his orientations
+                                        // so i jump out of the bottom left index loops
+                                        goto EXIT_BOTTOM_LEFT_INDEX_LOOP2;
+                                    } catch (TopRightImpossibleCombination &e) {
+                                        //cout << "TopRightImpossibleCombination" << endl;
+                                        // if top right is an impossible combination, i don't need to check all his orientations
+                                        // so i jump out of the bottom right index loops
+                                        goto EXIT_BOTTOM_RIGHT_INDEX_LOOP2;
+                                    }
+                                }
+                                EXIT_BOTTOM_LEFT_ORIENTATION_LOOP2:;
+                            }
+                            EXIT_BOTTOM_RIGHT_ORIENTATION_LOOP2:;
+                        }
+                        EXIT_TOP_RIGHT_ORIENTATION_LOOP2:;
+                    }
                 }
-                END_BOTTOM_LEFT_LOOP2:;
+                EXIT_BOTTOM_LEFT_INDEX_LOOP2:;
             }
-            END_BOTTOM_RIGHT_LOOP2:;
+            EXIT_BOTTOM_RIGHT_INDEX_LOOP2:;
         }
+        EXIT_TOP_RIGHT_INDEX_LOOP2:;
         c++;
-        cout << (float)c/(float)n * 100 << "%" << endl;
-        cout << group_lev_3.size() << " possible combinations found" << endl;
+        cout << (float) c/(float)number_of_pieces * 100 << "%" << endl;
+        cout << list_lev_3.size() << " possible combinations found" << endl;
     }
-    cout << "Execution time for finding all 4x4 pieces [single threaded]: "
-         << chrono::duration_cast<chrono::seconds>(end - start).count()
+
+    end = chrono::steady_clock::now();
+
+    cout << "Execution time for finding all 2x2 pieces [single threaded]: "
+         << chrono::duration_cast<chrono::seconds>(end - start).count() // baseline: 100 sec // 236 comb
          << " sec" << endl;
 
 
-    for(auto component: group_lev_3){
-        PieceArray<PreviewHolder> pa = component.get_piece_array<PreviewHolder>(shapes);
+
+    for(auto component: list_lev_3){
+        PieceArray<PreviewHolder> pa = component.get_piece_array<PreviewHolder>(piece_images);
         imshow("test", pa.get_preview_image());
         waitKey(0);
     }
 
 
 
+
+
     return 0;
 
-    calculate_single_thread();
+    //calculate_single_thread();
     //calculate_multi_thread(2);
 }
 
@@ -376,11 +494,12 @@ void test_piece_array(){
     PieceImage::set_origin_path("../../dataset/test_2x3/divided");
     PieceImage pieces_images[6];
 
-
     // filling both array up with the respective index;
     for(int i=0; i<6;i++){
         pieces_images[i] = PieceImage(i);
     }
+
+    imshow("AAAAAAA",pieces_images->get_image());
 
     PieceArray<PreviewHolder> pa = PieceArray<PreviewHolder>();
 
@@ -429,21 +548,36 @@ void test_piece_array(){
 void test_grouped_piece_2_constructor(){
     string path = "../../dataset/test_2x3/connections";
 
-    PieceConnection::set_number_of_pieces(NUMBER_OF_PIECES);
-    PieceConnection pieces[NUMBER_OF_PIECES];
+    PieceConnection::set_number_of_pieces(6);
+    PieceImage::set_origin_path("../../dataset/test_2x3/divided");
+    PieceConnection pieces[6];
+    PieceImage pieces_images[6];
+
 
     // load all the pieces
-    for(int i=0; i<NUMBER_OF_PIECES; i++){
+    for(int i=0; i<6; i++){
         pieces[i].became(path,i);
+        pieces_images[i] = PieceImage(i);
     }
 
-    GroupedPieces<1> top_left = GroupedPieces<1>(&pieces[4],0);
-    GroupedPieces<1> top_right = GroupedPieces<1>(&pieces[5],3);
-    GroupedPieces<1> bottom_left = GroupedPieces<1>(&pieces[3],3);
-    GroupedPieces<1> bottom_right = GroupedPieces<1>(&pieces[2],0);
+    GroupedPieces<1> top_left = GroupedPieces<1>(&pieces[4]);
+    GroupedPieces<1> top_right = GroupedPieces<1>(&pieces[5]);
+    top_right.rotate_by(3);
+    GroupedPieces<1> bottom_left = GroupedPieces<1>(&pieces[3]);
+    bottom_left.rotate_by(3);
+    GroupedPieces<1> bottom_right = GroupedPieces<1>(&pieces[2]);
 
     GroupedPieces<2> sq =  GroupedPieces<2>(&top_left,&top_right,&bottom_right,&bottom_left);
 
+    auto pa = sq.get_piece_array<PreviewHolder>(pieces_images);
+    imshow("p",pa.get_preview_image());waitKey(0);
+    imshow("p",pa.get_preview_image());waitKey(0);
+
+    sq.rotate_by(1);
+
+    auto pa2 = sq.get_piece_array<PreviewHolder>(pieces_images);
+    imshow("p",pa2.get_preview_image());waitKey(0);
+    imshow("p",pa2.get_preview_image());waitKey(0);
 }
 
 
@@ -513,4 +647,42 @@ void test_piece_array_shore(){
     image_og = pa.get_preview_image();
     resize(image_og,resized,image_og.size()/8);
     imshow("puzzle", resized);waitKey(0);
+}
+
+void test_grouped_piece_holder(){
+    string path = "../../dataset/test_2x3/connections";
+    PieceConnection::set_number_of_pieces(6);
+    PieceImage::set_origin_path("../../dataset/test_2x3/divided");
+    PieceConnection pieces[6];
+    PieceImage pieces_images[6];
+
+
+    // load all the pieces
+    for(int i=0; i<6; i++){
+        pieces[i].became(path,i);
+        pieces_images[i] = PieceImage(i);
+    }
+
+    list<GroupedPieces<1>> list1 = {};
+
+    for(int i=0; i<6; i++){
+        list1.emplace_back(pieces+i);
+    }
+
+    auto group_1 = GroupedPiecesHolder<1>(list1);
+
+    GroupedPieces<2> sq =  GroupedPieces<2>(
+            &group_1.get(4,0),
+            &group_1.get(5,3),
+            &group_1.get(2,0),
+            &group_1.get(3,3)
+            );
+
+    auto pa = sq.get_piece_array<PreviewHolder>(pieces_images);
+    imshow("p",pa.get_preview_image());waitKey(0);
+
+    sq.rotate_by(1);
+
+    auto pa2 = sq.get_piece_array<PreviewHolder>(pieces_images);
+    imshow("p",pa2.get_preview_image());waitKey(0);
 }

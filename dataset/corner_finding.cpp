@@ -125,14 +125,14 @@ void do_pre_processing_thread(const std::string& path, int piece_index, int ppi,
 }
 
 
-// this function remove the holes of the puzzle in the following way:
+// this function remove the holes of the puzzle_preview in the following way:
 // - the algorithm find the filler of a piece.
 //         a filler is an area that need to be included for the image to be considered convex
 // - i erode them by FIRST_EROSION_KERNEL_SIZE and expand them by FIRST_EROSION_KERNEL_SIZE + 1 to remove tiny lines
 // - then i split all the mask into all the separated pieces, and consider them only if their area in pixels is grater
 //   then `FILLER_AREA_THRESHOLD`
 // - i erode the area with a kernel of `SECOND_EROSION_KERNEL_SIZE` so that the small lines (like the one close to a hole in
-//   the puzzle get removed
+//   the puzzle_preview get removed
 // at this point i'm left with 2 kind of "filler" the formed inside the hole of a piece, and the one formed between a corner
 // of a piece and a close knob.
 // these 2 forms are quite different, one resembles a triangle, the other one a circle. so to distinguish them:
@@ -147,7 +147,7 @@ void do_pre_processing_thread(const std::string& path, int piece_index, int ppi,
 #define FIRST_EROSION_KERNEL_SIZE (6*ppi/1200)
 #define SECOND_EROSION_KERNEL_SIZE (100*ppi/1200)
 #define MIN_SHRINKING_PERCENTAGE  0.44
-///this function removes the "holes" of the puzzle, so that it could be processed easily later
+///this function removes the "holes" of the puzzle_preview, so that it could be processed easily later
 void remove_holes(const Mat &input, Mat &output,const int ppi){
     Mat temp;
     Mat temp2;
@@ -193,7 +193,7 @@ void remove_holes(const Mat &input, Mat &output,const int ppi){
 
         Mat convex_hull = original_convex_hull.clone();
 
-        // do a first erosion, to remove the thin area close to the puzzle hole
+        // do a first erosion, to remove the thin area close to the puzzle_preview hole
         kernel = Mat::zeros(Size(SECOND_EROSION_KERNEL_SIZE, SECOND_EROSION_KERNEL_SIZE), CV_8U) == 0;
         erode(convex_hull, temp, kernel);
         convex_hull = temp;
@@ -364,7 +364,7 @@ void remove_knobs(const cv::Mat&input, cv::Mat &output,const int ppi){
 #define ANGLE_FINDING_BLUR_RADIUS 150
 #define ANGLE_MASK_FOR_TRIANGLE_CALCULATION 100
 #define MIN_NUMBER_OF_PIXELS_TO_CONSIDER_AS_CORNER 3000
-/// tis function return the precise coordinates of the 4 angle of the puzzle piece
+/// tis function return the precise coordinates of the 4 angle of the puzzle_preview piece
 /// the image in input must have the knob and hole removed
 void find_corners(const cv::Mat &input, cv::Point &p1,  cv::Point &p2,  cv::Point &p3,  cv::Point &p4,const int ppi){
 
@@ -513,7 +513,7 @@ void find_corners(const cv::Mat &input, cv::Point &p1,  cv::Point &p2,  cv::Poin
 
 
         // find the point that is the closest to the original point...
-        // that point will be the vertex of the puzzle!
+        // that point will be the vertex of the puzzle_preview!
         Point closest = triangle_points[0];
         Point vertex = vertices[i];
         for(auto p: triangle_points){
