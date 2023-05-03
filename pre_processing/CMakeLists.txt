@@ -19,7 +19,7 @@ add_executable(
         corner_finding.h
         corner_finding.cpp
 
-        #../piece_classes/logic_piece/PieceConnections.h
-        #../piece_classes/logic_piece/PieceConnections.cpp
+        #../solving/logic_piece/PieceConnections.h
+        #../solving/logic_piece/PieceConnections.cpp
 )
 target_link_libraries( Processing ${OpenCV_LIBS} )
