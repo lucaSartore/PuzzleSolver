@@ -5,18 +5,23 @@
 #ifndef PIECECLASS_GROUPEDPIECES_H
 #define PIECECLASS_GROUPEDPIECES_H
 #include "Shore.h"
-#include "../puzzle/PieceArray.h"
-#include "../puzzle/PreviewHolder.h"
-#include "../puzzle/ShoringHolder.h"
-#include "../puzzle/PieceImage.h"
+#include "../puzzle_preview//PieceArray.h"
+#include "../puzzle_preview/PreviewHolder.h"
+#include "../puzzle_preview/ShoringHolder.h"
+#include "../puzzle_preview/PieceImage.h"
 
 #include "../logic_piece/PieceConnection.h"
 #include "Direction.h"
 #include <set>
+
+
 // generic implementation of the group
 template<int N>
 class GroupedPieces {
 private:
+    /// the id that reference this piece. it uniquely identify the current piece between all the pieces with the same level (N)
+    /// it doe not make difference for the same piece with the same orientation
+    int id;
     /// the weighted average shore of the 4 sub-tile and the connection between them
     Shore shore;
     /// a set that contains all the pieces in this group, is useful to avoid repeating pieces
@@ -46,6 +51,10 @@ private:
     /// calculate the average shore and update it
     void calculate_shore();
 public:
+    /// set the id
+    void set_id(int new_id);
+    /// get the id
+    int get_id();
     /// rotate the current piece by 90 degrees times the argument passed
     void rotate_by(int rotate_by);
     /// return reference to set of all ids contained in the group
@@ -72,6 +81,7 @@ public:
 template<>
 class GroupedPieces<1> {
 private:
+    int id;
     /// the weighted average shore of the 4 sub-tile and the connection between them
     Shore shore;
     /// reference to all the piece and their meta data
@@ -85,7 +95,9 @@ public:
     void rotate_by(int rotate_by);
     /// return set containing the id of the piece
     std::set<int> get_ids();
-    /// return the id of the current group
+    /// set the id
+    void set_id(int new_id);
+    /// get the id
     int get_id();
     /// compare this side, at the specified orientation with the other piece, at his specified Direction
     Shore compare_to(Direction direction, GroupedPieces<1> &other,int recursive_orientation,int recursive_orientation_other);

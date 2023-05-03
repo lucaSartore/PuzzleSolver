@@ -182,7 +182,7 @@ int main(){
     auto remove_condition = [&piece_images](GroupedPieces<2> group) { return group.template get_piece_array<ShoringHolder>(piece_images).get_shore() < 0.96; };
 
     // Use std::remove_if to filter the list
-    list_lev_2.erase(std::remove_if(list_lev_2.begin(), list_lev_2.end(), remove_condition), list_lev_2.end());
+    //list_lev_2.erase(std::remove_if(list_lev_2.begin(), list_lev_2.end(), remove_condition), list_lev_2.end());
 
     cout << "new_lenght: " << list_lev_2.size() << endl;
 
@@ -192,7 +192,7 @@ int main(){
     GroupedPiecesHolder<2> group_level_2 = GroupedPiecesHolder(list_lev_2);
 
 
-
+    cout << "let's gooo!!!" << endl;
     /*
     for(int i=0; i<group_level_2.get_length(); i++){
         for(int side=0; side<4;side++){
@@ -224,8 +224,6 @@ int main(){
                             for (int bottom_right_orientation = 0;bottom_right_orientation < 4; bottom_right_orientation++) {
                                 // bottom left 4 possible orientations
                                 for (int bottom_left_orientation = 0; bottom_left_orientation < 4; bottom_left_orientation++) {
-
-                                    cout << "\n\n\n";
 
                                     auto top_left = &group_level_2.get(top_left_index, top_left_orientation);
                                     auto top_right = &group_level_2.get(top_right_index, top_right_orientation);
@@ -291,11 +289,14 @@ int main(){
          << " sec" << endl;
 
 
+
     for(auto component: list_lev_3){
         PieceArray<PreviewHolder> pa = component.get_piece_array<PreviewHolder>(piece_images);
         imshow("test", pa.get_preview_image());
         waitKey(0);
     }
+
+
 
 
 

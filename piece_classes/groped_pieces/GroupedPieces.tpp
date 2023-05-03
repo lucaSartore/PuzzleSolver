@@ -119,6 +119,8 @@ GroupedPieces<N>::GroupedPieces(GroupedPieces<N - 1> *top_left, GroupedPieces<N 
 
     orientation = 0;
 
+    id = 0;
+
     //reset default ids set
     ids = {};
 
@@ -154,25 +156,6 @@ GroupedPieces<N>::GroupedPieces(GroupedPieces<N - 1> *top_left, GroupedPieces<N 
         throw BottomLeftImpossibleCombination();
     }
 
-    /*
-    auto bli = bottom_left->template get_piece_array<PreviewHolder>(piece_image_global).get_preview_image();
-    auto bri = bottom_right->template get_piece_array<PreviewHolder>(piece_image_global).get_preview_image();
-    auto tli = top_left->template get_piece_array<PreviewHolder>(piece_image_global).get_preview_image();
-    auto tri = top_right->template get_piece_array<PreviewHolder>(piece_image_global).get_preview_image();
-
-    crop_image_to_remove_black_gb(bli);
-    crop_image_to_remove_black_gb(bri);
-    crop_image_to_remove_black_gb(tli);
-    crop_image_to_remove_black_gb(tri);
-
-    imshow("bottom_left",bli);
-    imshow("bottom_right",bri);
-    imshow("top_left",tli);
-    imshow("top_right",tri);
-    //waitKey(0);
-     */
-
-
     // insert the pointers to the respective tiles
     set_bottom_left(bottom_left);
     set_bottom_right(bottom_right);
@@ -192,6 +175,8 @@ GroupedPieces<2>::GroupedPieces(GroupedPieces<1> *top_left, GroupedPieces<1> *to
     assert(bottom_left != nullptr);
 
     orientation = 0;
+
+    id = 0;
 
     // make array empty
     ids = {};
@@ -251,11 +236,6 @@ void GroupedPieces<N>::set_bottom_left(GroupedPieces<N - 1> *new_val, int recurs
     sub_components[(3+orientation)%4+recursive_orientation] = new_val;
 }
 
-
-
-int GroupedPieces<1>::get_id() {
-    return piece->get_piece_id();
-}
 
 std::set<int> GroupedPieces<1>::get_ids() {
     auto set =  std::set<int>();
@@ -366,6 +346,7 @@ GroupedPieces<1>::GroupedPieces(PieceConnection *reference_piece) {
 
     orientation = 0;
     piece = reference_piece;
+    id = piece->get_piece_id();
 
     // shore of 1 with 0 as number (don't affect future calculation)
     shore = Shore();
@@ -386,6 +367,26 @@ void GroupedPieces<1>::rotate_by(int rotate_by) {
     assert(rotate_by<4);
     orientation = (orientation+rotate_by)%4;
 }
+
+template<int N>
+int GroupedPieces<N>::get_id() {
+    return id;
+}
+
+template<int N>
+void GroupedPieces<N>::set_id(int new_id) {
+    id = new_id;
+}
+
+int GroupedPieces<1>::get_id() {
+    return id;
+}
+
+void GroupedPieces<1>::set_id(int new_id) {
+    id = new_id;
+}
+
+
 
 template<int N>
 template<class T>
@@ -413,4 +414,3 @@ PieceArray<T> GroupedPieces<1>::get_piece_array(PieceImage *shapes,int recursive
     pa.set(0,0,std::move(ph));
     return std::move(pa);
 }
-

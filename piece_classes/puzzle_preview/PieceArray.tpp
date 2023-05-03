@@ -286,7 +286,7 @@ void PieceArray<PreviewHolder>::insert_into_image(int x, int y) {
 
     Point new_center_point = Point(center_x,center_y);
 
-    // matrix to insert in the new puzzle
+    // matrix to insert in the new puzzle_preview
     Mat to_paste;
     cvtColor(this_piece->get_image_resized(), to_paste, COLOR_GRAY2BGR);
     to_paste = to_paste!=0;
@@ -352,7 +352,7 @@ void PieceArray<ShoringHolder>::insert_into_image(int x, int y) {
     Point new_center_point = this_piece->get_rotated_center_with_offset();
 
 
-    // matrix to insert in the new puzzle
+    // matrix to insert in the new puzzle_preview
     Mat to_paste;
     cvtColor(this_piece->get_rotated_image(), to_paste, COLOR_GRAY2BGR);
     to_paste = to_paste!=0;
