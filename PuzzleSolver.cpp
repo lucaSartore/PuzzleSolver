@@ -6,6 +6,7 @@
 using namespace std;
 #include <fstream>
 
+
 void PuzzleSolver::save_status() {
     std::ofstream status_file;
     status_file.open(work_path + "/status.txt");
