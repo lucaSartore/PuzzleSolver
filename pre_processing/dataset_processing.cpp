@@ -7,7 +7,7 @@ using namespace cv;
 
 
 // on my 5700u laptop this function can process around 110 images/minute
-int main(){
+int deprecated_main(){
 
     string path = "../test_4x4";
 

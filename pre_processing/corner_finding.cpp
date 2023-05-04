@@ -13,29 +13,35 @@
 using namespace std;
 using namespace cv;
 
+void do_pre_processing_thread(const std::string& path, int piece_index, int ppi = DEFAULT_PPI, bool enable_image_view = false);
+void remove_holes(const cv::Mat &input, cv::Mat &output,int ppi = DEFAULT_PPI);
+void remove_knobs(const cv::Mat &input, cv::Mat &output, int ppi = DEFAULT_PPI);
+void find_corners(const cv::Mat &input, cv::Point &p1,  cv::Point &p2,  cv::Point &p3,  cv::Point &p4, int ppi = DEFAULT_PPI);
 
-void do_pre_processing(const std::string& path, int number_of_pieces, int ppi, bool use_multithreading, bool enable_image_view){
+
+void find_corners(const std::string& path, int number_of_pieces, int ppi, int number_of_cores, bool enable_image_view){
 
     // impossible to enable the view if multi threading is in use!
-    if(use_multithreading){
+    if(number_of_cores != 1){
         assert(enable_image_view == false);
     }
 
-    if(use_multithreading){
+    if(number_of_cores != 1){
 
-        // check how many cores are available
-        const auto processor_count = std::thread::hardware_concurrency();
-
+        // if user select 0: automatic detecting
+        if (number_of_cores == 0){
+            number_of_cores = (int) std::thread::hardware_concurrency();
+        }
 
         // make share the number is detected correctly
-        assert(processor_count != 0);
+        assert(number_of_cores != 0);
 
         int piece_number = 0;
 
         while (piece_number < number_of_pieces){
 
             // find how many threads i have to spawn
-            int threads_to_spawn = processor_count;
+            int threads_to_spawn = number_of_cores;
 
             // create the threads
             auto *threads = new thread[threads_to_spawn];
@@ -62,7 +68,6 @@ void do_pre_processing(const std::string& path, int number_of_pieces, int ppi, b
             // free the memory
             delete[] threads;
         }
-
 
     }else{
         for(int i=0; i<number_of_pieces; i++){

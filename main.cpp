@@ -2,26 +2,25 @@
 // Created by luca on 5/3/23.
 //
 
-#include <iostream>;
+#include <iostream>
 #include "PuzzleSolver.h"
 
 using namespace std;
 
 
 int main(){
-    {
-        // Create a new instance of PuzzleSolver
-        PuzzleSolver ps(3, 55, "../work_path", "../origin_path");
 
-        // Print the first instance
-        std::cout << "First instance:\n" << ps << "\n";
-    }
+    PuzzleSolver ps(4, 4, "../work_path", "../dataset/test_4x4/raw",2);
+    //PuzzleSolver ps("../work_path");
 
-    // Create a new instance of PuzzleSolver using the work_path from the previous instance
-    PuzzleSolver ps2("../work_path");
 
-    // Print the second instance
-    std::cout << "Second instance:\n" << ps2 << "\n";
+    cout << ps << endl;
+
+
+    ps.split_image();
+
+    ps.process_corners();
+
 
     return 0;
 

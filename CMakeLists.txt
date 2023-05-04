@@ -9,6 +9,13 @@ add_executable(
 
         main.cpp
 
+        pre_processing/corner_finding.cpp
+        pre_processing/corner_finding.h
+        pre_processing/piece_splitting.h
+        pre_processing/piece_splitting.cpp
+        pre_processing/util.h
+        pre_processing/util.cpp
+
         solving/calculate_connections.cpp
         solving/util.h
         solving/constants.h

@@ -7,7 +7,6 @@ include_directories( ${OpenCV_INCLUDE_DIRS} )
 add_executable(
         Processing
 
-        dataset_processing.h
         dataset_processing.cpp
 
         util.h

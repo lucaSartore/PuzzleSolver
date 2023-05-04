@@ -63,7 +63,7 @@ public:
     ///  - number_of_cores: the cpu cores the program will use at most, default: 1
     PuzzleSolver(int dim_x, int dim_y, std::string work_path_, std::string origin_pat_, int number_of_cores_ = 1);
     /// create an instance of the solver, by reading the data found in work_path_ and restarting from there
-    PuzzleSolver(std::string work_path_);
+    explicit PuzzleSolver(std::string work_path_);
     /// split the images into individual pieces, and update `number_of_pieces`
     void split_image();
     /// take the splitted images and calculate the corners of each of them
