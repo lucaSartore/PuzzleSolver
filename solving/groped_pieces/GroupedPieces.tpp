@@ -9,12 +9,10 @@
 #include <cassert>
 #include "grouped_pieces_errors.h"
 #include "../util.h"
-
+#include "../constants.h"
 extern PieceImage* piece_image_global;
 
 
-// the threshold after witch a component get removed because of poor connections
-#define AVREGE_SHORE_THRESHOLD 0.6
 
 using namespace std;
 
@@ -305,7 +303,7 @@ void GroupedPieces<N>::calculate_shore() {
     }
 
     // trowing an error if the piece is impossible
-    if(shore.get_shore() <= AVREGE_SHORE_THRESHOLD){
+    if(shore.get_shore() <= MIN_AVG_SHORE_FOR_GROUP){
         throw AvregeIsToLow();
     }
 

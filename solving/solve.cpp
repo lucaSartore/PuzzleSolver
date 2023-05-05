@@ -77,7 +77,7 @@ void solve_puzzle_function(
     // launch the recursive function
 
     //solve_recursive<1>(dim_x,dim_y,initial_group,number_of_pieces,piece_images);
-    solve_recursive<1>(dim_x,dim_y,initial_group,number_of_pieces,piece_images);
+    solve_recursive<1>(dim_x,dim_y,initial_group,number_of_cores,piece_images);
 
 
     // free the memory
@@ -118,12 +118,12 @@ void solve_recursive(unsigned int dim_x,unsigned int dim_y,GroupedPiecesHolder<N
 
     int number_of_pieces = input_pieces.get_length();
 
-    while (index != number_of_pieces){
+    do{
         float percent = (float)index/(float)number_of_pieces*100;
-        cout << "step " << N << ": " << percent << "%" << endl;
-        cout << found << "valid combination found";
-        std::this_thread::sleep_for(std::chrono::milliseconds (100));
-    }
+        cout << "step " << N << ": " << index<<"/" <<number_of_pieces << endl;
+        cout << found << " valid combination found" << endl;
+        //std::this_thread::sleep_for(std::chrono::milliseconds (100));
+    }while (index < number_of_pieces);
 
     //join all threads
     for(int i=0; i<number_of_cores; i++){
@@ -137,8 +137,15 @@ void solve_recursive(unsigned int dim_x,unsigned int dim_y,GroupedPiecesHolder<N
     int side_len = std::round(pow(2.0,N));
 
     // reach the end, now need to do final assembly
-    if(side_len*2 >= std::min(dim_x,dim_y)){
+    if(side_len*2 > std::min(dim_x,dim_y)){
         //todo: add compatibility for all puzzle shape
+        for(auto solution: result_list){
+            auto pa = solution.template get_piece_array<PreviewHolder>(images);
+            auto image = pa.get_preview_image();
+            crop_image_to_remove_black_gb(image);
+            imshow("image", image);
+            waitKey(0);
+        }
     }
     // not yer reach the end, make recursive case
     else{
@@ -161,10 +168,13 @@ void solve_thread(GroupedPiecesHolder<N> *input_pieces, atomic<int> * index, ato
     int top_left_index;
     while (true){
         // get the index and then add 1;
+
+
         top_left_index  = std::atomic_fetch_add(index, 1);
+        //cout << "increment: " << top_left_index  << "   " << *index << endl;
 
         // if reached the end, return
-        if(top_left_index == number_of_pieces){
+        if(top_left_index >= number_of_pieces){
             return;
         }
 

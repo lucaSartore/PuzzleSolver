@@ -10,7 +10,7 @@ using namespace std;
 #include "pre_processing/piece_splitting.h"
 #include "pre_processing/corner_finding.h"
 #include "solving/calculate_connections.h"
-
+#include "solving/solve.h"
 PuzzleSolver::PuzzleSolver(int dim_x, int dim_y, std::string work_path_, std::string origin_pat_,int number_of_cores_) {
 
     // constructing base parameters
@@ -153,10 +153,34 @@ void PuzzleSolver::process_corners() {
 }
 
 void PuzzleSolver::calculate_connections() {
+    if(state != CORNER_PROCESSED){
+        throw wrong_state_exception();
+    }
     // calculate all combinations
     calculate_all_connections(work_path + "/divided/", work_path + "/connections", number_of_pieces,number_of_cores,false);
     // update state
     state = CONNECTION_CALCULATED;
+
+    save_status();
+}
+
+void PuzzleSolver::solve_puzzle() {
+    if(state != CONNECTION_CALCULATED){
+        throw wrong_state_exception();
+    }
+
+    // find the solutions
+    solve_puzzle_function(
+            work_path+"/connections",
+            work_path+"/divided",
+            "",
+            final_dim_x,
+            final_dim_y,
+            number_of_pieces,
+            number_of_cores
+            );
+
+    //state = COMBINATION_CALCULATED;
 
     save_status();
 }

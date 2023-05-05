@@ -10,7 +10,7 @@ using namespace std;
 
 int main(){
 
-    PuzzleSolver ps(4, 4, "../work_path", "../dataset/test_4x4/raw",2);
+    PuzzleSolver ps(4, 4, "../work_path", "../dataset/test_4x4/raw",8);
     //PuzzleSolver ps("../work_path");
 
 
@@ -36,6 +36,11 @@ int main(){
         cout << "skip calculate connections" << endl;
     }
 
+    try{
+        ps.solve_puzzle();
+    }catch(wrong_state_exception &e){
+        cout << "skip solve puzzle" << endl;
+    }
 
     return 0;
 
