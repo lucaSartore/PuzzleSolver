@@ -16,5 +16,9 @@
 #define MIN_COMPAT_CC 0.45
 
 
+/// the minimum shore a PieceArray<ShoringHolder> needs to have, in order to be consider valid
+#define MIN_SHORE_PIECE_ARRAY 0.96
+
+
 #endif //PIECECLASS_CONSTANTS_H
 
