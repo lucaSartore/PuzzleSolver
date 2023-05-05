@@ -17,6 +17,9 @@ add_executable(
         pre_processing/util.cpp
 
         solving/calculate_connections.cpp
+        solving/calculate_connections.h
+        solving/solve.h
+        solving/solve.cpp
         solving/util.h
         solving/constants.h
 

@@ -9,6 +9,7 @@ using namespace std;
 #include <algorithm>
 #include "pre_processing/piece_splitting.h"
 #include "pre_processing/corner_finding.h"
+#include "solving/calculate_connections.h"
 
 PuzzleSolver::PuzzleSolver(int dim_x, int dim_y, std::string work_path_, std::string origin_pat_,int number_of_cores_) {
 
@@ -147,6 +148,15 @@ void PuzzleSolver::process_corners() {
 
     // update the state;
     state = CORNER_PROCESSED;
+
+    save_status();
+}
+
+void PuzzleSolver::calculate_connections() {
+    // calculate all combinations
+    calculate_all_connections(work_path + "/divided/", work_path + "/connections", number_of_pieces,number_of_cores,false);
+    // update state
+    state = CONNECTION_CALCULATED;
 
     save_status();
 }

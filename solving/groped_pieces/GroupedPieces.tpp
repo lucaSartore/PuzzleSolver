@@ -14,7 +14,7 @@ extern PieceImage* piece_image_global;
 
 
 // the threshold after witch a component get removed because of poor connections
-#define AVREGE_SHORE_THRESHOLD 0.5
+#define AVREGE_SHORE_THRESHOLD 0.6
 
 using namespace std;
 

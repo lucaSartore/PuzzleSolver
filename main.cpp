@@ -16,10 +16,25 @@ int main(){
 
     cout << ps << endl;
 
+    try{
+        ps.split_image();
+    }catch(wrong_state_exception &e){
+        cout << "skip split image" << endl;
+    }
 
-    ps.split_image();
+    try{
+        ps.process_corners();
+    }catch(wrong_state_exception &e){
+        cout << "skip process corners" << endl;
+    }
 
-    ps.process_corners();
+
+
+    try{
+        ps.calculate_connections();
+    }catch(wrong_state_exception &e){
+        cout << "skip calculate connections" << endl;
+    }
 
 
     return 0;

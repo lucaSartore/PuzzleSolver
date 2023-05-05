@@ -19,32 +19,49 @@
 using namespace std;
 using namespace std::chrono;
 
-#define NUMBER_OF_PIECES 16
-#define MINIMUM_COMPATIBILITY_PERCENTAGE 0.25
+#include "constants.h"
 
 
-void piece_comparer_thread(PieceConnection pieces_connections[], PieceShape pieces_shapes[], atomic<int> *index);
-void calculate_single_thread(bool debug = false);
-void calculate_multi_thread(int number_of_threads = 0);
+
+
+#include "calculate_connections.h"
+
+
+void piece_comparer_thread(PieceConnection *pieces_connections, PieceShape *pieces_shapes,unsigned int number_of_pieces,  atomic<int> *index);
+void calculate_single_thread(const string &input_path, const string &output_path,const unsigned int number_of_pieces, const bool debug);
+void calculate_multi_thread(const string &input_path, const string &output_path,unsigned int number_of_cores,const unsigned int number_of_pieces);
+
+
+void calculate_all_connections(std::string input_path, std::string output_path,unsigned int number_of_pieces, unsigned int number_of_cores, bool debug){
+    if(number_of_cores == 1){
+        calculate_single_thread(input_path,output_path,number_of_pieces,debug);
+    }else{
+        // impossible to use debug if number_of_cores is not 1!
+        assert(!debug);
+        calculate_multi_thread(input_path,output_path,number_of_cores,number_of_pieces);
+    }
+}
 
 
 PieceImage* piece_image_global;
-
 int old_main(){
 
-    string path = "../../dataset/test_4x4/connections";
+    int number_of_pieces = 2;
+    //calculate_single_thread(); return 0;
 
-    PieceConnection::set_number_of_pieces(NUMBER_OF_PIECES);
-    PieceConnection pieces[NUMBER_OF_PIECES];
-    PieceImage piece_images[NUMBER_OF_PIECES];
+    string path = "../dataset/test_8x8/connections";
+
+    PieceConnection::set_number_of_pieces(number_of_pieces);
+    PieceConnection pieces[number_of_pieces];
+    PieceImage piece_images[number_of_pieces];
 
     piece_image_global = piece_images;
 
 
     // load all the pieces
-    for(int i=0; i<NUMBER_OF_PIECES; i++){
+    for(int i=0; i < number_of_pieces; i++){
         pieces[i].became(path,i);
-        piece_images[i] = PieceImage(i, "../../dataset/test_4x4/divided");
+        piece_images[i] = PieceImage(i, "../dataset/test_8x8/divided");
     }
 
     // empty list of element 1;
@@ -64,7 +81,7 @@ int old_main(){
     auto start = chrono::steady_clock::now();
 
     int c=0;
-    int number_of_pieces = group_level_1.get_length();
+    number_of_pieces = group_level_1.get_length();
     // top left element get chosen from all pieces
     for(int top_left_index=0; top_left_index<number_of_pieces; top_left_index++){
 
@@ -170,7 +187,7 @@ int old_main(){
     auto remove_condition = [&piece_images](GroupedPieces<2> group) { return group.template get_piece_array<ShoringHolder>(piece_images).get_shore() < 0.96; };
 
     // Use std::remove_if to filter the list
-    //list_lev_2.erase(std::remove_if(list_lev_2.begin(), list_lev_2.end(), remove_condition), list_lev_2.end());
+    list_lev_2.erase(std::remove_if(list_lev_2.begin(), list_lev_2.end(), remove_condition), list_lev_2.end());
 
     cout << "new_lenght: " << list_lev_2.size() << endl;
 
@@ -295,25 +312,25 @@ int old_main(){
 }
 
 
-void piece_comparer_thread(PieceConnection pieces_connections[], PieceShape pieces_shapes[], atomic<int> *index){
+void piece_comparer_thread(PieceConnection *pieces_connections, PieceShape *pieces_shapes,unsigned int number_of_pieces, atomic<int> *index){
     while (true) {
         int piece_id = (*index)++;
 
-        cout << "processing piece: " << piece_id << "/" << NUMBER_OF_PIECES << endl;
+        //cout << "processing piece: " << piece_id << "/" << number_of_pieces << endl;
 
-        if (piece_id >= NUMBER_OF_PIECES - 1) {
+        if (piece_id >= number_of_pieces - 1) {
             return;
         }
 
         for (int piece_side = 0; piece_side < 4; piece_side++) {
-            for (int other_piece_id = piece_id + 1; other_piece_id < NUMBER_OF_PIECES; other_piece_id++) {
+            for (int other_piece_id = piece_id + 1; other_piece_id < number_of_pieces; other_piece_id++) {
                 for (int other_piece_side = 0; other_piece_side < 4; other_piece_side++) {
 
                     // check for compatibility
                     float compatibility = pieces_shapes[piece_id].get_side(piece_side).compare_to(
                             pieces_shapes[other_piece_id].get_side(other_piece_side)
                     );
-                    if (compatibility < MINIMUM_COMPATIBILITY_PERCENTAGE) {
+                    if (compatibility < MIN_COMPAT_CC) {
                         compatibility = 0;
                     }
                         // add compatibility to the register;
@@ -325,22 +342,18 @@ void piece_comparer_thread(PieceConnection pieces_connections[], PieceShape piec
     }
 }
 
-
-// errors!
-void calculate_single_thread(bool debug){
-
-    string path = "../../dataset/test_4x4";
+void calculate_single_thread(const string &input_path, const string &output_path,const unsigned int number_of_pieces, const bool debug){
 
     // create array of piece shape
-    PieceConnection::set_number_of_pieces(NUMBER_OF_PIECES);
-    PieceShape::set_origin_path(path + "/divided");
-    PieceShape pieces_shapes[NUMBER_OF_PIECES];
+    PieceConnection::set_number_of_pieces(number_of_pieces);
+    PieceShape::set_origin_path(input_path);
+    PieceShape pieces_shapes[number_of_pieces];
 
     // create array of piece logic
-    PieceConnection pieces_connections[NUMBER_OF_PIECES];
+    PieceConnection pieces_connections[number_of_pieces];
 
     // filling both array up with the respective index;
-    for(int i=0; i<NUMBER_OF_PIECES;i++){
+    for(int i=0; i < number_of_pieces; i++){
         pieces_connections[i].became(i);
         pieces_shapes[i] = PieceShape(i);
     }
@@ -348,8 +361,8 @@ void calculate_single_thread(bool debug){
     auto start = chrono::steady_clock::now();
 
     // compare all the pieces_shapes one by one, and save the results in the piece logic
-    for(int piece_id=0; piece_id<NUMBER_OF_PIECES;piece_id++){
-        cout << "done piece: " << piece_id << "/" << NUMBER_OF_PIECES << endl;
+    for(int piece_id=0; piece_id < number_of_pieces; piece_id++){
+        cout << "done piece: " << piece_id << "/" << number_of_pieces << endl;
         for(int piece_side=0; piece_side<4; piece_side++){
 
             // if this side is a border i don't need to compare it with others
@@ -357,14 +370,14 @@ void calculate_single_thread(bool debug){
             //    continue;
             //}
 
-            for(int other_piece_id=piece_id+1; other_piece_id<NUMBER_OF_PIECES;other_piece_id++){
+            for(int other_piece_id=piece_id+1; other_piece_id < number_of_pieces; other_piece_id++){
                 for(int other_piece_side=0; other_piece_side<4; other_piece_side++){
 
                     // check for compatibility
                     float compatibility = pieces_shapes[piece_id].get_side(piece_side).compare_to(
                             pieces_shapes[other_piece_id].get_side(other_piece_side)
                     );
-                    if(compatibility < MINIMUM_COMPATIBILITY_PERCENTAGE){
+                    if(compatibility < MIN_COMPAT_CC){
                         compatibility = 0;
                     }
                     if(debug){
@@ -382,7 +395,6 @@ void calculate_single_thread(bool debug){
         }
 
     }
-    cout << "out\n";
 
     auto end = chrono::steady_clock::now();
 
@@ -390,50 +402,40 @@ void calculate_single_thread(bool debug){
          << chrono::duration_cast<chrono::seconds>(end - start).count()
          << " sec" << endl;
 
-    cout << "out2\n";
-
     // save the connections information to the disk
-    int c=0;
     for(auto & i : pieces_connections){
-        i.save_as_file(path + "/connections");
-        PieceConnection temp = PieceConnection();
-        temp.became(path + "/connections",c);
-        assert(temp.to_string() == i.to_string());
-        cout << i.to_string() << endl;
-        cout << temp.to_string() << endl;
-        c++;
+        i.save_as_file(output_path);
     }
 
 }
 
 
-
-// errors!
-void calculate_multi_thread(int number_of_threads){
-    PieceConnection::set_number_of_pieces(NUMBER_OF_PIECES);
+void calculate_multi_thread(const string &input_path, const string &output_path,unsigned int number_of_cores,const unsigned int number_of_pieces){
+    PieceConnection::set_number_of_pieces(number_of_pieces);
 
     // create array of piece shape
-    PieceShape::set_origin_path("../../dataset/blue_500pcs/divided");
-    PieceShape pieces_shapes[NUMBER_OF_PIECES];
+    PieceShape::set_origin_path(input_path);
+    PieceShape* pieces_shapes = new PieceShape[number_of_pieces];
 
     // create array of piece logic
-    PieceConnection pieces_logic[NUMBER_OF_PIECES];
+    PieceConnection* pieces_logic = new PieceConnection[number_of_pieces];
 
     // filling both array up with the respective index;
-    for(int i=0; i<NUMBER_OF_PIECES;i++){
+    for(int i=0; i < number_of_pieces; i++){
         pieces_logic[i].became(i);
         pieces_shapes[i] = PieceShape(i);
     }
 
     // create a shared index
-    atomic<int> index;
+    atomic<int> index = 0;
 
+    // if the number fo cores is zero: automatic detection
     unsigned  int processor_count;
-    if(number_of_threads == 0){
+    if(number_of_cores == 0){
         // find how many cores are available
         processor_count = std::thread::hardware_concurrency();
     }else{
-        processor_count = number_of_threads;
+        processor_count = number_of_cores;
     }
 
 
@@ -441,18 +443,20 @@ void calculate_multi_thread(int number_of_threads){
     // make share the number is detected correctly
     assert(processor_count != 0);
 
+    // array of pointers to thread
     auto *threads = new thread[processor_count];
+
 
     auto start = chrono::steady_clock::now();
 
     // launch all threads
     for(int i=0; i<processor_count; i++){
-        threads[i] = thread(piece_comparer_thread,pieces_logic,pieces_shapes, &index);
+        threads[i] = thread(piece_comparer_thread,pieces_logic,pieces_shapes,number_of_pieces, &index);
     }
 
     // showing debug
-    while (index < NUMBER_OF_PIECES){
-        cout << "processing: " << index << "/" << NUMBER_OF_PIECES << endl;
+    while (index < number_of_pieces){
+        cout << "processing piece: " << index << "/" << number_of_pieces << endl;
         std::this_thread::sleep_for (std::chrono::milliseconds (100));
     }
 
@@ -471,9 +475,12 @@ void calculate_multi_thread(int number_of_threads){
     delete[] threads;
 
     // save the connections information to the disk
-    for(auto & i : pieces_logic){
-        cout << i.to_string() << endl;
-        //i.save_as_file("../../dataset/blue_500pcs/connections");
+    for(int i=0; i<number_of_pieces; i++){
+        //cout << pieces_logic[i].to_string() << endl;
+        pieces_logic[i].save_as_file(output_path);
     }
+
+    delete[] pieces_shapes;
+    delete[] pieces_logic;
 }
 
