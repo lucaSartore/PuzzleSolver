@@ -212,3 +212,44 @@ void test_grouped_piece_holder(){
     auto pa2 = sq.get_piece_array<PreviewHolder>(pieces_images);
     imshow("p",pa2.get_preview_image());waitKey(0);
 }
+
+void test_piece_array_save(){
+
+    PieceImage::set_origin_path("../../dataset/test_2x3/divided");
+    PieceImage pieces_images[6];
+
+    // filling both array up with the respective index;
+    for(int i=0; i<6;i++){
+        pieces_images[i] = PieceImage(i);
+    }
+
+    PieceArray<PreviewHolder> pa = PieceArray<PreviewHolder>();
+
+    PreviewHolder base = PreviewHolder(&pieces_images[4], 0);
+    pa.set(0,0,std::move(base));
+    pa.grow_x();
+
+    base = PreviewHolder(&pieces_images[5], 3);
+    pa.set(1, 0, std::move(base));
+    pa.grow_y();
+
+    base = PreviewHolder(&pieces_images[3], 3);
+    pa.set(0,1,std::move(base));
+
+
+    base = PreviewHolder(&pieces_images[2], 0);
+    pa.set(1,1,std::move(base));
+
+    pa.save_as_file("../save.bin");
+
+    PieceArray<PreviewHolder> new_pa = PieceArray<PreviewHolder>();
+
+    new_pa.load_from_file("../save.bin",pieces_images);
+
+    imshow("original",pa.get_preview_image());
+    imshow("after save",new_pa.get_preview_image());
+
+    waitKey(0);
+
+
+}

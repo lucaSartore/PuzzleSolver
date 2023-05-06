@@ -3,7 +3,6 @@
 //
 #include "PuzzleSolver.h"
 #include <sys/stat.h>
-using namespace std;
 #include <fstream>
 #include <filesystem>
 #include <algorithm>
@@ -11,6 +10,9 @@ using namespace std;
 #include "pre_processing/corner_finding.h"
 #include "solving/calculate_connections.h"
 #include "solving/solve.h"
+
+using namespace std;
+
 PuzzleSolver::PuzzleSolver(int dim_x, int dim_y, std::string work_path_, std::string origin_pat_,int number_of_cores_) {
 
     // constructing base parameters
@@ -25,6 +27,8 @@ PuzzleSolver::PuzzleSolver(int dim_x, int dim_y, std::string work_path_, std::st
     state = START;
 
     number_of_pieces = 0;
+
+    //images = nullptr;
 
     // removing the working directory and all his sub componetns
     filesystem::remove_all(work_path);
@@ -137,6 +141,19 @@ void PuzzleSolver::load_status(std::string file) {
     }else{
         throw file_system_exception();
     }
+
+    /*
+    // load images if we are in final state
+    if(state == COMBINATION_CALCULATED){
+        images = new PieceImage[number_of_pieces];
+
+        PieceImage::set_origin_path(work_path + "/divided");
+        for(int i=0; i<number_of_pieces; i++){
+            images[i] = PieceImage(i);
+        }
+
+        piece_array.load_from_file(work_path+"/results/solution.bin",images);
+    }*/
 }
 
 void PuzzleSolver::process_corners() {
@@ -162,6 +179,9 @@ void PuzzleSolver::calculate_connections() {
     state = CONNECTION_CALCULATED;
 
     save_status();
+
+    // reload status, to load the piece array
+    load_status(work_path);
 }
 
 void PuzzleSolver::solve_puzzle() {
@@ -173,7 +193,7 @@ void PuzzleSolver::solve_puzzle() {
     solve_puzzle_function(
             work_path+"/connections",
             work_path+"/divided",
-            "",
+            work_path + "/results/solution.bin",
             final_dim_x,
             final_dim_y,
             number_of_pieces,
@@ -184,6 +204,17 @@ void PuzzleSolver::solve_puzzle() {
 
     save_status();
 }
+
+PuzzleSolver::~PuzzleSolver() {
+    //delete[] images;
+}
+/*
+cv::Mat PuzzleSolver::get_result() {
+    if(state != CONNECTION_CALCULATED){
+        throw wrong_state_exception();
+    }
+    return piece_array.get_preview_image();
+}*/
 
 std::ostream& operator<<(std::ostream& os, const State& state) {
     switch (state) {

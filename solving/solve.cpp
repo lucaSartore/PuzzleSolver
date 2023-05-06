@@ -10,6 +10,7 @@
 #include <memory>
 #include <atomic>
 #include <thread>
+#include <utility>
 #include "groped_pieces/GroupedPieces.h"
 #include "puzzle_preview/PieceArray.h"
 #include "groped_pieces/grouped_pieces_errors.h"
@@ -22,13 +23,15 @@
 /// - an holder with all the pieces
 /// - the number of cores to use
 /// - a pointer to all the images of the puzzle for better evaluation
+/// - the path where to save the fina result
 template<int N>
 void solve_recursive(
         unsigned int dim_x,
         unsigned int dim_y,
         GroupedPiecesHolder<N> &input_pieces,
         unsigned int number_of_cores,
-        PieceImage* images
+        PieceImage* images,
+        string output_path
         );
 
 
@@ -77,7 +80,7 @@ void solve_puzzle_function(
     // launch the recursive function
 
     //solve_recursive<1>(dim_x,dim_y,initial_group,number_of_pieces,piece_images);
-    solve_recursive<1>(dim_x,dim_y,initial_group,number_of_cores,piece_images);
+    solve_recursive<1>(dim_x,dim_y,initial_group,number_of_cores,piece_images,std::move(output_path));
 
 
     // free the memory
@@ -88,13 +91,13 @@ void solve_puzzle_function(
 
 /// at a point we must end the recursion (otherwise the compiler wont stop)
 template<>
-void solve_recursive<MAX_GroupedPieces_LEVEL>(unsigned int dim_x,unsigned int dim_y,GroupedPiecesHolder<MAX_GroupedPieces_LEVEL> &input_pieces,unsigned int number_of_cores,PieceImage* images){
+void solve_recursive<MAX_GroupedPieces_LEVEL>(unsigned int dim_x,unsigned int dim_y,GroupedPiecesHolder<MAX_GroupedPieces_LEVEL> &input_pieces,unsigned int number_of_cores,PieceImage* images, string output_path){
     throw runtime_error("Maximum dimension reached");
 }
 
 
 template<int N>
-void solve_recursive(unsigned int dim_x,unsigned int dim_y,GroupedPiecesHolder<N> &input_pieces,unsigned int number_of_cores,PieceImage* images){
+void solve_recursive(unsigned int dim_x,unsigned int dim_y,GroupedPiecesHolder<N> &input_pieces,unsigned int number_of_cores,PieceImage* images, string output_path){
 
     // make shore we are using at least 4 cores
     assert(number_of_cores != 0);
@@ -122,8 +125,11 @@ void solve_recursive(unsigned int dim_x,unsigned int dim_y,GroupedPiecesHolder<N
         float percent = (float)index/(float)number_of_pieces*100;
         cout << "step " << N << ": " << index<<"/" <<number_of_pieces << endl;
         cout << found << " valid combination found" << endl;
-        //std::this_thread::sleep_for(std::chrono::milliseconds (100));
+        std::this_thread::sleep_for(std::chrono::milliseconds (100));
     }while (index < number_of_pieces);
+    float percent = (float)index/(float)number_of_pieces*100;
+    cout << "step " << N << ": " << index<<"/" <<number_of_pieces << endl;
+    cout << found << " valid combination found" << endl;
 
     //join all threads
     for(int i=0; i<number_of_cores; i++){
@@ -139,12 +145,33 @@ void solve_recursive(unsigned int dim_x,unsigned int dim_y,GroupedPiecesHolder<N
     // reach the end, now need to do final assembly
     if(side_len*2 > std::min(dim_x,dim_y)){
         //todo: add compatibility for all puzzle shape
+
+        // save the best result
+
+        // find best result
+        int best_index,  i=0;
+        float best_shore = 0;
         for(auto solution: result_list){
-            auto pa = solution.template get_piece_array<PreviewHolder>(images);
-            auto image = pa.get_preview_image();
-            crop_image_to_remove_black_gb(image);
-            imshow("image", image);
-            waitKey(0);
+            auto pa = solution.template get_piece_array<ShoringHolder>(images);
+
+            float shore = pa.get_shore();
+            if(shore > best_shore){
+                best_shore = shore;
+                best_index = i;
+            }
+            i++;
+        }
+
+        i=0;
+        // save the result at the best index
+        for(auto solution: result_list){
+
+            if(i == best_index){
+                auto pa = solution.template get_piece_array<ShoringHolder>(images);
+                pa.save_as_file(output_path);
+                break;
+            }
+            i++;
         }
     }
     // not yer reach the end, make recursive case
@@ -153,7 +180,7 @@ void solve_recursive(unsigned int dim_x,unsigned int dim_y,GroupedPiecesHolder<N
         GroupedPiecesHolder<N+1> new_group_pieces = GroupedPiecesHolder<N+1>(result_list);
 
         // call the recursive function
-        solve_recursive<N+1>(dim_x,dim_y,new_group_pieces,number_of_cores,images);
+        solve_recursive<N+1>(dim_x,dim_y,new_group_pieces,number_of_cores,images,output_path);
     }
 }
 
@@ -168,8 +195,6 @@ void solve_thread(GroupedPiecesHolder<N> *input_pieces, atomic<int> * index, ato
     int top_left_index;
     while (true){
         // get the index and then add 1;
-
-
         top_left_index  = std::atomic_fetch_add(index, 1);
         //cout << "increment: " << top_left_index  << "   " << *index << endl;
 
@@ -182,6 +207,12 @@ void solve_thread(GroupedPiecesHolder<N> *input_pieces, atomic<int> * index, ato
         for(int top_right_index = top_left_index+1; top_right_index<number_of_pieces; top_right_index++){
             for (int bottom_right_index = top_left_index + 1;bottom_right_index < number_of_pieces; bottom_right_index++) {
                 for (int bottom_left_index = top_left_index + 1;bottom_left_index < number_of_pieces; bottom_left_index++) {
+
+                    // keep track of how many times i fail the placement of the piece,
+                    // if for examole piece 1 and piece 2 are incompatible as top right and top left, in any possible combination
+                    // then there is no need to test all combinations of bottom right and bottom left
+                    int failed_top_right_placement = 0;
+                    int failed_bottom_right_placement = 0;
 
                     // select the possible orientations for each component
                     for (int top_left_orientation = 0; top_left_orientation < 4; top_left_orientation++) {
@@ -205,6 +236,9 @@ void solve_thread(GroupedPiecesHolder<N> *input_pieces, atomic<int> * index, ato
 
                                         // get the shore of the array
                                         if(array.get_shore()>MIN_SHORE_PIECE_ARRAY){
+
+                                            //assert(!debug_flag);
+
                                             // if shore is high enough, add into list
                                             result_list_mutex->lock();
                                             result_list->push_back(std::move(new_piece));
@@ -222,14 +256,34 @@ void solve_thread(GroupedPiecesHolder<N> *input_pieces, atomic<int> * index, ato
                                         // if bottom left is impossible: do nothing and go on with the next piece
                                     } catch (BottomRightImpossibleFit &e) {
                                         //cout << "BottomRightImpossibleFit" << endl;
-                                        // if bottom right is impossible: no need to check all bottom left combinations
-                                        // so i jump out of the bottom left orientation loop
+
+                                        // keep track of how many times i fail
+                                        failed_bottom_right_placement += 1;
+
+                                        // if all combination of top right are impossible: no need to check all bottom left combinations
+                                        if(failed_top_right_placement == 64){
+                                            goto EXIT_BOTTOM_LEFT_INDEX_LOOP;
+                                        }
+                                        // if this is not the last possible combination: break the orientation loop
                                         goto EXIT_BOTTOM_LEFT_ORIENTATION_LOOP;
+
+
                                     } catch (TopRightImpossibleFit &e) {
                                         //cout << "TopRightImpossibleFit" << endl;
-                                        // if top right is impossible: no need to check all bottom left combinations
-                                        // so i jump to the bottom left orientation loop
+
+                                        // keep track of how many times i fail
+                                        failed_top_right_placement +=1;
+                                        // need to cont this 4 times
+                                        failed_bottom_right_placement +=4;
+
+                                        // if all combination of top right are impossible: no need to check all bottom left combinations
+                                        if(failed_top_right_placement == 16){
+                                            goto EXIT_BOTTOM_RIGHT_INDEX_LOOP;
+                                        }
+
+                                        // if this is not the last possible combination: break the orientation loop
                                         goto EXIT_BOTTOM_RIGHT_ORIENTATION_LOOP;
+
                                     } catch (BottomLeftImpossibleCombination &e) {
                                         //cout << "BottomLeftImpossibleCombination" << endl;
                                         // if bottom left is an impossible combination, i don't need to check all his orientations

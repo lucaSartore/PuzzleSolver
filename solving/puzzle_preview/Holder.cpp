@@ -169,3 +169,11 @@ void Holder::set_color(cv::Scalar new_color) {
 cv::Scalar Holder::get_color() {
     return color;
 }
+
+int Holder::get_orientation() {
+    return orientation;
+}
+
+int Holder::get_id() {
+    return piece->get_id();
+}

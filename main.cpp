@@ -10,7 +10,7 @@ using namespace std;
 
 int main(){
 
-    PuzzleSolver ps(4, 4, "../work_path", "../dataset/test_4x4/raw",8);
+    PuzzleSolver ps(4, 4, "../work_path", "../dataset/test_4x4/raw",3);
     //PuzzleSolver ps("../work_path");
 
 
@@ -41,6 +41,9 @@ int main(){
     }catch(wrong_state_exception &e){
         cout << "skip solve puzzle" << endl;
     }
+
+    //imshow("lalala",ps.get_result());
+    //waitKey(0);
 
     return 0;
 

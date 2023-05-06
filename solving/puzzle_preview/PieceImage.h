@@ -52,6 +52,8 @@ public:
     int get_full_x_res();
     /// return the y resolution of the full size image
     int get_full_y_res();
+    /// return the id of the piece
+    int get_id();
 };
 
 

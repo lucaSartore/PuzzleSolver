@@ -30,7 +30,7 @@ PieceArray<T>::PieceArray() {
     dim_y = 1;
     pieces = vector<vector<T>>();
 
-    // start with a 1*1 array with a null ptr inside
+    // start with a 1*1 array with an empty holder inside
     auto one_dim = vector<T>();
     // insert a default Holder
     one_dim.emplace_back();

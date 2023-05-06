@@ -10,6 +10,7 @@
 #include <iostream>
 #include <memory>
 #include <opencv2/opencv.hpp>
+#include <fstream>
 
 typedef enum PateOnTopMethod{OR,SUM,XOR,OVERWRITE}PateOnTopMethod;
 
@@ -74,11 +75,74 @@ public:
     void attach_bottom(const PieceArray<T>& other);
     /// return a shore, form 0 to 1 that describes how well the pieces fits together
     float get_shore();
-
+    /// save the current solution in a file at the specified path
+    void save_as_file(std::string path);
+    /// load a solution form a file
+    void load_from_file(std::string path, PieceImage* images);
 };
 
+template<class T>
+void PieceArray<T>::load_from_file(std::string path, PieceImage *images) {
+    std::ifstream file(path, std::ios::binary);
 
-#include "PieceArray.tpp"
+    // array must be empty
+    assert(dim_y == 1);
+    assert(dim_x == 1);
+
+    int target_dim_x,target_dim_y;
+
+    // Read dimensions from file
+    file.read(reinterpret_cast<char*>(&target_dim_x), sizeof(int));
+    file.read(reinterpret_cast<char*>(&target_dim_y), sizeof(int));
+
+    // Resize array to match dimensions
+    for(int i=0;i<target_dim_x-1; i++){
+        grow_x();
+    }
+    for(int i=0;i<target_dim_y-1; i++){
+        grow_y();
+    }
+
+    // Read array contents from file
+    for (int y = 0; y < dim_y; y++) {
+        for (int x = 0; x < dim_x; x++) {
+            int id, orientation;
+            file.read(reinterpret_cast<char*>(&id), sizeof(int));
+            file.read(reinterpret_cast<char*>(&orientation), sizeof(int));
+            T element = T(images+id, orientation);
+            set(x, y, std::move(element));
+        }
+    }
+    has_been_completed = true;
+}
+
+template<class T>
+void PieceArray<T>::save_as_file(std::string path) {
+
+    assert(has_been_completed);
+
+    std::ofstream file(path, std::ios::binary);
+
+    // Write dimensions to file
+    file.write(reinterpret_cast<char*>(&dim_x), sizeof(dim_x));
+    file.write(reinterpret_cast<char*>(&dim_y), sizeof(dim_y));
+
+    // Write array contents to file
+    for (int y = 0; y < dim_y; y++) {
+        for (int x = 0; x < dim_x; x++) {
+            T* element = get(x, y);
+            element->set_color(get_random_color());
+            int id = element->get_id();
+            int orientation = element->get_orientation();
+            file.write(reinterpret_cast<char*>(&id), sizeof(int));
+            file.write(reinterpret_cast<char*>(&orientation), sizeof(int));
+        }
+    }
+
+}
+
+
+//#include "PieceArray.tpp"
 
 
 #endif //PIECECLASS_PIECEARRAY_H
