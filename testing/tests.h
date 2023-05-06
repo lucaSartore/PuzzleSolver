@@ -11,3 +11,4 @@ void test_piece_array();
 void test_piece_array_shore();
 void test_grouped_piece_2_constructor();
 void test_grouped_piece_holder();
+void test_piece_array_save();

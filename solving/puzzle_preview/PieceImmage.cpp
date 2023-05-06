@@ -146,3 +146,7 @@ int PieceImage::get_full_y_res() {
     return ROTATION_RESOLUTION;
 }
 
+int PieceImage::get_id() {
+    return id;
+}
+

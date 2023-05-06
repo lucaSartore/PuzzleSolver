@@ -52,6 +52,10 @@ public:
     void set_color(cv::Scalar new_color);
     /// return the current color of the piece;
     cv::Scalar get_color();
+    /// return the orientation of the piece
+    int get_orientation();
+    /// return the id of the piece
+    int get_id();
 };
 
 
