@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 3.24)
 
-
-project( PieceClass )
+project( PuzzleSolver )
 find_package(OpenCV REQUIRED)
 include_directories( ${OpenCV_INCLUDE_DIRS} )
+
 add_executable(
-        PieceClass
+        PuzzleSolver
 
         main.cpp
 
@@ -56,7 +56,9 @@ add_executable(
         solving/puzzle_preview/Holder.h
         solving/puzzle_preview/point_indexes.h
 
+
+
         PuzzleSolver.cpp
         PuzzleSolver.h
 )
-target_link_libraries( PieceClass ${OpenCV_LIBS} )
+target_link_libraries( PuzzleSolver ${OpenCV_LIBS} )

@@ -5,7 +5,7 @@
 #ifndef PIECECLASS_GROUPEDPIECES_H
 #define PIECECLASS_GROUPEDPIECES_H
 #include "Shore.h"
-#include "../puzzle_preview//PieceArray.h"
+#include "../puzzle_preview/PieceArray.h"
 #include "../puzzle_preview/PreviewHolder.h"
 #include "../puzzle_preview/ShoringHolder.h"
 #include "../puzzle_preview/PieceImage.h"
@@ -112,6 +112,8 @@ public:
     /// default constructor, initialize empty group
     GroupedPieces<1>();
 };
+
+
 
 // include file for correct template generation by the compiler
 #include "GroupedPieces.tpp"

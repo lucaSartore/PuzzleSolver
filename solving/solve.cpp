@@ -167,8 +167,12 @@ void solve_recursive(unsigned int dim_x,unsigned int dim_y,GroupedPiecesHolder<N
         for(auto solution: result_list){
 
             if(i == best_index){
-                auto pa = solution.template get_piece_array<ShoringHolder>(images);
+                auto pa = solution.template get_piece_array<PreviewHolder>(images);
                 pa.save_as_file(output_path);
+
+                imshow("solution", pa.get_preview_image());
+                waitKey(0);
+
                 break;
             }
             i++;

@@ -8,8 +8,9 @@
 #include <iostream>
 #include <exception>
 #include <iostream>
-//#include "solving/puzzle_preview/PieceImage.h"
-#include "solving/puzzle_preview/PieceArray.h"
+#include "solving/puzzle_preview/PieceImage.h"
+//#include "solving/puzzle_preview/PieceArray.h"
+//#include "solving/groped_pieces/GroupedPieces.h"
 //#include "solving/puzzle_preview/PreviewHolder.h"
 
 /// this exception os thrown if the state machine fail to create/read/write a file during the execution
@@ -51,11 +52,6 @@ private:
     unsigned int number_of_cores;
     /// the current state of the solver
     State state;
-    /// array containing all the image of the piece.
-    /// is in use only when state is `COMBINATION_CALCULATED` otherwise is null
-    //PieceImage * images;
-    /// array of pieces, is usable only when we are in the final state!
-    //PieceArray<PreviewHolder> piece_array;
     /// create a file in `work_path` with the name status.txt and save all the parameters of the class in it
     void save_status();
     /// load the status form the file that has been saved from the save_status() function
@@ -82,8 +78,6 @@ public:
     void solve_puzzle();
     /// destructor
     ~PuzzleSolver();
-    /// return an image of the final result
-    //cv::Mat get_result();
 };
 
 

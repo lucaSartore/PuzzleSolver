@@ -6,7 +6,6 @@
 #define PIECECLASS_SOLVE_H
 
 #include <iostream>
-
 /// this function try many possible combinations of a puzzle, and find the most likely solution(s)
 /// the parameters are:
 /// - input_path_connections: path where to find the pre-calculated connections of all the pieces
