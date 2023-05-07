@@ -1,6 +1,4 @@
-//
-// Created by luca on 4/20/23.
-//
+
 
 #include "GroupedPieces.h"
 #include <cmath>
@@ -11,8 +9,6 @@
 #include "../util.h"
 #include "../constants.h"
 extern PieceImage* piece_image_global;
-
-
 
 using namespace std;
 

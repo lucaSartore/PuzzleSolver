@@ -60,6 +60,7 @@ PuzzleSolver::PuzzleSolver(int dim_x, int dim_y, std::string work_path_, std::st
     }
 
     save_status();
+
 }
 
 std::ostream& operator<<(std::ostream& os, const PuzzleSolver& ps) {
@@ -111,10 +112,13 @@ void PuzzleSolver::save_status() {
 void PuzzleSolver::load_status(std::string file) {
     std::ifstream status_file;
     status_file.open(file);
+
     if (status_file.is_open()) {
         std::string line;
         // skip the 2 first lines
-        std::getline(status_file, line);std::getline(status_file, line);
+        std::getline(status_file, line);
+        cout << line.length() << endl;
+        std::getline(status_file, line);
 
         std::getline(status_file, line);
         final_dim_x = std::stoi(line);
@@ -180,8 +184,6 @@ void PuzzleSolver::calculate_connections() {
 
     save_status();
 
-    // reload status, to load the piece array
-    load_status(work_path);
 }
 
 void PuzzleSolver::solve_puzzle() {
@@ -200,21 +202,18 @@ void PuzzleSolver::solve_puzzle() {
             number_of_cores
             );
 
-    //state = COMBINATION_CALCULATED;
+    state = COMBINATION_CALCULATED;
 
     save_status();
+
+    // reload status, to load the piece array
+    load_status(work_path+"/status.txt");
 }
 
 PuzzleSolver::~PuzzleSolver() {
     //delete[] images;
 }
-/*
-cv::Mat PuzzleSolver::get_result() {
-    if(state != CONNECTION_CALCULATED){
-        throw wrong_state_exception();
-    }
-    return piece_array.get_preview_image();
-}*/
+
 
 std::ostream& operator<<(std::ostream& os, const State& state) {
     switch (state) {
