@@ -11,7 +11,7 @@ using namespace std;
 
 int main(){
 
-    PuzzleSolver ps(4, 4, "../work_path", "../dataset/test_4x4/raw",2);
+    PuzzleSolver ps(4, 4, "../work_path", "../../dataset/test_4x4/raw",2);
     //PuzzleSolver ps("../work_path");
 
 
