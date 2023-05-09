@@ -26,7 +26,7 @@ using namespace cv;
 /// and split them into many single pieces
 int split_pieces_into_single_images(const std::string& input_path,const std::string& output_path,const int ppi, bool enable_image_view){
 
-    // a temporary value to to quick operations
+    // a temporary value  to quick operations
     Mat temp, kernel;
     // index for keeping tracking the files to write
     int piece_index = 0;

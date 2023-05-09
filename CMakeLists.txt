@@ -6,10 +6,8 @@ project( PuzzleSolver )
 find_package(OpenCV REQUIRED PATHS opencv)
 include_directories( ${OpenCV_INCLUDE_DIRS} )
 
-add_executable(
-        PuzzleSolver
-
-        main.cpp
+#file to include
+set(SOURCE_FILES
 
         pre_processing/corner_finding.cpp
         pre_processing/corner_finding.h
@@ -58,9 +56,24 @@ add_executable(
         solving/puzzle_preview/Holder.h
         solving/puzzle_preview/point_indexes.h
 
-
-
         PuzzleSolver.cpp
         PuzzleSolver.h
+        )
+
+
+# library build
+add_library(PuzzleSolverLib SHARED puzzle_solver_library.cpp puzzle_solver_library.h ${SOURCE_FILES})
+target_link_libraries( PuzzleSolverLib ${OpenCV_LIBS} )
+
+# test build
+add_executable(PuzzleSolverTest main_test.cpp ${SOURCE_FILES})
+target_link_libraries( PuzzleSolverTest ${OpenCV_LIBS} )
+
+# enable testing functionality
+enable_testing()
+
+# define tests
+add_test(
+        NAME PuzzleSolverTest
+        COMMAND $<TARGET_FILE:PuzzleSolverTest>
 )
-target_link_libraries( PuzzleSolver ${OpenCV_LIBS} )
