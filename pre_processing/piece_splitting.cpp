@@ -45,7 +45,7 @@ int split_pieces_into_single_images(const std::string& input_path,const std::str
         cout << "splitting image "<< ++images_counter << "/" << number_of_images << endl;
 
         //step 1: read the files one by one;
-        Mat image = imread(entry.path());
+        Mat image = imread(entry.path().string());
 
         // expand the image border so that it could crop the pieces without "overflowing" and throwing an error
         int width = image.size().width, height = image.size().height;

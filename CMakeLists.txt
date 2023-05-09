@@ -1,7 +1,9 @@
-cmake_minimum_required(VERSION 3.24)
+cmake_minimum_required(VERSION 3.23)
 
 project( PuzzleSolver )
-find_package(OpenCV REQUIRED)
+
+# REMEMBER TO ADD: ./MinGW/etc/include/x64/mingw/bin to your system PATH
+find_package(OpenCV REQUIRED PATHS opencv)
 include_directories( ${OpenCV_INCLUDE_DIRS} )
 
 add_executable(
