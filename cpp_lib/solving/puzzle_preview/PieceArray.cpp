@@ -316,11 +316,12 @@ void PieceArray::insert_into_image(int x, int y,BuildImageMode mode) {
             throw std::invalid_argument("unknown mode");
     }
 
+    Point  this_piece_center = this_piece->get_rotated_center();
     // pasting the piece in to the image
     paste_on_top(
             to_paste,
             image,
-            this_piece->get_rotated_center(false),
+            this_piece_center,
             new_center_point,
             method
     );

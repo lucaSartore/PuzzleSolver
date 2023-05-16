@@ -33,7 +33,6 @@ void test_piece_array(){
 
     Mat resized;
     cv::resize(pa.get_image(PREVIEW),resized, Size(1000,1000));
-    imwrite("test.png",pa.get_image(SHORING));
     imshow("puzzle", resized);waitKey(0);
 
 
@@ -42,7 +41,7 @@ void test_piece_array(){
     base = Holder(&pieces_images[5], 3);pa.set(1, 0, std::move(base));
 
 
-    cv::resize(pa.get_image(SHORING),resized, Size(1000,1000));
+    cv::resize(pa.get_image(PREVIEW),resized, Size(1000,1000));
     imshow("puzzle", resized);waitKey(0);
 
     pa.grow_y();
@@ -69,7 +68,7 @@ void test_piece_array(){
     pa.attach_right(pa3);
 
 
-    cv::resize(pa.get_image(SHORING),resized, Size(1000,1000));
+    cv::resize(pa.get_image(PREVIEW),resized, Size(1000,1000));
     imshow("puzzle", resized);waitKey(0);
 }
 
