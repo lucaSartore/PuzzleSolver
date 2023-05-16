@@ -17,7 +17,7 @@
 
 void test_piece_array(){
 
-    PieceImage::set_origin_path("../../dataset/test_2x3/divided");
+    PieceImage::set_origin_path("../../../dataset/test_2x3/divided");
     PieceImage pieces_images[6];
 
     // filling both array up with the respective index;
@@ -25,37 +25,38 @@ void test_piece_array(){
         pieces_images[i] = PieceImage(i);
     }
 
-    imshow("AAAAAAA",pieces_images->get_image());
+    PieceArray pa = PieceArray();
 
-    PieceArray<PreviewHolder> pa = PieceArray<PreviewHolder>();
-
-    PreviewHolder base = PreviewHolder(&pieces_images[4], 0);
+    Holder base = Holder(&pieces_images[4], 0);
     pa.set(0,0,std::move(base));
 
 
-    //imshow("puzzle", pa.get_preview_image());waitKey(0);
+    Mat resized;
+    cv::resize(pa.get_image(PREVIEW),resized, Size(1000,1000));
+    imwrite("test.png",pa.get_image(SHORING));
+    imshow("puzzle", resized);waitKey(0);
+
 
     pa.grow_x();
 
-    base = PreviewHolder(&pieces_images[5], 3);pa.set(1, 0, std::move(base));
+    base = Holder(&pieces_images[5], 3);pa.set(1, 0, std::move(base));
 
 
-    //imshow("puzzle", pa.get_preview_image());waitKey(0);
+    cv::resize(pa.get_image(SHORING),resized, Size(1000,1000));
+    imshow("puzzle", resized);waitKey(0);
 
     pa.grow_y();
 
-    base = PreviewHolder(&pieces_images[3], 3);
+    base = Holder(&pieces_images[3], 3);
     pa.set(0,1,std::move(base));
 
 
-    //imshow("puzzle", pa.get_preview_image());waitKey(0);
-
-
-    //imshow("puzzle", pa.get_preview_image());waitKey(0);
-
-    base = PreviewHolder(&pieces_images[2], 0);
+    base = Holder(&pieces_images[2], 0);
     pa.set(1,1,std::move(base));
 
+
+    cv::resize(pa.get_image(PREVIEW),resized, Size(1000,1000));
+    imshow("puzzle", resized);waitKey(0);
 
     PieceArray pa2 = pa;
 
@@ -68,14 +69,15 @@ void test_piece_array(){
     pa.attach_right(pa3);
 
 
-    imshow("puzzle", pa.get_preview_image());waitKey(0);
+    cv::resize(pa.get_image(SHORING),resized, Size(1000,1000));
+    imshow("puzzle", resized);waitKey(0);
 }
 
 void test_grouped_piece_2_constructor(){
-    string path = "../../dataset/test_2x3/connections";
+    string path = "../../../dataset/test_2x3/connections";
 
     PieceConnection::set_number_of_pieces(6);
-    PieceImage::set_origin_path("../../dataset/test_2x3/divided");
+    PieceImage::set_origin_path("../../../dataset/test_2x3/divided");
     PieceConnection pieces[6];
     PieceImage pieces_images[6];
 
@@ -95,15 +97,15 @@ void test_grouped_piece_2_constructor(){
 
     GroupedPieces<2> sq =  GroupedPieces<2>(&top_left,&top_right,&bottom_right,&bottom_left);
 
-    auto pa = sq.get_piece_array<PreviewHolder>(pieces_images);
-    imshow("p",pa.get_preview_image());waitKey(0);
-    imshow("p",pa.get_preview_image());waitKey(0);
+    auto pa = sq.get_piece_array(pieces_images);
+    imshow("p",pa.get_image(PREVIEW));waitKey(0);
+    imshow("p",pa.get_image(PREVIEW));waitKey(0);
 
     sq.rotate_by(1);
 
-    auto pa2 = sq.get_piece_array<PreviewHolder>(pieces_images);
-    imshow("p",pa2.get_preview_image());waitKey(0);
-    imshow("p",pa2.get_preview_image());waitKey(0);
+    auto pa2 = sq.get_piece_array(pieces_images);
+    imshow("p",pa2.get_image(PREVIEW));waitKey(0);
+    imshow("p",pa2.get_image(PREVIEW));waitKey(0);
 }
 
 
@@ -112,7 +114,7 @@ void test_piece_array_shore(){
     Mat image_og;
     Mat resized;
 
-    PieceImage::set_origin_path("../../dataset/test_2x3/divided");
+    PieceImage::set_origin_path("../../../dataset/test_2x3/divided");
     PieceImage pieces_images[6];
 
 
@@ -121,36 +123,36 @@ void test_piece_array_shore(){
         pieces_images[i] = PieceImage(i);
     }
 
-    PieceArray<ShoringHolder> pa = PieceArray<ShoringHolder>();
+    PieceArray pa = PieceArray();
 
-    ShoringHolder base = ShoringHolder(&pieces_images[4], 0);
-    base.rotate_by(-0.1);
+    Holder base = Holder(&pieces_images[4], 0);
+    //base.rotate_by(-0.1);
     pa.set(0,0,std::move(base));
 
 
 
-    image_og = pa.get_preview_image();
+    image_og = pa.get_image(PREVIEW);
     resize(image_og,resized,image_og.size()/8);
     imshow("puzzle", resized);waitKey(0);
 
     pa.grow_x();
 
-    base = ShoringHolder(&pieces_images[5], 3);pa.set(1, 0, std::move(base));
+    base = Holder(&pieces_images[5], 3);pa.set(1, 0, std::move(base));
 
 
-    image_og = pa.get_preview_image();
+    image_og = pa.get_image(PREVIEW);
     resize(image_og,resized,image_og.size()/8);
     imshow("puzzle", resized);waitKey(0);
 
 
     pa.grow_y();
 
-    base = ShoringHolder(&pieces_images[3], 3);
+    base = Holder(&pieces_images[3], 3);
     pa.set(0,1,std::move(base));
 
-    base = ShoringHolder(&pieces_images[2], 0);
+    base = Holder(&pieces_images[2], 0);
     pa.set(1,1,std::move(base));
-    image_og = pa.get_preview_image();
+    image_og = pa.get_image(PREVIEW);
 
     cout << "shore: " << pa.get_shore() << endl;
 
@@ -170,15 +172,15 @@ void test_piece_array_shore(){
 
     cout << "shore: " << pa.get_shore() << endl;
 
-    image_og = pa.get_preview_image();
+    image_og = pa.get_image(PREVIEW);
     resize(image_og,resized,image_og.size()/8);
     imshow("puzzle", resized);waitKey(0);
 }
 
 void test_grouped_piece_holder(){
-    string path = "../../dataset/test_2x3/connections";
+    string path = "../../../dataset/test_2x3/connections";
     PieceConnection::set_number_of_pieces(6);
-    PieceImage::set_origin_path("../../dataset/test_2x3/divided");
+    PieceImage::set_origin_path("../../../dataset/test_2x3/divided");
     PieceConnection pieces[6];
     PieceImage pieces_images[6];
 
@@ -204,18 +206,18 @@ void test_grouped_piece_holder(){
             &group_1.get(3,3)
     );
 
-    auto pa = sq.get_piece_array<PreviewHolder>(pieces_images);
-    imshow("p",pa.get_preview_image());waitKey(0);
+    auto pa = sq.get_piece_array(pieces_images);
+    imshow("p",pa.get_image(PREVIEW));waitKey(0);
 
     sq.rotate_by(1);
 
-    auto pa2 = sq.get_piece_array<PreviewHolder>(pieces_images);
-    imshow("p",pa2.get_preview_image());waitKey(0);
+    auto pa2 = sq.get_piece_array(pieces_images);
+    imshow("p",pa2.get_image(PREVIEW));waitKey(0);
 }
 
 void test_piece_array_save(){
 
-    PieceImage::set_origin_path("../../dataset/test_2x3/divided");
+    PieceImage::set_origin_path("../../../dataset/test_2x3/divided");
     PieceImage pieces_images[6];
 
     // filling both array up with the respective index;
@@ -223,31 +225,31 @@ void test_piece_array_save(){
         pieces_images[i] = PieceImage(i);
     }
 
-    PieceArray<PreviewHolder> pa = PieceArray<PreviewHolder>();
+    PieceArray pa = PieceArray();
 
-    PreviewHolder base = PreviewHolder(&pieces_images[4], 0);
+    Holder base = Holder(&pieces_images[4], 0);
     pa.set(0,0,std::move(base));
     pa.grow_x();
 
-    base = PreviewHolder(&pieces_images[5], 3);
+    base = Holder(&pieces_images[5], 3);
     pa.set(1, 0, std::move(base));
     pa.grow_y();
 
-    base = PreviewHolder(&pieces_images[3], 3);
+    base = Holder(&pieces_images[3], 3);
     pa.set(0,1,std::move(base));
 
 
-    base = PreviewHolder(&pieces_images[2], 0);
+    base = Holder(&pieces_images[2], 0);
     pa.set(1,1,std::move(base));
 
-    pa.save_as_file("../save.bin");
+    pa.save_as_file("../../save.bin");
 
-    PieceArray<PreviewHolder> new_pa = PieceArray<PreviewHolder>();
+    PieceArray new_pa = PieceArray();
 
-    new_pa.load_from_file("../save.bin",pieces_images);
+    new_pa.load_from_file("../../save.bin",pieces_images);
 
-    imshow("original",pa.get_preview_image());
-    imshow("after save",new_pa.get_preview_image());
+    imshow("original",pa.get_image(PREVIEW));
+    imshow("after save",new_pa.get_image(PREVIEW));
 
     waitKey(0);
 

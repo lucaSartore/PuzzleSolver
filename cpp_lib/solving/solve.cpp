@@ -152,7 +152,7 @@ void solve_recursive(unsigned int dim_x,unsigned int dim_y,GroupedPiecesHolder<N
         int best_index,  i=0;
         float best_shore = 0;
         for(auto solution: result_list){
-            auto pa = solution.template get_piece_array<ShoringHolder>(images);
+            auto pa = solution.get_piece_array(images);
 
             float shore = pa.get_shore();
             if(shore > best_shore){
@@ -167,10 +167,10 @@ void solve_recursive(unsigned int dim_x,unsigned int dim_y,GroupedPiecesHolder<N
         for(auto solution: result_list){
 
             if(i == best_index){
-                auto pa = solution.template get_piece_array<PreviewHolder>(images);
+                auto pa = solution.get_piece_array(images);
                 pa.save_as_file(output_path);
 
-                imshow("solution", pa.get_preview_image());
+                imshow("solution", pa.get_image(PREVIEW));
                 waitKey(0);
 
                 break;
@@ -236,7 +236,7 @@ void solve_thread(GroupedPiecesHolder<N> *input_pieces, atomic<int> * index, ato
                                         auto new_piece = GroupedPieces<N+1>(top_left, top_right, bottom_right, bottom_left);
 
                                         // create the array
-                                        auto array = new_piece.template get_piece_array<ShoringHolder>(images);
+                                        auto array = new_piece.get_piece_array(images);
 
                                         // get the shore of the array
                                         if(array.get_shore()>MIN_SHORE_PIECE_ARRAY){
@@ -560,7 +560,7 @@ int old_main(){
 
     for(auto component: list_lev_3){
         PieceArray<PreviewHolder> pa = component.get_piece_array<PreviewHolder>(piece_images);
-        imshow("test", pa.get_preview_image());
+        imshow("test", pa.get_image());
         waitKey(0);
     }
 

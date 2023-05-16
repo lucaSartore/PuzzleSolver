@@ -1,6 +1,5 @@
 #include "PieceArray.h"
 #include "stdexcept"
-#include "ShoringHolder.h"
 #include <memory>
 #include <utility>
 #include "point_indexes.h"
@@ -23,16 +22,16 @@ using namespace cv;
 /// the amount of pixels a piece will be dilated and eroded in order to remove the cracks
 #define DILAT_EROS_CRACKS_REMOVAL 5
 
-template<class T>
-PieceArray<T>::PieceArray() {
+
+PieceArray::PieceArray() {
     has_been_completed = false;
 
     dim_x = 1;
     dim_y = 1;
-    pieces = vector<vector<T>>();
+    pieces = vector<vector<Holder>>();
 
     // start with a 1*1 array with an empty holder inside
-    auto one_dim = vector<T>();
+    auto one_dim = vector<Holder>();
     // insert a default Holder
     one_dim.emplace_back();
     pieces.push_back(one_dim);
@@ -41,8 +40,8 @@ PieceArray<T>::PieceArray() {
 
     //srand(time(NULL));
 }
-template<class T>
-T *PieceArray<T>::get(int x, int y){
+
+Holder *PieceArray::get(int x, int y){
     // check if in range
     try{
         check_indexes(x,y);
@@ -58,8 +57,7 @@ T *PieceArray<T>::get(int x, int y){
     return to_return;
 }
 
-template<class T>
-void PieceArray<T>::set(int x, int y, T &&to_be_set) {
+void PieceArray::set(int x, int y, Holder &&to_be_set) {
     // check if in range
     check_indexes(x,y);
 
@@ -78,17 +76,16 @@ void PieceArray<T>::set(int x, int y, T &&to_be_set) {
     check_and_expand_image();
 }
 
-template<class T>
-void PieceArray<T>::check_indexes(int x, int y) const {
+void PieceArray::check_indexes(int x, int y) const {
     // check if indexes are in range
     if(x<0 || y<0 || x >= dim_x || y >= dim_y){
         throw std::invalid_argument("index out of range");
     }
 }
 
-template<class T>
-void PieceArray<T>::grow_x() {
-    auto new_colon = vector<T>();
+
+void PieceArray::grow_x() {
+    auto new_colon = vector<Holder>();
     for(int i=0; i<dim_y; i++){
         new_colon.emplace_back();
     }
@@ -97,8 +94,8 @@ void PieceArray<T>::grow_x() {
     has_been_completed = false;
 }
 
-template<class T>
-void PieceArray<T>::grow_y() {
+
+void PieceArray::grow_y() {
     for(int i=0; i<dim_x; i++){
         pieces[i].emplace_back();
     }
@@ -106,26 +103,23 @@ void PieceArray<T>::grow_y() {
     has_been_completed = false;
 }
 
-template<class T>
-int PieceArray<T>::get_dim_x() const{
+
+int PieceArray::get_dim_x() const{
     return dim_x;
 }
 
-template<class T>
-int PieceArray<T>::get_dim_y() const  {
+int PieceArray::get_dim_y() const  {
     return dim_y;
 }
 
-template<class T>
-void PieceArray <T>::un_grow_x() {
+void PieceArray::un_grow_x() {
     if(dim_x != 0){
         pieces.pop_back();
         dim_x--;
     }
 }
 
-template<class T>
-void PieceArray<T>::un_grow_y() {
+void PieceArray::un_grow_y() {
     if(dim_y != 0){
         for(int i=0; i<dim_x; i++){
             pieces[i].pop_back();
@@ -134,19 +128,17 @@ void PieceArray<T>::un_grow_y() {
     }
 }
 
-template<class T>
-cv::Mat PieceArray<T>::get_preview_image(){
+cv::Mat PieceArray::get_image(BuildImageMode mode){
     assert(has_been_completed);
-    reset_image();
+    reset_image( mode);
     return image.clone();
 }
 
-template<class T>
-void PieceArray<T>::build_image() {
+void PieceArray::build_image(BuildImageMode mode) {
     for(int x=0; x<get_dim_x(); x++){
         for(int y=0; y<get_dim_y(); y++){
             try{
-                insert_into_image(x, y);
+                insert_into_image(x, y,mode);
                 check_and_expand_image();
             }catch (...){
                 // once i get an error, i continue with the next iteration of X value
@@ -157,8 +149,8 @@ void PieceArray<T>::build_image() {
     }
 }
 
-template<class T>
-void PieceArray<T>::paste_on_top(const cv::Mat& source, cv::Mat& destination, cv::Point2i pointSource, cv::Point2i pointDestination,PateOnTopMethod method) {
+
+void PieceArray::paste_on_top(const cv::Mat& source, cv::Mat& destination, cv::Point2i pointSource, cv::Point2i pointDestination,PateOnTopMethod method) {
 
     // Compute the translation vector to align the two points
     cv::Point2i translation = pointDestination - pointSource;
@@ -193,10 +185,12 @@ void PieceArray<T>::paste_on_top(const cv::Mat& source, cv::Mat& destination, cv
     }
 
     result.copyTo(croppedDestination);
+
+
 }
 
-template<class T>
-void PieceArray<T>::check_and_expand_image() {
+
+void PieceArray::check_and_expand_image() {
 
     Mat image_gray;
     cvtColor(image,image_gray,COLOR_BGR2GRAY);
@@ -234,98 +228,42 @@ void PieceArray<T>::check_and_expand_image() {
     }
 }
 
-template<>
-void PieceArray<PreviewHolder>::insert_into_image(int x, int y) {
+void PieceArray::insert_into_image(int x, int y,BuildImageMode mode) {
+
     check_indexes(x,y);
 
+    // set the resolution based on the mode
+    switch (mode) {
+        case PREVIEW:
+            // preview is done at low res
+            Holder::set_resize(true);
+            break;
+        case SHORING:
+            // shoring is done at high-res
+            Holder::set_resize(false);
+            break;
+        default:
+            throw std::invalid_argument("unknown mode");
+    }
+
+
     // get the piece on the top and bottom of the piece i'm trying to place
-    PreviewHolder* piece_left = get(x - 1, y);
-    PreviewHolder* piece_top = get(x, y - 1);
+    Holder* piece_left = get(x - 1, y);
+    Holder* piece_top = get(x, y - 1);
 
-    PreviewHolder* this_piece = get(x, y);
-
-    // vector that go form the right side of the current piece to the center
-    Point left_to_center_vector = this_piece->get_center(true) - this_piece->get_side_center(LEFT,true);
-    // vector that go form the top side of the current piece to the center
-    Point top_to_center_vector = this_piece->get_center(true) - this_piece->get_side_center(UP,true);
+    Holder* this_piece = get(x, y);
 
     int center_x,center_y;
 
     // building on top corner
     if(piece_left == nullptr && piece_top == nullptr){
-        // default case: i need to place a corner
 
-        // calculating the point of where to put the new piece
-        center_x = BORDER_DISTANCE + left_to_center_vector.x;
-        center_y = BORDER_DISTANCE + top_to_center_vector.y;
-    }
-    // building on the left side
-    else if(piece_left == nullptr){
-        // default case: i need place a border vertically
-
-        center_x = BORDER_DISTANCE + left_to_center_vector.x;
-        center_y = (piece_top->get_side_center_with_offset(DOWN,true) + top_to_center_vector).y;
-    }
-    // building on the top side
-    else if(piece_top == nullptr){
-        // default case: i need to place a border horizontally
-
-        center_x = (piece_left->get_side_center_with_offset(RIGHT,true) + left_to_center_vector).x;
-        center_y = BORDER_DISTANCE + top_to_center_vector.y;
-    }
-    // building in the middle
-    else{
-
-        Point center_1 = piece_left->get_side_center_with_offset(RIGHT,true) + left_to_center_vector;
-        Point center_2 = piece_top->get_side_center_with_offset(DOWN,true) + top_to_center_vector;
-
-        Point center = (center_1+center_2)/2;
-
-        center_x = center.x;
-        center_y = center.y;
-    }
-
-    Point new_center_point = Point(center_x,center_y);
-
-    // matrix to insert in the new puzzle_preview
-    Mat to_paste;
-    cvtColor(this_piece->get_image_resized(), to_paste, COLOR_GRAY2BGR);
-    to_paste = to_paste!=0;
-    floodFill(to_paste, this_piece->get_center(true), this_piece->get_color());
-
-    // pasting the piece in to the image
-    paste_on_top(
-            to_paste,
-            image,
-            this_piece->get_center(true),
-            new_center_point,
-            OR
-    );
-
-    // updating the position of the piece
-    this_piece->set_offset(new_center_point - this_piece->get_center(true));
-}
-
-template<>
-void PieceArray<ShoringHolder>::insert_into_image(int x, int y) {
-    check_indexes(x,y);
-
-    // get the piece on the top and bottom of the piece i'm trying to place
-    ShoringHolder* piece_left = get(x - 1, y);
-    ShoringHolder* piece_top = get(x, y - 1);
-
-    ShoringHolder* this_piece = get(x, y);
-
-    int center_x,center_y;
-
-    // building on top corner
-    if(piece_left == nullptr && piece_top == nullptr){
         // default case: i need to place a corner
 
         // vector that go form the right side of the current piece to the center
-        Point left_to_center_vector = this_piece->get_center(true) - this_piece->get_side_center(LEFT,true);
+        Point left_to_center_vector = this_piece->get_rotated_center(true) - this_piece->get_side_center(LEFT,true);
         // vector that go form the top side of the current piece to the center
-        Point top_to_center_vector = this_piece->get_center(true) - this_piece->get_side_center(UP,true);
+        Point top_to_center_vector = this_piece->get_rotated_center(true) - this_piece->get_side_center(UP,true);
 
         // calculating the point of where to put the new piece
         center_x = BORDER_DISTANCE + left_to_center_vector.x;
@@ -355,24 +293,42 @@ void PieceArray<ShoringHolder>::insert_into_image(int x, int y) {
 
     // matrix to insert in the new puzzle_preview
     Mat to_paste;
-    cvtColor(this_piece->get_rotated_image(), to_paste, COLOR_GRAY2BGR);
+    cvtColor(this_piece->get_image(), to_paste, COLOR_GRAY2BGR);
     to_paste = to_paste!=0;
+
+    // if in preview mode, add color
+    if(mode == PREVIEW){
+        floodFill(to_paste, this_piece->get_rotated_center(), this_piece->get_color());
+    }
+
+    // select the paste on top method
+    PateOnTopMethod method;
+    switch (mode) {
+        case PREVIEW:
+            // preview is done at low res
+            method = OR;
+            break;
+        case SHORING:
+            // shoring is done at high-res
+            method = XOR;
+            break;
+        default:
+            throw std::invalid_argument("unknown mode");
+    }
 
     // pasting the piece in to the image
     paste_on_top(
             to_paste,
             image,
-            this_piece->get_center(false),
+            this_piece->get_rotated_center(false),
             new_center_point,
-            XOR
+            method
     );
-
-
 }
 
 
-template<class T>
-cv::Scalar PieceArray<T>::get_random_color() {
+
+cv::Scalar PieceArray::get_random_color() {
     // HSV random color
     Scalar color = Scalar (rand()%256, 255, 255);
     Mat in = Mat(Size(1,1),CV_8UC3,color);
@@ -386,14 +342,14 @@ cv::Scalar PieceArray<T>::get_random_color() {
     return new_color;
 }
 
-template<class T>
-void PieceArray<T>::reset_image() {
+
+void PieceArray::reset_image(BuildImageMode mode) {
     image = Mat::zeros(Size(STARTING_DIMENSIONS,STARTING_DIMENSIONS),CV_8UC3);
-    build_image();
+    build_image(mode);
 }
 
-template<class T>
-PieceArray<T>::PieceArray(PieceArray<T> &&other) {
+
+PieceArray::PieceArray(PieceArray &&other) {
     has_been_completed = other.has_been_completed;
 
     image = std::move(other.image);
@@ -403,10 +359,10 @@ PieceArray<T>::PieceArray(PieceArray<T> &&other) {
     dim_y = other.dim_y;
 
     pieces = std::move(other.pieces);
-    other.pieces = vector<vector<T>>();
+    other.pieces = vector<vector<Holder>>();
 }
-template<class T>
-PieceArray<T>::PieceArray(PieceArray<T> &other) {
+
+PieceArray::PieceArray(PieceArray &other) {
     has_been_completed = other.has_been_completed;
 
     image = other.image.clone();
@@ -417,8 +373,8 @@ PieceArray<T>::PieceArray(PieceArray<T> &other) {
     pieces = other.pieces;
 }
 
-template<class T>
-void PieceArray<T>::attach_right(const PieceArray<T> &other) {
+
+void PieceArray::attach_right(const PieceArray &other) {
 
     if(dim_y != other.dim_y){
         throw invalid_argument("the 2 pieces MUST have the same y dimension");
@@ -434,8 +390,8 @@ void PieceArray<T>::attach_right(const PieceArray<T> &other) {
     }
 }
 
-template<class T>
-void PieceArray<T>::attach_bottom(const PieceArray<T> &other) {
+
+void PieceArray::attach_bottom(const PieceArray &other) {
     if(dim_x != other.dim_x){
         throw invalid_argument("the 2 pieces MUST have the same x dimension");
     }
@@ -455,10 +411,9 @@ void PieceArray<T>::attach_bottom(const PieceArray<T> &other) {
 }
 
 
-template<>
-float PieceArray<ShoringHolder>::get_shore() {
+float PieceArray::get_shore() {
     // calculating the image
-    reset_image();
+    reset_image(SHORING);
 
     // creating gray mask
     Mat img_gray;
@@ -517,9 +472,7 @@ float PieceArray<ShoringHolder>::get_shore() {
 }
 
 
-
-template<class T>
-void PieceArray<T>::load_from_file(std::string path, PieceImage *images) {
+void PieceArray::load_from_file(std::string path, PieceImage *images) {
     std::ifstream file(path, std::ios::binary);
 
     // array must be empty
@@ -546,15 +499,14 @@ void PieceArray<T>::load_from_file(std::string path, PieceImage *images) {
             int id, orientation;
             file.read(reinterpret_cast<char*>(&id), sizeof(int));
             file.read(reinterpret_cast<char*>(&orientation), sizeof(int));
-            T element = T(images+id, orientation);
+            Holder element = Holder(images+id, orientation);
             set(x, y, std::move(element));
         }
     }
     has_been_completed = true;
 }
 
-template<class T>
-void PieceArray<T>::save_as_file(std::string path) {
+void PieceArray::save_as_file(std::string path) {
 
     assert(has_been_completed);
 
@@ -567,7 +519,7 @@ void PieceArray<T>::save_as_file(std::string path) {
     // Write array contents to file
     for (int y = 0; y < dim_y; y++) {
         for (int x = 0; x < dim_x; x++) {
-            T* element = get(x, y);
+            Holder* element = get(x, y);
             element->set_color(get_random_color());
             int id = element->get_id();
             int orientation = element->get_orientation();
@@ -577,8 +529,3 @@ void PieceArray<T>::save_as_file(std::string path) {
     }
 
 }
-/*
-void compile_use_full_stuff(){
-    auto p = PieceArray<ShoringHolder>();
-    auto p2 = PieceArray<PreviewHolder>();
-}*/

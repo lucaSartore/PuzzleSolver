@@ -383,13 +383,12 @@ void GroupedPieces<1>::set_id(int new_id) {
 
 
 template<int N>
-template<class T>
-PieceArray<T> GroupedPieces<N>::get_piece_array(PieceImage *shapes,int recursive_orientation) {
+PieceArray GroupedPieces<N>::get_piece_array(PieceImage *shapes,int recursive_orientation) {
     // getting the four sub array
-    PieceArray<T> top_left = std::move(get_top_left(recursive_orientation)->template get_piece_array<T>(shapes,recursive_orientation+orientation));
-    PieceArray<T> top_right = std::move(get_top_right(recursive_orientation)->template get_piece_array<T>(shapes,recursive_orientation+orientation));
-    PieceArray<T> bottom_left = std::move(get_bottom_left(recursive_orientation)->template get_piece_array<T>(shapes,recursive_orientation+orientation));
-    PieceArray<T> bottom_right = std::move(get_bottom_right(recursive_orientation)->template get_piece_array<T>(shapes,recursive_orientation+orientation));
+    PieceArray top_left = std::move(get_top_left(recursive_orientation)->get_piece_array(shapes,recursive_orientation+orientation));
+    PieceArray top_right = std::move(get_top_right(recursive_orientation)->get_piece_array(shapes,recursive_orientation+orientation));
+    PieceArray bottom_left = std::move(get_bottom_left(recursive_orientation)->get_piece_array(shapes,recursive_orientation+orientation));
+    PieceArray bottom_right = std::move(get_bottom_right(recursive_orientation)->get_piece_array(shapes,recursive_orientation+orientation));
 
     // summing them in to one sub component
     top_left.attach_right(top_right);
@@ -401,10 +400,9 @@ PieceArray<T> GroupedPieces<N>::get_piece_array(PieceImage *shapes,int recursive
 }
 
 
-template<class T>
-PieceArray<T> GroupedPieces<1>::get_piece_array(PieceImage *shapes,int recursive_orientation) {
-    PieceArray<T> pa = PieceArray<T>();
-    T ph = T(&shapes[get_id()], (orientation+recursive_orientation)%4);
+PieceArray GroupedPieces<1>::get_piece_array(PieceImage *shapes,int recursive_orientation) {
+    PieceArray pa = PieceArray();
+    Holder ph = Holder(&shapes[get_id()], (orientation+recursive_orientation)%4);
     pa.set(0,0,std::move(ph));
     return std::move(pa);
 }
