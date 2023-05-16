@@ -22,6 +22,10 @@
 /// is hirer than this constant, the group gets considered valid
 #define MIN_AVG_SHORE_FOR_GROUP 0.5
 
+/// how much the original image will be resized for the preview
+#define PREVIEW_RESIZE_FACTOR 4
+/// the resolution of the image generated when a piece is rotated ( need to be big enough to fit a puzzle piece inside)
+#define ROTATION_RESOLUTION 2000
 
 #endif //PIECECLASS_CONSTANTS_H
 

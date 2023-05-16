@@ -6,8 +6,7 @@
 #define PIECECLASS_GROUPEDPIECES_H
 #include "Shore.h"
 #include "../puzzle_preview/PieceArray.h"
-#include "../puzzle_preview/PreviewHolder.h"
-#include "../puzzle_preview/ShoringHolder.h"
+#include "../puzzle_preview/Holder.h"
 #include "../puzzle_preview/PieceImage.h"
 
 #include "../logic_piece/PieceConnection.h"
@@ -70,8 +69,7 @@ public:
     GroupedPieces<N>(GroupedPieces<N-1> *top_left, GroupedPieces<N-1> *top_right, GroupedPieces<N-1> *bottom_right, GroupedPieces<N-1> *bottom_left);
     /// return a piece array that represent this subset of pieces, you need to pass him
     /// an array containing all the pieces loaded
-    template<class T>
-    PieceArray<T> get_piece_array(PieceImage* shapes,int recursive_orientation=0);
+    PieceArray get_piece_array(PieceImage* shapes,int recursive_orientation=0);
     /// default constructor (initialize empty group)
     GroupedPieces<N>();
 };
@@ -107,8 +105,7 @@ public:
     explicit GroupedPieces<1>(PieceConnection* reference_piece);
     /// return a piece array that represent this subset of pieces, you need to pass him
     /// an array containing all the pieces loaded
-    template<class T>
-    PieceArray<T> get_piece_array(PieceImage* shapes,int recursive_orientation=0);
+    PieceArray get_piece_array(PieceImage* shapes,int recursive_orientation=0);
     /// default constructor, initialize empty group
     GroupedPieces<1>();
 };

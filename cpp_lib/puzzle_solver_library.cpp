@@ -1,12 +1,12 @@
-
+/*
 #include "PuzzleSolver.h"
 #include "puzzle_solver_library.h"
 
 #include <utility>
 #include "exception"
-int create_puzzle_solver(int dim_x, int dim_y, std::string work_path, std::string input_path, int number_of_cores){
+int create_puzzle_solver(int dim_x, int dim_y,char* work_path, char* input_path, int number_of_cores){
     try{
-        PuzzleSolver ps(dim_x, dim_y, std::move(work_path), std::move(input_path),number_of_cores);
+        PuzzleSolver ps(dim_x, dim_y, work_path, input_path,number_of_cores);
         return 0;
     }catch(std::exception &exception){
         std::cerr << exception.what() << std::endl;
@@ -14,9 +14,9 @@ int create_puzzle_solver(int dim_x, int dim_y, std::string work_path, std::strin
     }
 }
 
-int split_image(std::string work_path){
+int split_image(const char* work_path){
     try{
-        PuzzleSolver ps("../work_path");
+        PuzzleSolver ps(work_path);
         ps.split_image();
         return 0;
     }catch(std::exception &exception){
@@ -25,9 +25,9 @@ int split_image(std::string work_path){
     }
 }
 
-int process_corners(std::string work_path){
+int process_corners(const char* work_path){
     try{
-        PuzzleSolver ps("../work_path");
+        PuzzleSolver ps(work_path);
         ps.process_corners();
         return 0;
     }catch(std::exception &exception){
@@ -36,9 +36,9 @@ int process_corners(std::string work_path){
     }
 }
 
-int calculate_connections(std::string work_path){
+int calculate_connections(const char* work_path){
     try{
-        PuzzleSolver ps("../work_path");
+        PuzzleSolver ps(work_path);
         ps.calculate_connections();
         return 0;
     }catch(std::exception &exception){
@@ -47,9 +47,9 @@ int calculate_connections(std::string work_path){
     }
 }
 
-int solve_puzzle(std::string work_path){
+int solve_puzzle(const char* work_path){
     try{
-        PuzzleSolver ps("../work_path");
+        PuzzleSolver ps(work_path);
         ps.solve_puzzle();
         return 0;
     }catch(std::exception &exception){
@@ -57,3 +57,4 @@ int solve_puzzle(std::string work_path){
         return 1;
     }
 }
+*/

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.23)
 
 project( PuzzleSolver )
 
-# REMEMBER TO ADD: ./MinGW/etc/include/x64/mingw/bin to your system PATH
+# REMEMBER TO ADD: YOUR_PATH\Puzzle_Solver\opencv\x64\mingw\bin\ to your system PATH
 find_package(OpenCV REQUIRED PATHS ../opencv)
 include_directories( ${OpenCV_INCLUDE_DIRS} )
 
@@ -44,14 +44,10 @@ set(SOURCE_FILES
         solving/groped_pieces/GroupedPiecesHolder.tpp
         solving/groped_pieces/GroupedPiecesHolder.h
 
-        solving/puzzle_preview/PreviewHolder.cpp
-        solving/puzzle_preview/PreviewHolder.h
-        solving/puzzle_preview/PieceArray.tpp
+        solving/puzzle_preview/PieceArray.cpp
         solving/puzzle_preview/PieceArray.h
         solving/puzzle_preview/PieceImmage.cpp
         solving/puzzle_preview/PieceImage.h
-        solving/puzzle_preview/ShoringHolder.cpp
-        solving/puzzle_preview/ShoringHolder.h
         solving/puzzle_preview/Holder.cpp
         solving/puzzle_preview/Holder.h
         solving/puzzle_preview/point_indexes.h

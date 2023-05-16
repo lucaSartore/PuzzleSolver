@@ -3,16 +3,17 @@
 
 #include <iostream>
 
+extern "C" {
+    int __declspec(dllexport) create_puzzle_solver(int dim_x, int dim_y, char *work_path, char *input_path, int number_of_cores);
 
-int create_puzzle_solver(int dim_x, int dim_y, std::string input_path, int number_of_cores);
+    int __declspec(dllexport) split_image(const char *work_path);
 
-int split_image(std::string work_path);
+    int __declspec(dllexport) process_corners(const char *work_path);
 
-int process_corners(std::string work_path);
+    int __declspec(dllexport) calculate_connections(const char *work_path);
 
-int calculate_connections(std::string work_path);
-
-int solve_puzzle(std::string work_path);
+    int __declspec(dllexport) solve_puzzle(const char *work_path);
+}
 
 
 #endif //PUZZLESOLVER_PUZZLE_SOLVER_LIBRARY_H
