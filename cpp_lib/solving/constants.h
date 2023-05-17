@@ -16,7 +16,7 @@
 #define MIN_COMPAT_CC 0.3
 
 /// the minimum shore a PieceArray<ShoringHolder> needs to have, in order to be consider valid
-#define MIN_SHORE_PIECE_ARRAY 0.96
+#define MIN_SHORE_PIECE_ARRAY 0.975
 
 /// once a new group is created, the avrege shore of his connections is calculated, if the avrege
 /// is hirer than this constant, the group gets considered valid
