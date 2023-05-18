@@ -36,5 +36,30 @@ namespace WinFormsApp1
         {
 
         }
+
+        private void debugToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void automaticContinueToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void onToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void onToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void offToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
