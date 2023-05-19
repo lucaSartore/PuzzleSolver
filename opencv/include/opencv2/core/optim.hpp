@@ -103,7 +103,7 @@ public:
     the function values at the vertices of simplex are within termcrit.epsilon range or simplex
     becomes so small that it can enclosed in a box with termcrit.epsilon sides, whatever comes
     first.
-    @param termcrit Terminal criteria to be used, represented as cv::TermCriteria structure.
+    @param termcrit Terminal criteria to be used, represented as cond_v::TermCriteria structure.
      */
     virtual void setTermCriteria(const TermCriteria& termcrit) = 0;
 
@@ -143,7 +143,7 @@ small that it can enclosed in a box with termcrit.epsilon sides, whatever comes 
 defined by user positive integer termcrit.maxCount and positive non-integer termcrit.epsilon.
 
 @note DownhillSolver is a derivative of the abstract interface
-cv::MinProblemSolver, which in turn is derived from the Algorithm interface and is used to
+cond_v::MinProblemSolver, which in turn is derived from the Algorithm interface and is used to
 encapsulate the functionality, common to all non-linear optimization algorithms in the optim
 module.
 
@@ -253,7 +253,7 @@ public:
                                       TermCriteria termcrit=TermCriteria(TermCriteria::MAX_ITER+TermCriteria::EPS,5000,0.000001));
 };
 
-//! return codes for cv::solveLP() function
+//! return codes for cond_v::solveLP() function
 enum SolveLPResult
 {
     SOLVELP_UNBOUNDED    = -2, //!< problem is unbounded (target function can achieve arbitrary high values)
@@ -291,12 +291,12 @@ in the latter case it is understood to correspond to \f$c^T\f$.
 and the remaining to \f$A\f$. It should contain 32- or 64-bit floating point numbers.
 @param z The solution will be returned here as a column-vector - it corresponds to \f$c\f$ in the
 formulation above. It will contain 64-bit floating point numbers.
-@return One of cv::SolveLPResult
+@return One of cond_v::SolveLPResult
  */
 CV_EXPORTS_W int solveLP(InputArray Func, InputArray Constr, OutputArray z);
 
 //! @}
 
-}// cv
+}// cond_v
 
 #endif

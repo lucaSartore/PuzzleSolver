@@ -272,6 +272,6 @@ public:
 
 //! @} stitching_warp
 
-} // namespace cv
+} // namespace cond_v
 
 #endif // OPENCV_STITCHING_WARPER_CREATORS_HPP

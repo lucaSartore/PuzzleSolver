@@ -244,7 +244,7 @@ The following Point3_\<\> aliases are available:
     typedef Point3_<float> Point3f;
     typedef Point3_<double> Point3d;
 @endcode
-@see cv::Point3i, cv::Point3f and cv::Point3d
+@see cond_v::Point3i, cond_v::Point3f and cond_v::Point3d
 */
 template<typename _Tp> class Point3_
 {
@@ -267,7 +267,7 @@ public:
 #endif
     //! conversion to another data type
     template<typename _Tp2> operator Point3_<_Tp2>() const;
-    //! conversion to cv::Vec<>
+    //! conversion to cond_v::Vec<>
     operator Vec<_Tp, 3>() const;
 
     //! dot product
@@ -433,7 +433,7 @@ rect2):
         return (r1 & r2) == r1;
     }
 @endcode
-For your convenience, the Rect_\<\> alias is available: cv::Rect
+For your convenience, the Rect_\<\> alias is available: cond_v::Rect
 */
 template<typename _Tp> class Rect_
 {
@@ -913,7 +913,7 @@ public:
 //! @addtogroup imgproc_shape
 //! @{
 
-/** @brief struct returned by cv::moments
+/** @brief struct returned by cond_v::moments
 
 The spatial moments \f$\texttt{Moments::m}_{ji}\f$ are computed as:
 
@@ -2434,6 +2434,6 @@ TermCriteria::TermCriteria(int _type, int _maxCount, double _epsilon)
 
 //! @endcond
 
-} // cv
+} // cond_v
 
 #endif //OPENCV_CORE_TYPES_HPP

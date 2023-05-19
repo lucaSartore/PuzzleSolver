@@ -23,6 +23,6 @@ CV_EXPORTS_W bool useOpenVX();
 
 /// Enable/disable use of OpenVX
 CV_EXPORTS_W void setUseOpenVX(bool flag);
-} // namespace cv
+} // namespace cond_v
 
 #endif // OPENCV_OVX_HPP

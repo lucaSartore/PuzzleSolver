@@ -876,7 +876,7 @@ enum HersheyFonts {
     FONT_ITALIC                 = 16 //!< flag for italic font
 };
 
-/** Possible set of marker types used for the cv::drawMarker function
+/** Possible set of marker types used for the cond_v::drawMarker function
 @ingroup imgproc_draw
 */
 enum MarkerTypes
@@ -2295,7 +2295,7 @@ CV_EXPORTS_W void dilate( InputArray src, OutputArray dst, InputArray kernel,
 
 /** @brief Performs advanced morphological transformations.
 
-The function cv::morphologyEx can perform advanced morphological transformations using an erosion and dilation as
+The function cond_v::morphologyEx can perform advanced morphological transformations using an erosion and dilation as
 basic operations.
 
 Any of the operations can be done in-place. In case of multi-channel images, each channel is
@@ -2397,7 +2397,7 @@ CV_EXPORTS_W void warpAffine( InputArray src, OutputArray dst,
                               const Scalar& borderValue = Scalar());
 
 /** @example samples/cpp/warpPerspective_demo.cpp
-An example program shows using cv::getPerspectiveTransform and cv::warpPerspective for image warping
+An example program shows using cond_v::getPerspectiveTransform and cond_v::warpPerspective for image warping
 */
 
 /** @brief Applies a perspective transformation to an image.
@@ -2571,7 +2571,7 @@ where
 
 @param src Coordinates of quadrangle vertices in the source image.
 @param dst Coordinates of the corresponding quadrangle vertices in the destination image.
-@param solveMethod method passed to cv::solve (#DecompTypes)
+@param solveMethod method passed to cond_v::solve (#DecompTypes)
 
 @sa  findHomography, warpPerspective, perspectiveTransform
  */
@@ -2607,12 +2607,12 @@ CV_EXPORTS_W void getRectSubPix( InputArray image, Size patchSize,
                                  Point2f center, OutputArray patch, int patchType = -1 );
 
 /** @example samples/cpp/polar_transforms.cpp
-An example using the cv::linearPolar and cv::logPolar operations
+An example using the cond_v::linearPolar and cond_v::logPolar operations
 */
 
 /** @brief Remaps an image to semilog-polar coordinates space.
 
-@deprecated This function produces same result as cv::warpPolar(src, dst, src.size(), center, maxRadius, flags+WARP_POLAR_LOG);
+@deprecated This function produces same result as cond_v::warpPolar(src, dst, src.size(), center, maxRadius, flags+WARP_POLAR_LOG);
 
 @internal
 Transform the source image using the following transformation (See @ref polar_remaps_reference_image "Polar remaps reference image d)"):
@@ -2646,7 +2646,7 @@ rotation-invariant template matching, for object tracking and so forth.
 -   The function can not operate in-place.
 -   To calculate magnitude and angle in degrees #cartToPolar is used internally thus angles are measured from 0 to 360 with accuracy about 0.3 degrees.
 
-@sa cv::linearPolar
+@sa cond_v::linearPolar
 @endinternal
 */
 CV_EXPORTS_W void logPolar( InputArray src, OutputArray dst,
@@ -2654,7 +2654,7 @@ CV_EXPORTS_W void logPolar( InputArray src, OutputArray dst,
 
 /** @brief Remaps an image to polar coordinates space.
 
-@deprecated This function produces same result as cv::warpPolar(src, dst, src.size(), center, maxRadius, flags)
+@deprecated This function produces same result as cond_v::warpPolar(src, dst, src.size(), center, maxRadius, flags)
 
 @internal
 Transform the source image using the following transformation (See @ref polar_remaps_reference_image "Polar remaps reference image c)"):
@@ -2687,7 +2687,7 @@ and
 -   The function can not operate in-place.
 -   To calculate magnitude and angle in degrees #cartToPolar is used internally thus angles are measured from 0 to 360 with accuracy about 0.3 degrees.
 
-@sa cv::logPolar
+@sa cond_v::logPolar
 @endinternal
 */
 CV_EXPORTS_W void linearPolar( InputArray src, OutputArray dst,
@@ -2779,7 +2779,7 @@ In addiction, to calculate the original coordinate from a polar mapped coordinat
 -  To calculate magnitude and angle in degrees #cartToPolar is used internally thus angles are measured from 0 to 360 with accuracy about 0.3 degrees.
 -  This function uses #remap. Due to current implementation limitations the size of an input and output images should be less than 32767x32767.
 
-@sa cv::remap
+@sa cond_v::remap
 */
 CV_EXPORTS_W void warpPolar(InputArray src, OutputArray dst, Size dsize,
                             Point2f center, double maxRadius, int flags);
@@ -2848,7 +2848,7 @@ The function adds src or some of its elements to dst :
 
 The function supports multi-channel images. Each channel is processed independently.
 
-The function cv::accumulate can be used, for example, to collect statistics of a scene background
+The function cond_v::accumulate can be used, for example, to collect statistics of a scene background
 viewed by a still camera and for the further foreground-background segmentation.
 
 @param src Input image of type CV_8UC(n), CV_16UC(n), CV_32FC(n) or CV_64FC(n), where n is a positive integer.
@@ -2976,13 +2976,13 @@ CV_EXPORTS_W void createHanningWindow(OutputArray dst, Size winSize, int type);
 
 /** @brief Performs the per-element division of the first Fourier spectrum by the second Fourier spectrum.
 
-The function cv::divSpectrums performs the per-element division of the first array by the second array.
+The function cond_v::divSpectrums performs the per-element division of the first array by the second array.
 The arrays are CCS-packed or complex matrices that are results of a real or complex Fourier transform.
 
 @param a first input array.
 @param b second input array of the same size and type as src1 .
 @param c output array of the same size and type as src1 .
-@param flags operation flags; currently, the only supported flag is cv::DFT_ROWS, which indicates that
+@param flags operation flags; currently, the only supported flag is cond_v::DFT_ROWS, which indicates that
 each row of src1 and src2 is an independent 1D Fourier spectrum. If you do not want to use this flag, then simply add a `0` as value.
 @param conjB optional flag that conjugates the second input array before the multiplication (true)
 or not (false).
@@ -3128,7 +3128,7 @@ An example for creating histograms of an image
 
 /** @brief Calculates a histogram of a set of arrays.
 
-The function cv::calcHist calculates the histogram of one or more arrays. The elements of a tuple used
+The function cond_v::calcHist calculates the histogram of one or more arrays. The elements of a tuple used
 to increment a histogram bin are taken from the corresponding input arrays at the same location. The
 sample below shows how to compute a 2D Hue-Saturation histogram for a color image. :
 @include snippets/imgproc_calcHist.cpp
@@ -3184,7 +3184,7 @@ CV_EXPORTS_W void calcHist( InputArrayOfArrays images,
 
 /** @brief Calculates the back projection of a histogram.
 
-The function cv::calcBackProject calculates the back project of the histogram. That is, similarly to
+The function cond_v::calcBackProject calculates the back project of the histogram. That is, similarly to
 #calcHist , at each location (x, y) the function collects the values from the selected channels
 in the input images and finds the corresponding histogram bin. But instead of incrementing it, the
 function reads the bin value, scales it by scale , and stores in backProject(x,y) . In terms of
@@ -3240,7 +3240,7 @@ CV_EXPORTS_W void calcBackProject( InputArrayOfArrays images, const std::vector<
 
 /** @brief Compares two histograms.
 
-The function cv::compareHist compares two dense or two sparse histograms using the specified method.
+The function cond_v::compareHist compares two dense or two sparse histograms using the specified method.
 
 The function returns \f$d(H_1, H_2)\f$ .
 
@@ -3275,7 +3275,7 @@ The algorithm normalizes the brightness and increases the contrast of the image.
  */
 CV_EXPORTS_W void equalizeHist( InputArray src, OutputArray dst );
 
-/** @brief Creates a smart pointer to a cv::CLAHE class and initializes it.
+/** @brief Creates a smart pointer to a cond_v::CLAHE class and initializes it.
 
 @param clipLimit Threshold for contrast limiting.
 @param tileGridSize Size of grid for histogram equalization. Input image will be divided into
@@ -3448,7 +3448,7 @@ An example on using the distance transform
 
 /** @brief Calculates the distance to the closest zero pixel for each pixel of the source image.
 
-The function cv::distanceTransform calculates the approximate or precise distance from every binary
+The function cond_v::distanceTransform calculates the approximate or precise distance from every binary
 image pixel to the nearest zero pixel. For zero image pixels, the distance will obviously be zero.
 
 When maskSize == #DIST_MASK_PRECISE and distanceType == #DIST_L2 , the function runs the
@@ -3519,7 +3519,7 @@ CV_EXPORTS_W void distanceTransform( InputArray src, OutputArray dst,
 
 /** @brief Fills a connected component with the given color.
 
-The function cv::floodFill fills a connected component starting from the seed point with the specified
+The function cond_v::floodFill fills a connected component starting from the seed point with the specified
 color. The connectivity is determined by the color/brightness closeness of the neighbor pixels. The
 pixel at \f$(x,y)\f$ is considered to belong to the repainted domain if:
 
@@ -3723,7 +3723,7 @@ CV_EXPORTS_W void demosaicing(InputArray src, OutputArray dst, int code, int dst
 /** @brief Calculates all of the moments up to the third order of a polygon or rasterized shape.
 
 The function computes moments, up to the 3rd order, of a vector shape or a rasterized shape. The
-results are returned in the structure cv::Moments.
+results are returned in the structure cond_v::Moments.
 
 @param array Raster image (single-channel, 8-bit or floating-point 2D array) or an array (
 \f$1 \times N\f$ or \f$N \times 1\f$ ) of 2D points (Point or Point2f ).
@@ -3940,8 +3940,8 @@ pixels remain 0's, so the image is treated as binary . You can use #compare, #in
 #adaptiveThreshold, #Canny, and others to create a binary image out of a grayscale or color one.
 If mode equals to #RETR_CCOMP or #RETR_FLOODFILL, the input can also be a 32-bit integer image of labels (CV_32SC1).
 @param contours Detected contours. Each contour is stored as a vector of points (e.g.
-std::vector<std::vector<cv::Point> >).
-@param hierarchy Optional output vector (e.g. std::vector<cv::Vec4i>), containing information about the image topology. It has
+std::vector<std::vector<cond_v::Point> >).
+@param hierarchy Optional output vector (e.g. std::vector<cond_v::Vec4i>), containing information about the image topology. It has
 as many elements as the number of contours. For each i-th contour contours[i], the elements
 hierarchy[i][0] , hierarchy[i][1] , hierarchy[i][2] , and hierarchy[i][3] are set to 0-based indices
 in contours of the next and previous contours at the same hierarchical level, the first child
@@ -3974,7 +3974,7 @@ squares in the input image.
 
 /** @brief Approximates a polygonal curve(s) with the specified precision.
 
-The function cv::approxPolyDP approximates a curve or a polygon with another curve/polygon with less
+The function cond_v::approxPolyDP approximates a curve or a polygon with another curve/polygon with less
 vertices so that the distance between them is less or equal to the specified precision. It uses the
 Douglas-Peucker algorithm <http://en.wikipedia.org/wiki/Ramer-Douglas-Peucker_algorithm>
 
@@ -4113,7 +4113,7 @@ An example using the convexHull functionality
 
 /** @brief Finds the convex hull of a point set.
 
-The function cv::convexHull finds the convex hull of a 2D point set using the Sklansky's algorithm @cite Sklansky82
+The function cond_v::convexHull finds the convex hull of a 2D point set using the Sklansky's algorithm @cite Sklansky82
 that has *O(N logN)* complexity in the current implementation.
 
 @param points Input 2D point set, stored in std::vector or Mat.
@@ -4354,16 +4354,16 @@ intersecting region and the red vertices are returned by the function.
 @param rect1 First rectangle
 @param rect2 Second rectangle
 @param intersectingRegion The output array of the vertices of the intersecting region. It returns
-at most 8 vertices. Stored as std::vector\<cv::Point2f\> or cv::Mat as Mx1 of type CV_32FC2.
+at most 8 vertices. Stored as std::vector\<cond_v::Point2f\> or cond_v::Mat as Mx1 of type CV_32FC2.
 @returns One of #RectanglesIntersectTypes
  */
 CV_EXPORTS_W int rotatedRectangleIntersection( const RotatedRect& rect1, const RotatedRect& rect2, OutputArray intersectingRegion  );
 
-/** @brief Creates a smart pointer to a cv::GeneralizedHoughBallard class and initializes it.
+/** @brief Creates a smart pointer to a cond_v::GeneralizedHoughBallard class and initializes it.
 */
 CV_EXPORTS_W Ptr<GeneralizedHoughBallard> createGeneralizedHoughBallard();
 
-/** @brief Creates a smart pointer to a cv::GeneralizedHoughGuil class and initializes it.
+/** @brief Creates a smart pointer to a cond_v::GeneralizedHoughGuil class and initializes it.
 */
 CV_EXPORTS_W Ptr<GeneralizedHoughGuil> createGeneralizedHoughGuil();
 
@@ -4448,7 +4448,7 @@ CV_EXPORTS_W void line(InputOutputArray img, Point pt1, Point pt2, const Scalar&
 
 /** @brief Draws an arrow segment pointing from the first point to the second one.
 
-The function cv::arrowedLine draws an arrow between pt1 and pt2 points in the image. See also #line.
+The function cond_v::arrowedLine draws an arrow between pt1 and pt2 points in the image. See also #line.
 
 @param img Image.
 @param pt1 The point the arrow starts from.
@@ -4464,7 +4464,7 @@ CV_EXPORTS_W void arrowedLine(InputOutputArray img, Point pt1, Point pt2, const 
 
 /** @brief Draws a simple, thick, or filled up-right rectangle.
 
-The function cv::rectangle draws a rectangle outline or a filled rectangle whose two opposite corners
+The function cond_v::rectangle draws a rectangle outline or a filled rectangle whose two opposite corners
 are pt1 and pt2.
 
 @param img Image.
@@ -4495,7 +4495,7 @@ An example using drawing functions
 
 /** @brief Draws a circle.
 
-The function cv::circle draws a simple or filled circle with a given center and radius.
+The function cond_v::circle draws a simple or filled circle with a given center and radius.
 @param img Image where the circle is drawn.
 @param center Center of the circle.
 @param radius Radius of the circle.
@@ -4511,7 +4511,7 @@ CV_EXPORTS_W void circle(InputOutputArray img, Point center, int radius,
 
 /** @brief Draws a simple or thick elliptic arc or fills an ellipse sector.
 
-The function cv::ellipse with more parameters draws an ellipse outline, a filled ellipse, an elliptic
+The function cond_v::ellipse with more parameters draws an ellipse outline, a filled ellipse, an elliptic
 arc, or a filled ellipse sector. The drawing code uses general parametric form.
 A piecewise-linear curve is used to approximate the elliptic arc
 boundary. If you need more control of the ellipse rendering, you can retrieve the curve using
@@ -4557,7 +4557,7 @@ CV_EXPORTS_W void ellipse(InputOutputArray img, const RotatedRect& box, const Sc
 
 /** @brief Draws a marker on a predefined position in an image.
 
-The function cv::drawMarker draws a marker on a given position in the image. For the moment several
+The function cond_v::drawMarker draws a marker on a given position in the image. For the moment several
 marker types are supported, see #MarkerTypes for more information.
 
 @param img Image.
@@ -4578,7 +4578,7 @@ CV_EXPORTS_W void drawMarker(InputOutputArray img, Point position, const Scalar&
 
 /** @brief Fills a convex polygon.
 
-The function cv::fillConvexPoly draws a filled convex polygon. This function is much faster than the
+The function cond_v::fillConvexPoly draws a filled convex polygon. This function is much faster than the
 function #fillPoly . It can fill not only convex polygons but any monotonic polygon without
 self-intersections, that is, a polygon whose contour intersects every horizontal line (scan line)
 twice at the most (though, its top-most and/or the bottom edge could be horizontal).
@@ -4605,7 +4605,7 @@ Check @ref tutorial_random_generator_and_text "the corresponding tutorial" for m
 
 /** @brief Fills the area bounded by one or more polygons.
 
-The function cv::fillPoly fills an area bounded by several polygonal contours. The function can fill
+The function cond_v::fillPoly fills an area bounded by several polygonal contours. The function can fill
 complex areas, for example, areas with holes, contours with self-intersections (some of their
 parts), and so forth.
 
@@ -4637,7 +4637,7 @@ the function draws a line from the last vertex of each curve to its first vertex
 @param lineType Type of the line segments. See #LineTypes
 @param shift Number of fractional bits in the vertex coordinates.
 
-The function cv::polylines draws one or more polygonal curves.
+The function cond_v::polylines draws one or more polygonal curves.
  */
 CV_EXPORTS_W void polylines(InputOutputArray img, InputArrayOfArrays pts,
                             bool isClosed, const Scalar& color,
@@ -4649,7 +4649,7 @@ CV_EXPORTS void polylines(InputOutputArray img, const Point* const* pts, const i
                           int thickness = 1, int lineType = LINE_8, int shift = 0 );
 
 /** @example samples/cpp/contours2.cpp
-An example program illustrates the use of cv::findContours and cv::drawContours
+An example program illustrates the use of cond_v::findContours and cond_v::drawContours
 \image html WindowsQtContoursOutput.png "Screenshot of the program"
 */
 
@@ -4693,7 +4693,7 @@ CV_EXPORTS_W void drawContours( InputOutputArray image, InputArrayOfArrays conto
 
 /** @brief Clips the line against the image rectangle.
 
-The function cv::clipLine calculates a part of the line segment that is entirely within the specified
+The function cond_v::clipLine calculates a part of the line segment that is entirely within the specified
 rectangle. It returns false if the line segment is completely outside the rectangle. Otherwise,
 it returns true .
 @param imgSize Image size. The image rectangle is Rect(0, 0, imgSize.width, imgSize.height) .
@@ -4749,7 +4749,7 @@ CV_EXPORTS void ellipse2Poly(Point2d center, Size2d axes, int angle,
 
 /** @brief Draws a text string.
 
-The function cv::putText renders the specified text string in the image. Symbols that cannot be rendered
+The function cond_v::putText renders the specified text string in the image. Symbols that cannot be rendered
 using the specified font are replaced by question marks. See #getTextSize for a text rendering code
 example.
 
@@ -4771,7 +4771,7 @@ CV_EXPORTS_W void putText( InputOutputArray img, const String& text, Point org,
 
 /** @brief Calculates the width and height of a text string.
 
-The function cv::getTextSize calculates and returns the size of a box that contains the specified text.
+The function cond_v::getTextSize calculates and returns the size of a box that contains the specified text.
 That is, the following code renders some text, the tight box surrounding it, and the baseline: :
 @code
     String text = "Funny text inside the box";
@@ -4821,12 +4821,12 @@ CV_EXPORTS_W Size getTextSize(const String& text, int fontFace,
 
 /** @brief Calculates the font-specific size to use to achieve a given height in pixels.
 
-@param fontFace Font to use, see cv::HersheyFonts.
+@param fontFace Font to use, see cond_v::HersheyFonts.
 @param pixelHeight Pixel height to compute the fontScale for
 @param thickness Thickness of lines used to render the text.See putText for details.
-@return The fontSize to use for cv::putText
+@return The fontSize to use for cond_v::putText
 
-@see cv::putText
+@see cond_v::putText
 */
 CV_EXPORTS_W double getFontScaleFromHeight(const int fontFace,
                                            const int pixelHeight,
@@ -4985,7 +4985,7 @@ Point LineIterator::pos() const
 
 //! @} imgproc
 
-} // cv
+} // cond_v
 
 
 #include "./imgproc/segmentation.hpp"

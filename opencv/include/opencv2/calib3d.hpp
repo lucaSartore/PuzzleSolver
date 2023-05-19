@@ -930,7 +930,7 @@ More information about Perspective-n-Points is described in @ref calib3d_solvePn
         opencv_source_code/samples/python/plane_ar.py
    -   If you are using Python:
         - Numpy array slices won't work as input because solvePnP requires contiguous
-        arrays (enforced by the assertion using cv::Mat::checkVector() around line 55 of
+        arrays (enforced by the assertion using cond_v::Mat::checkVector() around line 55 of
         modules/calib3d/src/solvepnp.cpp version 2.4.9)
         - The P3P algorithm requires image points to be in an array of shape (N,1,2) due
         to its calling of #undistortPoints (around line 75 of modules/calib3d/src/solvepnp.cpp version 2.4.9)
@@ -1161,7 +1161,7 @@ More information is described in @ref calib3d_solvePnP
         opencv_source_code/samples/python/plane_ar.py
    -   If you are using Python:
         - Numpy array slices won't work as input because solvePnP requires contiguous
-        arrays (enforced by the assertion using cv::Mat::checkVector() around line 55 of
+        arrays (enforced by the assertion using cond_v::Mat::checkVector() around line 55 of
         modules/calib3d/src/solvepnp.cpp version 2.4.9)
         - The P3P algorithm requires image points to be in an array of shape (N,1,2) due
         to its calling of #undistortPoints (around line 75 of modules/calib3d/src/solvepnp.cpp version 2.4.9)
@@ -1216,7 +1216,7 @@ CV_EXPORTS_W Mat initCameraMatrix2D( InputArrayOfArrays objectPoints,
 
 @param image Source chessboard view. It must be an 8-bit grayscale or color image.
 @param patternSize Number of inner corners per a chessboard row and column
-( patternSize = cv::Size(points_per_row,points_per_colum) = cv::Size(columns,rows) ).
+( patternSize = cond_v::Size(points_per_row,points_per_colum) = cond_v::Size(columns,rows) ).
 @param corners Output array of detected corners.
 @param flags Various operation flags that can be zero or a combination of the following values:
 -   @ref CALIB_CB_ADAPTIVE_THRESH Use adaptive thresholding to convert the image to black
@@ -1276,7 +1276,7 @@ CV_EXPORTS_W bool checkChessboard(InputArray img, Size size);
 
 @param image Source chessboard view. It must be an 8-bit grayscale or color image.
 @param patternSize Number of inner corners per a chessboard row and column
-( patternSize = cv::Size(points_per_row,points_per_colum) = cv::Size(columns,rows) ).
+( patternSize = cond_v::Size(points_per_row,points_per_colum) = cond_v::Size(columns,rows) ).
 @param corners Output array of detected corners.
 @param flags Various operation flags that can be zero or a combination of the following values:
 -   @ref CALIB_CB_NORMALIZE_IMAGE Normalize the image gamma with equalizeHist before detection.
@@ -1285,7 +1285,7 @@ CV_EXPORTS_W bool checkChessboard(InputArray img, Size size);
 -   @ref CALIB_CB_LARGER The detected pattern is allowed to be larger than patternSize (see description).
 -   @ref CALIB_CB_MARKER The detected pattern must have a marker (see description).
 This should be used if an accurate camera calibration is required.
-@param meta Optional output arrray of detected corners (CV_8UC1 and size = cv::Size(columns,rows)).
+@param meta Optional output arrray of detected corners (CV_8UC1 and size = cond_v::Size(columns,rows)).
 Each entry stands for one corner of the pattern and can have one of the following values:
 -   0 = no meta data attached
 -   1 = left-top corner of a black cell
@@ -1372,7 +1372,7 @@ CV_EXPORTS_W bool find4QuadCornerSubpix( InputArray img, InputOutputArray corner
 
 @param image Destination image. It must be an 8-bit color image.
 @param patternSize Number of inner corners per a chessboard row and column
-(patternSize = cv::Size(points_per_row,points_per_column)).
+(patternSize = cond_v::Size(points_per_row,points_per_column)).
 @param corners Array of detected corners, the output of #findChessboardCorners.
 @param patternWasFound Parameter indicating whether the complete board was found or not. The
 return value of #findChessboardCorners should be passed here.
@@ -1480,7 +1480,7 @@ CV_EXPORTS_W bool findCirclesGrid( InputArray image, Size patternSize,
 pattern.
 
 @param objectPoints In the new interface it is a vector of vectors of calibration pattern points in
-the calibration pattern coordinate space (e.g. std::vector<std::vector<cv::Vec3f>>). The outer
+the calibration pattern coordinate space (e.g. std::vector<std::vector<cond_v::Vec3f>>). The outer
 vector contains as many elements as the number of pattern views. If the same calibration pattern
 is shown in each view and it is fully visible, all the vectors will be the same. Although, it is
 possible to use partially occluded patterns or even different patterns in different views. Then,
@@ -1489,7 +1489,7 @@ XY coordinate plane (thus 0 in the Z-coordinate), if the used calibration patter
 In the old interface all the vectors of object points from different views are concatenated
 together.
 @param imagePoints In the new interface it is a vector of vectors of the projections of calibration
-pattern points (e.g. std::vector<std::vector<cv::Vec2f>>). imagePoints.size() and
+pattern points (e.g. std::vector<std::vector<cond_v::Vec2f>>). imagePoints.size() and
 objectPoints.size(), and imagePoints[i].size() and objectPoints[i].size() for each i, must be equal,
 respectively. In the old interface all the vectors of object points from different views are
 concatenated together.
@@ -1501,7 +1501,7 @@ are specified, some or all of fx, fy, cx, cy must be initialized before calling 
 @param distCoeffs Input/output vector of distortion coefficients
 \f$\distcoeffs\f$.
 @param rvecs Output vector of rotation vectors (@ref Rodrigues ) estimated for each pattern view
-(e.g. std::vector<cv::Mat>>). That is, each i-th rotation vector together with the corresponding
+(e.g. std::vector<cond_v::Mat>>). That is, each i-th rotation vector together with the corresponding
 i-th translation vector (see the next output parameter description) brings the calibration pattern
 from the object coordinate space (in which object points are specified) to the camera coordinate
 space. In more technical terms, the tuple of the i-th rotation and translation vector performs
@@ -2066,7 +2066,7 @@ from calibration target frame to camera frame.
 expressed in the camera frame to the gripper frame (\f$_{}^{g}\textrm{T}_c\f$).
 @param[out] t_cam2gripper Estimated `(3x1)` translation part extracted from the homogeneous matrix that transforms a point
 expressed in the camera frame to the gripper frame (\f$_{}^{g}\textrm{T}_c\f$).
-@param[in] method One of the implemented Hand-Eye calibration method, see cv::HandEyeCalibrationMethod
+@param[in] method One of the implemented Hand-Eye calibration method, see cond_v::HandEyeCalibrationMethod
 
 The function performs the Hand-Eye calibration using various methods. One approach consists in estimating the
 rotation then the translation (separable solutions) and the following methods are implemented:
@@ -2221,7 +2221,7 @@ expressed in the robot base frame to the world frame (\f$_{}^{w}\textrm{T}_b\f$)
 expressed in the gripper frame to the camera frame (\f$_{}^{c}\textrm{T}_g\f$).
 @param[out] t_gripper2cam Estimated `(3x1)` translation part extracted from the homogeneous matrix that transforms a point
 expressed in the gripper frame to the camera frame (\f$_{}^{c}\textrm{T}_g\f$).
-@param[in] method One of the implemented Robot-World/Hand-Eye calibration method, see cv::RobotWorldHandEyeCalibrationMethod
+@param[in] method One of the implemented Robot-World/Hand-Eye calibration method, see cond_v::RobotWorldHandEyeCalibrationMethod
 
 The function performs the Robot-World/Hand-Eye calibration using various methods. One approach consists in estimating the
 rotation then the translation (separable solutions):
@@ -2450,7 +2450,7 @@ be floating-point (single or double precision).
 @param cameraMatrix Camera intrinsic matrix \f$\cameramatrix{A}\f$ .
 Note that this function assumes that points1 and points2 are feature points from cameras with the
 same camera intrinsic matrix. If this assumption does not hold for your use case, use
-#undistortPoints with `P = cv::NoArray()` for both cameras to transform image points
+#undistortPoints with `P = cond_v::NoArray()` for both cameras to transform image points
 to normalized image coordinates, which are valid for the identity camera intrinsic matrix. When
 passing these coordinates, pass the identity matrix for this parameter.
 @param method Method for computing an essential matrix.
@@ -2548,13 +2548,13 @@ be floating-point (single or double precision).
 @param cameraMatrix1 Camera matrix \f$K = \vecthreethree{f_x}{0}{c_x}{0}{f_y}{c_y}{0}{0}{1}\f$ .
 Note that this function assumes that points1 and points2 are feature points from cameras with the
 same camera matrix. If this assumption does not hold for your use case, use
-#undistortPoints with `P = cv::NoArray()` for both cameras to transform image points
+#undistortPoints with `P = cond_v::NoArray()` for both cameras to transform image points
 to normalized image coordinates, which are valid for the identity camera matrix. When
 passing these coordinates, pass the identity matrix for this parameter.
 @param cameraMatrix2 Camera matrix \f$K = \vecthreethree{f_x}{0}{c_x}{0}{f_y}{c_y}{0}{0}{1}\f$ .
 Note that this function assumes that points1 and points2 are feature points from cameras with the
 same camera matrix. If this assumption does not hold for your use case, use
-#undistortPoints with `P = cv::NoArray()` for both cameras to transform image points
+#undistortPoints with `P = cond_v::NoArray()` for both cameras to transform image points
 to normalized image coordinates, which are valid for the identity camera matrix. When
 passing these coordinates, pass the identity matrix for this parameter.
 @param distCoeffs1 Input vector of distortion coefficients
@@ -2948,7 +2948,7 @@ CV_EXPORTS_W void reprojectImageTo3D( InputArray disparity,
 
 /** @brief Calculates the Sampson Distance between two points.
 
-The function cv::sampsonDistance calculates and returns the first order approximation of the geometric error as:
+The function cond_v::sampsonDistance calculates and returns the first order approximation of the geometric error as:
 \f[
 sd( \texttt{pt1} , \texttt{pt2} )=
 \frac{(\texttt{pt2}^t \cdot \texttt{F} \cdot \texttt{pt1})^2}
@@ -3448,7 +3448,7 @@ public:
 };
 
 
-//! cv::undistort mode
+//! cond_v::undistort mode
 enum UndistortTypes
 {
     PROJ_SPHERICAL_ORTHO  = 0,
@@ -3581,7 +3581,7 @@ x  \leftarrow (u - {c'}_x)/{f'}_x  \\
 y  \leftarrow (v - {c'}_y)/{f'}_y  \\
 
 \\\text{Undistortion}
-\\\scriptsize{\textit{though equation shown is for radial undistortion, function implements cv::undistortPoints()}}\\
+\\\scriptsize{\textit{though equation shown is for radial undistortion, function implements cond_v::undistortPoints()}}\\
 r^2  \leftarrow x^2 + y^2 \\
 \theta \leftarrow \frac{1 + k_1 r^2 + k_2 r^4 + k_3 r^6}{1 + k_4 r^2 + k_5 r^4 + k_6 r^6}\\
 x' \leftarrow \frac{x}{\theta} \\
@@ -3979,7 +3979,7 @@ optimization. It is the \f$max(width,height)/\pi\f$ or the provided \f$f_x\f$, \
 //! @} calib3d_fisheye
 } // end namespace fisheye
 
-} //end namespace cv
+} //end namespace cond_v
 
 #if 0 //def __cplusplus
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -4001,16 +4001,16 @@ public:
     void step();
     enum { DONE=0, STARTED=1, CALC_J=2, CHECK_ERR=3 };
 
-    cv::Ptr<CvMat> mask;
-    cv::Ptr<CvMat> prevParam;
-    cv::Ptr<CvMat> param;
-    cv::Ptr<CvMat> J;
-    cv::Ptr<CvMat> err;
-    cv::Ptr<CvMat> JtJ;
-    cv::Ptr<CvMat> JtJN;
-    cv::Ptr<CvMat> JtErr;
-    cv::Ptr<CvMat> JtJV;
-    cv::Ptr<CvMat> JtJW;
+    cond_v::Ptr<CvMat> mask;
+    cond_v::Ptr<CvMat> prevParam;
+    cond_v::Ptr<CvMat> param;
+    cond_v::Ptr<CvMat> J;
+    cond_v::Ptr<CvMat> err;
+    cond_v::Ptr<CvMat> JtJ;
+    cond_v::Ptr<CvMat> JtJN;
+    cond_v::Ptr<CvMat> JtErr;
+    cond_v::Ptr<CvMat> JtJV;
+    cond_v::Ptr<CvMat> JtJW;
     double prevErrNorm, errNorm;
     int lambdaLg10;
     CvTermCriteria criteria;

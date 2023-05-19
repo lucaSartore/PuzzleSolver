@@ -3408,7 +3408,7 @@ inline void UMatData::markDeviceCopyObsolete(bool flag)
 static inline
 void swap(MatExpr& a, MatExpr& b) { a.swap(b); }
 
-} //cv
+} //cond_v
 
 #ifdef _MSC_VER
 #pragma warning( pop )

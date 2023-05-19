@@ -9,20 +9,20 @@
 
 namespace cv {
 
-/** Returns string of cv::Mat depth value: CV_8U -> "CV_8U" or "<invalid depth>" */
+/** Returns string of cond_v::Mat depth value: CV_8U -> "CV_8U" or "<invalid depth>" */
 CV_EXPORTS const char* depthToString(int depth);
 
-/** Returns string of cv::Mat depth value: CV_8UC3 -> "CV_8UC3" or "<invalid type>" */
+/** Returns string of cond_v::Mat depth value: CV_8UC3 -> "CV_8UC3" or "<invalid type>" */
 CV_EXPORTS const String typeToString(int type);
 
 
 //! @cond IGNORED
 namespace detail {
 
-/** Returns string of cv::Mat depth value: CV_8U -> "CV_8U" or NULL */
+/** Returns string of cond_v::Mat depth value: CV_8U -> "CV_8U" or NULL */
 CV_EXPORTS const char* depthToString_(int depth);
 
-/** Returns string of cv::Mat depth value: CV_8UC3 -> "CV_8UC3" or cv::String() */
+/** Returns string of cond_v::Mat depth value: CV_8UC3 -> "CV_8UC3" or cond_v::String() */
 CV_EXPORTS const cv::String typeToString_(int type);
 
 enum TestOp {

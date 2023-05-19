@@ -302,7 +302,7 @@ CV_EXPORTS CV_NORETURN void error(int _code, const String& _err, const char* _fu
 // In practice, some macro are not processed correctly (noreturn is not detected).
 // We need to use simplified definition for them.
 #define CV_Error(code, msg) do { (void)(code); (void)(msg); abort(); } while (0)
-#define CV_Error_(code, args) do { (void)(code); (void)(cv::format args); abort(); } while (0)
+#define CV_Error_(code, args) do { (void)(code); (void)(cond_v::format args); abort(); } while (0)
 #define CV_Assert( expr ) do { if (!(expr)) abort(); } while (0)
 
 #else // CV_STATIC_ANALYSIS
@@ -336,7 +336,7 @@ for example:
 /** @brief Checks a condition at runtime and throws exception if it fails
 
 The macros CV_Assert (and CV_DbgAssert(expr)) evaluate the specified expression. If it is 0, the macros
-raise an error (see cv::error). The macro CV_Assert checks the condition in both Debug and Release
+raise an error (see cond_v::error). The macro CV_Assert checks the condition in both Debug and Release
 configurations while CV_DbgAssert is only retained in the Debug configuration.
 */
 #define CV_Assert( expr ) do { if(!!(expr)) ; else cv::error( cv::Error::StsAssert, #expr, CV_Func, __FILE__, __LINE__ ); } while(0)
@@ -655,7 +655,7 @@ static inline void setUseIPP_NE(bool flag) { setUseIPP_NotExact(flag); }
 
 
 
-} // cv
+} // cond_v
 
 #include "opencv2/core/neon_utils.hpp"
 #include "opencv2/core/vsx_utils.hpp"

@@ -276,7 +276,7 @@ public:
          };
 };
 
-/** @brief A helper class for cv::DataType
+/** @brief A helper class for cond_v::DataType
 
 The class is specialized for each fundamental numerical data type supported by OpenCV. It provides
 DataDepth<T>::value constant.
@@ -412,6 +412,6 @@ struct SafeFmt<T, true>
 
 } // namespace
 
-} // cv
+} // cond_v
 
 #endif // OPENCV_CORE_TRAITS_HPP

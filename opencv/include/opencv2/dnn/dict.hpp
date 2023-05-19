@@ -54,7 +54,7 @@ CV__DNN_INLINE_NS_BEGIN
 //! @addtogroup dnn
 //! @{
 
-/** @brief This struct stores the scalar value (or array) of one of the following type: double, cv::String or int64.
+/** @brief This struct stores the scalar value (or array) of one of the following type: double, cond_v::String or int64.
  *  @todo Maybe int64 is useless because double type exactly stores at least 2^52 integers.
  */
 struct CV_EXPORTS_W DictValue

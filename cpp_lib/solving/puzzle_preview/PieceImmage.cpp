@@ -84,12 +84,12 @@ PieceImage::PieceImage(int piece_id, std::string path) {
 
 
 //    // DEBUG: put number of piece on top:
-//    putText(piece, to_string(piece_id), image_center-Point(20,-20), FONT_HERSHEY_COMPLEX,4, cv::Scalar(0, 0, 0),13);
+//    putText(piece, to_string(piece_id), image_center-Point(20,-20), FONT_HERSHEY_COMPLEX,4, cond_v::Scalar(0, 0, 0),13);
 //    // line to avoid floadfeel daling
-//    cv::line(piece,image_center-Point(0,2),image_center+Point(0,50),Scalar(255,255,255),3);
+//    cond_v::line(piece,image_center-Point(0,2),image_center+Point(0,50),Scalar(255,255,255),3);
 //    for(int i=0; i<4; i++){
 //        Point side_point = (points[i]+points[(i+1)%4]+image_center*4)/6-Point(20,-20);
-//        putText(piece, to_string(i), side_point, FONT_HERSHEY_COMPLEX,3, cv::Scalar(0, 0, 0),7);
+//        putText(piece, to_string(i), side_point, FONT_HERSHEY_COMPLEX,3, cond_v::Scalar(0, 0, 0),7);
 //    }
 
     // doing resize for faster operations later

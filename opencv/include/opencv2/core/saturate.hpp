@@ -174,6 +174,6 @@ template<> inline float16_t saturate_cast<float16_t>(double v)  { return float16
 
 //! @}
 
-} // cv
+} // cond_v
 
 #endif // OPENCV_CORE_SATURATE_HPP

@@ -77,19 +77,19 @@ Camera models
 There are currently 2 camera models implemented in stitching pipeline.
 
 - _Homography model_ expecting perspective transformations between images
-  implemented in @ref cv::detail::BestOf2NearestMatcher cv::detail::HomographyBasedEstimator
-  cv::detail::BundleAdjusterReproj cv::detail::BundleAdjusterRay
+  implemented in @ref cond_v::detail::BestOf2NearestMatcher cond_v::detail::HomographyBasedEstimator
+  cond_v::detail::BundleAdjusterReproj cond_v::detail::BundleAdjusterRay
 - _Affine model_ expecting affine transformation with 6 DOF or 4 DOF implemented in
-  @ref cv::detail::AffineBestOf2NearestMatcher cv::detail::AffineBasedEstimator
-  cv::detail::BundleAdjusterAffine cv::detail::BundleAdjusterAffinePartial cv::AffineWarper
+  @ref cond_v::detail::AffineBestOf2NearestMatcher cond_v::detail::AffineBasedEstimator
+  cond_v::detail::BundleAdjusterAffine cond_v::detail::BundleAdjusterAffinePartial cond_v::AffineWarper
 
 Homography model is useful for creating photo panoramas captured by camera,
 while affine-based model can be used to stitch scans and object captured by
-specialized devices. Use @ref cv::Stitcher::create to get preconfigured pipeline for one
+specialized devices. Use @ref cond_v::Stitcher::create to get preconfigured pipeline for one
 of those models.
 
 @note
-Certain detailed settings of @ref cv::Stitcher might not make sense. Especially
+Certain detailed settings of @ref cond_v::Stitcher might not make sense. Especially
 you should not mix classes implementing affine model and classes implementing
 Homography model, as they work with different transformations.
 
@@ -352,6 +352,6 @@ CV_DEPRECATED Ptr<Stitcher> createStitcherScans(bool try_use_gpu = false);
 
 //! @} stitching
 
-} // namespace cv
+} // namespace cond_v
 
 #endif // OPENCV_STITCHING_STITCHER_HPP

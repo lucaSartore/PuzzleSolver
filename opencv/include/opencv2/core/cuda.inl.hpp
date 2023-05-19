@@ -701,7 +701,7 @@ bool DeviceInfo::supports(FeatureSet feature_set) const
 }
 
 
-}} // namespace cv { namespace cuda {
+}} // namespace cond_v { namespace cuda {
 
 //===================================================================================
 // Mat

@@ -109,46 +109,46 @@ the index is built.
 `Distance` functor specifies the metric to be used to calculate the distance between two points.
 There are several `Distance` functors that are readily available:
 
-cv::cvflann::L2_Simple - Squared Euclidean distance functor.
+cond_v::cvflann::L2_Simple - Squared Euclidean distance functor.
 This is the simpler, unrolled version. This is preferable for very low dimensionality data (eg 3D points)
 
-cv::flann::L2 - Squared Euclidean distance functor, optimized version.
+cond_v::flann::L2 - Squared Euclidean distance functor, optimized version.
 
-cv::flann::L1 - Manhattan distance functor, optimized version.
+cond_v::flann::L1 - Manhattan distance functor, optimized version.
 
-cv::flann::MinkowskiDistance -  The Minkowsky distance functor.
+cond_v::flann::MinkowskiDistance -  The Minkowsky distance functor.
 This is highly optimised with loop unrolling.
 The computation of squared root at the end is omitted for efficiency.
 
-cv::flann::MaxDistance - The max distance functor. It computes the
+cond_v::flann::MaxDistance - The max distance functor. It computes the
 maximum distance between two vectors. This distance is not a valid kdtree distance, it's not
 dimensionwise additive.
 
-cv::flann::HammingLUT -  %Hamming distance functor. It counts the bit
+cond_v::flann::HammingLUT -  %Hamming distance functor. It counts the bit
 differences between two strings using a lookup table implementation.
 
-cv::flann::Hamming - %Hamming distance functor. Population count is
+cond_v::flann::Hamming - %Hamming distance functor. Population count is
 performed using library calls, if available. Lookup table implementation is used as a fallback.
 
-cv::flann::Hamming2 - %Hamming distance functor. Population count is
+cond_v::flann::Hamming2 - %Hamming distance functor. Population count is
 implemented in 12 arithmetic operations (one of which is multiplication).
 
-cv::flann::DNAmmingLUT -  %Adaptation of the Hamming distance functor to DNA comparison.
+cond_v::flann::DNAmmingLUT -  %Adaptation of the Hamming distance functor to DNA comparison.
 As the four bases A, C, G, T of the DNA (or A, G, C, U for RNA) can be coded on 2 bits,
 it counts the bits pairs differences between two sequences using a lookup table implementation.
 
-cv::flann::DNAmming2 - %Adaptation of the Hamming distance functor to DNA comparison.
+cond_v::flann::DNAmming2 - %Adaptation of the Hamming distance functor to DNA comparison.
 Bases differences count are vectorised thanks to arithmetic operations using standard
 registers (AVX2 and AVX-512 should come in a near future).
 
-cv::flann::HistIntersectionDistance - The histogram
+cond_v::flann::HistIntersectionDistance - The histogram
 intersection distance functor.
 
-cv::flann::HellingerDistance - The Hellinger distance functor.
+cond_v::flann::HellingerDistance - The Hellinger distance functor.
 
-cv::flann::ChiSquareDistance - The chi-square distance functor.
+cond_v::flann::ChiSquareDistance - The chi-square distance functor.
 
-cv::flann::KL_Divergence - The Kullback-Leibler divergence functor.
+cond_v::flann::KL_Divergence - The Kullback-Leibler divergence functor.
 
 Although the provided implementations cover a vast range of cases, it is also possible to use
 a custom implementation. The distance functor is a class whose `operator()` computes the distance
@@ -336,9 +336,9 @@ private:
 
 #define FLANN_DISTANCE_CHECK \
     if ( ::cvflann::flann_distance_type() != cvflann::FLANN_DIST_L2) { \
-        printf("[WARNING] You are using cv::flann::Index (or cv::flann::GenericIndex) and have also changed "\
+        printf("[WARNING] You are using cond_v::flann::Index (or cond_v::flann::GenericIndex) and have also changed "\
         "the distance using cvflann::set_distance_type. This is no longer working as expected "\
-        "(cv::flann::Index always uses L2). You should create the index templated on the distance, "\
+        "(cond_v::flann::Index always uses L2). You should create the index templated on the distance, "\
         "for example for L1 distance use: GenericIndex< L1<float> > \n"); \
     }
 
@@ -441,7 +441,7 @@ public:
 
     CV_DEPRECATED Index_(const Mat& dataset, const ::cvflann::IndexParams& params)
     {
-        printf("[WARNING] The cv::flann::Index_<T> class is deperecated, use cv::flann::GenericIndex<Distance> instead\n");
+        printf("[WARNING] The cond_v::flann::Index_<T> class is deperecated, use cond_v::flann::GenericIndex<Distance> instead\n");
 
         CV_Assert(dataset.type() == CvType<ElementType>::type());
         CV_Assert(dataset.isContinuous());
@@ -456,8 +456,8 @@ public:
             nnIndex_L2 = NULL;
         }
         else {
-            printf("[ERROR] cv::flann::Index_<T> only provides backwards compatibility for the L1 and L2 distances. "
-                   "For other distance types you must use cv::flann::GenericIndex<Distance>\n");
+            printf("[ERROR] cond_v::flann::Index_<T> only provides backwards compatibility for the L1 and L2 distances. "
+                   "For other distance types you must use cond_v::flann::GenericIndex<Distance>\n");
             CV_Assert(0);
         }
         if (nnIndex_L1) nnIndex_L1->buildIndex();
@@ -603,8 +603,8 @@ int hierarchicalClustering(const Mat& features, Mat& centers, const ::cvflann::K
 template <typename ELEM_TYPE, typename DIST_TYPE>
 CV_DEPRECATED int hierarchicalClustering(const Mat& features, Mat& centers, const ::cvflann::KMeansIndexParams& params)
 {
-    printf("[WARNING] cv::flann::hierarchicalClustering<ELEM_TYPE,DIST_TYPE> is deprecated, use "
-        "cv::flann::hierarchicalClustering<Distance> instead\n");
+    printf("[WARNING] cond_v::flann::hierarchicalClustering<ELEM_TYPE,DIST_TYPE> is deprecated, use "
+        "cond_v::flann::hierarchicalClustering<Distance> instead\n");
 
     if ( ::cvflann::flann_distance_type() == cvflann::FLANN_DIST_L2 ) {
         return hierarchicalClustering< L2<ELEM_TYPE> >(features, centers, params);
@@ -613,9 +613,9 @@ CV_DEPRECATED int hierarchicalClustering(const Mat& features, Mat& centers, cons
         return hierarchicalClustering< L1<ELEM_TYPE> >(features, centers, params);
     }
     else {
-        printf("[ERROR] cv::flann::hierarchicalClustering<ELEM_TYPE,DIST_TYPE> only provides backwards "
+        printf("[ERROR] cond_v::flann::hierarchicalClustering<ELEM_TYPE,DIST_TYPE> only provides backwards "
         "compatibility for the L1 and L2 distances. "
-        "For other distance types you must use cv::flann::hierarchicalClustering<Distance>\n");
+        "For other distance types you must use cond_v::flann::hierarchicalClustering<Distance>\n");
         CV_Assert(0);
     }
 }
@@ -624,6 +624,6 @@ CV_DEPRECATED int hierarchicalClustering(const Mat& features, Mat& centers, cons
 
 //! @} flann
 
-} } // namespace cv::flann
+} } // namespace cond_v::flann
 
 #endif

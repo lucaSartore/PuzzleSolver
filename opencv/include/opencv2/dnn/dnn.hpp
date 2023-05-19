@@ -142,7 +142,7 @@ CV__DNN_INLINE_NS_BEGIN
     };
 
     /**
-     * @brief Derivatives of this class wraps cv::Mat for different backends and targets.
+     * @brief Derivatives of this class wraps cond_v::Mat for different backends and targets.
      */
     class BackendWrapper
     {
@@ -150,17 +150,17 @@ CV__DNN_INLINE_NS_BEGIN
         BackendWrapper(int backendId, int targetId);
 
         /**
-         * @brief Wrap cv::Mat for specific backend and target.
+         * @brief Wrap cond_v::Mat for specific backend and target.
          * @param[in] targetId Target identifier.
-         * @param[in] m cv::Mat for wrapping.
+         * @param[in] m cond_v::Mat for wrapping.
          *
          * Make CPU->GPU data transfer if it's require for the target.
          */
         BackendWrapper(int targetId, const cv::Mat& m);
 
         /**
-         * @brief Make wrapper for reused cv::Mat.
-         * @param[in] base Wrapper of cv::Mat that will be reused.
+         * @brief Make wrapper for reused cond_v::Mat.
+         * @param[in] base Wrapper of cond_v::Mat that will be reused.
          * @param[in] shape Specific shape.
          *
          * Initialize wrapper from another one. It'll wrap the same host CPU
@@ -345,7 +345,7 @@ CV__DNN_INLINE_NS_BEGIN
          * @see BackendNode
          *
          * Actual for graph-based backends. If layer attached successfully,
-         * returns non-empty cv::Ptr to node of the same backend.
+         * returns non-empty cond_v::Ptr to node of the same backend.
          * Fuse only over the last function.
          */
         virtual Ptr<BackendNode> tryAttach(const Ptr<BackendNode>& node);
@@ -1088,7 +1088,7 @@ CV__DNN_INLINE_NS_BEGIN
                                    int ddepth=CV_32F);
 
     /** @brief Parse a 4D blob and output the images it contains as 2D arrays through a simpler data structure
-     *  (std::vector<cv::Mat>).
+     *  (std::vector<cond_v::Mat>).
      *  @param[in] blob_ 4 dimensional array (images, channels, height, width) in floating point precision (CV_32F) from
      *  which you would like to extract the images.
      *  @param[out] images_ array of 2D Mat containing the images extracted from the blob in floating point precision
@@ -1516,7 +1516,7 @@ public:
     /**
      * @brief Given the @p input frame, create input blob, run net and return recognition result
      * @param[in] frame The input image
-     * @param[in] roiRects List of text detection regions of interest (cv::Rect, CV_32SC4). ROIs is be cropped as the network inputs
+     * @param[in] roiRects List of text detection regions of interest (cond_v::Rect, CV_32SC4). ROIs is be cropped as the network inputs
      * @param[out] results A set of text recognition results.
      */
     CV_WRAP
@@ -1544,7 +1544,7 @@ public:
      * - top-right
      * - bottom-right
      *
-     * Use cv::getPerspectiveTransform function to retrive image region without perspective transformations.
+     * Use cond_v::getPerspectiveTransform function to retrive image region without perspective transformations.
      *
      * @note If DL model doesn't support that kind of output then result may be derived from detectTextRectangles() output.
      *

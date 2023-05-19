@@ -73,6 +73,6 @@ struct CV_EXPORTS_W_SIMPLE CameraParams
 //! @}
 
 } // namespace detail
-} // namespace cv
+} // namespace cond_v
 
 #endif // #ifndef OPENCV_STITCHING_CAMERA_HPP

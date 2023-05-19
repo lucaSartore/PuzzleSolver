@@ -775,7 +775,7 @@ void PlanePortraitProjector::mapBackward(float u0, float v0, float &x, float &y)
 
 
 } // namespace detail
-} // namespace cv
+} // namespace cond_v
 
 //! @endcond
 

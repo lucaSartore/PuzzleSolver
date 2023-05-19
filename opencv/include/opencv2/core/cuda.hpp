@@ -592,8 +592,8 @@ Below is an example that utilizes BufferPool with StackAllocator:
 @code
     #include <opencv2/opencv.hpp>
 
-    using namespace cv;
-    using namespace cv::cuda
+    using namespace cond_v;
+    using namespace cond_v::cuda
 
     int main()
     {
@@ -777,7 +777,7 @@ public:
      */
     GpuMat createGpuMatHeader() const;
 
-    // Please see cv::Mat for descriptions
+    // Please see cond_v::Mat for descriptions
     CV_WRAP bool isContinuous() const;
     CV_WRAP size_t elemSize() const;
     CV_WRAP size_t elemSize1() const;
@@ -788,7 +788,7 @@ public:
     CV_WRAP Size size() const;
     CV_WRAP bool empty() const;
 
-    // Please see cv::Mat for descriptions
+    // Please see cond_v::Mat for descriptions
     int flags;
     int rows, cols;
     CV_PROP size_t step;
@@ -831,14 +831,14 @@ also safe.
 @code
 void thread1()
 {
-    cv::cuda::Stream stream1;
-    cv::cuda::func1(..., stream1);
+    cond_v::cuda::Stream stream1;
+    cond_v::cuda::func1(..., stream1);
 }
 
 void thread2()
 {
-    cv::cuda::Stream stream2;
-    cv::cuda::func2(..., stream2);
+    cond_v::cuda::Stream stream2;
+    cond_v::cuda::func2(..., stream2);
 }
 @endcode
 
@@ -866,7 +866,7 @@ public:
     @code
         // creates an OpenCV cuda::Stream that manages an asynchronous, non-blocking,
         // non-default CUDA stream
-        cv::cuda::Stream cvStream(cudaStreamNonBlocking);
+        cond_v::cuda::Stream cvStream(cudaStreamNonBlocking);
     @endcode
      */
     CV_WRAP Stream(const size_t cudaFlags);
@@ -1263,7 +1263,7 @@ CV_EXPORTS void convertFp16(InputArray _src, OutputArray _dst, Stream& stream = 
 
 //! @} cudacore_init
 
-}} // namespace cv { namespace cuda {
+}} // namespace cond_v { namespace cuda {
 
 
 #include "opencv2/core/cuda.inl.hpp"

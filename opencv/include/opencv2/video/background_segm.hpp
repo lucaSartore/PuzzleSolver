@@ -312,6 +312,6 @@ CV_EXPORTS_W Ptr<BackgroundSubtractorKNN>
 
 //! @} video_motion
 
-} // cv
+} // cond_v
 
 #endif

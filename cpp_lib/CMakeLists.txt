@@ -51,6 +51,8 @@ set(SOURCE_FILES
         solving/puzzle_preview/Holder.cpp
         solving/puzzle_preview/Holder.h
         solving/puzzle_preview/point_indexes.h
+        solving/puzzle_preview/PreviewManager.cpp
+        solving/puzzle_preview/PreviewManager.h
 
         PuzzleSolver.cpp
         PuzzleSolver.h
