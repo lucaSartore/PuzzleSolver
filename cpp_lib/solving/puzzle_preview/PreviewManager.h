@@ -14,7 +14,7 @@
 /// this class is intended to be used statically
 /// it is use to show many image even in a multithreaded environment
 class PreviewManager {
-public:
+private:
     // whether the preview is enabled or not
     static bool preview_enable;
     // file where to store the preview image
@@ -32,7 +32,9 @@ public:
     /// wait util a program update the preview imag
     /// if you wait more than the max wait time the function throws an error
     /// if preview is disable this immediately return and give a warning
-    static void next_preview_image(float max_waiting_time = 10);
+    /// returns true if he has written an image
+    /// return false is the max waiting time has been exceeded, or if debug is set to false
+    static bool next_preview_image(float max_waiting_time = 10);
 
     /// pause the current program until someone calls get_next_preview_image, then it save the image in output file and
     /// continue the execution
@@ -49,7 +51,7 @@ public:
     static bool is_preview_enabled();
 
     /// set the file where the program will output the preview images
-    static void set_output_file(std::string &new_file);
+    static void set_output_file(const char* new_file);
 
     /// return the file of the preview image that will be created
     static std::string get_output_file();

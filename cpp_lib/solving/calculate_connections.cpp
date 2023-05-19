@@ -14,7 +14,7 @@ using namespace std;
 using namespace std::chrono;
 
 #include "constants.h"
-
+#include "puzzle_preview/PreviewManager.h"
 
 #include "calculate_connections.h"
 
@@ -55,9 +55,17 @@ void piece_comparer_thread(PieceConnection *pieces_connections, PieceShape *piec
                     if (compatibility < MIN_COMPAT_CC) {
                         compatibility = 0;
                     }
-                        // add compatibility to the register;
-                        pieces_connections[piece_id].insert_matching_piece(piece_side, other_piece_id, other_piece_side, compatibility);
-                        pieces_connections[other_piece_id].insert_matching_piece(other_piece_side, piece_id, piece_side, compatibility);
+
+                    if(PreviewManager::is_preview_enabled()){
+                        Mat img = pieces_shapes[piece_id].get_side(piece_side).get_compare_image(
+                                pieces_shapes[other_piece_id].get_side(other_piece_side)
+                        );
+                        PreviewManager::output_preview_image(img);
+                    }
+
+                    // add compatibility to the register;
+                    pieces_connections[piece_id].insert_matching_piece(piece_side, other_piece_id, other_piece_side, compatibility);
+                    pieces_connections[other_piece_id].insert_matching_piece(other_piece_side, piece_id, piece_side, compatibility);
                 }
             }
         }
@@ -101,6 +109,12 @@ void calculate_single_thread(const string &input_path, const string &output_path
                     );
                     if(compatibility < MIN_COMPAT_CC){
                         compatibility = 0;
+                    }
+                    if(PreviewManager::is_preview_enabled()){
+                        Mat img = pieces_shapes[piece_id].get_side(piece_side).get_compare_image(
+                                pieces_shapes[other_piece_id].get_side(other_piece_side)
+                                );
+                        PreviewManager::output_preview_image(img);
                     }
                     if(debug){
                         pieces_shapes[piece_id].get_side(piece_side).compare_to(

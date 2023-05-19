@@ -13,11 +13,11 @@ bool PreviewManager::is_preview_enabled() {
     return preview_enable;
 }
 
-void PreviewManager::next_preview_image(float max_waiting_time) {
+bool PreviewManager::next_preview_image(float max_waiting_time) {
     if(!preview_enable){
         // throw warning
         std::cerr << "Warning: you have called the \"next_preview_image\" function, but preview is disabled" << std::endl;
-        return;
+        return false;
     }
 
     if(is_first_read) {
@@ -36,9 +36,11 @@ void PreviewManager::next_preview_image(float max_waiting_time) {
     {
         std::unique_lock<std::mutex> lock(mtx);
         if(!ready_to_read){
-            cond_v.wait((lock), [] {return ready_to_read;});
+            return cond_v.wait_for(lock,std::chrono::duration<float>(max_waiting_time), [] {return ready_to_read;});
         }
     }
+    // if I haven't waited the image is ready
+    return true;
 }
 
 void PreviewManager::output_preview_image(cv::Mat &image) {
@@ -74,7 +76,7 @@ void PreviewManager::enable_preview() {
     mtx.unlock();
 }
 
-void PreviewManager::set_output_file(std::string &new_file) {
+void PreviewManager::set_output_file(const char* new_file) {
     output_file = new_file;
 }
 

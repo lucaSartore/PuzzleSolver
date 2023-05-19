@@ -292,8 +292,7 @@ void test_preview_manager(){
     // enable the preview
     PreviewManager::enable_preview();
     // set output path
-    string path = "temp_file.png";
-    PreviewManager::set_output_file(path);
+    PreviewManager::set_output_file("temp_file.png");
 
     // spawn some threads
     thread threads[N_THREADS];

@@ -105,7 +105,36 @@ Side::Side(Mat& shape, PieceShape* piece_, int piece_side_, Point p1, Point p2, 
 }
 
 
-#define EROSION_SIZE (6*Side::compare_res/1200)
+Mat Side::get_compare_image(const Side &other)const {
+
+
+    Mat other_border_shape_rotated;
+    rotate(other.border_shape, other_border_shape_rotated, ROTATE_180);
+    Mat and_mask, or_mask;
+    bitwise_and(border_shape, other_border_shape_rotated, and_mask);
+    bitwise_or(border_shape, other_border_shape_rotated, or_mask);
+
+
+
+    // create the colored image
+    std::vector<cv::Mat> channels;
+    channels.push_back(cv::Mat::zeros(and_mask.size(), CV_8U));
+    channels.push_back(cv::Mat::zeros(and_mask.size(), CV_8U));
+    channels.push_back(cv::Mat::zeros(and_mask.size(), CV_8U));
+
+    border_shape.copyTo(channels[2]); // set red channel where border_shape is white
+    other_border_shape_rotated.copyTo(channels[0]); // set blue channel where other_border_shape_rotated is white
+
+    cv::Mat output_image;
+    cv::merge(channels, output_image);
+
+    Mat resized;
+    resize(output_image,resized,output_image.size()/4);
+
+    return resized;
+}
+
+
 float Side::compare_to(const Side &other,bool debug)const {
 
     // quick comp

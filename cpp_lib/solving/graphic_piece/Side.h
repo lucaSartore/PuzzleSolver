@@ -50,6 +50,9 @@ public:
     // get the comparing res
     static int get_compare_res();
 
+    // return the image that show the comparison
+    cv::Mat get_compare_image(const Side &other)const;
+
 };
 
 

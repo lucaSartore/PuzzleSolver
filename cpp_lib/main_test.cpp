@@ -4,12 +4,35 @@
 
 #include <iostream>
 #include "PuzzleSolver.h"
-
+#include <thread>
+#include <opencv2/opencv.hpp>
 
 using namespace std;
+using namespace cv;
 
+void debug_thread(){
+
+    PreviewManager::enable_preview();
+    PreviewManager::set_output_file("test.png");
+
+    cout << "PreviewThreadEnable" << endl;
+    while (PreviewManager::next_preview_image(3)){
+        Mat image = imread(PreviewManager::get_output_file());
+        imshow("preview",image);
+        waitKey(0);
+    }
+    destroyAllWindows();
+    cout << "PreviewEnded" << endl;
+}
 
 int main(){
+
+
+
+    thread t1;
+
+    t1 = thread(debug_thread);
+
 
     PuzzleSolver ps(4, 4, "../work_path", "../../dataset/test_4x4/raw",6);
     //PuzzleSolver ps("../work_path");
@@ -45,6 +68,8 @@ int main(){
 
     //imshow("lalala",ps.get_result());
     //waitKey(0);
+
+    t1.join();
 
     return 0;
 
