@@ -44,7 +44,7 @@ inline int rand()
 {
 #ifndef OPENCV_FLANN_USE_STD_RAND
 #   if INT_MAX == RAND_MAX
-    int v = cv_need_new_image::theRNG().next() & INT_MAX;
+    int v = cv::theRNG().next() & INT_MAX;
 #   else
     int v = cv::theRNG().uniform(0, RAND_MAX + 1);
 #   endif
