@@ -16,9 +16,11 @@ void debug_thread(){
     PreviewManager::set_output_file("test.png");
 
     cout << "PreviewThreadEnable" << endl;
-    while (PreviewManager::next_preview_image(3)){
+    while (PreviewManager::next_preview_image(150)){
         Mat image = imread(PreviewManager::get_output_file());
-        imshow("preview",image);
+        Mat resized;
+        resize(image,resized,image.size()/2);
+        imshow("preview",resized);
         waitKey(0);
     }
     destroyAllWindows();
@@ -29,9 +31,7 @@ int main(){
 
 
 
-    thread t1;
 
-    t1 = thread(debug_thread);
 
 
     PuzzleSolver ps(4, 4, "../work_path", "../../dataset/test_4x4/raw",6);
@@ -59,6 +59,9 @@ int main(){
     }catch(wrong_state_exception &e){
         cout << "skip calculate connections" << endl;
     }
+
+    thread t1;
+    t1 = thread(debug_thread);
 
     try{
         ps.solve_puzzle();

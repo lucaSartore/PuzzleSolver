@@ -40,6 +40,7 @@ public:
     /// set the default behaviour of function (whether to return the resized or the non resized variant of a feature)
     /// if default resize is true all function will return a resized version of the asked feature. and return a non resized
     /// version otherwise
+    /// WARNING the function is NOT thread safe, if you need to use resized value, an multithreading use the explicit parameter instead
     static void set_resize(bool new_default_resize);
     /// set the offset of the piece;
     void set_offset(cv::Point p, bool resize);
@@ -68,9 +69,11 @@ public:
     /// take this piece and rotate him to be aligned with the the 2 pieces at the top and at the left
     void align_to(Holder& top_piece, Holder& left_piece);
     /// move the current so that it will have the other piece at the specified direction
-    void move_to(Holder& other, Direction direction);
+    void move_to(Holder& other, Direction direction,bool resized);
+    void move_to(Holder& other, Direction direction){ return move_to(other, direction, default_resize);};
     /// move the current so that it will two pieces to the top and left
-    void move_to(Holder& top_piece, Holder& left_piece);
+    void move_to(Holder& top_piece, Holder& left_piece,bool resized);
+    void move_to(Holder& top_piece, Holder& left_piece){return  move_to(top_piece, left_piece,default_resize);};
     /// return the point (that has been previously rotated) at the specified index
     cv::Point get_rotated_point(int index, bool resize);
     cv::Point get_rotated_point(int index){return get_rotated_point(index, default_resize);};
