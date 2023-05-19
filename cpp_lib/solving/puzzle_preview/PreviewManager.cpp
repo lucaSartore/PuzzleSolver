@@ -8,7 +8,7 @@ std::string PreviewManager::output_file;
 bool PreviewManager::ready_to_read = false;
 std::condition_variable PreviewManager::cond_v;
 std::mutex PreviewManager::mtx;
-
+bool PreviewManager::is_first_read = true;
 bool PreviewManager::is_preview_enabled() {
     return preview_enable;
 }
@@ -20,13 +20,17 @@ void PreviewManager::next_preview_image(float max_waiting_time) {
         return;
     }
 
-    // send signal that I need a new data
-    mtx.lock();
-    ready_to_read = false;
-    mtx.unlock();
+    if(is_first_read) {
+        is_first_read = false;
+    }else{
+        // send signal that I need a new data
+        mtx.lock();
+        ready_to_read = false;
+        mtx.unlock();
 
-    // notify one
-    cond_v.notify_one();
+        // notify one
+        cond_v.notify_one();
+    }
 
     // wait until the data can be red am ready to read
     {
@@ -46,7 +50,7 @@ void PreviewManager::output_preview_image(cv::Mat &image) {
 
     {
         std::unique_lock<std::mutex> lock(mtx);
-        // if the data is no longer ready and can be rewritten
+        // wait until the data is no longer ready
         if (ready_to_read) {
             cond_v.wait(lock, [] { return !ready_to_read; });
         }
@@ -81,6 +85,6 @@ std::string PreviewManager::get_output_file() {
 void PreviewManager::disable_preview() {
     preview_enable = false;
     ready_to_read = true;
-
+    is_first_read = true;
     // doto: unlock potential thread that might be waiting
 }

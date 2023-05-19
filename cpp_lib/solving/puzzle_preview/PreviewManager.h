@@ -24,6 +24,8 @@ public:
     // mutex and condition for synchronization
     static std::condition_variable cond_v;
     static std::mutex mtx;
+    // flag that is true only the first time an image is read
+    static bool is_first_read;
 
 public:
 
