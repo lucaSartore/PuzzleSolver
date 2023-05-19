@@ -14,7 +14,7 @@
 #include <time.h>
 #include "../solving/groped_pieces/grouped_pieces_errors.h"
 #include "../solving/groped_pieces/GroupedPiecesHolder.h"
-
+#include "../communication/communication.h"
 
 void test_piece_array(){
 
@@ -313,4 +313,18 @@ void test_preview_manager(){
     }
 
     threads[0].join();
+}
+
+void test_image_ram_encode(){
+    Mat image = Mat::zeros(Size(1000,1000),CV_8UC3);
+    floodFill(image,Point(0,0),Scalar(100,200, 222));
+    rectangle(image,Point(10,10),Point(200,700),Scalar(255,40,40),-1);
+
+    auto image_ram = store_image_to_ram(image);
+
+    Mat new_image = load_image_from_ram(image_ram.get_image_pointer());
+
+    imshow("original",image);
+    imshow("saved", new_image);
+    waitKey(0);
 }

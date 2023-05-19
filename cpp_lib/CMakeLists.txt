@@ -57,6 +57,9 @@ set(SOURCE_FILES
         solving/puzzle_preview/PreviewManager.cpp
         solving/puzzle_preview/PreviewManager.h
 
+        communication/communication.cpp
+        communication/communication.h
+
         PuzzleSolver.cpp
         PuzzleSolver.h
         )

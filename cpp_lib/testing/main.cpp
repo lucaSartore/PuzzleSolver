@@ -6,6 +6,7 @@
 
 int main(){
 
+    test_image_ram_encode(); return 0;
     //test_piece_array_save(); return 0;
     test_piece_array(); return 0;
     //test_preview_manager(); return 0;
