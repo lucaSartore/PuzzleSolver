@@ -10,6 +10,7 @@
 #include <thread>
 #include "../solving/groped_pieces/GroupedPieces.h"
 #include "../solving/puzzle_preview/PieceArray.h"
+#include "../solving/puzzle_preview/PreviewManager.h"
 #include <time.h>
 #include "../solving/groped_pieces/grouped_pieces_errors.h"
 #include "../solving/groped_pieces/GroupedPiecesHolder.h"
@@ -251,6 +252,66 @@ void test_piece_array_save(){
     imshow("after save",new_pa.get_image(PREVIEW));
 
     waitKey(0);
+}
 
 
+int test_index = 0;
+std::mutex mutex_test_index;
+
+void image_generator_thread(int thread_id){
+    cout << "thread " << thread_id << " started" << endl;
+    srand(time(nullptr));
+    while (true){
+        // create an image with a random color
+        Mat image = Mat::zeros(Size(500,500),CV_8UC3);
+        int r = rand()%255;
+        int g = rand()%255;
+        int b = rand()%255;
+
+        mutex_test_index.lock();
+        int n = test_index;
+        test_index++;
+        if(n>50){
+            break;
+        }
+        mutex_test_index.unlock();
+
+        Scalar random_color = Scalar(b,g,r);
+        floodFill(image,Point(0,0),random_color);
+        putText(image,to_string(n),Point(100,400),0,10,Scalar(0,0,0),40);
+        cout << "thread " << thread_id << " ready to write image" << endl;
+        PreviewManager::output_preview_image(image);
+        cout << "thread " << thread_id << " has written an image" << endl;
+        //return;
+    }
+};
+
+void test_preview_manager(){
+    const int N_THREADS = 6;
+
+    // enable the preview
+    PreviewManager::enable_preview();
+    // set output path
+    string path = "temp_file.png";
+    PreviewManager::set_output_file(path);
+
+    // spawn some threads
+    thread threads[N_THREADS];
+    for(int i=0; i<N_THREADS; i++){
+        threads[i] = thread(image_generator_thread,i);
+    }
+
+    this_thread::sleep_for(chrono::duration<int,milli>(1000));
+
+    while (true) {
+        //cout << "requesting an image" << endl;
+        PreviewManager::next_preview_image();
+        //cout << "got an image" << endl;
+        Mat image = imread(PreviewManager::get_output_file());
+        imshow("image", image);
+        waitKey(0);
+        //break;
+    }
+
+    threads[0].join();
 }
