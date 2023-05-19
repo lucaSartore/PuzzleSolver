@@ -135,7 +135,7 @@ typedef signed char schar;
 //! @}
 
 //! @name Comparison operation
-//! @sa cond_v::CmpTypes
+//! @sa cv::CmpTypes
 //! @{
 #define CV_HAL_CMP_EQ 0
 #define CV_HAL_CMP_GT 1
@@ -146,7 +146,7 @@ typedef signed char schar;
 //! @}
 
 //! @name Border processing modes
-//! @sa cond_v::BorderTypes
+//! @sa cv::BorderTypes
 //! @{
 #define CV_HAL_BORDER_CONSTANT 0
 #define CV_HAL_BORDER_REPLICATE 1

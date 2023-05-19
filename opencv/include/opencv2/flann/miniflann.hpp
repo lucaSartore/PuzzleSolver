@@ -178,7 +178,7 @@ protected:
     Mat features_clone;  // index may store features pointer internally for searching, so avoid dangling pointers: https://github.com/opencv/opencv/issues/17553
 };
 
-} } // namespace cond_v::flann
+} } // namespace cv::flann
 
 //! @endcond
 

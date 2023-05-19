@@ -136,6 +136,6 @@ protected:
 //! @}
 
 }  // namespace segmentation
-}  // namespace cond_v
+}  // namespace cv
 
 #endif // OPENCV_IMGPROC_SEGMENTATION_HPP

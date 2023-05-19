@@ -266,16 +266,16 @@ public:
                           : cost_type_(cost_type), terminal_cost_(terminal_cost),
                             bad_region_penalty_(bad_region_penalty) {}
 
-    void find(const std::vector<cond_v::UMat> &src, const std::vector<cond_v::Point> &corners,
-              std::vector<cond_v::UMat> &masks) CV_OVERRIDE;
+    void find(const std::vector<cv::UMat> &src, const std::vector<cv::Point> &corners,
+              std::vector<cv::UMat> &masks) CV_OVERRIDE;
     void findInPair(size_t first, size_t second, Rect roi) CV_OVERRIDE;
 
 private:
-    void setGraphWeightsColor(const cond_v::Mat &img1, const cond_v::Mat &img2, const cond_v::Mat &mask1, const cond_v::Mat &mask2,
-                              cond_v::Mat &terminals, cond_v::Mat &leftT, cond_v::Mat &rightT, cond_v::Mat &top, cond_v::Mat &bottom);
-    void setGraphWeightsColorGrad(const cond_v::Mat &img1, const cond_v::Mat &img2, const cond_v::Mat &dx1, const cond_v::Mat &dx2,
-                                  const cond_v::Mat &dy1, const cond_v::Mat &dy2, const cond_v::Mat &mask1, const cond_v::Mat &mask2,
-                                  cond_v::Mat &terminals, cond_v::Mat &leftT, cond_v::Mat &rightT, cond_v::Mat &top, cond_v::Mat &bottom);
+    void setGraphWeightsColor(const cv::Mat &img1, const cv::Mat &img2, const cv::Mat &mask1, const cv::Mat &mask2,
+                              cv::Mat &terminals, cv::Mat &leftT, cv::Mat &rightT, cv::Mat &top, cv::Mat &bottom);
+    void setGraphWeightsColorGrad(const cv::Mat &img1, const cv::Mat &img2, const cv::Mat &dx1, const cv::Mat &dx2,
+                                  const cv::Mat &dy1, const cv::Mat &dy2, const cv::Mat &mask1, const cv::Mat &mask2,
+                                  cv::Mat &terminals, cv::Mat &leftT, cv::Mat &rightT, cv::Mat &top, cv::Mat &bottom);
     std::vector<Mat> dx_, dy_;
     int cost_type_;
     float terminal_cost_;
@@ -286,6 +286,6 @@ private:
 //! @}
 
 } // namespace detail
-} // namespace cond_v
+} // namespace cv
 
 #endif // OPENCV_STITCHING_SEAM_FINDERS_HPP

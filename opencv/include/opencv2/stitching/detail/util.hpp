@@ -114,7 +114,7 @@ CV_EXPORTS_W int& stitchingLogLevel();
 //! @}
 
 } // namespace detail
-} // namespace cond_v
+} // namespace cv
 
 #include "util_inl.hpp"
 

@@ -83,13 +83,13 @@ namespace cv
  the number of stack-allocated elements. Here is how the class is used:
 
  \code
- void my_func(const cond_v::Mat& m)
+ void my_func(const cv::Mat& m)
  {
-    cond_v::AutoBuffer<float> buf(1000); // create automatic buffer containing 1000 floats
+    cv::AutoBuffer<float> buf(1000); // create automatic buffer containing 1000 floats
 
     buf.allocate(m.rows); // if m.rows <= 1000, the pre-allocated buffer is used,
                           // otherwise the buffer of "m.rows" floats will be allocated
-                          // dynamically and deallocated in cond_v::AutoBuffer destructor
+                          // dynamically and deallocated in cv::AutoBuffer destructor
     ...
  }
  \endcode
@@ -166,7 +166,7 @@ extern "C" typedef int (*ErrorCallback)( int status, const char* func_name,
 
 /** @brief Sets the new error handler and the optional user data.
 
-  The function sets the new error handler, called from cond_v::error().
+  The function sets the new error handler, called from cv::error().
 
   \param errCallback the new error handler. If NULL, the default error handler is used.
   \param userdata the optional user data pointer, passed to the callback.
@@ -420,7 +420,7 @@ The function returns true if the host hardware supports the specified feature. W
 setUseOptimized(false), the subsequent calls to checkHardwareSupport() will return false until
 setUseOptimized(true) is called. This way user can dynamically switch on and off the optimized code
 in OpenCV.
-@param feature The feature of interest, one of cond_v::CpuFeatures
+@param feature The feature of interest, one of cv::CpuFeatures
  */
 CV_EXPORTS_W bool checkHardwareSupport(int feature);
 
@@ -613,7 +613,7 @@ void parallel_for_(const Range& range, std::function<void(const Range&)> functor
 }
 
 
-/////////////////////////////// forEach method of cond_v::Mat ////////////////////////////
+/////////////////////////////// forEach method of cv::Mat ////////////////////////////
 template<typename _Tp, typename Functor> inline
 void Mat::forEach_impl(const Functor& operation) {
     if (false) {
@@ -721,15 +721,15 @@ typedef std::lock_guard<cv::Mutex> AutoLock;
 // Custom (failing) implementation of `std::recursive_mutex`.
 struct Mutex {
     void lock(){
-        CV_Error(cond_v::Error::StsNotImplemented,
-                 "cond_v::Mutex is disabled by OPENCV_DISABLE_THREAD_SUPPORT=ON");
+        CV_Error(cv::Error::StsNotImplemented,
+                 "cv::Mutex is disabled by OPENCV_DISABLE_THREAD_SUPPORT=ON");
     }
     void unlock(){
-        CV_Error(cond_v::Error::StsNotImplemented,
-                 "cond_v::Mutex is disabled by OPENCV_DISABLE_THREAD_SUPPORT=ON");
+        CV_Error(cv::Error::StsNotImplemented,
+                 "cv::Mutex is disabled by OPENCV_DISABLE_THREAD_SUPPORT=ON");
     }
 };
-// Stub for cond_v::AutoLock when threads are disabled.
+// Stub for cv::AutoLock when threads are disabled.
 struct AutoLock {
     AutoLock(Mutex &) { }
 };
@@ -1169,11 +1169,11 @@ Search directories:
 5. Scan `<source>/{,data,samples/data}` directories if build directory is detected or the current directory is in source tree.
 6. Scan `<install>/share/OpenCV` directory if install directory is detected.
 
-@see cond_v::utils::findDataFile
+@see cv::utils::findDataFile
 
 @param relative_path Relative path to data file
 @param required Specify "file not found" handling.
-       If true, function prints information message and raises cond_v::Exception.
+       If true, function prints information message and raises cv::Exception.
        If false, function returns empty result
 @param silentMode Disables messages
 @return Returns path (absolute or relative to the current directory) or empty string if file is not found
@@ -1217,7 +1217,7 @@ CV_EXPORTS int getThreadID();
 
 } // namespace
 
-} //namespace cond_v
+} //namespace cv
 
 #ifdef CV_COLLECT_IMPL_DATA
 #include "opencv2/core/utils/instrumentation.hpp"

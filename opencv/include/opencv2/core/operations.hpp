@@ -429,7 +429,7 @@ message in the Exception constructor.
  */
 CV_EXPORTS String format( const char* fmt, ... ) CV_FORMAT_PRINTF(1, 2);
 
-///////////////////////////////// Formatted output of cond_v::Mat /////////////////////////////////
+///////////////////////////////// Formatted output of cv::Mat /////////////////////////////////
 
 static inline
 Ptr<Formatted> format(InputArray mtx, Formatter::FormatType fmt)
@@ -589,6 +589,6 @@ partition( const std::vector<_Tp>& _vec, std::vector<int>& labels,
     return nclasses;
 }
 
-} // cond_v
+} // cv
 
 #endif

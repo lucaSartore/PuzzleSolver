@@ -217,6 +217,6 @@ class CV_EXPORTS DetectionBasedTracker
 
 //! @}
 
-} //end of cond_v namespace
+} //end of cv namespace
 
 #endif

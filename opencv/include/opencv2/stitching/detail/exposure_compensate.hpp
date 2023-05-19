@@ -240,6 +240,6 @@ public:
 //! @}
 
 } // namespace detail
-} // namespace cond_v
+} // namespace cv
 
 #endif // OPENCV_STITCHING_EXPOSURE_COMPENSATE_HPP

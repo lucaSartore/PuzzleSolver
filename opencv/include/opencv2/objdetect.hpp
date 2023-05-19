@@ -120,7 +120,7 @@ namespace cv
 
 /** @brief This class is used for grouping object candidates detected by Cascade Classifier, HOG etc.
 
-instance of the class is to be passed to cond_v::partition
+instance of the class is to be passed to cv::partition
  */
 class CV_EXPORTS SimilarRects
 {
@@ -457,12 +457,12 @@ public:
     */
     CV_WRAP virtual void setSVMDetector(InputArray svmdetector);
 
-    /** @brief Reads HOGDescriptor parameters from a cond_v::FileNode.
+    /** @brief Reads HOGDescriptor parameters from a cv::FileNode.
     @param fn File node
     */
     virtual bool read(FileNode& fn);
 
-    /** @brief Stores HOGDescriptor parameters in a cond_v::FileStorage.
+    /** @brief Stores HOGDescriptor parameters in a cv::FileStorage.
     @param fs File storage
     @param objname Object name
     */

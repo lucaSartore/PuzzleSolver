@@ -186,7 +186,7 @@ static inline std::ostream &operator<< (std::ostream &s, cv::Range &r)
     return s << "[" << r.start << " : " << r.end << ")";
 }
 
-} // cond_v
+} // cv
 
 #ifdef _MSC_VER
 #pragma warning( pop )

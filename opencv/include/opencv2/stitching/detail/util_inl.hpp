@@ -124,7 +124,7 @@ static inline float sqr(float x) { return x * x; }
 static inline double sqr(double x) { return x * x; }
 
 } // namespace detail
-} // namespace cond_v
+} // namespace cv
 
 //! @endcond
 

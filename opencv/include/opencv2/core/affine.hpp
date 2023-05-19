@@ -74,33 +74,33 @@ namespace cv
      *  angle \f$|r|\f$ in radian (right hand rule) and then translation by the vector \f$t\f$, you can use
      *
      *  @code
-     *  cond_v::Vec3f r, t;
-     *  cond_v::Affine3f T(r, t);
+     *  cv::Vec3f r, t;
+     *  cv::Affine3f T(r, t);
      *  @endcode
      *
      *  If you already have the rotation matrix \f$R\f$, then you can use
      *
      *  @code
-     *  cond_v::Matx33f R;
-     *  cond_v::Affine3f T(R, t);
+     *  cv::Matx33f R;
+     *  cv::Affine3f T(R, t);
      *  @endcode
      *
      *  To extract the rotation matrix \f$R\f$ from \f$T\f$, use
      *
      *  @code
-     *  cond_v::Matx33f R = T.rotation();
+     *  cv::Matx33f R = T.rotation();
      *  @endcode
      *
      *  To extract the translation vector \f$t\f$ from \f$T\f$, use
      *
      *  @code
-     *  cond_v::Vec3f t = T.translation();
+     *  cv::Vec3f t = T.translation();
      *  @endcode
      *
      *  To extract the rotation vector \f$r\f$ from \f$T\f$, use
      *
      *  @code
-     *  cond_v::Vec3f r = T.rvec();
+     *  cv::Vec3f r = T.rvec();
      *  @endcode
      *
      *  Note that since the mapping from rotation vectors to rotation matrices
@@ -110,14 +110,14 @@ namespace cv
      *  If you have two transformations \f$T = T_1 * T_2\f$, use
      *
      *  @code
-     *  cond_v::Affine3f T, T1, T2;
+     *  cv::Affine3f T, T1, T2;
      *  T = T2.concatenate(T1);
      *  @endcode
      *
      *  To get the inverse transform of \f$T\f$, use
      *
      *  @code
-     *  cond_v::Affine3f T, T_inv;
+     *  cv::Affine3f T, T_inv;
      *  T_inv = T.inv();
      *  @endcode
      *
@@ -642,29 +642,29 @@ cv::Vec3d cv::operator*(const cv::Affine3d& affine, const cv::Vec3d& v)
 #if defined EIGEN_WORLD_VERSION && defined EIGEN_GEOMETRY_MODULE_H
 
 template<typename T> inline
-cond_v::Affine3<T>::Affine3(const Eigen::Transform<T, 3, Eigen::Affine, (Eigen::RowMajor)>& affine)
+cv::Affine3<T>::Affine3(const Eigen::Transform<T, 3, Eigen::Affine, (Eigen::RowMajor)>& affine)
 {
-    cond_v::Mat(4, 4, cond_v::traits::Type<T>::value, affine.matrix().data()).copyTo(matrix);
+    cv::Mat(4, 4, cv::traits::Type<T>::value, affine.matrix().data()).copyTo(matrix);
 }
 
 template<typename T> inline
-cond_v::Affine3<T>::Affine3(const Eigen::Transform<T, 3, Eigen::Affine>& affine)
+cv::Affine3<T>::Affine3(const Eigen::Transform<T, 3, Eigen::Affine>& affine)
 {
     Eigen::Transform<T, 3, Eigen::Affine, (Eigen::RowMajor)> a = affine;
-    cond_v::Mat(4, 4, cond_v::traits::Type<T>::value, a.matrix().data()).copyTo(matrix);
+    cv::Mat(4, 4, cv::traits::Type<T>::value, a.matrix().data()).copyTo(matrix);
 }
 
 template<typename T> inline
-cond_v::Affine3<T>::operator Eigen::Transform<T, 3, Eigen::Affine, (Eigen::RowMajor)>() const
+cv::Affine3<T>::operator Eigen::Transform<T, 3, Eigen::Affine, (Eigen::RowMajor)>() const
 {
     Eigen::Transform<T, 3, Eigen::Affine, (Eigen::RowMajor)> r;
-    cond_v::Mat hdr(4, 4, cond_v::traits::Type<T>::value, r.matrix().data());
-    cond_v::Mat(matrix, false).copyTo(hdr);
+    cv::Mat hdr(4, 4, cv::traits::Type<T>::value, r.matrix().data());
+    cv::Mat(matrix, false).copyTo(hdr);
     return r;
 }
 
 template<typename T> inline
-cond_v::Affine3<T>::operator Eigen::Transform<T, 3, Eigen::Affine>() const
+cv::Affine3<T>::operator Eigen::Transform<T, 3, Eigen::Affine>() const
 {
     return this->operator Eigen::Transform<T, 3, Eigen::Affine, (Eigen::RowMajor)>();
 }

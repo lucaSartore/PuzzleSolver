@@ -61,7 +61,7 @@
 // https://github.com/opencv/opencv/pull/9161
 #define CV__DEBUG_NS_BEGIN namespace debug_build_guard {
 #define CV__DEBUG_NS_END }
-namespace cond_v { namespace debug_build_guard { } using namespace debug_build_guard; }
+namespace cv { namespace debug_build_guard { } using namespace debug_build_guard; }
 #endif
 #endif
 
@@ -136,13 +136,13 @@ namespace cond_v { namespace debug_build_guard { } using namespace debug_build_g
 #  if !defined(__clang__) && defined(__GNUC__) && (__GNUC__*100 + __GNUC_MINOR__ > 302)
 #    define CV_StaticAssert(condition, reason) ({ extern int __attribute__((error("CV_StaticAssert: " reason " " #condition))) CV_StaticAssert(); ((condition) ? 0 : CV_StaticAssert()); })
 #  else
-namespace cond_v {
+namespace cv {
      template <bool x> struct CV_StaticAssert_failed;
      template <> struct CV_StaticAssert_failed<true> { enum { val = 1 }; };
      template<int x> struct CV_StaticAssert_test {};
 }
 #    define CV_StaticAssert(condition, reason)\
-       typedef cond_v::CV_StaticAssert_test< sizeof(cond_v::CV_StaticAssert_failed< static_cast<bool>(condition) >) > CVAUX_CONCAT(CV_StaticAssert_failed_at_, __LINE__)
+       typedef cv::CV_StaticAssert_test< sizeof(cv::CV_StaticAssert_failed< static_cast<bool>(condition) >) > CVAUX_CONCAT(CV_StaticAssert_failed_at_, __LINE__)
 #  endif
 #endif
 
@@ -809,7 +809,7 @@ __CV_ENUM_FLAGS_BITWISE_XOR_EQ   (EnumType, EnumType)                           
 #include OPENCV_STDINT_HEADER
 #elif defined(__cplusplus)
 #if defined(_MSC_VER) && _MSC_VER < 1600 /* MSVS 2010 */
-namespace cond_v {
+namespace cv {
 typedef signed char int8_t;
 typedef unsigned char uint8_t;
 typedef signed short int16_t;
@@ -833,7 +833,7 @@ using std::uint64_t;
 }
 #else
 #include <stdint.h>
-namespace cond_v {
+namespace cv {
 typedef ::int8_t int8_t;
 typedef ::uint8_t uint8_t;
 typedef ::int16_t int16_t;

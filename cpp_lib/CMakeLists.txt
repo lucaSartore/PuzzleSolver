@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.23)
 
 project( PuzzleSolver )
 
+# REMEMBER the bundled version of opencv is compiled with MinGW, if you use the Visual Studio compiler (or others)
+# you need to download another version
+
 # REMEMBER TO ADD: YOUR_PATH\Puzzle_Solver\opencv\x64\mingw\bin\ to your system PATH
 find_package(OpenCV REQUIRED PATHS ../opencv)
 include_directories( ${OpenCV_INCLUDE_DIRS} )

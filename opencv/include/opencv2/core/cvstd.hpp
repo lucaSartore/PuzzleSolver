@@ -105,7 +105,7 @@ double memory deallocation.
 CV_EXPORTS void fastFree(void* ptr);
 
 /*!
-  The STL-compliant memory Allocator based on cond_v::fastMalloc() and cond_v::fastFree()
+  The STL-compliant memory Allocator based on cv::fastMalloc() and cv::fastFree()
 */
 template<typename _Tp> class Allocator
 {
@@ -185,6 +185,6 @@ static inline std::string toUpperCase(const std::string& str)
 #endif // OPENCV_DISABLE_STRING_LOWER_UPPER_CONVERSIONS
 
 //! @} core_basic
-} // cond_v
+} // cv
 
 #endif //OPENCV_CORE_CVSTD_HPP

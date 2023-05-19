@@ -127,7 +127,7 @@ Here is an example:
     #include "opencv2/core.hpp"
     #include <time.h>
 
-    using namespace cond_v;
+    using namespace cv;
 
     int main(int, char** argv)
     {
@@ -198,7 +198,7 @@ Several things can be noted by looking at the sample code and the output:
 
 -   When you write to a mapping (a structure), you write element name followed by its value. When you
     write to a sequence, you simply write the elements one by one. OpenCV data structures (such as
-    cond_v::Mat) are written in absolutely the same way as simple C data structures - using `<<`
+    cv::Mat) are written in absolutely the same way as simple C data structures - using `<<`
     operator.
 
 -   To write a mapping, you first write the special string `{` to the storage, then write the
@@ -696,7 +696,7 @@ protected:
 
 /////////////////// XML & YAML I/O implementation //////////////////
 
-//! @relates cond_v::FileStorage
+//! @relates cv::FileStorage
 //! @{
 
 CV_EXPORTS void write( FileStorage& fs, const String& name, int value );
@@ -717,7 +717,7 @@ CV_EXPORTS void writeScalar( FileStorage& fs, const String& value );
 
 //! @}
 
-//! @relates cond_v::FileNode
+//! @relates cv::FileNode
 //! @{
 
 CV_EXPORTS void read(const FileNode& node, int& value, int default_value);
@@ -799,7 +799,7 @@ static inline void read(const FileNode& node, Range& value, const Range& default
 //! @}
 
 /** @brief Writes string to a file storage.
-@relates cond_v::FileStorage
+@relates cv::FileStorage
  */
 CV_EXPORTS FileStorage& operator << (FileStorage& fs, const String& str);
 
@@ -884,7 +884,7 @@ namespace internal
 
 //! @endcond
 
-//! @relates cond_v::FileStorage
+//! @relates cv::FileStorage
 //! @{
 
 template<typename _Tp> static inline
@@ -1120,7 +1120,7 @@ static inline void write(FileStorage& fs, const std::vector<DMatch>& vec)
 
 //! @} FileStorage
 
-//! @relates cond_v::FileNode
+//! @relates cv::FileNode
 //! @{
 
 static inline
@@ -1210,7 +1210,7 @@ void read( const FileNode& node, std::vector<DMatch>& vec, const std::vector<DMa
 
 //! @} FileNode
 
-//! @relates cond_v::FileStorage
+//! @relates cv::FileStorage
 //! @{
 
 /** @brief Writes data to a file storage.
@@ -1246,7 +1246,7 @@ FileStorage& operator << (FileStorage& fs, char* value)
 
 //! @} FileStorage
 
-//! @relates cond_v::FileNodeIterator
+//! @relates cv::FileNodeIterator
 //! @{
 
 /** @brief Reads data from a file storage.
@@ -1270,7 +1270,7 @@ FileNodeIterator& operator >> (FileNodeIterator& it, std::vector<_Tp>& vec)
 
 //! @} FileNodeIterator
 
-//! @relates cond_v::FileNode
+//! @relates cv::FileNode
 //! @{
 
 /** @brief Reads data from a file storage.
@@ -1325,7 +1325,7 @@ void operator >> (const FileNode& n, DMatch& m)
 
 //! @} FileNode
 
-//! @relates cond_v::FileNodeIterator
+//! @relates cv::FileNodeIterator
 //! @{
 
 CV_EXPORTS bool operator == (const FileNodeIterator& it1, const FileNodeIterator& it2);
@@ -1345,6 +1345,6 @@ bool operator < (const FileNodeIterator& it1, const FileNodeIterator& it2)
 
 //! @} FileNodeIterator
 
-} // cond_v
+} // cv
 
 #endif // OPENCV_CORE_PERSISTENCE_HPP

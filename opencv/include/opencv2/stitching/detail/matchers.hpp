@@ -210,14 +210,14 @@ protected:
     int range_width_;
 };
 
-/** @brief Features matcher similar to cond_v::detail::BestOf2NearestMatcher which
+/** @brief Features matcher similar to cv::detail::BestOf2NearestMatcher which
 finds two best matches for each feature and leaves the best one only if the
 ratio between descriptor distances is greater than the threshold match_conf.
 
-Unlike cond_v::detail::BestOf2NearestMatcher this matcher uses affine
+Unlike cv::detail::BestOf2NearestMatcher this matcher uses affine
 transformation (affine transformation estimate will be placed in matches_info).
 
-@sa cond_v::detail::FeaturesMatcher cond_v::detail::BestOf2NearestMatcher
+@sa cv::detail::FeaturesMatcher cv::detail::BestOf2NearestMatcher
  */
 class CV_EXPORTS_W AffineBestOf2NearestMatcher : public BestOf2NearestMatcher
 {
@@ -232,7 +232,7 @@ public:
     @param num_matches_thresh1 Minimum number of matches required for the 2D affine transform
     estimation used in the inliers classification step
 
-    @sa cond_v::estimateAffine2D cond_v::estimateAffinePartial2D
+    @sa cv::estimateAffine2D cv::estimateAffinePartial2D
      */
     CV_WRAP AffineBestOf2NearestMatcher(bool full_affine = false, bool try_use_gpu = false,
                                 float match_conf = 0.3f, int num_matches_thresh1 = 6) :
@@ -248,6 +248,6 @@ protected:
 //! @} stitching_match
 
 } // namespace detail
-} // namespace cond_v
+} // namespace cv
 
 #endif // OPENCV_STITCHING_MATCHERS_HPP

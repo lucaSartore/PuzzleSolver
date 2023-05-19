@@ -95,7 +95,7 @@ public:
              Distance d = Distance()) :
         dataset_(input_data), index_params_(params), distance_(d)
     {
-        // cond_v::flann::IndexParams sets integer params as 'int', so it is used with get_param
+        // cv::flann::IndexParams sets integer params as 'int', so it is used with get_param
         // in place of 'unsigned int'
         table_number_ = get_param(index_params_,"table_number",12);
         key_size_ = get_param(index_params_,"key_size",20);

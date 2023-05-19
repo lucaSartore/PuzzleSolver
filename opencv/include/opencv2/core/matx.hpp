@@ -314,7 +314,7 @@ template<typename _Tp, int m, int n> static double norm(const Matx<_Tp, m, n>& M
 
 This template class represents short numerical vectors (of 1, 2, 3, 4 ... elements) on which you
 can perform basic arithmetical operations, access individual elements using [] operator etc. The
-vectors are allocated on stack, as opposite to std::valarray, std::vector, cond_v::Mat etc., which
+vectors are allocated on stack, as opposite to std::valarray, std::vector, cv::Mat etc., which
 elements are dynamically allocated in the heap.
 
 The template takes 2 parameters:
@@ -1187,7 +1187,7 @@ Vec<_Tp, cn> VecCommaInitializer<_Tp, cn>::operator *() const
 
 ///////////////////////////// Matx out-of-class operators ////////////////////////////////
 
-//! @relates cond_v::Matx
+//! @relates cv::Matx
 //! @{
 
 template<typename _Tp1, typename _Tp2, int m, int n> static inline
@@ -1343,7 +1343,7 @@ bool operator != (const Matx<_Tp, m, n>& a, const Matx<_Tp, m, n>& b)
 
 ////////////////////////////// Vec out-of-class operators ////////////////////////////////
 
-//! @relates cond_v::Vec
+//! @relates cv::Vec
 //! @{
 
 template<typename _Tp1, typename _Tp2, int cn> static inline
@@ -1503,6 +1503,6 @@ template<typename _Tp> inline Vec<_Tp, 4>& operator *= (Vec<_Tp, 4>& v1, const V
 
 //! @}
 
-} // cond_v
+} // cv
 
 #endif // OPENCV_CORE_MATX_HPP

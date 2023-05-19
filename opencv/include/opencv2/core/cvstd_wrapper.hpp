@@ -149,6 +149,6 @@ Ptr<_Tp> makePtr(const A1&... a1)
 #endif // CV_DOXYGEN
 
 //! @} core_basic
-} // cond_v
+} // cv
 
 #endif //OPENCV_CORE_CVSTD_WRAPPER_HPP

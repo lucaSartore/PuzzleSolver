@@ -79,7 +79,7 @@ namespace cv
 //! @{
 
 
-/** @brief cond_v::VideoCapture API backends identifier.
+/** @brief cv::VideoCapture API backends identifier.
 
 Select preferred API for a capture object.
 To be used in the VideoCapture::VideoCapture() constructor or VideoCapture::open()
@@ -125,7 +125,7 @@ enum VideoCaptureAPIs {
        CAP_UEYE         = 2500,         //!< uEye Camera API
      };
 
-/** @brief cond_v::VideoCapture generic properties identifier.
+/** @brief cv::VideoCapture generic properties identifier.
 
  Reading / writing properties involves many layers. Some unexpected result might happens along this chain.
  Effective behaviour depends from device hardware, driver and API Backend.
@@ -183,9 +183,9 @@ enum VideoCaptureProperties {
        CAP_PROP_BITRATE       =47, //!< (read-only) Video bitrate in kbits/s
        CAP_PROP_ORIENTATION_META=48, //!< (read-only) Frame rotation defined by stream meta (applicable for FFmpeg back-end only)
        CAP_PROP_ORIENTATION_AUTO=49, //!< if true - rotates output frames of CvCapture considering video file's metadata  (applicable for FFmpeg back-end only) (https://github.com/opencv/opencv/issues/15499)
-       CAP_PROP_HW_ACCELERATION=50, //!< (**open-only**) Hardware acceleration type (see #VideoAccelerationType). Setting supported only via `params` parameter in cond_v::VideoCapture constructor / .open() method. Default value is backend-specific.
+       CAP_PROP_HW_ACCELERATION=50, //!< (**open-only**) Hardware acceleration type (see #VideoAccelerationType). Setting supported only via `params` parameter in cv::VideoCapture constructor / .open() method. Default value is backend-specific.
        CAP_PROP_HW_DEVICE      =51, //!< (**open-only**) Hardware device index (select GPU if multiple available). Device enumeration is acceleration type specific.
-       CAP_PROP_HW_ACCELERATION_USE_OPENCL=52, //!< (**open-only**) If non-zero, create new OpenCL context and bind it to current thread. The OpenCL context created with Video Acceleration context attached it (if not attached yet) for optimized GPU data copy between HW accelerated decoder and cond_v::UMat.
+       CAP_PROP_HW_ACCELERATION_USE_OPENCL=52, //!< (**open-only**) If non-zero, create new OpenCL context and bind it to current thread. The OpenCL context created with Video Acceleration context attached it (if not attached yet) for optimized GPU data copy between HW accelerated decoder and cv::UMat.
        CAP_PROP_OPEN_TIMEOUT_MSEC=53, //!< (**open-only**) timeout in milliseconds for opening a video capture (applicable for FFmpeg back-end only)
        CAP_PROP_READ_TIMEOUT_MSEC=54, //!< (**open-only**) timeout in milliseconds for reading from a video capture (applicable for FFmpeg back-end only)
        CAP_PROP_STREAM_OPEN_TIME_USEC =55, //<! (read-only) time in microseconds since Jan 1 1970 when stream was opened. Applicable for FFmpeg backend only. Useful for RTSP and other live streams
@@ -207,7 +207,7 @@ enum VideoCaptureProperties {
 #endif
      };
 
-/** @brief cond_v::VideoWriter generic properties identifier.
+/** @brief cv::VideoWriter generic properties identifier.
  @sa VideoWriter::get(), VideoWriter::set()
 */
 enum VideoWriterProperties {
@@ -219,7 +219,7 @@ enum VideoWriterProperties {
   VIDEOWRITER_PROP_DEPTH = 5,      //!< Defaults to CV_8U.
   VIDEOWRITER_PROP_HW_ACCELERATION = 6, //!< (**open-only**) Hardware acceleration type (see #VideoAccelerationType). Setting supported only via `params` parameter in VideoWriter constructor / .open() method. Default value is backend-specific.
   VIDEOWRITER_PROP_HW_DEVICE       = 7, //!< (**open-only**) Hardware device index (select GPU if multiple available). Device enumeration is acceleration type specific.
-  VIDEOWRITER_PROP_HW_ACCELERATION_USE_OPENCL= 8, //!< (**open-only**) If non-zero, create new OpenCL context and bind it to current thread. The OpenCL context created with Video Acceleration context attached it (if not attached yet) for optimized GPU data copy between cond_v::UMat and HW accelerated encoder.
+  VIDEOWRITER_PROP_HW_ACCELERATION_USE_OPENCL= 8, //!< (**open-only**) If non-zero, create new OpenCL context and bind it to current thread. The OpenCL context created with Video Acceleration context attached it (if not attached yet) for optimized GPU data copy between cv::UMat and HW accelerated encoder.
 #ifndef CV_DOXYGEN
   CV__VIDEOWRITER_PROP_LATEST
 #endif
@@ -700,9 +700,9 @@ public:
       Note that each video stream or IP camera feed has its own URL scheme. Please refer to the
       documentation of source stream to know the right URL.
     @param apiPreference preferred Capture API backends to use. Can be used to enforce a specific reader
-    implementation if multiple are available: e.g. cond_v::CAP_FFMPEG or cond_v::CAP_IMAGES or cond_v::CAP_DSHOW.
+    implementation if multiple are available: e.g. cv::CAP_FFMPEG or cv::CAP_IMAGES or cv::CAP_DSHOW.
 
-    @sa cond_v::VideoCaptureAPIs
+    @sa cv::VideoCaptureAPIs
     */
     CV_WRAP explicit VideoCapture(const String& filename, int apiPreference = CAP_ANY);
 
@@ -710,7 +710,7 @@ public:
     @brief Opens a video file or a capturing device or an IP video stream for video capturing with API Preference and parameters
 
     The `params` parameter allows to specify extra parameters encoded as pairs `(paramId_1, paramValue_1, paramId_2, paramValue_2, ...)`.
-    See cond_v::VideoCaptureProperties
+    See cv::VideoCaptureProperties
     */
     CV_WRAP explicit VideoCapture(const String& filename, int apiPreference, const std::vector<int>& params);
 
@@ -720,9 +720,9 @@ public:
     @param index id of the video capturing device to open. To open default camera using default backend just pass 0.
     (to backward compatibility usage of camera_id + domain_offset (CAP_*) is valid when apiPreference is CAP_ANY)
     @param apiPreference preferred Capture API backends to use. Can be used to enforce a specific reader
-    implementation if multiple are available: e.g. cond_v::CAP_DSHOW or cond_v::CAP_MSMF or cond_v::CAP_V4L.
+    implementation if multiple are available: e.g. cv::CAP_DSHOW or cv::CAP_MSMF or cv::CAP_V4L.
 
-    @sa cond_v::VideoCaptureAPIs
+    @sa cv::VideoCaptureAPIs
     */
     CV_WRAP explicit VideoCapture(int index, int apiPreference = CAP_ANY);
 
@@ -730,7 +730,7 @@ public:
     @brief Opens a camera for video capturing with API Preference and parameters
 
     The `params` parameter allows to specify extra parameters encoded as pairs `(paramId_1, paramValue_1, paramId_2, paramValue_2, ...)`.
-    See cond_v::VideoCaptureProperties
+    See cv::VideoCaptureProperties
     */
     CV_WRAP explicit VideoCapture(int index, int apiPreference, const std::vector<int>& params);
 
@@ -756,7 +756,7 @@ public:
     @overload
 
     The `params` parameter allows to specify extra parameters encoded as pairs `(paramId_1, paramValue_1, paramId_2, paramValue_2, ...)`.
-    See cond_v::VideoCaptureProperties
+    See cv::VideoCaptureProperties
 
     @return `true` if the file has been successfully opened
 
@@ -780,7 +780,7 @@ public:
     @overload
 
     The `params` parameter allows to specify extra parameters encoded as pairs `(paramId_1, paramValue_1, paramId_2, paramValue_2, ...)`.
-    See cond_v::VideoCaptureProperties
+    See cv::VideoCaptureProperties
 
     @return `true` if the camera has been successfully opened.
 
@@ -833,11 +833,11 @@ public:
 
     The method decodes and returns the just grabbed frame. If no frames has been grabbed
     (camera has been disconnected, or there are no more frames in video file), the method returns false
-    and the function returns an empty image (with %cond_v::Mat, test it with Mat::empty()).
+    and the function returns an empty image (with %cv::Mat, test it with Mat::empty()).
 
     @sa read()
 
-    @note In @ref videoio_c "C API", functions cvRetrieveFrame() and cond_v.RetrieveFrame() return image stored inside the video
+    @note In @ref videoio_c "C API", functions cvRetrieveFrame() and cv.RetrieveFrame() return image stored inside the video
     capturing structure. It is not allowed to modify or release the image! You can copy the frame using
     cvCloneImage and then do whatever you want with the copy.
      */
@@ -861,9 +861,9 @@ public:
     The method/function combines VideoCapture::grab() and VideoCapture::retrieve() in one call. This is the
     most convenient method for reading video files or capturing data from decode and returns the just
     grabbed frame. If no frames has been grabbed (camera has been disconnected, or there are no more
-    frames in video file), the method returns false and the function returns empty image (with %cond_v::Mat, test it with Mat::empty()).
+    frames in video file), the method returns false and the function returns empty image (with %cv::Mat, test it with Mat::empty()).
 
-    @note In @ref videoio_c "C API", functions cvRetrieveFrame() and cond_v.RetrieveFrame() return image stored inside the video
+    @note In @ref videoio_c "C API", functions cvRetrieveFrame() and cv.RetrieveFrame() return image stored inside the video
     capturing structure. It is not allowed to modify or release the image! You can copy the frame using
     cvCloneImage and then do whatever you want with the copy.
      */
@@ -871,7 +871,7 @@ public:
 
     /** @brief Sets a property in the VideoCapture.
 
-    @param propId Property identifier from cond_v::VideoCaptureProperties (eg. cond_v::CAP_PROP_POS_MSEC, cond_v::CAP_PROP_POS_FRAMES, ...)
+    @param propId Property identifier from cv::VideoCaptureProperties (eg. cv::CAP_PROP_POS_MSEC, cv::CAP_PROP_POS_FRAMES, ...)
     or one from @ref videoio_flags_others
     @param value Value of the property.
     @return `true` if the property is supported by backend used by the VideoCapture instance.
@@ -882,7 +882,7 @@ public:
 
     /** @brief Returns the specified VideoCapture property
 
-    @param propId Property identifier from cond_v::VideoCaptureProperties (eg. cond_v::CAP_PROP_POS_MSEC, cond_v::CAP_PROP_POS_FRAMES, ...)
+    @param propId Property identifier from cv::VideoCaptureProperties (eg. cv::CAP_PROP_POS_MSEC, cv::CAP_PROP_POS_FRAMES, ...)
     or one from @ref videoio_flags_others
     @return Value for the specified property. Value 0 is returned when querying a property that is
     not supported by the backend used by the VideoCapture instance.
@@ -995,14 +995,14 @@ public:
 
     /** @overload
     The `apiPreference` parameter allows to specify API backends to use. Can be used to enforce a specific reader implementation
-    if multiple are available: e.g. cond_v::CAP_FFMPEG or cond_v::CAP_GSTREAMER.
+    if multiple are available: e.g. cv::CAP_FFMPEG or cv::CAP_GSTREAMER.
      */
     CV_WRAP VideoWriter(const String& filename, int apiPreference, int fourcc, double fps,
                 Size frameSize, bool isColor = true);
 
     /** @overload
      * The `params` parameter allows to specify extra encoder parameters encoded as pairs (paramId_1, paramValue_1, paramId_2, paramValue_2, ... .)
-     * see cond_v::VideoWriterProperties
+     * see cv::VideoWriterProperties
      */
     CV_WRAP VideoWriter(const String& filename, int fourcc, double fps, const Size& frameSize,
                         const std::vector<int>& params);
@@ -1076,7 +1076,7 @@ public:
 
     /** @brief Sets a property in the VideoWriter.
 
-     @param propId Property identifier from cond_v::VideoWriterProperties (eg. cond_v::VIDEOWRITER_PROP_QUALITY)
+     @param propId Property identifier from cv::VideoWriterProperties (eg. cv::VIDEOWRITER_PROP_QUALITY)
      or one of @ref videoio_flags_others
 
      @param value Value of the property.
@@ -1086,7 +1086,7 @@ public:
 
     /** @brief Returns the specified VideoWriter property
 
-     @param propId Property identifier from cond_v::VideoWriterProperties (eg. cond_v::VIDEOWRITER_PROP_QUALITY)
+     @param propId Property identifier from cv::VideoWriterProperties (eg. cv::VIDEOWRITER_PROP_QUALITY)
      or one of @ref videoio_flags_others
 
      @return Value for the specified property. Value 0 is returned when querying a property that is
@@ -1124,6 +1124,6 @@ template<> struct DefaultDeleter<CvVideoWriter>{ CV_EXPORTS void operator ()(CvV
 
 //! @} videoio
 
-} // cond_v
+} // cv
 
 #endif //OPENCV_VIDEOIO_HPP

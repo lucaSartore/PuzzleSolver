@@ -116,7 +116,7 @@ private:
 This estimator uses pairwise transformations estimated by matcher to estimate
 final transformation for each camera.
 
-@sa cond_v::detail::HomographyBasedEstimator
+@sa cv::detail::HomographyBasedEstimator
  */
 class CV_EXPORTS_W AffineBasedEstimator : public Estimator
 {
@@ -368,6 +368,6 @@ void CV_EXPORTS findMaxSpanningTree(
 //! @} stitching_rotation
 
 } // namespace detail
-} // namespace cond_v
+} // namespace cv
 
 #endif // OPENCV_STITCHING_MOTION_ESTIMATORS_HPP

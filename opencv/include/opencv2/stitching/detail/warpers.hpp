@@ -675,7 +675,7 @@ protected:
 //! @} stitching_warp
 
 } // namespace detail
-} // namespace cond_v
+} // namespace cv
 
 #include "warpers_inl.hpp"
 

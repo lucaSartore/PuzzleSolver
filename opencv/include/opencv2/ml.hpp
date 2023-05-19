@@ -63,7 +63,7 @@
   Most of the classification and regression algorithms are implemented as C++ classes. As the
   algorithms have different sets of features (like an ability to handle missing measurements or
   categorical input variables), there is a little common ground between the classes. This common
-  ground is defined by the class cond_v::ml::StatModel that all the other ML classes are derived from.
+  ground is defined by the class cv::ml::StatModel that all the other ML classes are derived from.
 
   See detailed overview here: @ref ml_intro.
  */
@@ -248,7 +248,7 @@ public:
     /** @brief Extract from matrix rows/cols specified by passed indexes.
     @param matrix input matrix (supported types: CV_32S, CV_32F, CV_64F)
     @param idx 1D index vector
-    @param layout specifies to extract rows (cond_v::ml::ROW_SAMPLES) or to extract columns (cond_v::ml::COL_SAMPLES)
+    @param layout specifies to extract rows (cv::ml::ROW_SAMPLES) or to extract columns (cv::ml::COL_SAMPLES)
      */
     static CV_WRAP Mat getSubMatrix(const Mat& matrix, const Mat& idx, int layout);
 
@@ -372,7 +372,7 @@ public:
 
     @param samples The input samples, floating-point matrix
     @param results The optional output matrix of results.
-    @param flags The optional flags, model-dependent. See cond_v::ml::StatModel::Flags.
+    @param flags The optional flags, model-dependent. See cv::ml::StatModel::Flags.
      */
     CV_WRAP virtual float predict( InputArray samples, OutputArray results=noArray(), int flags=0 ) const = 0;
 
@@ -1782,7 +1782,7 @@ To use SVMSGD algorithm do as follows:
 
 @code
 // Create empty object
-cond_v::Ptr<SVMSGD> svmsgd = SVMSGD::create();
+cv::Ptr<SVMSGD> svmsgd = SVMSGD::create();
 
 // Train the Stochastic Gradient Descent SVM
 svmsgd->train(trainData);
@@ -1933,7 +1933,7 @@ struct SimulatedAnnealingSolverSystem
 @param coolingRatio temperature step multiplies
 @param iterationsPerStep number of iterations per temperature changing step
 @param lastTemperature optional output for last used temperature
-@param rngEnergy specify custom random numbers generator (cond_v::theRNG() by default)
+@param rngEnergy specify custom random numbers generator (cv::theRNG() by default)
 */
 template<class SimulatedAnnealingSolverSystem>
 int simulatedAnnealingSolver(SimulatedAnnealingSolverSystem& solverSystem,

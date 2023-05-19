@@ -57,7 +57,7 @@ public:
     /** @brief A simple interface to detect face from given image
      *
      *  @param image an image to detect
-     *  @param faces detection results stored in a cond_v::Mat
+     *  @param faces detection results stored in a cv::Mat
      */
     CV_WRAP virtual int detect(InputArray image, OutputArray faces) = 0;
 
@@ -125,6 +125,6 @@ public:
 };
 
 //! @}
-} // namespace cond_v
+} // namespace cv
 
 #endif
