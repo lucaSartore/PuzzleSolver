@@ -8,17 +8,16 @@
 #include <iostream>
 #include <opencv2/opencv.hpp>
 #include <condition_variable>
-
+#include "../../communication/communication_image.h"
 
 
 /// this class is intended to be used statically
 /// it is use to show many image even in a multithreaded environment
 class PreviewManager {
-public:
+private:
+    static PngImageClass image_in_ram;
     // whether the preview is enabled or not
     static bool preview_enable;
-    // file where to store the preview image
-    static std::string output_file;
     // is true if the data is ready to be read, false otherwise
     static bool ready_to_read;
     // mutex and condition for synchronization
@@ -32,7 +31,9 @@ public:
     /// wait util a program update the preview imag
     /// if you wait more than the max wait time the function throws an error
     /// if preview is disable this immediately return and give a warning
-    static void next_preview_image(float max_waiting_time = 10);
+    /// returns true if he has written an image
+    /// return false is the max waiting time has been exceeded, or if debug is set to false
+    static bool next_preview_image(float max_waiting_time = 10);
 
     /// pause the current program until someone calls get_next_preview_image, then it save the image in output file and
     /// continue the execution
@@ -48,11 +49,14 @@ public:
     /// check if preview is enabled or not
     static bool is_preview_enabled();
 
-    /// set the file where the program will output the preview images
-    static void set_output_file(std::string &new_file);
-
     /// return the file of the preview image that will be created
     static std::string get_output_file();
+
+    /// returns a pointer to the data of the image
+    static PngImagePointer get_image_binary();
+
+    /// returns the full image
+    static cv::Mat get_image();
 };
 
 

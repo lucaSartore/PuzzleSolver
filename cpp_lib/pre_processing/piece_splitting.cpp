@@ -6,6 +6,7 @@
 #include <opencv2/opencv.hpp>
 #include <filesystem>
 #include <iostream>
+#include "../solving/puzzle_preview/PreviewManager.h"
 #include "util.h"
 
 using namespace std;
@@ -15,12 +16,18 @@ using namespace cv;
 #define PIECE_MINIMUM_AREA (50000*ppi/1200)
 /// how many pixel of margin the function keeps when cropping an image
 #define CROP_MARGIN (50*ppi/1200)
-/// the threshold that gets applied to the original mask, in order to split the pieces from the background
-#define THRESHOLD 100
 /// kernel of the morphologyEx open filter that will be apply to the mask
 #define MORPH_OPEN_KERNEL (10*ppi/1200)
 /// kernel of the morphologyEx open filter that will be apply to the mask
 #define MORPH_CLOSED_KERNEL (12*ppi/1200)
+
+/// the threshold that gets applied to the original mask, in order to split the pieces from the background
+unsigned char THRESHOLD = 100;
+
+/// set the threshold for image splitting
+void set_threshold(unsigned char new_threshold){
+    THRESHOLD = new_threshold;
+}
 
 /// this function take as input a input_path where some scansion of a puzzle_preview is made
 /// and split them into many single pieces
@@ -133,18 +140,19 @@ int split_pieces_into_single_images(const std::string& input_path,const std::str
                 // crop it
                 Mat cropped_image = single_piece(Range(y1,y2),Range(x1,x2));
 
-                //show the piece corpped
-                if(enable_image_view){
+                if(PreviewManager::is_preview_enabled()){
                     Mat cropped_image_resized;
                     Mat to_target_resized;
                     resize(cropped_image, cropped_image_resized, Size(400, 400));
                     Mat to_target = image;
                     rectangle(to_target, Point(x1, y1), Point(x2, y2), Scalar(255, 0, 0, 0), 30);
                     resize(to_target, to_target_resized, Size(550, 800));
-                    imshow("output", cropped_image_resized);
-                    imshow("where", to_target_resized);
-                    waitKey(0);
+//                    imshow("output", cropped_image_resized);
+//                    imshow("where", to_target_resized);
+//                    waitKey(0);
+                    PreviewManager::output_preview_image(to_target_resized);
                 }
+
 
 
                 //calculate input_path

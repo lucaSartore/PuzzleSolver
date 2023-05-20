@@ -10,6 +10,7 @@
 #include <iostream>
 #include "solving/puzzle_preview/PieceImage.h"
 #include "solving/puzzle_preview/PieceArray.h"
+#include "solving/puzzle_preview/PreviewManager.h"
 
 /// this exception os thrown if the state machine fail to create/read/write a file during the execution
 class file_system_exception: std::exception{};

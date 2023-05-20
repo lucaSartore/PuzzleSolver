@@ -232,15 +232,18 @@ void PieceArray::insert_into_image(int x, int y,BuildImageMode mode) {
 
     check_indexes(x,y);
 
+    // whether I want to use resized pieces or not
+    bool resized;
+
     // set the resolution based on the mode
     switch (mode) {
         case PREVIEW:
             // preview is done at low res
-            Holder::set_resize(true);
+            resized = true;
             break;
         case SHORING:
             // shoring is done at high-res
-            Holder::set_resize(false);
+            resized = false;
             break;
         default:
             throw std::invalid_argument("unknown mode");
@@ -261,44 +264,44 @@ void PieceArray::insert_into_image(int x, int y,BuildImageMode mode) {
         // default case: i need to place a corner
 
         // vector that go form the right side of the current piece to the center
-        Point left_to_center_vector = this_piece->get_rotated_center(true) - this_piece->get_side_center(LEFT,true);
+        Point left_to_center_vector = this_piece->get_rotated_center(resized) - this_piece->get_side_center(LEFT, resized);
         // vector that go form the top side of the current piece to the center
-        Point top_to_center_vector = this_piece->get_rotated_center(true) - this_piece->get_side_center(UP,true);
+        Point top_to_center_vector = this_piece->get_rotated_center(resized) - this_piece->get_side_center(UP, resized);
 
         // calculating the point of where to put the new piece
         center_x = BORDER_DISTANCE + left_to_center_vector.x;
         center_y = BORDER_DISTANCE + top_to_center_vector.y;
 
-        this_piece->set_offset(Point(center_x,center_y));
+        this_piece->set_offset(Point(center_x,center_y), resized);
     }
         // building on the left side
     else if(piece_left == nullptr){
         this_piece->align_to(*piece_top,UP);
-        this_piece->move_to(*piece_top,UP);
+        this_piece->move_to(*piece_top,UP,resized);
     }
         // building on the top side
     else if(piece_top == nullptr){
         this_piece->align_to(*piece_left,LEFT);
-        this_piece->move_to(*piece_left,LEFT);
+        this_piece->move_to(*piece_left,LEFT,resized);
     }
         // building in the middle
     else{
         this_piece->align_to(*piece_top,*piece_left);
-        this_piece->move_to(*piece_top,*piece_left);
+        this_piece->move_to(*piece_top,*piece_left,resized);
     }
 
 
-    Point new_center_point = this_piece->get_rotated_center_with_offset();
+    Point new_center_point = this_piece->get_rotated_center_with_offset(resized);
 
 
     // matrix to insert in the new puzzle_preview
     Mat to_paste;
-    cvtColor(this_piece->get_image(), to_paste, COLOR_GRAY2BGR);
+    cvtColor(this_piece->get_image(resized), to_paste, COLOR_GRAY2BGR);
     to_paste = to_paste!=0;
 
     // if in preview mode, add color
     if(mode == PREVIEW){
-        floodFill(to_paste, this_piece->get_rotated_center(), this_piece->get_color());
+        floodFill(to_paste, this_piece->get_rotated_center(resized), this_piece->get_color());
     }
 
     // select the paste on top method
@@ -316,7 +319,7 @@ void PieceArray::insert_into_image(int x, int y,BuildImageMode mode) {
             throw std::invalid_argument("unknown mode");
     }
 
-    Point  this_piece_center = this_piece->get_rotated_center();
+    Point  this_piece_center = this_piece->get_rotated_center(resized);
     // pasting the piece in to the image
     paste_on_top(
             to_paste,
@@ -443,17 +446,17 @@ float PieceArray::get_shore() {
 
     Point p1,p2;
 
-    p1 = get(0,0)->get_rotated_point_with_offset(TOP_LEFT_PIECE_CORNER);
-    p2 = get(dim_x-1,0)->get_rotated_point_with_offset(TOP_RIGHT_PIECE_CORNER);
+    p1 = get(0,0)->get_rotated_point_with_offset(TOP_LEFT_PIECE_CORNER, false);
+    p2 = get(dim_x-1,0)->get_rotated_point_with_offset(TOP_RIGHT_PIECE_CORNER, false);
     line(square_mask,p1,p2,Scalar(255),3);
 
-    p1 = get(dim_x-1,dim_y-1)->get_rotated_point_with_offset(BOTTOM_RIGHT_PIECE_CORNER);
+    p1 = get(dim_x-1,dim_y-1)->get_rotated_point_with_offset(BOTTOM_RIGHT_PIECE_CORNER, false);
     line(square_mask,p1,p2,Scalar(255),3);
 
-    p2 = get(0,dim_y-1)->get_rotated_point_with_offset(BOTTOM_LEFT_PIECE_CORNER);
+    p2 = get(0,dim_y-1)->get_rotated_point_with_offset(BOTTOM_LEFT_PIECE_CORNER, false);
     line(square_mask,p1,p2,Scalar(255),3);
 
-    p1 = get(0,0)->get_rotated_point_with_offset(TOP_LEFT_PIECE_CORNER);
+    p1 = get(0,0)->get_rotated_point_with_offset(TOP_LEFT_PIECE_CORNER, false);
     line(square_mask,p1,p2,Scalar(255),3);
 
 

@@ -43,5 +43,8 @@ add_executable(
         ../solving/puzzle_preview/point_indexes.h
         ../solving/puzzle_preview/PreviewManager.cpp
         ../solving/puzzle_preview/PreviewManager.h
+
+        ../communication/communication_image.cpp
+        ../communication/communication_image.h
 )
 target_link_libraries( Test ${OpenCV_LIBS} )

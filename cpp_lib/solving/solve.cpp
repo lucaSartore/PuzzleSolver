@@ -16,7 +16,7 @@
 #include "groped_pieces/grouped_pieces_errors.h"
 #include "groped_pieces/GroupedPiecesHolder.h"
 #include "constants.h"
-
+#include "puzzle_preview/PreviewManager.h"
 /// recursive solving function:
 /// take as input:
 /// - the x and y dimension of the desired piece,
@@ -240,6 +240,13 @@ void solve_thread(GroupedPiecesHolder<N> *input_pieces, atomic<int> * index, ato
 
                                         // get the shore of the array
                                         if(array.get_shore()>MIN_SHORE_PIECE_ARRAY){
+
+                                            // print the image
+                                            if(PreviewManager::is_preview_enabled()){
+                                                Mat image = array.get_image(PREVIEW);
+                                                crop_image_to_remove_black_gb(image);
+                                                PreviewManager::output_preview_image(image);
+                                            }
 
                                             //assert(!debug_flag);
 
