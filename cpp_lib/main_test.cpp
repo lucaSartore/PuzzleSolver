@@ -13,11 +13,10 @@ using namespace cv;
 void debug_thread(){
 
     PreviewManager::enable_preview();
-    PreviewManager::set_output_file("test.png");
 
     cout << "PreviewThreadEnable" << endl;
     while (PreviewManager::next_preview_image(150)){
-        Mat image = imread(PreviewManager::get_output_file());
+        Mat image = PreviewManager::get_image();
         Mat resized;
         resize(image,resized,image.size()/2);
         imshow("preview",resized);
@@ -28,11 +27,6 @@ void debug_thread(){
 }
 
 int main(){
-
-
-
-
-
 
     PuzzleSolver ps(4, 4, "../work_path", "../../dataset/test_4x4/raw",6);
     //PuzzleSolver ps("../work_path");

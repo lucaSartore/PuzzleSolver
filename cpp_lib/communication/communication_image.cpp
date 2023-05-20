@@ -1,4 +1,4 @@
-#include "communication.h"
+#include "communication_image.h"
 
 #include <iostream>
 #include <fstream>

@@ -1,7 +1,5 @@
-#ifndef PUZZLESOLVER_COMUNICATION_H
-#define PUZZLESOLVER_COMUNICATION_H
-
-#endif //PUZZLESOLVER_COMUNICATION_H
+#ifndef PUZZLESOLVER_COMUNICATION_IMAGE_H
+#define PUZZLESOLVER_COMUNICATION_IMAGE_H
 
 #include "opencv2/opencv.hpp"
 
@@ -31,3 +29,5 @@ PngImageClass store_image_to_ram(const cv::Mat &image);
 
 /// takes the binary data inside the image, and loan a mat from them
 cv::Mat load_image_from_ram(PngImagePointer png_image);
+
+#endif //PUZZLESOLVER_COMUNICATION_H

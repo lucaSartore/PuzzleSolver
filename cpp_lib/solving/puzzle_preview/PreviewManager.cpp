@@ -4,11 +4,12 @@
 #include "PreviewManager.h"
 
 bool PreviewManager::preview_enable = false;
-std::string PreviewManager::output_file;
 bool PreviewManager::ready_to_read = false;
 std::condition_variable PreviewManager::cond_v;
 std::mutex PreviewManager::mtx;
 bool PreviewManager::is_first_read = true;
+PngImageClass PreviewManager::image_in_ram = PngImageClass(std::vector<uchar>());
+
 bool PreviewManager::is_preview_enabled() {
     return preview_enable;
 }
@@ -56,8 +57,8 @@ void PreviewManager::output_preview_image(cv::Mat &image) {
         if (ready_to_read) {
             cond_v.wait(lock, [] { return !ready_to_read; });
         }
-        // write the image
-        cv::imwrite(output_file,image);
+        // write the image to ram
+        image_in_ram = store_image_to_ram(image);
 
         // say that the data is ready
         ready_to_read = true;
@@ -76,17 +77,17 @@ void PreviewManager::enable_preview() {
     mtx.unlock();
 }
 
-void PreviewManager::set_output_file(const char* new_file) {
-    output_file = new_file;
-}
-
-std::string PreviewManager::get_output_file() {
-    return output_file;
-}
-
 void PreviewManager::disable_preview() {
     preview_enable = false;
     ready_to_read = true;
     is_first_read = true;
     // doto: unlock potential thread that might be waiting
+}
+
+PngImagePointer PreviewManager::get_image_binary() {
+    return image_in_ram.get_image_pointer();
+}
+
+cv::Mat PreviewManager::get_image() {
+    return load_image_from_ram(get_image_binary());
 }

@@ -44,7 +44,7 @@ add_executable(
         ../solving/puzzle_preview/PreviewManager.cpp
         ../solving/puzzle_preview/PreviewManager.h
 
-        ../communication/communication.cpp
-        ../communication/communication.h
+        ../communication/communication_image.cpp
+        ../communication/communication_image.h
 )
 target_link_libraries( Test ${OpenCV_LIBS} )

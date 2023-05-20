@@ -14,7 +14,7 @@
 #include <time.h>
 #include "../solving/groped_pieces/grouped_pieces_errors.h"
 #include "../solving/groped_pieces/GroupedPiecesHolder.h"
-#include "../communication/communication.h"
+#include "../communication/communication_image.h"
 
 void test_piece_array(){
 
@@ -291,8 +291,6 @@ void test_preview_manager(){
 
     // enable the preview
     PreviewManager::enable_preview();
-    // set output path
-    PreviewManager::set_output_file("temp_file.png");
 
     // spawn some threads
     thread threads[N_THREADS];
@@ -306,7 +304,7 @@ void test_preview_manager(){
         //cout << "requesting an image" << endl;
         PreviewManager::next_preview_image();
         //cout << "got an image" << endl;
-        Mat image = imread(PreviewManager::get_output_file());
+        Mat image = PreviewManager::get_image();
         imshow("image", image);
         waitKey(0);
         //break;
