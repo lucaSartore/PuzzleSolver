@@ -114,6 +114,7 @@ void PuzzleSolver::load_status(std::string file) {
     status_file.open(file);
 
     if (status_file.is_open()) {
+
         std::string line;
         // skip the 2 first lines
         std::getline(status_file, line);

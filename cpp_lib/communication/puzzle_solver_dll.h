@@ -31,7 +31,7 @@ extern "C" {
     void __declspec(dllexport) set_number_of_cores(void* puzzle_solver, unsigned int new_number_of_cores);
 
     /// set the threshold
-    void __declspec(dllexport) set_split_threshold(void* puzzle_solver unsigned char new_threshold);
+    void __declspec(dllexport) set_split_threshold(void* puzzle_solver, unsigned char new_threshold);
 
     /// enable the preview
     void __declspec(dllexport) enable_preview();
