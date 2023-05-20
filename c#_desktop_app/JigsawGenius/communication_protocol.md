@@ -22,8 +22,8 @@ a list of the functionality offered bt the C dll
 
 ### preview functionality
 
- - `next_preview`: go to the next image to preview. and write the image in the temporary file
- - `get_preview_file`: return a string that contains the path of the file for preview
+ - `next_preview_image`: go to the next image to preview. and return a struct pointing to an image with an uchar array
+ - `get_threshodl_preview`: return an image that show how well the applied threshold is working
 
 ### control functionality
 

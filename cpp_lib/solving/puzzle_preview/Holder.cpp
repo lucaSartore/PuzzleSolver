@@ -120,7 +120,7 @@ cv::Point Holder::get_side_center(Direction direction, bool resized) {
 
 
 cv::Point Holder::get_side_center_with_offset(Direction direction, bool resized) {
-    return this->get_side_center(direction,resized) + this->get_offset();
+    return this->get_side_center(direction,resized) + this->get_offset(resized);
 }
 
 
@@ -224,66 +224,66 @@ void Holder::rotate_by(float angle) {
 }
 
 
-void Holder::move_to(Holder &other, Direction direction) {
+void Holder::move_to(Holder &other, Direction direction, bool resized) {
 
     Point this_side_point;
     Point other_side_point;
     switch (direction) {
         case UP:
 
-            this_side_point = (get_rotated_point_with_offset(TOP_LEFT_PIECE_CORNER) +
-                               get_rotated_point_with_offset(TOP_RIGHT_PIECE_CORNER))/2;
+            this_side_point = (get_rotated_point_with_offset(TOP_LEFT_PIECE_CORNER,resized) +
+                               get_rotated_point_with_offset(TOP_RIGHT_PIECE_CORNER,resized))/2;
 
-            other_side_point = (other.get_rotated_point_with_offset(BOTTOM_LEFT_PIECE_CORNER) +
-                                other.get_rotated_point_with_offset(BOTTOM_RIGHT_PIECE_CORNER))/2;
+            other_side_point = (other.get_rotated_point_with_offset(BOTTOM_LEFT_PIECE_CORNER,resized) +
+                                other.get_rotated_point_with_offset(BOTTOM_RIGHT_PIECE_CORNER,resized))/2;
 
             break;
         case RIGHT:
 
-            this_side_point = (get_rotated_point_with_offset(TOP_RIGHT_PIECE_CORNER) +
-                               get_rotated_point_with_offset(BOTTOM_RIGHT_PIECE_CORNER))/2;
+            this_side_point = (get_rotated_point_with_offset(TOP_RIGHT_PIECE_CORNER,resized) +
+                               get_rotated_point_with_offset(BOTTOM_RIGHT_PIECE_CORNER,resized))/2;
 
-            other_side_point = (other.get_rotated_point_with_offset(TOP_LEFT_PIECE_CORNER) +
-                                other.get_rotated_point_with_offset(BOTTOM_LEFT_PIECE_CORNER))/2;
+            other_side_point = (other.get_rotated_point_with_offset(TOP_LEFT_PIECE_CORNER,resized) +
+                                other.get_rotated_point_with_offset(BOTTOM_LEFT_PIECE_CORNER,resized))/2;
 
             break;
         case DOWN:
 
-            this_side_point = (get_rotated_point_with_offset(BOTTOM_RIGHT_PIECE_CORNER) +
-                               get_rotated_point_with_offset(BOTTOM_LEFT_PIECE_CORNER))/2;
+            this_side_point = (get_rotated_point_with_offset(BOTTOM_RIGHT_PIECE_CORNER,resized) +
+                               get_rotated_point_with_offset(BOTTOM_LEFT_PIECE_CORNER,resized))/2;
 
-            other_side_point = (other.get_rotated_point_with_offset(TOP_RIGHT_PIECE_CORNER) +
-                                other.get_rotated_point_with_offset(TOP_LEFT_PIECE_CORNER))/2;
+            other_side_point = (other.get_rotated_point_with_offset(TOP_RIGHT_PIECE_CORNER,resized) +
+                                other.get_rotated_point_with_offset(TOP_LEFT_PIECE_CORNER,resized))/2;
 
             break;
         case LEFT:
 
-            this_side_point = (get_rotated_point_with_offset(BOTTOM_LEFT_PIECE_CORNER) +
-                               get_rotated_point_with_offset(TOP_LEFT_PIECE_CORNER))/2;
+            this_side_point = (get_rotated_point_with_offset(BOTTOM_LEFT_PIECE_CORNER,resized) +
+                               get_rotated_point_with_offset(TOP_LEFT_PIECE_CORNER,resized))/2;
 
-            other_side_point = (other.get_rotated_point_with_offset(BOTTOM_RIGHT_PIECE_CORNER) +
-                                other.get_rotated_point_with_offset(TOP_RIGHT_PIECE_CORNER))/2;
+            other_side_point = (other.get_rotated_point_with_offset(BOTTOM_RIGHT_PIECE_CORNER,resized) +
+                                other.get_rotated_point_with_offset(TOP_RIGHT_PIECE_CORNER,resized))/2;
 
             break;
         default:
             throw std::runtime_error("unknown direction!");
     }
     Point offset = other_side_point-this_side_point;
-    set_offset(get_offset()+offset);
+    set_offset(get_offset(resized)+offset,resized);
 }
 
-void Holder::move_to(Holder &top_piece, Holder &left_piece) {
+void Holder::move_to(Holder &top_piece, Holder &left_piece,bool resized) {
     // same concept as the other move_to function, but this time using the center as offset
-    Point others_p1 = left_piece.get_rotated_point_with_offset(BOTTOM_RIGHT_PIECE_CORNER);
-    Point others_p2 = top_piece.get_rotated_point_with_offset(BOTTOM_RIGHT_PIECE_CORNER);
-    Point this_p1 = get_rotated_point(BOTTOM_LEFT_PIECE_CORNER);
-    Point this_p2 = get_rotated_point(TOP_RIGHT_PIECE_CORNER);
+    Point others_p1 = left_piece.get_rotated_point_with_offset(BOTTOM_RIGHT_PIECE_CORNER,resized);
+    Point others_p2 = top_piece.get_rotated_point_with_offset(BOTTOM_RIGHT_PIECE_CORNER,resized);
+    Point this_p1 = get_rotated_point(BOTTOM_LEFT_PIECE_CORNER,resized);
+    Point this_p2 = get_rotated_point(TOP_RIGHT_PIECE_CORNER,resized);
 
     Point others_middle = (others_p1+others_p2)/2;
     Point this_middle = (this_p1+this_p2)/2;
 
     Point offset = others_middle- this_middle;
-    set_offset(offset);
+    set_offset(offset,resized);
 }
 
 void Holder::align_to(Holder &other, Direction direction) {
@@ -302,38 +302,38 @@ void Holder::align_to(Holder &other, Direction direction) {
     switch (direction) {
         case UP:
 
-            this_p1 = get_rotated_point(TOP_LEFT_PIECE_CORNER);
-            this_p2 = get_rotated_point(TOP_RIGHT_PIECE_CORNER);
+            this_p1 = get_rotated_point(TOP_LEFT_PIECE_CORNER, false);
+            this_p2 = get_rotated_point(TOP_RIGHT_PIECE_CORNER, false);
 
-            other_p1 = other.get_rotated_point(BOTTOM_LEFT_PIECE_CORNER);
-            other_p2 = other.get_rotated_point(BOTTOM_RIGHT_PIECE_CORNER);
+            other_p1 = other.get_rotated_point(BOTTOM_LEFT_PIECE_CORNER, false);
+            other_p2 = other.get_rotated_point(BOTTOM_RIGHT_PIECE_CORNER, false);
 
             break;
         case RIGHT:
 
-            this_p1 = get_rotated_point(TOP_RIGHT_PIECE_CORNER);
-            this_p2 = get_rotated_point(BOTTOM_RIGHT_PIECE_CORNER);
+            this_p1 = get_rotated_point(TOP_RIGHT_PIECE_CORNER, false);
+            this_p2 = get_rotated_point(BOTTOM_RIGHT_PIECE_CORNER, false);
 
-            other_p1 = other.get_rotated_point(TOP_LEFT_PIECE_CORNER);
-            other_p2 = other.get_rotated_point(BOTTOM_LEFT_PIECE_CORNER);
+            other_p1 = other.get_rotated_point(TOP_LEFT_PIECE_CORNER, false);
+            other_p2 = other.get_rotated_point(BOTTOM_LEFT_PIECE_CORNER, false);
 
             break;
         case DOWN:
 
-            this_p1 = get_rotated_point(BOTTOM_RIGHT_PIECE_CORNER);
-            this_p2 = get_rotated_point(BOTTOM_LEFT_PIECE_CORNER);
+            this_p1 = get_rotated_point(BOTTOM_RIGHT_PIECE_CORNER, false);
+            this_p2 = get_rotated_point(BOTTOM_LEFT_PIECE_CORNER, false);
 
-            other_p1 = other.get_rotated_point(TOP_RIGHT_PIECE_CORNER);
-            other_p2 = other.get_rotated_point(TOP_LEFT_PIECE_CORNER);
+            other_p1 = other.get_rotated_point(TOP_RIGHT_PIECE_CORNER, false);
+            other_p2 = other.get_rotated_point(TOP_LEFT_PIECE_CORNER, false);
 
             break;
         case LEFT:
 
-            this_p1 = get_rotated_point(BOTTOM_LEFT_PIECE_CORNER);
-            this_p2 = get_rotated_point(TOP_LEFT_PIECE_CORNER);
+            this_p1 = get_rotated_point(BOTTOM_LEFT_PIECE_CORNER, false);
+            this_p2 = get_rotated_point(TOP_LEFT_PIECE_CORNER, false);
 
-            other_p1 = other.get_rotated_point(BOTTOM_RIGHT_PIECE_CORNER);
-            other_p2 = other.get_rotated_point(TOP_RIGHT_PIECE_CORNER);
+            other_p1 = other.get_rotated_point(BOTTOM_RIGHT_PIECE_CORNER, false);
+            other_p2 = other.get_rotated_point(TOP_RIGHT_PIECE_CORNER, false);
 
             break;
         default:
@@ -355,10 +355,10 @@ void Holder::align_to(Holder &other, Direction direction) {
 
 void Holder::align_to(Holder &top_piece, Holder &left_piece) {
     // same concept as the other align_to function, but this time using one corner per piece as diagonal
-    Point others_p1 = left_piece.get_rotated_point_with_offset(BOTTOM_RIGHT_PIECE_CORNER);
-    Point others_p2 = top_piece.get_rotated_point_with_offset(BOTTOM_RIGHT_PIECE_CORNER);
-    Point  this_p1 = get_rotated_point_with_offset(BOTTOM_LEFT_PIECE_CORNER);
-    Point  this_p2 = get_rotated_point_with_offset(TOP_RIGHT_PIECE_CORNER);
+    Point others_p1 = left_piece.get_rotated_point_with_offset(BOTTOM_RIGHT_PIECE_CORNER, false);
+    Point others_p2 = top_piece.get_rotated_point_with_offset(BOTTOM_RIGHT_PIECE_CORNER, false);
+    Point  this_p1 = get_rotated_point_with_offset(BOTTOM_LEFT_PIECE_CORNER, false);
+    Point  this_p2 = get_rotated_point_with_offset(TOP_RIGHT_PIECE_CORNER, false);
 
     // vector to calculate the rotation angle of the side of this piece, and of the other piece
     Point this_vector = this_p2-this_p1;

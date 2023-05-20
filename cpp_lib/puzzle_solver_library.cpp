@@ -1,4 +1,4 @@
-/*
+
 #include "PuzzleSolver.h"
 #include "puzzle_solver_library.h"
 
@@ -57,4 +57,3 @@ int solve_puzzle(const char* work_path){
         return 1;
     }
 }
-*/

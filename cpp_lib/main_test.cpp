@@ -4,10 +4,27 @@
 
 #include <iostream>
 #include "PuzzleSolver.h"
-
+#include <thread>
+#include <opencv2/opencv.hpp>
 
 using namespace std;
+using namespace cv;
 
+void debug_thread(){
+
+    PreviewManager::enable_preview();
+
+    cout << "PreviewThreadEnable" << endl;
+    while (PreviewManager::next_preview_image(150)){
+        Mat image = PreviewManager::get_image();
+        Mat resized;
+        resize(image,resized,image.size()/2);
+        imshow("preview",resized);
+        waitKey(0);
+    }
+    destroyAllWindows();
+    cout << "PreviewEnded" << endl;
+}
 
 int main(){
 
@@ -37,6 +54,9 @@ int main(){
         cout << "skip calculate connections" << endl;
     }
 
+    thread t1;
+    t1 = thread(debug_thread);
+
     try{
         ps.solve_puzzle();
     }catch(wrong_state_exception &e){
@@ -45,6 +65,8 @@ int main(){
 
     //imshow("lalala",ps.get_result());
     //waitKey(0);
+
+    t1.join();
 
     return 0;
 

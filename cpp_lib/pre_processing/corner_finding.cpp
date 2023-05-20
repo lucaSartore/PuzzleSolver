@@ -8,6 +8,7 @@
 #include "util.h"
 #include "piece_splitting.h"
 #include "corner_finding.h"
+#include "../solving/puzzle_preview/PreviewManager.h"
 #include <thread>
 
 using namespace std;
@@ -114,7 +115,22 @@ void do_pre_processing_thread(const std::string& path, int piece_index, int ppi,
         resize(display,display_resize,display.size()/(2*ppi/1200));
         imshow("piece with corners", display_resize);
         waitKey(0);
+    }
+    if(PreviewManager::is_preview_enabled()){
+        Mat display;
+        cvtColor(piece,display,COLOR_GRAY2BGR);
 
+        Scalar color = Scalar(0,0,255);
+        int thickness = 10;
+
+        line(display,p1,p2,color,thickness);
+        line(display,p2,p3,color,thickness);
+        line(display,p3,p4,color,thickness);
+        line(display,p4,p1,color,thickness);
+
+        Mat display_resize;
+        resize(display,display_resize,display.size()/(2*ppi/1200));
+        PreviewManager::output_preview_image(display_resize);
     }
 
     // save the coordinates to a txt file
@@ -529,6 +545,7 @@ void find_corners(const cv::Mat &input, cv::Point &p1,  cv::Point &p2,  cv::Poin
         }
         vertices_precise[i] = closest;
     }
+
 
     p1 = vertices_precise[0];
     p2 = vertices_precise[1];
