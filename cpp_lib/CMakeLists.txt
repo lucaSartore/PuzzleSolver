@@ -59,6 +59,8 @@ set(SOURCE_FILES
 
         communication/communication_image.cpp
         communication/communication_image.h
+        communication/puzzle_solver_dll.cpp
+        communication/puzzle_solver_dll.h
 
         PuzzleSolver.cpp
         PuzzleSolver.h

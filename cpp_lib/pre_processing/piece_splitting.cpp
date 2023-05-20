@@ -16,12 +16,18 @@ using namespace cv;
 #define PIECE_MINIMUM_AREA (50000*ppi/1200)
 /// how many pixel of margin the function keeps when cropping an image
 #define CROP_MARGIN (50*ppi/1200)
-/// the threshold that gets applied to the original mask, in order to split the pieces from the background
-#define THRESHOLD 100
 /// kernel of the morphologyEx open filter that will be apply to the mask
 #define MORPH_OPEN_KERNEL (10*ppi/1200)
 /// kernel of the morphologyEx open filter that will be apply to the mask
 #define MORPH_CLOSED_KERNEL (12*ppi/1200)
+
+/// the threshold that gets applied to the original mask, in order to split the pieces from the background
+unsigned char THRESHOLD = 100;
+
+/// set the threshold for image splitting
+void set_threshold(unsigned char new_threshold){
+    THRESHOLD = new_threshold;
+}
 
 /// this function take as input a input_path where some scansion of a puzzle_preview is made
 /// and split them into many single pieces
