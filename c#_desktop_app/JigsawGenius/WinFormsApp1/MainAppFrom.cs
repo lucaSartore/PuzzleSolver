@@ -5,7 +5,7 @@ using System.Transactions;
 namespace JigsawGenius
 {
 
-    /// all the pissuble state the image can have
+    /// all the possible states the image can have
     public enum State { OpenOrCreateFile, PieceSplitting, CornerProcessing, ConnectionProcessing, CombinationFinding, Helping };
 
     public partial class MainAppFrom : Form
@@ -15,6 +15,10 @@ namespace JigsawGenius
         private Comunicator? _comunicator = null;
         // the state of the program
         private State _state = State.OpenOrCreateFile;
+        // say whether the program is currently running or not
+        private bool _isRunning = false;
+        // sey whether the preview is enable or not
+        private bool previewEnable = false;
 
 
         public MainAppFrom()
