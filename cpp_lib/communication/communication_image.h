@@ -20,6 +20,8 @@ private:
 public:
     /// construct an image
     PngImageClass(std::vector<uchar> && image_);
+    /// default consort
+    PngImageClass()=default;
     /// return a raw pointer to the data of the image
     PngImagePointer get_image_pointer();
 };

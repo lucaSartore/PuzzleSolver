@@ -31,6 +31,7 @@ extern "C" {
     void __declspec(dllexport) set_number_of_cores(void* puzzle_solver, unsigned int new_number_of_cores);
 
     /// set the threshold
+    /// return 0 if ok -1 if error
     void __declspec(dllexport) set_split_threshold(void* puzzle_solver, unsigned char new_threshold);
 
     /// enable the preview
@@ -49,21 +50,17 @@ extern "C" {
     State __declspec(dllexport) get_state(void* puzzle_solver);
 
     /// split the images into individual pieces, and update `number_of_pieces`
-    /// return -1 if an error occur
     /// return the number of peaces found
     int __declspec(dllexport) split_image(void* puzzle_solver);
 
     /// take the splitted images and calculate the corners of each of them
-    /// return -1 if an error occur
-    /// return 0 if everything goose well
-    int __declspec(dllexport) process_corners(void* puzzle_solver);
+    void __declspec(dllexport) process_corners(void* puzzle_solver);
 
     /// calculate all the possible connections and save the results
-    /// return -1 if an error occur
-    int __declspec(dllexport) calculate_connections(void* puzzle_solver);
+    void __declspec(dllexport) calculate_connections(void* puzzle_solver);
 
     /// run the solving algorithm and find the best possible combination
-    /// return -1 if an error occur
+    /// return -1 if it dose not find a solution, 0 if he finds one
     int __declspec(dllexport) solve_puzzle(void* puzzle_solver);
 }
 

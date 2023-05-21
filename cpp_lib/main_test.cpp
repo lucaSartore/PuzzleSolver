@@ -28,17 +28,26 @@ void debug_thread(){
 
 int main(){
 
-    PuzzleSolver ps(4, 4, "../work_path", "../../dataset/test_4x4/raw",6);
+    PuzzleSolver ps(4, 4, "../work_path", "../../dataset/test_2x3/raw",6);
     //PuzzleSolver ps("../work_path");
 
 
+    ps.set_threshold(50);
+
     cout << ps << endl;
+
+    Mat img = load_image_from_ram(ps.get_test_threshold_image());
+    Mat temp;
+    resize(img,temp,img.size()/10);
+    imshow("A",temp);
+    waitKey(0);
 
     try{
         ps.split_image();
     }catch(wrong_state_exception &e){
         cout << "skip split image" << endl;
     }
+
 
     try{
         ps.process_corners();

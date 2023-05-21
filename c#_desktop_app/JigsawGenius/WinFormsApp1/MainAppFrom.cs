@@ -68,14 +68,27 @@ namespace JigsawGenius
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // if i have a prokect open delete it
-            if(_comunicator != null)
+            if (_comunicator != null)
             {
                 _comunicator.Dispose();
                 _comunicator = null;
             }
             /// initialize the new comunicator
             CreateNewProjectFrom createNewProjectFrom = new CreateNewProjectFrom();
-            createNewProjectFrom.InitializeProject(ref _state,ref _comunicator);
+            createNewProjectFrom.InitializeProject(ref _state, ref _comunicator);
+
+            // if the initialization has gone whell i tweak the threshold
+            if(_comunicator != null)
+            {
+                // initialize the threshold
+                ThresholdTweaking thresholdTweaking = new ThresholdTweaking(_comunicator);
+                thresholdTweaking.ShowDialog();
+            }
+        }
+
+        private void MainAppFrom_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

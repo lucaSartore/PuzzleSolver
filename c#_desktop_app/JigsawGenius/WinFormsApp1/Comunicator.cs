@@ -6,9 +6,19 @@ using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using static System.Windows.Forms.AxHost;
 using System.Diagnostics;
+using System.Drawing.Configuration;
+using JigsawGenius;
+using System.Drawing;
+using System.Windows.Forms;
+using System.Reflection.Metadata.Ecma335;
 
 namespace JigsawGenius
 {
+
+    public class UnknownDllLibrartError: Exception
+    {
+        public UnknownDllLibrartError() { }
+    }
 
 
     internal class DllLib
@@ -20,10 +30,37 @@ namespace JigsawGenius
         [StructLayout(LayoutKind.Sequential)]
         unsafe public struct PngImagePointer
         {
-            Byte* data;
-            int len;
+
+            
+            private Byte* _data;
+            private int _len;
             // Add other fields as needed
+
+            // tansform the image into a 
+            public System.Drawing.Image ToImage()
+            {
+                Image image;
+
+                if (_data == null)
+                {
+                    throw new UnknownDllLibrartError();
+                }
+                // copy memory to safe array
+                byte[] safeData = new byte[_len];
+                Marshal.Copy((IntPtr)_data, safeData, 0, _len);
+
+                // converting the image into a readable form
+                using (MemoryStream memoryStream = new MemoryStream(safeData))
+                {
+                    // Load the image from the memory stream
+                    image = Image.FromStream(memoryStream);
+                }
+
+                return image;
+            }
         }
+
+    
 
         // in order for this to work you must add the path to de DLL to your system path
         // in my case is: C:\Users\lucas\CLionProjects\Puzzle_Solver\cpp_lib\cmake-build-debug
@@ -108,6 +145,50 @@ namespace JigsawGenius
             }
         }
 
+        public void SetSplitThreshold(byte treshold)
+        {
+            unsafe
+            {
+                void* ptr_void = (void*)_puzzleSolverClass;
+                if (ptr_void == null)
+                {
+                    throw new NullReferenceException("c++ library is not loaded");
+                }
+                try
+                {
+                    DllLib.set_split_threshold(ptr_void, treshold);
+                }catch (Exception)
+                {
+                    throw new UnknownDllLibrartError();
+                }
+            }
+        }
+
+
+        public System.Drawing.Image GetThresholdPreview()
+        {
+           
+            unsafe
+            {
+                DllLib.PngImagePointer image;
+
+                void* ptr_void = (void*)_puzzleSolverClass;
+                if (ptr_void == null)
+                {
+                    throw new NullReferenceException("c++ library is not loaded");
+                }
+                try
+                {
+                    image = DllLib.get_threshold_preview(ptr_void);
+                }catch (Exception)
+                {
+                throw new UnknownDllLibrartError();
+                }     
+                
+                return image.ToImage();
+            }
+        }
+
 
         // Implement IDisposable
         public void Dispose()
@@ -138,7 +219,9 @@ namespace JigsawGenius
         // Finalizer
         ~Comunicator()
         {
-            Dispose(false);
+            // I dont't whant it to be called automaticly, since the comunication might be destroyed if i pass
+            // a controll to a sub struct
+            //Dispose(false);
         }
     }
 
