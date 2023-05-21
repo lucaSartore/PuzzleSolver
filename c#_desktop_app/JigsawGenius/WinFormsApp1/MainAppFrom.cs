@@ -99,7 +99,7 @@ namespace JigsawGenius
         // update the status view according to the status
         private void UpdateStatusView()
         {
-            if ( _comunicator != null )
+            if (_comunicator != null)
             {
                 _state = _comunicator.GetState();
             }
@@ -108,7 +108,7 @@ namespace JigsawGenius
                 _state = State.OpenOrCreateFile;
             }
 
-            for(int i = 0; i < 6; i++)
+            for (int i = 0; i < 6; i++)
             {
                 _stateVisualizer.SetSelected(i, false);
             }
@@ -159,7 +159,7 @@ namespace JigsawGenius
                     _stateVisualizer.SetItemChecked(3, true);
                     _stateVisualizer.SetItemChecked(4, false);
                     _stateVisualizer.SetItemChecked(5, false);
-                    _stateVisualizer.SetSelected(4,true);
+                    _stateVisualizer.SetSelected(4, true);
                     break;
                 case State.Helping:
                     _stateVisualizer.SetItemChecked(0, true);

@@ -77,9 +77,6 @@ namespace JigsawGenius
         unsafe public static extern void free_memory(void* puzzle_solver);
 
         [DllImport("libPuzzleSolverLib.dll")]
-        unsafe public static extern void set_number_of_cores(void* puzzle_solver, uint new_number_of_cores);
-
-        [DllImport("libPuzzleSolverLib.dll")]
         unsafe public static extern void set_split_threshold(void* puzzle_solver, byte new_threshold);
 
         [DllImport("libPuzzleSolverLib.dll")]

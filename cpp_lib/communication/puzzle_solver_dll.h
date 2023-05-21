@@ -27,9 +27,6 @@ extern "C" {
     /// deallocate the memory associated with the puzzle solver pointer
     void __declspec(dllexport) free_memory(void* puzzle_solver);
 
-    /// set the number of cores
-    void __declspec(dllexport) set_number_of_cores(void* puzzle_solver, unsigned int new_number_of_cores);
-
     /// set the threshold
     /// return 0 if ok -1 if error
     void __declspec(dllexport) set_split_threshold(void* puzzle_solver, unsigned char new_threshold);

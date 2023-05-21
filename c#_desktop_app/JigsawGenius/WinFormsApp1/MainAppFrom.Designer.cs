@@ -40,24 +40,12 @@
             openToolStripMenuItem = new ToolStripMenuItem();
             newToolStripMenuItem = new ToolStripMenuItem();
             toolStripMenuItem2 = new ToolStripMenuItem();
-            numberOfCoresToolStripMenuItem = new ToolStripMenuItem();
-            toolStripMenuItem4 = new ToolStripMenuItem();
-            toolStripMenuItem5 = new ToolStripMenuItem();
-            toolStripMenuItem6 = new ToolStripMenuItem();
-            toolStripMenuItem7 = new ToolStripMenuItem();
-            toolStripMenuItem8 = new ToolStripMenuItem();
-            toolStripMenuItem9 = new ToolStripMenuItem();
-            toolStripMenuItem10 = new ToolStripMenuItem();
-            toolStripMenuItem11 = new ToolStripMenuItem();
-            toolStripMenuItem12 = new ToolStripMenuItem();
-            toolStripMenuItem13 = new ToolStripMenuItem();
             debugToolStripMenuItem = new ToolStripMenuItem();
             onToolStripMenuItem = new ToolStripMenuItem();
             offToolStripMenuItem = new ToolStripMenuItem();
             automaticContinueToolStripMenuItem = new ToolStripMenuItem();
             onToolStripMenuItem1 = new ToolStripMenuItem();
             offToolStripMenuItem1 = new ToolStripMenuItem();
-            selectToolStripMenuItem = new ToolStripMenuItem();
             deviceToolStripMenuItem = new ToolStripMenuItem();
             addToolStripMenuItem = new ToolStripMenuItem();
             aboutToolStripMenuItem = new ToolStripMenuItem();
@@ -114,77 +102,10 @@
             // 
             // toolStripMenuItem2
             // 
-            toolStripMenuItem2.DropDownItems.AddRange(new ToolStripItem[] { numberOfCoresToolStripMenuItem, debugToolStripMenuItem, automaticContinueToolStripMenuItem, selectToolStripMenuItem });
+            toolStripMenuItem2.DropDownItems.AddRange(new ToolStripItem[] { debugToolStripMenuItem, automaticContinueToolStripMenuItem });
             toolStripMenuItem2.Name = "toolStripMenuItem2";
             toolStripMenuItem2.Size = new Size(92, 29);
             toolStripMenuItem2.Text = "Options";
-            // 
-            // numberOfCoresToolStripMenuItem
-            // 
-            numberOfCoresToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { toolStripMenuItem4, toolStripMenuItem5, toolStripMenuItem6, toolStripMenuItem7, toolStripMenuItem8, toolStripMenuItem9, toolStripMenuItem10, toolStripMenuItem11, toolStripMenuItem12, toolStripMenuItem13 });
-            numberOfCoresToolStripMenuItem.Name = "numberOfCoresToolStripMenuItem";
-            numberOfCoresToolStripMenuItem.Size = new Size(332, 34);
-            numberOfCoresToolStripMenuItem.Text = "Number of cores";
-            // 
-            // toolStripMenuItem4
-            // 
-            toolStripMenuItem4.Name = "toolStripMenuItem4";
-            toolStripMenuItem4.Size = new Size(134, 34);
-            toolStripMenuItem4.Text = "1";
-            // 
-            // toolStripMenuItem5
-            // 
-            toolStripMenuItem5.Name = "toolStripMenuItem5";
-            toolStripMenuItem5.Size = new Size(134, 34);
-            toolStripMenuItem5.Text = "2";
-            // 
-            // toolStripMenuItem6
-            // 
-            toolStripMenuItem6.Name = "toolStripMenuItem6";
-            toolStripMenuItem6.Size = new Size(134, 34);
-            toolStripMenuItem6.Text = "3";
-            // 
-            // toolStripMenuItem7
-            // 
-            toolStripMenuItem7.Name = "toolStripMenuItem7";
-            toolStripMenuItem7.Size = new Size(134, 34);
-            toolStripMenuItem7.Text = "4";
-            // 
-            // toolStripMenuItem8
-            // 
-            toolStripMenuItem8.Name = "toolStripMenuItem8";
-            toolStripMenuItem8.Size = new Size(134, 34);
-            toolStripMenuItem8.Text = "6";
-            // 
-            // toolStripMenuItem9
-            // 
-            toolStripMenuItem9.Name = "toolStripMenuItem9";
-            toolStripMenuItem9.Size = new Size(134, 34);
-            toolStripMenuItem9.Text = "8";
-            // 
-            // toolStripMenuItem10
-            // 
-            toolStripMenuItem10.Name = "toolStripMenuItem10";
-            toolStripMenuItem10.Size = new Size(134, 34);
-            toolStripMenuItem10.Text = "12";
-            // 
-            // toolStripMenuItem11
-            // 
-            toolStripMenuItem11.Name = "toolStripMenuItem11";
-            toolStripMenuItem11.Size = new Size(134, 34);
-            toolStripMenuItem11.Text = "16";
-            // 
-            // toolStripMenuItem12
-            // 
-            toolStripMenuItem12.Name = "toolStripMenuItem12";
-            toolStripMenuItem12.Size = new Size(134, 34);
-            toolStripMenuItem12.Text = "32";
-            // 
-            // toolStripMenuItem13
-            // 
-            toolStripMenuItem13.Name = "toolStripMenuItem13";
-            toolStripMenuItem13.Size = new Size(134, 34);
-            toolStripMenuItem13.Text = "64";
             // 
             // debugToolStripMenuItem
             // 
@@ -196,13 +117,13 @@
             // onToolStripMenuItem
             // 
             onToolStripMenuItem.Name = "onToolStripMenuItem";
-            onToolStripMenuItem.Size = new Size(140, 34);
+            onToolStripMenuItem.Size = new Size(270, 34);
             onToolStripMenuItem.Text = "On";
             // 
             // offToolStripMenuItem
             // 
             offToolStripMenuItem.Name = "offToolStripMenuItem";
-            offToolStripMenuItem.Size = new Size(140, 34);
+            offToolStripMenuItem.Size = new Size(270, 34);
             offToolStripMenuItem.Text = "Off";
             // 
             // automaticContinueToolStripMenuItem
@@ -215,20 +136,14 @@
             // onToolStripMenuItem1
             // 
             onToolStripMenuItem1.Name = "onToolStripMenuItem1";
-            onToolStripMenuItem1.Size = new Size(261, 34);
+            onToolStripMenuItem1.Size = new Size(270, 34);
             onToolStripMenuItem1.Text = "Go to next section";
             // 
             // offToolStripMenuItem1
             // 
             offToolStripMenuItem1.Name = "offToolStripMenuItem1";
-            offToolStripMenuItem1.Size = new Size(261, 34);
+            offToolStripMenuItem1.Size = new Size(270, 34);
             offToolStripMenuItem1.Text = "Wait for user input";
-            // 
-            // selectToolStripMenuItem
-            // 
-            selectToolStripMenuItem.Name = "selectToolStripMenuItem";
-            selectToolStripMenuItem.Size = new Size(332, 34);
-            selectToolStripMenuItem.Text = "Select Threshold";
             // 
             // deviceToolStripMenuItem
             // 
@@ -286,21 +201,10 @@
         private ToolStripMenuItem toolStripMenuItem2;
         private ToolStripMenuItem saveToolStripMenuItem;
         private ToolStripMenuItem openToolStripMenuItem;
-        private ToolStripMenuItem numberOfCoresToolStripMenuItem;
-        private ToolStripMenuItem toolStripMenuItem4;
-        private ToolStripMenuItem toolStripMenuItem5;
-        private ToolStripMenuItem toolStripMenuItem6;
-        private ToolStripMenuItem toolStripMenuItem7;
-        private ToolStripMenuItem toolStripMenuItem8;
-        private ToolStripMenuItem toolStripMenuItem9;
-        private ToolStripMenuItem toolStripMenuItem10;
-        private ToolStripMenuItem toolStripMenuItem11;
         private ToolStripMenuItem aboutToolStripMenuItem;
         private ToolStripMenuItem gitRepoToolStripMenuItem;
         private ToolStripMenuItem helpToolStripMenuItem;
         private ToolStripMenuItem newToolStripMenuItem;
-        private ToolStripMenuItem toolStripMenuItem12;
-        private ToolStripMenuItem toolStripMenuItem13;
         private ToolStripMenuItem debugToolStripMenuItem;
         private ToolStripMenuItem onToolStripMenuItem;
         private ToolStripMenuItem offToolStripMenuItem;
@@ -309,6 +213,5 @@
         private ToolStripMenuItem offToolStripMenuItem1;
         private ToolStripMenuItem deviceToolStripMenuItem;
         private ToolStripMenuItem addToolStripMenuItem;
-        private ToolStripMenuItem selectToolStripMenuItem;
     }
 }
