@@ -33,7 +33,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            checkedListBox1 = new CheckedListBox();
+            _stateVisualizer = new CheckedListBox();
             menuStrip1 = new MenuStrip();
             toolStripMenuItem1 = new ToolStripMenuItem();
             saveToolStripMenuItem = new ToolStripMenuItem();
@@ -66,14 +66,14 @@
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
-            // checkedListBox1
+            // _stateVisualizer
             // 
-            checkedListBox1.FormattingEnabled = true;
-            checkedListBox1.Items.AddRange(new object[] { "Open or Create FIle", "Input Data", "Piece Splitter", "Corner Processer", "Connection Processer", "Combination Finder", "Assembly Helper" });
-            checkedListBox1.Location = new Point(12, 36);
-            checkedListBox1.Name = "checkedListBox1";
-            checkedListBox1.Size = new Size(219, 200);
-            checkedListBox1.TabIndex = 0;
+            _stateVisualizer.FormattingEnabled = true;
+            _stateVisualizer.Items.AddRange(new object[] { "Open or Create FIle", "Piece Splitter", "Corner Processer", "Connection Processer", "Combination Finder", "Assembly Helper" });
+            _stateVisualizer.Location = new Point(12, 36);
+            _stateVisualizer.Name = "_stateVisualizer";
+            _stateVisualizer.Size = new Size(219, 172);
+            _stateVisualizer.TabIndex = 0;
             // 
             // menuStrip1
             // 
@@ -103,14 +103,14 @@
             openToolStripMenuItem.Name = "openToolStripMenuItem";
             openToolStripMenuItem.Size = new Size(176, 34);
             openToolStripMenuItem.Text = "Open";
-            openToolStripMenuItem.Click += openToolStripMenuItem_Click;
+            openToolStripMenuItem.Click += OpenToolStripMenuItem_Click;
             // 
             // newToolStripMenuItem
             // 
             newToolStripMenuItem.Name = "newToolStripMenuItem";
             newToolStripMenuItem.Size = new Size(176, 34);
             newToolStripMenuItem.Text = "New";
-            newToolStripMenuItem.Click += newToolStripMenuItem_Click;
+            newToolStripMenuItem.Click += NewToolStripMenuItem_Click;
             // 
             // toolStripMenuItem2
             // 
@@ -267,12 +267,11 @@
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
-            Controls.Add(checkedListBox1);
+            Controls.Add(_stateVisualizer);
             Controls.Add(menuStrip1);
             MainMenuStrip = menuStrip1;
             Name = "MainAppFrom";
             Text = "JigsawGenius";
-            Load += MainAppFrom_Load;
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
             ResumeLayout(false);
@@ -281,7 +280,7 @@
 
         #endregion
 
-        private CheckedListBox checkedListBox1;
+        private CheckedListBox _stateVisualizer;
         private MenuStrip menuStrip1;
         private ToolStripMenuItem toolStripMenuItem1;
         private ToolStripMenuItem toolStripMenuItem2;
