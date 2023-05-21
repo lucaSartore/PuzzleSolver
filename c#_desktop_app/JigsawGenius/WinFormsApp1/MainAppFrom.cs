@@ -6,7 +6,7 @@ namespace JigsawGenius
 {
 
     /// all the pissuble state the image can have
-    enum State { OpenOrCreateFile, PieceSplitting, CornerProcessing, ConnectionProcessing, CombinationFinding, Helping };
+    public enum State { OpenOrCreateFile, PieceSplitting, CornerProcessing, ConnectionProcessing, CombinationFinding, Helping };
 
     public partial class MainAppFrom : Form
     {
@@ -58,6 +58,7 @@ namespace JigsawGenius
                     {
                         // open the folder
                         _comunicator = new Comunicator(filePath);
+                        UpdateStatusView();
                     }
                     catch (FileLoadException)
                     {
@@ -87,7 +88,7 @@ namespace JigsawGenius
                 // initialize the threshold
                 ThresholdTweaking thresholdTweaking = new ThresholdTweaking(_comunicator);
                 thresholdTweaking.ShowDialog();
-                _state = State.PieceSplitting;
+                UpdateStatusView();
             }
             else
             {
@@ -98,6 +99,15 @@ namespace JigsawGenius
         // update the status view according to the status
         private void UpdateStatusView()
         {
+            if ( _comunicator != null )
+            {
+                _state = _comunicator.GetState();
+            }
+            else
+            {
+                _state = State.OpenOrCreateFile;
+            }
+
             for(int i = 0; i < 6; i++)
             {
                 _stateVisualizer.SetSelected(i, false);

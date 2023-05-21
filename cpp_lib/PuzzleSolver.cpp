@@ -242,6 +242,10 @@ PngImagePointer PuzzleSolver::get_test_threshold_image() {
     return communication_image.get_image_pointer();
 }
 
+State PuzzleSolver::get_state() {
+    return state;
+}
+
 
 std::ostream& operator<<(std::ostream& os, const State& state) {
     switch (state) {
@@ -283,3 +287,4 @@ void test_save_ad_load(){
     std::cout << "Second instance:\n" << ps2 << "\n";
 
 }
+

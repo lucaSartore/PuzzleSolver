@@ -95,7 +95,7 @@ namespace JigsawGenius
         unsafe public static extern PngImagePointer get_threshold_preview(void* puzzle_solver);
 
         [DllImport("libPuzzleSolverLib.dll")]
-        unsafe public static extern State get_state(void* puzzle_solver);
+        unsafe public static extern int get_state(void* puzzle_solver);
 
         [DllImport("libPuzzleSolverLib.dll")]
         unsafe public static extern int split_image(void* puzzle_solver);
@@ -189,6 +189,40 @@ namespace JigsawGenius
             }
         }
 
+        public State GetState()
+        {
+            unsafe
+            {
+                void* ptr_void = (void*)_puzzleSolverClass;
+                if (ptr_void == null)
+                {
+                    throw new NullReferenceException("c++ library is not loaded");
+                }
+                try
+                {
+                    int state = DllLib.get_state(ptr_void);
+                    switch (state)
+                    {
+                        case 0:
+                            return State.PieceSplitting;
+                        case 1:
+                            return State.CornerProcessing;
+                        case 2:
+                            return State.ConnectionProcessing;
+                        case 3:
+                            return State.CombinationFinding;
+                        case 4:
+                            return State.Helping;
+                        default: throw new UnknownDllLibrartError();
+                    }
+                }
+                catch (Exception)
+                {
+                    throw new UnknownDllLibrartError();
+                }
+
+            }
+        }
 
         // Implement IDisposable
         public void Dispose()

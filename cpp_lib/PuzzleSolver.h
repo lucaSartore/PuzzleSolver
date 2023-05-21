@@ -85,6 +85,8 @@ public:
     void set_threshold(int new_threshold);
     /// return a pointer to an image to test the threshold
     PngImagePointer get_test_threshold_image();
+    /// return the current state of the program
+    State get_state();
 };
 
 

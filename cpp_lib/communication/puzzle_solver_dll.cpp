@@ -32,3 +32,8 @@ PngImagePointer __declspec(dllexport) get_threshold_preview(void* puzzle_solver)
     }
 }
 
+
+/// get the curren state of the program
+int __declspec(dllexport) get_state(void* puzzle_solver){
+    return (int)((PuzzleSolver*)puzzle_solver)->get_state();
+}

@@ -47,7 +47,7 @@ extern "C" {
     PngImagePointer __declspec(dllexport) get_threshold_preview(void* puzzle_solver);
 
     /// get the curren state of the program
-    State __declspec(dllexport) get_state(void* puzzle_solver);
+    int __declspec(dllexport) get_state(void* puzzle_solver);
 
     /// split the images into individual pieces, and update `number_of_pieces`
     /// return the number of peaces found
