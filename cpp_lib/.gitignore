@@ -32,5 +32,5 @@
 *.app
 
 # ingore temporary files
-./work_path/
-./cmake-build-debug/
+work_path/
+cmake-build-debug/
