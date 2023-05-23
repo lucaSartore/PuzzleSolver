@@ -95,10 +95,6 @@ int PuzzleSolver::split_image() {
     state = IMAGE_SPLITTED;
     // save the current status
     save_status();
-
-    if(number_of_pieces < final_dim_x*final_dim_y){
-        return  -2;
-    }
     return (int)number_of_pieces;
 }
 

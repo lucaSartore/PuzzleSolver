@@ -1,3 +1,4 @@
+
 #include "puzzle_solver_dll.h"
 #include "../PuzzleSolver.h"
 void* __declspec(dllexport) open_folder(const char *folder_path){

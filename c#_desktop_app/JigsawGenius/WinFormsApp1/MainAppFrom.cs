@@ -189,34 +189,61 @@ namespace JigsawGenius
             {
                 case State.OpenOrCreateFile:
                     _ = MessageBox.Show("You need to open or create a file before doing calculations", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    break;
+                    return;
                 case State.PieceSplitting:
-                    function_to_call = 
+                    function_to_call = _comunicator.SplitImage;
                     break;
                 case State.CornerProcessing:
+                    function_to_call = _comunicator.ProcessCorners;
                     break;
                 case State.ConnectionProcessing:
+                    function_to_call = _comunicator.CalculateConnections;
                     break;
                 case State.CombinationFinding:
+                    function_to_call = _comunicator.SolvePuzzle;
                     break;
                 case State.Helping:
                     _ = MessageBox.Show("You have already done all possible calculations", "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    break;
+                    return;
                 default:
                     throw new ArgumentOutOfRangeException(paramName: "unknown state");
             }
 
             Task.Run(() =>
             {
-                
 
+                // calculate the result in ascync thread
+                var result = function_to_call();
 
+                this.Invoke((Action)(() =>
+                {
+                    // notigy the main program when the calculation is finishd
+                    this.FinishCalculationTrigger(result);
+                }));
             });
         }
 
         // trigger called when a calculation is finished
-        private void FinishCalculationTrigger()
+        private void FinishCalculationTrigger(int returnCode)
         {
+            // update the status
+            UpdateStatusView();
+
+            // send eventual return codes
+
+            // no error in a normal state
+            if(returnCode == 0 && _state != State.ConnectionProcessing)
+            {
+                _ = MessageBox.Show("The calculation has finishd with no error", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            if(_state == State.ConnectionProcessing && returnCode >= 0)
+            {
+                _ = MessageBox.Show("I have found " + returnCode + " pieces in the images you gave me", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            _ = MessageBox.Show("someting went worng in the calculation process. please check your input data", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
         }
     }
