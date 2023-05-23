@@ -249,7 +249,7 @@ namespace JigsawGenius
                 }
                 try
                 {
-                    return_code = DllLib.split_image(ptr_void);
+                    return_code = DllLib.process_corners(ptr_void);
                 }
                 catch (Exception)
                 {

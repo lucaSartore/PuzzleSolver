@@ -209,7 +209,7 @@ namespace JigsawGenius
                     throw new ArgumentOutOfRangeException(paramName: "unknown state");
             }
 
-            Task.Run(() =>
+            var task = Task.Run(() =>
             {
 
                 // calculate the result in ascync thread
@@ -221,6 +221,7 @@ namespace JigsawGenius
                     this.FinishCalculationTrigger(result);
                 }));
             });
+            
         }
 
         // trigger called when a calculation is finished
@@ -232,12 +233,12 @@ namespace JigsawGenius
             // send eventual return codes
 
             // no error in a normal state
-            if(returnCode == 0 && _state != State.ConnectionProcessing)
+            if(returnCode == 0 && _state != State.CornerProcessing)
             {
                 _ = MessageBox.Show("The calculation has finishd with no error", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            if(_state == State.ConnectionProcessing && returnCode >= 0)
+            if(_state == State.CornerProcessing && returnCode >= 0)
             {
                 _ = MessageBox.Show("I have found " + returnCode + " pieces in the images you gave me", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
