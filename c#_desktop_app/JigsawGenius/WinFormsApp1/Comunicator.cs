@@ -56,24 +56,23 @@ namespace JigsawGenius
             }
         }
 
-    
 
         // in order for this to work you must add the path to de DLL to your system path
         // in my case is: C:\Users\lucas\CLionProjects\Puzzle_Solver\cpp_lib\cmake-build-debug
         [DllImport("libPuzzleSolverLib.dll")]
-        unsafe public static extern void* open_folder([MarshalAs(UnmanagedType.LPStr)] string path);
+        public static extern unsafe void* open_folder([MarshalAs(UnmanagedType.LPStr)] string path);
 
         [DllImport("libPuzzleSolverLib.dll")]
-        unsafe public static extern void* create_new(uint dim_x, uint dim_y, [MarshalAs(UnmanagedType.LPStr)] string work_path, [MarshalAs(UnmanagedType.LPStr)] string origin_path, uint number_of_cores);
+        public static extern unsafe void* create_new(uint dim_x, uint dim_y, [MarshalAs(UnmanagedType.LPStr)] string work_path, [MarshalAs(UnmanagedType.LPStr)] string origin_path, uint number_of_cores);
 
         [DllImport("libPuzzleSolverLib.dll")]
-        unsafe public static extern void save_as(void* puzzle_solver, [MarshalAs(UnmanagedType.LPStr)] string new_path);
+        public static extern unsafe void save_as(void* puzzle_solver, [MarshalAs(UnmanagedType.LPStr)] string new_path);
 
         [DllImport("libPuzzleSolverLib.dll")]
-        unsafe public static extern void free_memory(void* puzzle_solver);
+        public static extern unsafe void free_memory(void* puzzle_solver);
 
         [DllImport("libPuzzleSolverLib.dll")]
-        unsafe public static extern void set_split_threshold(void* puzzle_solver, byte new_threshold);
+        public static extern unsafe void set_split_threshold(void* puzzle_solver, byte new_threshold);
 
         [DllImport("libPuzzleSolverLib.dll")]
         public static extern void enable_preview();
@@ -85,22 +84,22 @@ namespace JigsawGenius
         public static extern PngImagePointer next_preview_image(float max_wait_time);
 
         [DllImport("libPuzzleSolverLib.dll")]
-        unsafe public static extern PngImagePointer get_threshold_preview(void* puzzle_solver);
+        public static extern unsafe PngImagePointer get_threshold_preview(void* puzzle_solver);
 
         [DllImport("libPuzzleSolverLib.dll")]
-        unsafe public static extern int get_state(void* puzzle_solver);
+        public static extern unsafe int get_state(void* puzzle_solver);
 
         [DllImport("libPuzzleSolverLib.dll")]
-        unsafe public static extern int split_image(void* puzzle_solver);
+        public static extern unsafe int split_image(void* puzzle_solver);
 
         [DllImport("libPuzzleSolverLib.dll")]
-        unsafe public static extern int process_corners(void* puzzle_solver);
+        public static extern unsafe int process_corners(void* puzzle_solver);
 
         [DllImport("libPuzzleSolverLib.dll")]
-        unsafe public static extern int calculate_connections(void* puzzle_solver);
+        public static extern unsafe int calculate_connections(void* puzzle_solver);
 
         [DllImport("libPuzzleSolverLib.dll")]
-        unsafe public static extern int solve_puzzle(void* puzzle_solver);
+        public static extern unsafe int solve_puzzle(void* puzzle_solver);
     }
 
 
@@ -173,11 +172,12 @@ namespace JigsawGenius
                 try
                 {
                     image = DllLib.get_threshold_preview(ptr_void);
-                }catch (Exception)
+                }
+                catch (Exception)
                 {
-                throw new UnknownDllLibrartError();
-                }     
-                
+                    throw new UnknownDllLibrartError();
+                }
+
                 return image.ToImage();
             }
         }
@@ -193,27 +193,119 @@ namespace JigsawGenius
                 }
                 try
                 {
-                    int state = DllLib.get_state(ptr_void);
-                    switch (state)
+                    var state = DllLib.get_state(ptr_void);
+                    return state switch
                     {
-                        case 0:
-                            return State.PieceSplitting;
-                        case 1:
-                            return State.CornerProcessing;
-                        case 2:
-                            return State.ConnectionProcessing;
-                        case 3:
-                            return State.CombinationFinding;
-                        case 4:
-                            return State.Helping;
-                        default: throw new UnknownDllLibrartError();
-                    }
+                        0 => State.PieceSplitting,
+                        1 => State.CornerProcessing,
+                        2 => State.ConnectionProcessing,
+                        3 => State.CombinationFinding,
+                        4 => State.Helping,
+                        _ => throw new UnknownDllLibrartError(),
+                    };
                 }
                 catch (Exception)
                 {
                     throw new UnknownDllLibrartError();
                 }
 
+            }
+        }
+
+        public int SplitImage()
+        {
+            unsafe
+            {
+                int return_code;
+
+                var ptr_void = (void*)_puzzleSolverClass;
+                if (ptr_void == null)
+                {
+                    throw new NullReferenceException("c++ library is not loaded");
+                }
+                try
+                {
+                    return_code = DllLib.split_image(ptr_void);
+                }
+                catch (Exception)
+                {
+                    throw new UnknownDllLibrartError();
+                }
+
+                return return_code;
+            }
+        }
+
+        public int ProcessCorners()
+        {
+            unsafe
+            {
+                int return_code;
+
+                var ptr_void = (void*)_puzzleSolverClass;
+                if (ptr_void == null)
+                {
+                    throw new NullReferenceException("c++ library is not loaded");
+                }
+                try
+                {
+                    return_code = DllLib.split_image(ptr_void);
+                }
+                catch (Exception)
+                {
+                    throw new UnknownDllLibrartError();
+                }
+
+                return return_code;
+            }
+        }
+
+        public int CalculateConnections()
+        {
+            unsafe
+            {
+                int return_code;
+
+                var ptr_void = (void*)_puzzleSolverClass;
+                if (ptr_void == null)
+                {
+                    throw new NullReferenceException("c++ library is not loaded");
+                }
+                try
+                {
+                    return_code = DllLib.calculate_connections(ptr_void);
+                }
+                catch (Exception)
+                {
+                    throw new UnknownDllLibrartError();
+                }
+
+                return return_code;
+            }
+        }
+
+
+        public int SolvePuzzle()
+        {
+            unsafe
+            {
+                int return_code;
+
+                var ptr_void = (void*)_puzzleSolverClass;
+                if (ptr_void == null)
+                {
+                    throw new NullReferenceException("c++ library is not loaded");
+                }
+                try
+                {
+                    return_code = DllLib.solve_puzzle(ptr_void);
+                }
+                catch (Exception)
+                {
+                    throw new UnknownDllLibrartError();
+                }
+
+                return return_code;
             }
         }
 

@@ -1,4 +1,4 @@
-﻿namespace JigsawGenius
+namespace JigsawGenius
 {
     partial class MainAppFrom
     {
@@ -46,6 +46,9 @@
             automaticContinueToolStripMenuItem = new ToolStripMenuItem();
             onToolStripMenuItem1 = new ToolStripMenuItem();
             offToolStripMenuItem1 = new ToolStripMenuItem();
+            calculationsToolStripMenuItem = new ToolStripMenuItem();
+            runToolStripMenuItem = new ToolStripMenuItem();
+            stopToolStripMenuItem = new ToolStripMenuItem();
             deviceToolStripMenuItem = new ToolStripMenuItem();
             addToolStripMenuItem = new ToolStripMenuItem();
             aboutToolStripMenuItem = new ToolStripMenuItem();
@@ -66,7 +69,7 @@
             // menuStrip1
             // 
             menuStrip1.ImageScalingSize = new Size(24, 24);
-            menuStrip1.Items.AddRange(new ToolStripItem[] { toolStripMenuItem1, toolStripMenuItem2, deviceToolStripMenuItem, aboutToolStripMenuItem });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { toolStripMenuItem1, toolStripMenuItem2, calculationsToolStripMenuItem, deviceToolStripMenuItem, aboutToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(800, 33);
@@ -117,13 +120,13 @@
             // onToolStripMenuItem
             // 
             onToolStripMenuItem.Name = "onToolStripMenuItem";
-            onToolStripMenuItem.Size = new Size(270, 34);
+            onToolStripMenuItem.Size = new Size(140, 34);
             onToolStripMenuItem.Text = "On";
             // 
             // offToolStripMenuItem
             // 
             offToolStripMenuItem.Name = "offToolStripMenuItem";
-            offToolStripMenuItem.Size = new Size(270, 34);
+            offToolStripMenuItem.Size = new Size(140, 34);
             offToolStripMenuItem.Text = "Off";
             // 
             // automaticContinueToolStripMenuItem
@@ -136,14 +139,34 @@
             // onToolStripMenuItem1
             // 
             onToolStripMenuItem1.Name = "onToolStripMenuItem1";
-            onToolStripMenuItem1.Size = new Size(270, 34);
+            onToolStripMenuItem1.Size = new Size(261, 34);
             onToolStripMenuItem1.Text = "Go to next section";
             // 
             // offToolStripMenuItem1
             // 
             offToolStripMenuItem1.Name = "offToolStripMenuItem1";
-            offToolStripMenuItem1.Size = new Size(270, 34);
+            offToolStripMenuItem1.Size = new Size(261, 34);
             offToolStripMenuItem1.Text = "Wait for user input";
+            // 
+            // calculationsToolStripMenuItem
+            // 
+            calculationsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { runToolStripMenuItem, stopToolStripMenuItem });
+            calculationsToolStripMenuItem.Name = "calculationsToolStripMenuItem";
+            calculationsToolStripMenuItem.Size = new Size(122, 29);
+            calculationsToolStripMenuItem.Text = "Calculations";
+            // 
+            // runToolStripMenuItem
+            // 
+            runToolStripMenuItem.Name = "runToolStripMenuItem";
+            runToolStripMenuItem.Size = new Size(270, 34);
+            runToolStripMenuItem.Text = "Run";
+            runToolStripMenuItem.Click += RunToolStripMenuItem_Click;
+            // 
+            // stopToolStripMenuItem
+            // 
+            stopToolStripMenuItem.Name = "stopToolStripMenuItem";
+            stopToolStripMenuItem.Size = new Size(270, 34);
+            stopToolStripMenuItem.Text = "Stop";
             // 
             // deviceToolStripMenuItem
             // 
@@ -213,5 +236,8 @@
         private ToolStripMenuItem offToolStripMenuItem1;
         private ToolStripMenuItem deviceToolStripMenuItem;
         private ToolStripMenuItem addToolStripMenuItem;
+        private ToolStripMenuItem calculationsToolStripMenuItem;
+        private ToolStripMenuItem runToolStripMenuItem;
+        private ToolStripMenuItem stopToolStripMenuItem;
     }
 }

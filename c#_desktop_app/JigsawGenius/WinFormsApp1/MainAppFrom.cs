@@ -18,7 +18,9 @@ namespace JigsawGenius
         // say whether the program is currently running or not
         private bool _isRunning = false;
         // sey whether the preview is enable or not
-        private bool previewEnable = false;
+        private bool _previewEnable = false;
+        // say whether the calculations is running or nto
+        private bool _isCalculationRunning = false;
 
 
         public MainAppFrom()
@@ -37,7 +39,7 @@ namespace JigsawGenius
         private void OpenToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // if i already have a file open i need to close it
-            if(_comunicator != null)
+            if (_comunicator != null)
             {
                 _comunicator.Dispose();
             }
@@ -93,10 +95,6 @@ namespace JigsawGenius
                 var thresholdTweaking = new ThresholdTweaking(_comunicator);
                 thresholdTweaking.ShowDialog();
                 UpdateStatusView();
-            }
-            else
-            {
-                throw new UnknownDllLibrartError();
             }
         }
 
@@ -179,5 +177,47 @@ namespace JigsawGenius
             }
         }
 
+        // run the next step of the calculation as an async task
+        private void RunToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+
+            Func<int> function_to_call;
+
+            //public enum State { OpenOrCreateFile, PieceSplitting, CornerProcessing, ConnectionProcessing, CombinationFinding, Helping };
+            switch (_state)
+            {
+                case State.OpenOrCreateFile:
+                    _ = MessageBox.Show("You need to open or create a file before doing calculations", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    break;
+                case State.PieceSplitting:
+                    function_to_call = 
+                    break;
+                case State.CornerProcessing:
+                    break;
+                case State.ConnectionProcessing:
+                    break;
+                case State.CombinationFinding:
+                    break;
+                case State.Helping:
+                    _ = MessageBox.Show("You have already done all possible calculations", "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(paramName: "unknown state");
+            }
+
+            Task.Run(() =>
+            {
+                
+
+
+            });
+        }
+
+        // trigger called when a calculation is finished
+        private void FinishCalculationTrigger()
+        {
+
+        }
     }
 }

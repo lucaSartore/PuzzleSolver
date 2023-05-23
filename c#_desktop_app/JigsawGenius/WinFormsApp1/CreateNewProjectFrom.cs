@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -47,6 +47,10 @@ namespace JigsawGenius
             catch (FileLoadException)
             {
                 MessageBox.Show("something went wrong while opening the files, check your pats and continue", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }catch (Exception)
+            {
+                // if the c++ library fails
+                throw new UnknownDllLibrartError();
             }
         }
 
