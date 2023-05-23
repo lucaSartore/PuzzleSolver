@@ -49,13 +49,17 @@ private:
     std::string origin_path;
     /// the maximum number of cores the program will be using
     unsigned int number_of_cores;
-    /// the current state of the solver
+    /// the threshold used to split the image form the black background
+    int split_threshold;
+    /// the current state of the solve
     State state;
     /// create a file in `work_path` with the name status.txt and save all the parameters of the class in it
     void save_status();
     /// load the status form the file that has been saved from the save_status() function
     void load_status(std::string file);
     friend std::ostream& operator<<(std::ostream& os, const PuzzleSolver& ps);
+    /// an image saved in ram, encoded using png used for direct communication
+    PngImageClass communication_image;
 public:
     /// create a new instance of the solver
     /// Arguments:
@@ -68,7 +72,9 @@ public:
     /// create an instance of the solver, by reading the data found in work_path_ and restarting from there
     explicit PuzzleSolver(std::string work_path_);
     /// split the images into individual pieces, and update `number_of_pieces`
-    void split_image();
+    /// return the number of image he found.
+    /// if he return less image then the size of the puzzle it return -2
+    int split_image();
     /// take the splitted images and calculate the corners of each of them
     void process_corners();
     /// calculate all the possible connections and save the results
@@ -77,6 +83,12 @@ public:
     void solve_puzzle();
     /// destructor
     ~PuzzleSolver();
+    /// set the threshold for the image splitting
+    void set_threshold(int new_threshold);
+    /// return a pointer to an image to test the threshold
+    PngImagePointer get_test_threshold_image();
+    /// return the current state of the program
+    State get_state();
 };
 
 

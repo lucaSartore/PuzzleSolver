@@ -68,7 +68,8 @@ set(SOURCE_FILES
 
 
 # library build
-add_library(PuzzleSolverLib SHARED puzzle_solver_library.cpp puzzle_solver_library.h ${SOURCE_FILES})
+#add_library(PuzzleSolverLib SHARED puzzle_solver_library.cpp puzzle_solver_library.h ${SOURCE_FILES})
+add_library(PuzzleSolverLib SHARED communication/puzzle_solver_dll.cpp communication/puzzle_solver_dll.h ${SOURCE_FILES})
 target_link_libraries( PuzzleSolverLib ${OpenCV_LIBS} )
 
 # test build

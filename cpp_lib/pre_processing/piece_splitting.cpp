@@ -25,8 +25,67 @@ using namespace cv;
 unsigned char THRESHOLD = 100;
 
 /// set the threshold for image splitting
-void set_threshold(unsigned char new_threshold){
+void piece_splitting_set_threshold(unsigned char new_threshold){
     THRESHOLD = new_threshold;
+}
+
+cv::Mat piece_splitting_get_test_threshold_image(const std::string& input_path){
+
+    auto iter_files = std::filesystem::directory_iterator(input_path);
+
+    int number_of_images = (int) count_if(
+            begin(iter_files),
+            end(iter_files),
+            [](auto & entity){return true;}
+    );
+
+    if(number_of_images == 0){
+        throw runtime_error("no files found in specified folder");
+    }
+
+
+    iter_files = std::filesystem::directory_iterator(input_path);
+
+    auto path_dir = *begin(iter_files);
+    string path = path_dir.path().string();
+    Mat image = imread(path);
+
+    Mat mask;
+    cvtColor(image, mask, COLOR_BGR2GRAY);
+
+
+    // apply small blur
+    Mat temp;
+    blur(mask,temp, Size (7,7));
+    mask = temp;
+
+    //applying a threshold
+    threshold(mask, temp, THRESHOLD, 255, THRESH_BINARY);
+    mask = temp;
+
+    // unsung flood feel form the borders to remove the possible black pixels inside the pieces
+    floodFill(mask,Point(0,0),100);
+    mask = mask != 100;
+
+    // find the 3 color channel
+    Mat channels[3];
+
+    //split the image into separate channels
+    split(image, channels);
+
+    // color the image red where it is lower than the threshold
+    // b
+    channels[0] &= mask;
+    // g
+    channels[1] &= mask;
+    // r
+    mask = mask == 0;
+    channels[2] |= mask;
+
+    // merge the channels back together
+    merge(channels,3,image);
+
+    return  image;
 }
 
 /// this function take as input a input_path where some scansion of a puzzle_preview is made

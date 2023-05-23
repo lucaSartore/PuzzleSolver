@@ -28,6 +28,10 @@ PuzzleSolver::PuzzleSolver(int dim_x, int dim_y, std::string work_path_, std::st
 
     number_of_pieces = 0;
 
+    split_threshold = 100;
+
+    communication_image = PngImageClass();
+
     //images = nullptr;
 
     // removing the working directory and all his sub componetns
@@ -77,11 +81,13 @@ PuzzleSolver::PuzzleSolver(std::string work_path_) {
     load_status(work_path_ + "/status.txt");
 }
 
-void PuzzleSolver::split_image() {
+int PuzzleSolver::split_image() {
 
     if(state != START){
         throw wrong_state_exception();
     }
+
+    piece_splitting_set_threshold(split_threshold);
 
     // split the images
     number_of_pieces = split_pieces_into_single_images(work_path + "/raw/", work_path + "/divided/");
@@ -89,6 +95,11 @@ void PuzzleSolver::split_image() {
     state = IMAGE_SPLITTED;
     // save the current status
     save_status();
+
+    if(number_of_pieces < final_dim_x*final_dim_y){
+        return  -2;
+    }
+    return (int)number_of_pieces;
 }
 
 void PuzzleSolver::save_status() {
@@ -103,6 +114,7 @@ void PuzzleSolver::save_status() {
         status_file << origin_path << "\n";
         status_file << number_of_cores << "\n";
         status_file << static_cast<int>(state) << "\n";
+        status_file << split_threshold << "\n";
         status_file.close();
     }else{
         throw file_system_exception();
@@ -114,6 +126,7 @@ void PuzzleSolver::load_status(std::string file) {
     status_file.open(file);
 
     if (status_file.is_open()) {
+
         std::string line;
         // skip the 2 first lines
         std::getline(status_file, line);
@@ -141,10 +154,15 @@ void PuzzleSolver::load_status(std::string file) {
         std::getline(status_file, line);
         state = static_cast<State>(std::stoi(line));;
 
+        std::getline(status_file, line);
+        split_threshold = std::stoi(line);;
+
         status_file.close();
     }else{
         throw file_system_exception();
     }
+
+    piece_splitting_set_threshold(split_threshold);
 
     /*
     // load images if we are in final state
@@ -214,6 +232,25 @@ PuzzleSolver::~PuzzleSolver() {
     //delete[] images;
 }
 
+void PuzzleSolver::set_threshold(int new_threshold) {
+    if(new_threshold < 0 || new_threshold > 255){
+        throw invalid_argument("threshold out of range");
+    }
+    split_threshold = new_threshold;
+    piece_splitting_set_threshold(split_threshold);
+    save_status();
+}
+
+PngImagePointer PuzzleSolver::get_test_threshold_image() {
+    cv::Mat image = piece_splitting_get_test_threshold_image(work_path+"/raw/");
+    communication_image = store_image_to_ram(image);
+    return communication_image.get_image_pointer();
+}
+
+State PuzzleSolver::get_state() {
+    return state;
+}
+
 
 std::ostream& operator<<(std::ostream& os, const State& state) {
     switch (state) {
@@ -255,3 +292,4 @@ void test_save_ad_load(){
     std::cout << "Second instance:\n" << ps2 << "\n";
 
 }
+
