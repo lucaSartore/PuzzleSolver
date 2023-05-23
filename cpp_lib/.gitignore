@@ -31,5 +31,6 @@
 *.out
 *.app
 
-#work_path/
-#cmake-build-debug/
+# ingore temporary files
+./work_path/
+./cmake-build-debug/
