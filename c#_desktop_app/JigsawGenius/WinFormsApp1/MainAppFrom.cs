@@ -11,7 +11,7 @@ namespace JigsawGenius
     public partial class MainAppFrom : Form
     {
 
-        // instance that allows to comunicate with the c++ program
+        // instance that allows to communicate with the c++ program
         private Comunicator? _comunicator = null;
         // the state of the program
         private State _state = State.OpenOrCreateFile;
@@ -37,12 +37,12 @@ namespace JigsawGenius
         private void OpenToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // if i already have a file open i need to close it
-            if (_comunicator != null)
+            if(_comunicator != null)
             {
                 _comunicator.Dispose();
             }
 
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            using (var openFileDialog = new OpenFileDialog())
             {
                 openFileDialog.InitialDirectory = "c:\\";
                 openFileDialog.Filter = "status file (status.txt)|status.txt";
@@ -53,7 +53,7 @@ namespace JigsawGenius
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     //Get the path of specified file
-                    string filePath = openFileDialog.FileName;
+                    var filePath = openFileDialog.FileName;
                     // remove the file and keep only the folder
                     filePath = filePath.Substring(0, filePath.Length - "status.txt".Length);
 
@@ -66,7 +66,7 @@ namespace JigsawGenius
                     }
                     catch (FileLoadException)
                     {
-                        MessageBox.Show("The file appear to be corrupted", "Sorry!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        _ = MessageBox.Show("The file appear to be corrupted", "Sorry!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
 
 
@@ -76,21 +76,21 @@ namespace JigsawGenius
 
         private void NewToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // if i have a prokect open delete it
+            // if i have a project open delete it
             if (_comunicator != null)
             {
                 _comunicator.Dispose();
                 _comunicator = null;
             }
-            /// initialize the new comunicator
-            CreateNewProjectFrom createNewProjectFrom = new CreateNewProjectFrom();
+            /// initialize the new communicator
+            var createNewProjectFrom = new CreateNewProjectFrom();
             createNewProjectFrom.InitializeProject(ref _state, ref _comunicator);
 
-            // if the initialization has gone whell i tweak the threshold
+            // if the initialization has gone well i tweak the threshold
             if (_comunicator != null)
             {
                 // initialize the threshold
-                ThresholdTweaking thresholdTweaking = new ThresholdTweaking(_comunicator);
+                var thresholdTweaking = new ThresholdTweaking(_comunicator);
                 thresholdTweaking.ShowDialog();
                 UpdateStatusView();
             }
@@ -112,7 +112,7 @@ namespace JigsawGenius
                 _state = State.OpenOrCreateFile;
             }
 
-            for (int i = 0; i < 6; i++)
+            for (var i = 0; i < 6; i++)
             {
                 _stateVisualizer.SetSelected(i, false);
             }
@@ -173,6 +173,8 @@ namespace JigsawGenius
                     _stateVisualizer.SetItemChecked(4, true);
                     _stateVisualizer.SetItemChecked(5, false);
                     _stateVisualizer.SetSelected(5, true);
+                    break;
+                default:
                     break;
             }
         }

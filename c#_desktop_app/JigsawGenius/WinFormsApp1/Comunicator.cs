@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,17 +28,14 @@ namespace JigsawGenius
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        unsafe public struct PngImagePointer
-        {
+        public unsafe struct PngImagePointer{
 
-            
             private Byte* _data;
             private int _len;
             // Add other fields as needed
 
             // tansform the image into a 
-            public System.Drawing.Image ToImage()
-            {
+            public System.Drawing.Image ToImage(){
                 Image image;
 
                 if (_data == null)
@@ -50,8 +47,7 @@ namespace JigsawGenius
                 Marshal.Copy((IntPtr)_data, safeData, 0, _len);
 
                 // converting the image into a readable form
-                using (MemoryStream memoryStream = new MemoryStream(safeData))
-                {
+                using (MemoryStream memoryStream = new MemoryStream(safeData)){
                     // Load the image from the memory stream
                     image = Image.FromStream(memoryStream);
                 }
@@ -114,7 +110,7 @@ namespace JigsawGenius
         // pointer to the c++ class
         private IntPtr _puzzleSolverClass;
 
-        /// create a comunicator by opening a folder with the saved prooject
+        /// create a communicator by opening a folder with the saved prooject
         public Comunicator(string path_to_open)
         {
             unsafe
@@ -128,12 +124,12 @@ namespace JigsawGenius
             }
         }
 
-        /// create a comunicator by creatin an entie new folder
+        /// create a communicator by creating an empty new folder
         public Comunicator(uint resX, uint resY, string originPath, string workPath, uint numberOfCores)
         {
             unsafe
             {
-                void* ptr_void = DllLib.create_new(resX,resY,workPath,originPath, numberOfCores);
+                var ptr_void = DllLib.create_new(resX, resY, workPath, originPath, numberOfCores);
                 if (ptr_void == null)
                 {
                     throw new FileLoadException("Unable to open file");
@@ -154,7 +150,8 @@ namespace JigsawGenius
                 try
                 {
                     DllLib.set_split_threshold(ptr_void, treshold);
-                }catch (Exception)
+                }
+                catch (Exception)
                 {
                     throw new UnknownDllLibrartError();
                 }
@@ -164,7 +161,6 @@ namespace JigsawGenius
 
         public System.Drawing.Image GetThresholdPreview()
         {
-           
             unsafe
             {
                 DllLib.PngImagePointer image;

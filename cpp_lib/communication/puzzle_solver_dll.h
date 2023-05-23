@@ -28,7 +28,6 @@ extern "C" {
     void __declspec(dllexport) free_memory(void* puzzle_solver);
 
     /// set the threshold
-    /// return 0 if ok -1 if error
     void __declspec(dllexport) set_split_threshold(void* puzzle_solver, unsigned char new_threshold);
 
     /// enable the preview
