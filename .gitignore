@@ -1,4 +1,4 @@
 #ignore the folder created by vs code and clion
 
-/.vs/
-/.idea/
+.vs/
+.idea/
