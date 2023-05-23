@@ -37,3 +37,28 @@ PngImagePointer __declspec(dllexport) get_threshold_preview(void* puzzle_solver)
 int __declspec(dllexport) get_state(void* puzzle_solver){
     return (int)((PuzzleSolver*)puzzle_solver)->get_state();
 }
+
+/// split the images into individual pieces, and update `number_of_pieces`
+/// return the number of peaces found
+int __declspec(dllexport) split_image(void* puzzle_solver){
+    return ((PuzzleSolver*)puzzle_solver)->split_image();
+}
+
+/// take the splitted images and calculate the corners of each of them
+int __declspec(dllexport) process_corners(void* puzzle_solver){
+    ((PuzzleSolver*)puzzle_solver)->process_corners();
+    return 0;
+}
+
+/// calculate all the possible connections and save the results
+int __declspec(dllexport) calculate_connections(void* puzzle_solver){
+    ((PuzzleSolver*)puzzle_solver)->calculate_connections();
+    return 0;
+}
+
+/// run the solving algorithm and find the best possible combination
+/// return -1 if it dose not find a solution, 0 if he finds one
+int __declspec(dllexport) solve_puzzle(void* puzzle_solver){
+    ((PuzzleSolver*)puzzle_solver)->solve_puzzle();
+    return 0;
+}

@@ -78,3 +78,7 @@
 8	1839	7063835517192671	CMakeFiles/PuzzleSolverLib.dir/PuzzleSolver.cpp.obj	3542a230c0bd4435
 1839	2741	7063835526172676	libPuzzleSolverLib.dll	15a4f34033d7942
 1839	2741	7063835526172676	libPuzzleSolverLib.dll.a	15a4f34033d7942
+5	1691	7065347759671160	CMakeFiles/PuzzleSolverLib.dir/communication/puzzle_solver_dll.cpp.obj	7bf2fba435d30a7d
+9	1943	7065347762183219	CMakeFiles/PuzzleSolverLib.dir/PuzzleSolver.cpp.obj	3542a230c0bd4435
+1943	3110	7065347773827572	libPuzzleSolverLib.dll	15a4f34033d7942
+1943	3110	7065347773827572	libPuzzleSolverLib.dll.a	15a4f34033d7942

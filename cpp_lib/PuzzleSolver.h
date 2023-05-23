@@ -72,7 +72,9 @@ public:
     /// create an instance of the solver, by reading the data found in work_path_ and restarting from there
     explicit PuzzleSolver(std::string work_path_);
     /// split the images into individual pieces, and update `number_of_pieces`
-    void split_image();
+    /// return the number of image he found.
+    /// if he return less image then the size of the puzzle it return -2
+    int split_image();
     /// take the splitted images and calculate the corners of each of them
     void process_corners();
     /// calculate all the possible connections and save the results

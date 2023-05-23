@@ -81,7 +81,7 @@ PuzzleSolver::PuzzleSolver(std::string work_path_) {
     load_status(work_path_ + "/status.txt");
 }
 
-void PuzzleSolver::split_image() {
+int PuzzleSolver::split_image() {
 
     if(state != START){
         throw wrong_state_exception();
@@ -95,6 +95,11 @@ void PuzzleSolver::split_image() {
     state = IMAGE_SPLITTED;
     // save the current status
     save_status();
+
+    if(number_of_pieces < final_dim_x*final_dim_y){
+        return  -2;
+    }
+    return (int)number_of_pieces;
 }
 
 void PuzzleSolver::save_status() {

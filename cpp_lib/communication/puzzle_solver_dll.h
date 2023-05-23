@@ -50,10 +50,10 @@ extern "C" {
     int __declspec(dllexport) split_image(void* puzzle_solver);
 
     /// take the splitted images and calculate the corners of each of them
-    void __declspec(dllexport) process_corners(void* puzzle_solver);
+    int __declspec(dllexport) process_corners(void* puzzle_solver);
 
     /// calculate all the possible connections and save the results
-    void __declspec(dllexport) calculate_connections(void* puzzle_solver);
+    int __declspec(dllexport) calculate_connections(void* puzzle_solver);
 
     /// run the solving algorithm and find the best possible combination
     /// return -1 if it dose not find a solution, 0 if he finds one
