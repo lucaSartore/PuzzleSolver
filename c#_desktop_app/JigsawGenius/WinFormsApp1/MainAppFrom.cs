@@ -21,6 +21,8 @@ namespace JigsawGenius
         private bool _previewEnable = false;
         // say whether the calculations is running or nto
         private bool _isCalculationRunning = false;
+        // say whether the user whant the program to go to the next state automatically when one calculation is finish
+        private bool _goToNextStateAutomaticly = false;
 
 
         public MainAppFrom()
@@ -32,6 +34,13 @@ namespace JigsawGenius
 
             _state = State.OpenOrCreateFile;
             UpdateStatusView();
+
+            _previewImageBox.Image = Image.FromFile("C:\\Users\\lucas\\Desktop\\result.png");
+
+            // add the autematic resize of the image in the center
+            Resize += ResizePreviewImage;
+            ResizePreviewImage(null, null);
+
         }
 
 
@@ -211,17 +220,14 @@ namespace JigsawGenius
 
             var task = Task.Run(() =>
             {
-
-                // calculate the result in ascync thread
+                // calculate the result in async thread
                 var result = function_to_call();
 
-                this.Invoke((Action)(() =>
-                {
-                    // notigy the main program when the calculation is finishd
-                    this.FinishCalculationTrigger(result);
-                }));
+                Invoke(() =>
+                    // notify the main program when the calculation is finished
+                    FinishCalculationTrigger(result));
             });
-            
+
         }
 
         // trigger called when a calculation is finished
@@ -230,22 +236,101 @@ namespace JigsawGenius
             // update the status
             UpdateStatusView();
 
-            // send eventual return codes
-
-            // no error in a normal state
-            if(returnCode == 0 && _state != State.CornerProcessing)
+            // send messages based on return code
+            if (returnCode < 0)
             {
-                _ = MessageBox.Show("The calculation has finishd with no error", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                _ = MessageBox.Show("something went wrong in the calculation process. please check your input data", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            if(_state == State.CornerProcessing && returnCode >= 0)
+
+            // if user wants to go to the next state automatically
+            if (_goToNextStateAutomaticly && _state != State.Helping)
+            {
+                // run the calculation one mor time
+                RunToolStripMenuItem_Click(this, new EventArgs());
+                return;
+            }
+
+            // give notification that the calculation has been completed without errors
+            if (_state != State.CornerProcessing)
+            {
+                _ = MessageBox.Show("The calculation has finished with no error", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
             {
                 _ = MessageBox.Show("I have found " + returnCode + " pieces in the images you gave me", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
             }
 
-            _ = MessageBox.Show("someting went worng in the calculation process. please check your input data", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        /// resize the preview image when a resize event is receaved
+        private void ResizePreviewImage(object sender, System.EventArgs e)
+        {
+
+            var p1 = _previewImageBox.Location;
+
+            var p2 = ClientSize;
+
+            _previewImageBox.Size = new Size(p2.Width - p1.X - 10, p2.Height - p1.Y - 10);
+        }
+
+        // enable the preview
+        private void onToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_previewEnable == false)
+            {
+                // flag the preview as enable
+                _previewEnable = true;
+                // send message to enable it
+                Comunicator.EnablePreview();
+                // check the option
+                onToolStripMenuItem.Checked = true;
+                offToolStripMenuItem.Checked = false;
+            }
+        }
+
+        private void offToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_previewEnable == true)
+            {
+                // flag the preview as enable
+                _previewEnable = false;
+                // send message to enable it
+                Comunicator.DisablePreview();
+                // check the option
+                onToolStripMenuItem.Checked = false;
+                offToolStripMenuItem.Checked = true;
+            }
+        }
+
+        // disable go to next calculation step automatically
+        private void offToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            if (_goToNextStateAutomaticly == true)
+            {
+                // flag the preview as enable
+                _goToNextStateAutomaticly = false;
+                // check the option
+                onToolStripMenuItem1.Checked = false;
+                offToolStripMenuItem1.Checked = true;
+            }
+        }
+        // enable go to next calculation step automatically
+        private void onToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            if (_goToNextStateAutomaticly == false)
+            {
+                // flag the preview as enable
+                _goToNextStateAutomaticly = true;
+                // check the option
+                onToolStripMenuItem1.Checked = true;
+                offToolStripMenuItem1.Checked = false;
+            }
         }
     }
 }

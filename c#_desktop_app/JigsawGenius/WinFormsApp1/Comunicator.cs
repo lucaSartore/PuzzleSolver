@@ -309,6 +309,10 @@ namespace JigsawGenius
             }
         }
 
+        public static void EnablePreview() => DllLib.enable_preview();
+
+        public static void DisablePreview() => DllLib.disable_preview();
+
         // Implement IDisposable
         public void Dispose()
         {

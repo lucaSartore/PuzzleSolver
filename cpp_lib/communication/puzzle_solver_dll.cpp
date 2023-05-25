@@ -64,3 +64,13 @@ int __declspec(dllexport) solve_puzzle(void* puzzle_solver){
     ((PuzzleSolver*)puzzle_solver)->solve_puzzle();
     return 0;
 }
+
+/// enable the preview
+void __declspec(dllexport) enable_preview(){
+    PreviewManager::enable_preview();
+}
+
+/// disable the preview
+void __declspec(dllexport) disable_preview(){
+    PreviewManager::disable_preview();
+}

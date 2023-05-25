@@ -288,4 +288,3 @@ void test_save_ad_load(){
     std::cout << "Second instance:\n" << ps2 << "\n";
 
 }
-
