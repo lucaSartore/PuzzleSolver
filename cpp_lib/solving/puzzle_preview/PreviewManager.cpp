@@ -55,7 +55,10 @@ void PreviewManager::output_preview_image(cv::Mat &image) {
         std::unique_lock<std::mutex> lock(mtx);
         // wait until the data is no longer ready
         if (ready_to_read) {
-            cond_v.wait(lock, [] { return !ready_to_read; });
+            cond_v.wait(lock, [] { return (!ready_to_read) || !preview_enable; });
+        }
+        if(!preview_enable){
+            return;
         }
         // write the image to ram
         image_in_ram = store_image_to_ram(image);
@@ -69,18 +72,20 @@ void PreviewManager::output_preview_image(cv::Mat &image) {
 
 
 void PreviewManager::enable_preview() {
-    preview_enable = true;
-
     // reset the default state
     mtx.lock();
     ready_to_read = false;
+    preview_enable = true;
     mtx.unlock();
 }
 
 void PreviewManager::disable_preview() {
+    mtx.lock();
     preview_enable = false;
     ready_to_read = true;
     is_first_read = true;
+    mtx.unlock();
+    cond_v.notify_all();
     // doto: unlock potential thread that might be waiting
 }
 

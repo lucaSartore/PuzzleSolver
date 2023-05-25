@@ -168,10 +168,11 @@ void solve_recursive(unsigned int dim_x,unsigned int dim_y,GroupedPiecesHolder<N
 
             if(i == best_index){
                 auto pa = solution.get_piece_array(images);
-                pa.save_as_file(output_path);
+                imwrite(output_path+"solution.png",pa.get_image(PREVIEW));
+                pa.save_as_file(output_path+"solution.bin");
 
-                imshow("solution", pa.get_image(PREVIEW));
-                waitKey(0);
+                //imshow("solution", pa.get_image(PREVIEW));
+                //waitKey(0);
 
                 break;
             }

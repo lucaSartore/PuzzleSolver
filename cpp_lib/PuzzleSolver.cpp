@@ -209,7 +209,7 @@ void PuzzleSolver::solve_puzzle() {
     solve_puzzle_function(
             work_path+"/connections",
             work_path+"/divided",
-            work_path + "/results/solution.bin",
+            work_path + "/results/",
             final_dim_x,
             final_dim_y,
             number_of_pieces,
