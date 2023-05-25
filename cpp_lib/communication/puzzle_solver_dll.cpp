@@ -3,8 +3,7 @@
 #include "../PuzzleSolver.h"
 void* __declspec(dllexport) open_folder(const char *folder_path){
     try{
-        //return (void*) new PuzzleSolver(folder_path);
-        return nullptr;
+        return (void*) new PuzzleSolver(folder_path);
     }catch(std::exception &e){
         return nullptr;
     }

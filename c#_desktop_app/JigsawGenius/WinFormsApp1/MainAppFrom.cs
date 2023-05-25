@@ -35,8 +35,6 @@ namespace JigsawGenius
             _state = State.OpenOrCreateFile;
             UpdateStatusView();
 
-            _previewImageBox.Image = Image.FromFile("C:\\Users\\lucas\\Desktop\\result.png");
-
             // add the autematic resize of the image in the center
             Resize += ResizePreviewImage;
             ResizePreviewImage(null, null);
@@ -196,7 +194,6 @@ namespace JigsawGenius
 
             Func<int> function_to_call;
 
-            //public enum State { OpenOrCreateFile, PieceSplitting, CornerProcessing, ConnectionProcessing, CombinationFinding, Helping };
             switch (_state)
             {
                 case State.OpenOrCreateFile:
