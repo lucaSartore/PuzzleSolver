@@ -11,6 +11,7 @@ using JigsawGenius;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Reflection.Metadata.Ecma335;
+using static JigsawGenius.DllLib;
 
 namespace JigsawGenius
 {
@@ -53,6 +54,11 @@ namespace JigsawGenius
                 }
 
                 return image;
+            }
+
+            public bool IsNull()
+            {
+                return _data == null;
             }
         }
 
@@ -312,6 +318,17 @@ namespace JigsawGenius
         public static void EnablePreview() => DllLib.enable_preview();
 
         public static void DisablePreview() => DllLib.disable_preview();
+
+        public Image? GetNextPreviewImage()
+        {
+            var image = DllLib.next_preview_image((float)0.1);
+
+            if (!image.IsNull())
+            {
+                return image.ToImage();
+            }
+            return null;
+        }
 
         // Implement IDisposable
         public void Dispose()

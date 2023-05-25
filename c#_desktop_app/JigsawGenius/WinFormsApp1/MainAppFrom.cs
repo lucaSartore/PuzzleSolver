@@ -189,6 +189,9 @@ namespace JigsawGenius
         // run the next step of the calculation as an async task
         private void RunToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            // disable the menu
+            runToolStripMenuItem.Enabled = false;
+            runToolStripMenuItem.Text = "Run (already running)";
 
 
             Func<int> function_to_call;
@@ -236,6 +239,10 @@ namespace JigsawGenius
             // update the status
             UpdateStatusView();
 
+            // disable the menu
+            runToolStripMenuItem.Enabled = true;
+            runToolStripMenuItem.Text = "Run";
+
             // send messages based on return code
             if (returnCode < 0)
             {
@@ -263,10 +270,6 @@ namespace JigsawGenius
 
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-
-        }
 
         /// resize the preview image when a resize event is receaved
         private void ResizePreviewImage(object sender, System.EventArgs e)
@@ -291,6 +294,7 @@ namespace JigsawGenius
                 // check the option
                 onToolStripMenuItem.Checked = true;
                 offToolStripMenuItem.Checked = false;
+                _nextButton.Enabled = true;
             }
         }
 
@@ -305,6 +309,7 @@ namespace JigsawGenius
                 // check the option
                 onToolStripMenuItem.Checked = false;
                 offToolStripMenuItem.Checked = true;
+                _nextButton.Enabled = false;
             }
         }
 
@@ -330,6 +335,18 @@ namespace JigsawGenius
                 // check the option
                 onToolStripMenuItem1.Checked = true;
                 offToolStripMenuItem1.Checked = false;
+            }
+        }
+
+        private void _nextButton_Click(object sender, EventArgs e)
+        {
+            if (_comunicator != null)
+            {
+                var image = _comunicator.GetNextPreviewImage();
+                if (image != null)
+                {
+                    _previewImageBox.Image = image;
+                }
             }
         }
     }

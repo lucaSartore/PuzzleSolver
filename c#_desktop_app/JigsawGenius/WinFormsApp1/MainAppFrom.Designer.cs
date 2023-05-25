@@ -48,7 +48,6 @@ namespace JigsawGenius
             offToolStripMenuItem1 = new ToolStripMenuItem();
             calculationsToolStripMenuItem = new ToolStripMenuItem();
             runToolStripMenuItem = new ToolStripMenuItem();
-            stopToolStripMenuItem = new ToolStripMenuItem();
             deviceToolStripMenuItem = new ToolStripMenuItem();
             addToolStripMenuItem = new ToolStripMenuItem();
             aboutToolStripMenuItem = new ToolStripMenuItem();
@@ -125,7 +124,7 @@ namespace JigsawGenius
             // onToolStripMenuItem
             // 
             onToolStripMenuItem.Name = "onToolStripMenuItem";
-            onToolStripMenuItem.Size = new Size(270, 34);
+            onToolStripMenuItem.Size = new Size(140, 34);
             onToolStripMenuItem.Text = "On";
             onToolStripMenuItem.Click += onToolStripMenuItem_Click;
             // 
@@ -134,7 +133,7 @@ namespace JigsawGenius
             offToolStripMenuItem.Checked = true;
             offToolStripMenuItem.CheckState = CheckState.Checked;
             offToolStripMenuItem.Name = "offToolStripMenuItem";
-            offToolStripMenuItem.Size = new Size(270, 34);
+            offToolStripMenuItem.Size = new Size(140, 34);
             offToolStripMenuItem.Text = "Off";
             offToolStripMenuItem.Click += offToolStripMenuItem_Click;
             // 
@@ -148,7 +147,7 @@ namespace JigsawGenius
             // onToolStripMenuItem1
             // 
             onToolStripMenuItem1.Name = "onToolStripMenuItem1";
-            onToolStripMenuItem1.Size = new Size(270, 34);
+            onToolStripMenuItem1.Size = new Size(261, 34);
             onToolStripMenuItem1.Text = "Go to next section";
             onToolStripMenuItem1.Click += onToolStripMenuItem1_Click;
             // 
@@ -157,13 +156,13 @@ namespace JigsawGenius
             offToolStripMenuItem1.Checked = true;
             offToolStripMenuItem1.CheckState = CheckState.Checked;
             offToolStripMenuItem1.Name = "offToolStripMenuItem1";
-            offToolStripMenuItem1.Size = new Size(270, 34);
+            offToolStripMenuItem1.Size = new Size(261, 34);
             offToolStripMenuItem1.Text = "Wait for user input";
             offToolStripMenuItem1.Click += offToolStripMenuItem1_Click;
             // 
             // calculationsToolStripMenuItem
             // 
-            calculationsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { runToolStripMenuItem, stopToolStripMenuItem });
+            calculationsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { runToolStripMenuItem });
             calculationsToolStripMenuItem.Name = "calculationsToolStripMenuItem";
             calculationsToolStripMenuItem.Size = new Size(122, 29);
             calculationsToolStripMenuItem.Text = "Calculations";
@@ -171,15 +170,9 @@ namespace JigsawGenius
             // runToolStripMenuItem
             // 
             runToolStripMenuItem.Name = "runToolStripMenuItem";
-            runToolStripMenuItem.Size = new Size(151, 34);
+            runToolStripMenuItem.Size = new Size(270, 34);
             runToolStripMenuItem.Text = "Run";
             runToolStripMenuItem.Click += RunToolStripMenuItem_Click;
-            // 
-            // stopToolStripMenuItem
-            // 
-            stopToolStripMenuItem.Name = "stopToolStripMenuItem";
-            stopToolStripMenuItem.Size = new Size(151, 34);
-            stopToolStripMenuItem.Text = "Stop";
             // 
             // deviceToolStripMenuItem
             // 
@@ -224,13 +217,14 @@ namespace JigsawGenius
             // 
             // _nextButton
             // 
+            _nextButton.Enabled = false;
             _nextButton.Location = new Point(12, 19);
             _nextButton.Name = "_nextButton";
             _nextButton.Size = new Size(219, 34);
             _nextButton.TabIndex = 0;
             _nextButton.Text = "Next Image";
             _nextButton.UseVisualStyleBackColor = true;
-            _nextButton.Click += button1_Click;
+            _nextButton.Click += _nextButton_Click;
             // 
             // _previewImageBox
             // 
@@ -284,7 +278,6 @@ namespace JigsawGenius
         private ToolStripMenuItem addToolStripMenuItem;
         private ToolStripMenuItem calculationsToolStripMenuItem;
         private ToolStripMenuItem runToolStripMenuItem;
-        private ToolStripMenuItem stopToolStripMenuItem;
         private Panel _nextButtonPanel;
         private Button _nextButton;
         private PictureBox _previewImageBox;

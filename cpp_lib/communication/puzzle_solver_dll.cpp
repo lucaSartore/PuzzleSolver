@@ -74,3 +74,18 @@ void __declspec(dllexport) enable_preview(){
 void __declspec(dllexport) disable_preview(){
     PreviewManager::disable_preview();
 }
+
+/// lock the program until the preview image is ready or until the time max_wait_time in seconds has passed, and return an image
+PngImagePointer __declspec(dllexport) next_preview_image(float max_wait_time){
+
+    bool res = PreviewManager::next_preview_image(max_wait_time);
+
+    // if no image has been generated
+    if(res == false){
+        // return an empty image
+        return PngImagePointer(nullptr,0);
+    }
+
+    return PreviewManager::get_image_binary();
+}
+
