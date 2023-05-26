@@ -1,10 +1,13 @@
 #ifndef PUZZLESOLVER_PUZZLE_SOLVER_DLL_H
 #define PUZZLESOLVER_PUZZLE_SOLVER_DLL_H
 
+
+
 #include "communication_image.h"
 #include "../PuzzleSolver.h"
 
 extern "C" {
+
 
     /// open an already saved folder, and return the pointer to the puzzle solver, you need to keep the pointer and pass it
     /// to the next functions

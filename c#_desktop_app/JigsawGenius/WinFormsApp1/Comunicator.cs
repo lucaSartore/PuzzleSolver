@@ -65,7 +65,8 @@ namespace JigsawGenius
 
         // in order for this to work you must add the path to de DLL to your system path
         // in my case is: C:\Users\lucas\CLionProjects\Puzzle_Solver\cpp_lib\cmake-build-debug
-        [DllImport("libPuzzleSolverLib.dll")]
+        //[DllImport("libPuzzleSolverLib.dll")]
+        [DllImport("C:\\Users\\lucas\\CLionProjects\\Puzzle_Solver\\cpp_lib\\cmake-build-debug\\libPuzzleSolverLib.dll")]
         public static extern unsafe void* open_folder([MarshalAs(UnmanagedType.LPStr)] string path);
 
         [DllImport("libPuzzleSolverLib.dll")]

@@ -1,0 +1,10 @@
+//
+// Created by lucas on 26-May-23.
+//
+
+#ifndef PUZZLESOLVER_CALCULATE_CORRUPTION_RATE_H
+#define PUZZLESOLVER_CALCULATE_CORRUPTION_RATE_H
+
+void calculate_corruption_rates();
+
+#endif //PUZZLESOLVER_CALCULATE_CORRUPTION_RATE_H

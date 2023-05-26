@@ -1,6 +1,6 @@
-
 #include "puzzle_solver_dll.h"
 #include "../PuzzleSolver.h"
+
 void* __declspec(dllexport) open_folder(const char *folder_path){
     try{
         return (void*) new PuzzleSolver(folder_path);
@@ -87,4 +87,5 @@ PngImagePointer __declspec(dllexport) next_preview_image(float max_wait_time){
 
     return PreviewManager::get_image_binary();
 }
+
 

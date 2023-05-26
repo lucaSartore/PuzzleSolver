@@ -13,7 +13,7 @@
 
 /// the minimum compatibility a piece must have in order to be considered a valid connection when using the
 /// calculate_connection function
-#define MIN_COMPAT_CC 0.3
+#define MIN_COMPAT_CC 0
 
 /// the minimum shore a PieceArray<ShoringHolder> needs to have, in order to be consider valid
 #define MIN_SHORE_PIECE_ARRAY 0.975

@@ -533,3 +533,79 @@ void PieceArray::save_as_file(std::string path) {
     }
 
 }
+
+// this function has been written only yo gadher datas onnce, is realy unsafe and not generic
+// is not ment to be used in final code
+void PieceArray::calculate_statistics(PieceConnection* piece_connections,float th) {
+
+    int size = dim_x*dim_y;
+
+
+    int positive_check = 0;
+    int number_of_check =0;
+
+    int positive_check_naigbout = 0;
+    int number_of_check_naigbout =0;
+
+
+    // loop to all the connections inside the puzzle
+    for(int x=0; x<dim_x-1; x++){
+        for(int y=0; y<dim_y-1; y++){
+            auto p = get(x,y);
+            // get the id and rotation
+            int id = p->get_piece()->get_id();
+            int orientation = p->get_orientation();
+
+
+            for(int other = 0; other<size; other++){
+                for(int orientation_other = 0; orientation_other<4; orientation_other++){
+                    // calculagtinf this piece left side with all the others
+                    float perceantage = piece_connections[id].compare((orientation+1)%4,other,orientation_other);
+                    if(perceantage>th){
+                        positive_check++;
+                    }
+                    //same for bottom side
+                    perceantage = piece_connections[id].compare((orientation+2)%4,other,orientation_other);
+                    if(perceantage>th){
+                        positive_check++;
+                    }
+                    number_of_check +=2;
+                }
+            }
+
+            // naibour to the left (aka the correct fit)
+            auto neb_dx = get(x+1,y);
+            int neb_dx_id = neb_dx->get_piece()->get_id();
+            int neb_dx_orientation = neb_dx->get_orientation();
+
+            float perceantage = piece_connections[id].compare((orientation+1)%4,neb_dx_id,(neb_dx_orientation+3)%4);
+            if(perceantage>th){
+                positive_check_naigbout++;
+            }
+            number_of_check_naigbout++;
+
+            // naibour to the bottom (aka the correct fit)
+            auto neb_bt = get(x,y+1);
+            int neb_bt_id = neb_bt->get_piece()->get_id();
+            int neb_bt_orientation = neb_bt->get_orientation();
+
+            perceantage = piece_connections[id].compare((orientation+2)%4,neb_bt_id,(neb_bt_orientation+0)%4);
+            if(perceantage>th){
+                positive_check_naigbout++;
+            }
+            number_of_check_naigbout++;
+
+        }
+    }
+
+
+
+    //cout << (float) positive_check/(float)(number_of_check);
+    //cout << " ";
+    cout << (float) positive_check_naigbout/(float)(number_of_check_naigbout);
+
+
+    //cout << "averege compatibility: " << (float) positive_check/(float)(number_of_check) << endl;
+    //cout << "averege compatibility between actual naibours: " << (float) positive_check_naigbout/(float)(number_of_check_naigbout) << endl;
+
+}

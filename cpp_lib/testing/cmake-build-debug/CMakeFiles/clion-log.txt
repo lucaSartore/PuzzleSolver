@@ -1,9 +1,0 @@
-"C:\Program Files\JetBrains\CLion 2022.2.4\bin\cmake\win\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug "-DCMAKE_MAKE_PROGRAM=C:/Program Files/JetBrains/CLion 2022.2.4/bin/ninja/win/ninja.exe" -G Ninja -S C:\Users\lucas\CLionProjects\Puzzle_Solver\cpp_lib\testing -B C:\Users\lucas\CLionProjects\Puzzle_Solver\cpp_lib\testing\cmake-build-debug
--- OpenCV ARCH: x64
--- OpenCV RUNTIME: mingw
--- OpenCV STATIC: OFF
--- Found OpenCV 4.5.5 in C:/Users/lucas/CLionProjects/Puzzle_Solver/opencv/x64/mingw/lib
--- You might need to add C:\Users\lucas\CLionProjects\Puzzle_Solver\opencv\x64\mingw\bin to your PATH to be able to run your applications.
--- Configuring done
--- Generating done
--- Build files have been written to: C:/Users/lucas/CLionProjects/Puzzle_Solver/cpp_lib/testing/cmake-build-debug

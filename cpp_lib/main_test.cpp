@@ -6,6 +6,7 @@
 #include "PuzzleSolver.h"
 #include <thread>
 #include <opencv2/opencv.hpp>
+#include "extras/calculate_corruption_rate.h"
 
 using namespace std;
 using namespace cv;
@@ -27,6 +28,9 @@ void debug_thread(){
 }
 
 int main(){
+
+    calculate_corruption_rates();
+    return 0;
 
     PuzzleSolver ps(4, 4, "../work_path", "../../dataset/test_4x4/raw",2);
     //PuzzleSolver ps("../work_path");

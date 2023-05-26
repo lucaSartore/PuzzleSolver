@@ -11,6 +11,7 @@
 #include <memory>
 #include <opencv2/opencv.hpp>
 #include <fstream>
+#include "../logic_piece/PieceConnection.h"
 
 /// the methods to past a mask on top of another ( bitwise or, sum, bitwise xor or full overwrite)
 typedef enum PateOnTopMethod{OR,SUM,XOR,OVERWRITE}PateOnTopMethod;
@@ -83,6 +84,8 @@ public:
     void save_as_file(std::string path);
     /// load a solution form a file
     void load_from_file(std::string path, PieceImage* images);
+
+    void calculate_statistics(PieceConnection * connections,float th);
 };
 
 
