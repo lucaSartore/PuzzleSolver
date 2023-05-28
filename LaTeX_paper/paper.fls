@@ -74,6 +74,24 @@ INPUT paper.toc
 INPUT C:\Program Files\MiKTeX\fonts\tfm\public\cm\cmbx10.tfm
 OUTPUT paper.toc
 INPUT C:\Program Files\MiKTeX\fonts\tfm\public\cm\cmbx12.tfm
+INPUT .\pictures\digital_puzzle.png
+INPUT .\pictures\digital_puzzle.png
+INPUT pictures\digital_puzzle.png
+INPUT .\pictures\digital_puzzle.png
+INPUT .\pictures\digital_puzzle.png
+INPUT .\pictures\digital_puzzle.png
+INPUT .\pictures\digital_puzzle.png
+INPUT .\pictures\real_puzzle.jpg
+INPUT .\pictures\real_puzzle.jpg
+INPUT pictures\real_puzzle.jpg
+INPUT .\pictures\real_puzzle.jpg
+INPUT .\pictures\real_puzzle.jpg
+INPUT .\pictures\real_puzzle.jpg
+INPUT .\pictures\real_puzzle.jpg
+INPUT .\pictures\digital_puzzle.png
+INPUT .\pictures\digital_puzzle.png
+INPUT pictures\digital_puzzle.png
+INPUT .\pictures\digital_puzzle.png
 INPUT paper.aux
 INPUT C:\Program Files\MiKTeX\fonts\type1\public\amsfonts\cm\cmbx10.pfb
 INPUT C:\Program Files\MiKTeX\fonts\type1\public\amsfonts\cm\cmbx10.pfb

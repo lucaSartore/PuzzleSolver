@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1685277698 "c:/Users/lucas/CLionProjects/Puzzle_Solver/LaTeX_paper/paper.tex" "paper.pdf" "paper" 1685277699 0
+["pdflatex"] 1685279579 "c:/Users/lucas/CLionProjects/Puzzle_Solver/LaTeX_paper/paper.tex" "paper.pdf" "paper" 1685279580 0
   "C:/Program Files/MiKTeX/fonts/tfm/public/cm/cmbx10.tfm" 1136768653 1328 c834bbb027764024c09d3d2bf908b5f0 ""
   "C:/Program Files/MiKTeX/fonts/tfm/public/cm/cmbx12.tfm" 1136768653 1324 c910af8c371558dc20f2d7822f66fe64 ""
   "C:/Program Files/MiKTeX/fonts/tfm/public/cm/cmmi12.tfm" 1136768653 1524 4414a8315f39513458b80dfc63bff03a ""
@@ -31,10 +31,12 @@
   "C:/Program Files/MiKTeX/tex/latex/l3backend/l3backend-pdftex.def" 1681896761 29940 9473d58112bc8a88f5505b823a053dde ""
   "C:/Users/lucas/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1685170821 80909 eab91d9745dd2edfd62a31d53cd5fe15 ""
   "C:/Users/lucas/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1685170901 23175700 84fc8237a8992323e0a3f8c9b0e7a749 ""
-  "c:/Users/lucas/CLionProjects/Puzzle_Solver/LaTeX_paper/paper.tex" 1685277697 1373 71bab4229516e34ab634146faa06c424 ""
-  "paper.aux" 1685277699 464 876233d2547e76a8939d20bab7a91c2d "pdflatex"
-  "paper.tex" 1685277697 1373 71bab4229516e34ab634146faa06c424 ""
-  "paper.toc" 1685277699 268 e2fbd2d323fb3230d4fbc48df2935d20 "pdflatex"
+  "c:/Users/lucas/CLionProjects/Puzzle_Solver/LaTeX_paper/paper.tex" 1685279578 1840 83ad068ac5f2424fd295d0a635909cf3 ""
+  "paper.aux" 1685279579 648 650f614abeafb380e301e96fab11fd90 "pdflatex"
+  "paper.tex" 1685279578 1840 83ad068ac5f2424fd295d0a635909cf3 ""
+  "paper.toc" 1685279580 268 e2fbd2d323fb3230d4fbc48df2935d20 "pdflatex"
+  "pictures/digital_puzzle.png" 1685278414 824442 7466b1d5552321dbb751c9abd150b398 ""
+  "pictures/real_puzzle.jpg" 1685277425 75274 a6ff7f678f8122b402c845ab0510062e ""
   (generated)
   "paper.aux"
   "paper.log"

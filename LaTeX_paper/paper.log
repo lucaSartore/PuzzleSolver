@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.5) (preloaded format=pdflatex 2023.5.27)  28 MAY 2023 14:41
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.5) (preloaded format=pdflatex 2023.5.27)  28 MAY 2023 15:12
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -97,19 +97,34 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 \tf@toc=\write3
 \openout3 = `paper.toc'.
 
- [2] [3] (paper.aux) ) 
+ [2]
+<pictures/digital_puzzle.png, id=13, 947.03813pt x 306.39468pt>
+File: pictures/digital_puzzle.png Graphic file (type png)
+<use pictures/digital_puzzle.png>
+Package pdftex.def Info: pictures/digital_puzzle.png  used on input line 46.
+(pdftex.def)             Requested size: 172.5pt x 55.80786pt.
+<pictures/real_puzzle.jpg, id=15, 612.2875pt x 408.52625pt>
+File: pictures/real_puzzle.jpg Graphic file (type jpg)
+<use pictures/real_puzzle.jpg>
+Package pdftex.def Info: pictures/real_puzzle.jpg  used on input line 49.
+(pdftex.def)             Requested size: 155.11755pt x 103.50105pt.
+File: pictures/digital_puzzle.png Graphic file (type png)
+<use pictures/digital_puzzle.png>
+Package pdftex.def Info: pictures/digital_puzzle.png  used on input line 52.
+(pdftex.def)             Requested size: 319.9078pt x 103.50105pt.
+ [3 <./pictures/digital_puzzle.png> <./pictures/real_puzzle.jpg>] [4] (paper.aux) ) 
 Here is how much of TeX's memory you used:
- 1324 strings out of 476411
- 22011 string characters out of 5798949
- 1853845 words of memory out of 5000000
- 21714 multiletter control sequences out of 15000+600000
+ 1344 strings out of 476411
+ 22533 string characters out of 5798949
+ 1854845 words of memory out of 5000000
+ 21729 multiletter control sequences out of 15000+600000
  516542 words of font info for 46 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 57i,6n,62p,240b,196s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 57i,6n,62p,240b,236s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmr17.pfb>
-Output written on paper.pdf (3 pages, 75367 bytes).
+Output written on paper.pdf (4 pages, 1154105 bytes).
 PDF statistics:
- 37 PDF objects out of 1000 (max. 8388607)
+ 44 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 11 words of extra memory for PDF output out of 10000 (max. 10000000)
 
