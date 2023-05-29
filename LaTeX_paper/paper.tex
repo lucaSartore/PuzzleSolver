@@ -16,11 +16,19 @@
 % to use prefix for references
 \usepackage{etoolbox}
 
+% to set the margin of the page
 \usepackage[a4paper, total={6.5in, 9in}]{geometry}
+
+% to make indentations
+\usepackage{changepage}
 
 % rule for reference to fugures
 \pretocmd{\thefigure}{F}{}{}
 
+% settings for how to indend the page when neaded
+\newenvironment{indented_section}
+  {\adjustwidth{3em}{0pt}}
+  {\endadjustwidth}
 
 \title{Use Of Jigsaw Puzzle Solving Algorithms In The Real World}
 \author{Luca Sartore}
@@ -43,12 +51,12 @@
 \section{Abstract}
 The jigsaw puzzle problem has been in the eye of computer scientists for a while,
 and some clever solutions have already been found. These algorithms are made to
-work with a “digital” jigsaw puzzle [\ref{fig:figure_digital_puzzle}],
+work with a “digital” jigsaw puzzle \ref{fig:figure_digital_puzzle},
 but there aren't papers (at least not popular enough to be searchable)
 that try to apply the solution
-to a “real world” jigsaw puzzle [\ref{fig:figure_real_puzzle}].\newline
+to a “real world” jigsaw puzzle \ref{fig:figure_real_puzzle}.\newline
 The problem has been tackled by some small projects. But, as said earlier,
-the process and eventual challenges has never been documented by a paper,
+the process and eventual challenges has never been documented by a full paper,
 this wants to be the first.\newline
 As a bonus the paper will also cover the creation of a user friendly app
 that will be open source and free to use.
@@ -99,7 +107,32 @@ that will be useful for the next section.
 
 \subsection{General Structure Of The Algorithms}
 
-All the algorithms that will be analyzed are composed of 3 sub algorithms.
+All the algorithms that will be analyzed are composed of 3 sub algorithms:
+
+
+\begin{indented_section}
+
+    \subsubsection{The Splitter:} This component takes as input one or more images
+    containing all the pieces. It then split all the pieces from each other,
+    9and split each piece into his four sides.\label{document:splitter}
+
+    \subsubsection{The Comparator:} This component compares each side with all the
+    others, in order to understand whether they match or not.\newline
+    There are two distinct kinds of “Comparator” algorithms:
+    The “Binary Comparison” and the “Non Binary Comparison”.
+    As the name suggests when comparing two sides with a “Binary Comparison”
+    the result can either be 0 (they do not match) or 1 (they match).
+    In contrast a “Non Binary Comparison” can give any value between 0 and 1.
+    This allows states of uncertainty to be represented.\label{document:comparator}
+
+    \subsubsection{The Solver:} This component  uses the information provided by the
+    Comparator \ref{document:comparator}, and tries to find a solution
+    (i.e.\ a position and an orientation for each piece)
+    that is the most likely to be correct.\label{document:solver}
+
+\end{indented_section}
+
+\subsection{Solving Jigsaw Puzzles By The Graph Connection Laplacian}
 
 \end{document}
 
