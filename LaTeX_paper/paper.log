@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.5) (preloaded format=pdflatex 2023.5.28)  2 JUN 2023 15:27
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.5) (preloaded format=pdflatex 2023.5.28)  2 JUN 2023 15:41
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -323,22 +323,29 @@ Package pdftex.def Info: pictures/example_bad_piece.jpg  used on input line 96.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-[3 <./pictures/digital_puzzle.png> <./pictures/real_puzzle.jpg>] [4 <./pictures/example_bad_piece.jpg>] (paper.aux)
+[3 <./pictures/digital_puzzle.png> <./pictures/real_puzzle.jpg>]
+
+LaTeX Warning: Citation `lamport94' on page 4 undefined on input line 136.
+
+[4 <./pictures/example_bad_piece.jpg>] (paper.aux)
+
+LaTeX Warning: There were undefined references.
+
 Package rerunfilecheck Info: File `paper.out' has not changed.
 (rerunfilecheck)             Checksum: 030CD4A995E50EE17C98B168F90E7B57;1711.
  ) 
 Here is how much of TeX's memory you used:
- 11273 strings out of 476411
- 188299 string characters out of 5798949
+ 11272 strings out of 476411
+ 188277 string characters out of 5798949
  1857845 words of memory out of 5000000
  31501 multiletter control sequences out of 15000+600000
- 517237 words of font info for 48 fonts, out of 8000000 for 9000
+ 516710 words of font info for 47 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  75i,6n,76p,459b,504s stack positions out of 10000i,1000n,20000p,200000b,200000s
-<C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmti10.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmti7.pfb>
-Output written on paper.pdf (4 pages, 1294096 bytes).
+<C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
+Output written on paper.pdf (4 pages, 1285390 bytes).
 PDF statistics:
- 128 PDF objects out of 1000 (max. 8388607)
+ 123 PDF objects out of 1000 (max. 8388607)
  21 named destinations out of 1000 (max. 500000)
  96 words of extra memory for PDF output out of 10000 (max. 10000000)
 
