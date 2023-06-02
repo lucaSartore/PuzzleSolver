@@ -131,19 +131,45 @@ All the algorithms that will be analyzed are composed of 3 sub algorithms:
 
 \end{indented_section}
 
-\subsection{Solving Jigsaw Puzzles By The Graph Connection Laplacian}
+\subsection{Solving Jigsaw Puzzles By The Graph Connection Laplacian~\cite{GCL}}
+This algorithm falls in the “binary comparison” category~\ref{document:comparator}.
+And can be used to understand the strength and weaknesses
+of this approach.\newline
+The main benefit of this approach is speed,  having a binary comparison allows
+some specific optimization, in particular the use of some graph theory techniques.\newline
+The  algorithm has a time complexity of ruffly \(O(N^2)\). Which is in line with the theoretical
+minimum for jigsaw puzzle solving, according to the study:
+\footnotesize{“No easy puzzles: Hardness results for jigsaw puzzles~\cite{ON2Claim}”}. 
 
-\cite{lamport94}
+
+\subsection{A Genetic Algorithm-Based Solver for Very Large Jigsaw Puzzles~\cite{GA}}
 
 
 
+% referneces page
+\newpage
 \begin{thebibliography}{9}
 
+  %Graph Connection Laplacian
   \bibitem{GCL}
-    Vahan Huroyan, Gilad Lerman and Hau-Tieng Wu,
+    Vahan Huroyan, Gilad   Lerman and Hau-Tieng Wu,
     Solving Jigsaw Puzzles By The Graph Connection Laplacian,
     2020.
     \url{https://arxiv.org/pdf/1811.03188.pdf}.
+  
+  % Genetic algorighm
+  \bibitem{GA}
+    Dror Sholomon, Omid David and Nathan S. Netanyahu,
+    A Genetic Algorithm-Based Solver for Very Large Jigsaw Puzzles,
+    2013.
+    \url{https://openaccess.thecvf.com/content_cvpr_2013/papers/Sholomon_A_Genetic_Algorithm-Based_2013_CVPR_paper.pdf}.
+  
+    % Claim of best solution O(N^2)
+    \bibitem{ON2Claim}
+    Michael Brand,
+    No easy puzzles: Hardness results for jigsaw puzzles,
+    2015.
+    \url{https://www.sciencedirect.com/science/article/pii/S0304397515001607}.
   
 \end{thebibliography}
 
