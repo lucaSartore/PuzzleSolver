@@ -139,7 +139,15 @@ The main benefit of this approach is speed,  having a binary comparison allows
 some specific optimization, in particular the use of some graph theory techniques.\newline
 The  algorithm has a time complexity of ruffly \(O(N^2)\). Which is in line with the theoretical
 minimum for jigsaw puzzle solving, according to the study:
-\footnotesize{“No easy puzzles: Hardness results for jigsaw puzzles~\cite{ON2Claim}”}. 
+“No easy puzzles: Hardness results for jigsaw puzzles~\cite{ON2Claim}”.\newline
+The negative aspect might be the accuracy, since by using only two states
+(match or not match) some informations are lost, compared to a non binary comparison.
+To quantify accuracy the paper used the “neighbors comparison” metric,
+which “calculates the percentage of pairs of image patches that are matched correctly”.\newline
+Is important to note that the discussed algorithm works with 
+digital puzzles~\ref{fig:figure_digital_puzzle}, and this gives it the advantage of having more precise data.\newline
+Whether this algorithm could work with a real world puzzle~\ref{fig:figure_real_puzzle} will be discussed in section DOTO INSERT RFERENCE.
+
 
 
 \subsection{A Genetic Algorithm-Based Solver for Very Large Jigsaw Puzzles~\cite{GA}}
