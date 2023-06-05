@@ -153,6 +153,26 @@ Whether this algorithm could work with a real world puzzle~\ref{fig:figure_real_
 \subsection{A Genetic Algorithm-Based Solver for Very Large Jigsaw Puzzles~\cite{GA}}
 
 
+This paper applies a genetic algorithm to the jigsaw puzzle problem, with some promising results.\newline
+The algorithm seems to have a \(O(N^2)\) time complexity, with time slightly lower than the previous example
+(But it is impossible to know for sure which one is faster, given that they didn't specify the hardware used).\newline
+The paper has used the same method to evaluate accuracy that the previous one used
+(neighbors comparison) so it is easy to compare them.\newline
+The algorithm falls in the “Non binary comparison”~\ref{document:comparator};
+this should give it an advantage, since it has more data to work with.\newline
+Unfortunately this advantage does not compensate for the worst precision
+of the algorithm itself, and the accuracy results are equivalent,
+if not slightly worse than the previous algorithm.\newline
+It is important to keep in mind that for the very nature of genetic algorithms,
+it might be possible that the accuracy would have been better if they had allowed
+it to run for more generations.\newline
+Is also important to note that the discussed algorithm works with digital puzzles,
+and this gives it the advantage of having more precise data.\newline
+Whether this algorithm could work with a real world puzzle will be discussed
+in section DOTO INSERT RFERENCE.
+
+
+
 
 % referneces page
 \newpage

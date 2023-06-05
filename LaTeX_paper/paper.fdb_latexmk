@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1685943268 "c:/Users/lucas/CLionProjects/Puzzle_Solver/LaTeX_paper/paper.tex" "paper.pdf" "paper" 1685943270 0
+["pdflatex"] 1685943903 "c:/Users/lucas/CLionProjects/Puzzle_Solver/LaTeX_paper/paper.tex" "paper.pdf" "paper" 1685943905 0
   "C:/Program Files/MiKTeX/fonts/tfm/public/cm/cmbx10.tfm" 1136768653 1328 c834bbb027764024c09d3d2bf908b5f0 ""
   "C:/Program Files/MiKTeX/fonts/tfm/public/cm/cmbx12.tfm" 1136768653 1324 c910af8c371558dc20f2d7822f66fe64 ""
   "C:/Program Files/MiKTeX/fonts/tfm/public/cm/cmmi12.tfm" 1136768653 1524 4414a8315f39513458b80dfc63bff03a ""
@@ -73,11 +73,11 @@
   "C:/Program Files/MiKTeX/tex/latex/xcolor/xcolor.sty" 1656236890 56148 51a9a8571c07b9921892ae11063ae853 ""
   "C:/Users/lucas/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1685300412 80909 eab91d9745dd2edfd62a31d53cd5fe15 ""
   "C:/Users/lucas/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1685300459 23175700 43af857d664b8c848f0116b05aa9b641 ""
-  "c:/Users/lucas/CLionProjects/Puzzle_Solver/LaTeX_paper/paper.tex" 1685943267 7072 5582acabcfc8d9f1704d961f9eada733 ""
-  "paper.aux" 1685943270 3708 167b4d1f59bffd887bbe7991e36e3c10 "pdflatex"
-  "paper.out" 1685943270 2144 10efbe3789a86efb1d8d500d3bec2d56 "pdflatex"
-  "paper.tex" 1685943267 7072 5582acabcfc8d9f1704d961f9eada733 ""
-  "paper.toc" 1685943270 1060 28710b8eac0c46314ff5fd60769a5965 "pdflatex"
+  "c:/Users/lucas/CLionProjects/Puzzle_Solver/LaTeX_paper/paper.tex" 1685943902 8397 4b425616f385a7377f6e0ba9ff2e3c3e ""
+  "paper.aux" 1685943904 3708 167b4d1f59bffd887bbe7991e36e3c10 "pdflatex"
+  "paper.out" 1685943904 2144 10efbe3789a86efb1d8d500d3bec2d56 "pdflatex"
+  "paper.tex" 1685943902 8397 4b425616f385a7377f6e0ba9ff2e3c3e ""
+  "paper.toc" 1685943904 1060 28710b8eac0c46314ff5fd60769a5965 "pdflatex"
   "pictures/digital_puzzle.png" 1685278414 824442 7466b1d5552321dbb751c9abd150b398 ""
   "pictures/example_bad_piece.jpg" 1685289362 99857 7d7ca37ed7fccd7fba563929a4863015 ""
   "pictures/real_puzzle.jpg" 1685277425 75274 a6ff7f678f8122b402c845ab0510062e ""
