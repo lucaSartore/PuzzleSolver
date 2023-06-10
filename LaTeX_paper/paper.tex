@@ -65,8 +65,9 @@ that will be open source and free to use.
 This paper will focus on type 2 puzzles. A type 2 puzzle is a puzzle where the position, and the orientation of each piece is unknown. 
 \subsection{Digital vs Real-World Jigsaw Puzzles}
 
-There is  another important distinction between different types of puzzles. They can be divided into “digital” and “real world” jigsaw puzzles.
-
+There is  another important distinction between different types of puzzles.
+They can be divided into “digital” and “real world” jigsaw puzzles.
+\label{document:DigitalVSReal}
 
 % figure of digital jigsaw puzzle    
 \begin{figure}[h]
@@ -144,15 +145,10 @@ The negative aspect might be the accuracy, since by using only two states
 (match or not match) some informations are lost, compared to a non binary comparison.
 To quantify accuracy the paper used the “neighbors comparison” metric,
 which “calculates the percentage of pairs of image patches that are matched correctly”.\newline
-Is important to note that the discussed algorithm works with 
-digital puzzles~\ref{fig:figure_digital_puzzle}, and this gives it the advantage of having more precise data.\newline
-Whether this algorithm could work with a real world puzzle~\ref{fig:figure_real_puzzle} will be discussed in section DOTO INSERT RFERENCE.
-
+\label{document:GCL}
 
 
 \subsection{A Genetic Algorithm-Based Solver for Very Large Jigsaw Puzzles~\cite{GA}}
-
-
 This paper applies a genetic algorithm to the jigsaw puzzle problem, with some promising results.\newline
 The algorithm seems to have a \(O(N^2)\) time complexity, with time slightly lower than the previous example
 (But it is impossible to know for sure which one is faster, given that they didn't specify the hardware used).\newline
@@ -166,12 +162,34 @@ if not slightly worse than the previous algorithm.\newline
 It is important to keep in mind that for the very nature of genetic algorithms,
 it might be possible that the accuracy would have been better if they had allowed
 it to run for more generations.\newline
-Is also important to note that the discussed algorithm works with digital puzzles,
-and this gives it the advantage of having more precise data.\newline
-Whether this algorithm could work with a real world puzzle will be discussed
-in section DOTO INSERT RFERENCE.
+\label{document:GA}
 
+\subsection{Computer Vision Powers Automatic Jigsaw Puzzle Solver~\cite{Abto}}
+The solutions~\ref{document:GCL} and~\ref{document:GA} can be considered “state of the art” for digital jigsaw puzzles.
+But, as already introduced in section~\ref{document:DigitalVSReal} and better explained in section TODO,
+appalling the solution to the real world can be challenging.\newline
+This solution is possibly a “state of the art” for real world puzzles.\newline
+In reality calling this a “solution” is incorrect,
+since all it does is find the best 8 matches and asks the user which one to place.
+Making the algorithm not autonomous.\newline
+Even ignoring this major detail, making an analysis of this solution has proven to be challenging,
+since the article is more of a publicity stunt than an academic paper.
+In fact, the code is not open source and the information about the time needed to solve the puzzle is missing.\newline
+The article only shows a single puzzle solved, with a 9x6 dimension.\newline
+Even with all of these problems this article still is one of the best example of a solution for real world puzzle.
 
+\section{The objective of this paper}
+After reading some of the previous literature for this problem, some conclusions could be drawn:
+The problem of “digital jigsaw puzzle” has been solved many times, and is already well optimized.\newline
+On the other hand, the problem of “real world jigsaw puzzle” has mostly been ignored\newline
+by the academic community.\newline
+
+The objective of this paper is to fill this void, by answering the following questions:
+\begin{itemize}
+    \item Can the current state of the art solutions for digital puzzles be used for real world puzzles, or the unpredictable nature of real world data makes it impossible?
+    \item If the algorithms cannot be applied to the real world, what is a possible solution that is more redundant to imprecise data?
+
+  \end{itemize}
 
 
 % referneces page
@@ -198,6 +216,13 @@ in section DOTO INSERT RFERENCE.
     No easy puzzles: Hardness results for jigsaw puzzles,
     2015.
     \url{https://www.sciencedirect.com/science/article/pii/S0304397515001607}.
+
+    % abtosoftware real world solution
+    \bibitem{Abto}
+    AbtoSoftware,
+    Computer Vision Powers Automatic Jigsaw Puzzle Solver,
+    2019.
+    \url{https://www.abtosoftware.com/blog/computer-vision-powers-automatic-jigsaw-puzzle-solver}.
   
 \end{thebibliography}
 
