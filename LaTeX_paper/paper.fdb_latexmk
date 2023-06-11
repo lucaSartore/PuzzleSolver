@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1686499365 "c:/Users/lucas/CLionProjects/Puzzle_Solver/LaTeX_paper/paper.tex" "paper.pdf" "paper" 1686499367 0
+["pdflatex"] 1686501054 "c:/Users/lucas/CLionProjects/Puzzle_Solver/LaTeX_paper/paper.tex" "paper.pdf" "paper" 1686501056 0
   "C:/Program Files/MiKTeX/fonts/tfm/jknappen/ec/tcrm1000.tfm" 993062508 1436 c7f957a372ef2fbe93c0982f96625e12 ""
   "C:/Program Files/MiKTeX/fonts/tfm/public/cm/cmbx10.tfm" 1136768653 1328 c834bbb027764024c09d3d2bf908b5f0 ""
   "C:/Program Files/MiKTeX/fonts/tfm/public/cm/cmbx12.tfm" 1136768653 1324 c910af8c371558dc20f2d7822f66fe64 ""
@@ -81,15 +81,20 @@
   "C:/Users/lucas/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1685300412 80909 eab91d9745dd2edfd62a31d53cd5fe15 ""
   "C:/Users/lucas/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/tcrm1000.pk" 1685343922 11548 40e033b4889f7f688139778ac512d001 ""
   "C:/Users/lucas/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1685300459 23175700 43af857d664b8c848f0116b05aa9b641 ""
-  "c:/Users/lucas/CLionProjects/Puzzle_Solver/LaTeX_paper/paper.tex" 1686499364 14616 f1062ef6e508df578df8e1d68dd974c3 ""
-  "paper.aux" 1686499366 6149 6184b29c1424b4f4944446a8a031e978 "pdflatex"
-  "paper.out" 1686499366 3281 4c423542c1cd6b73f787bf0ee2774b70 "pdflatex"
-  "paper.tex" 1686499364 14616 f1062ef6e508df578df8e1d68dd974c3 ""
-  "paper.toc" 1686499366 1611 cab403a7a1c5a6a2666d96da9811491a "pdflatex"
+  "c:/Users/lucas/CLionProjects/Puzzle_Solver/LaTeX_paper/paper.tex" 1686501053 15541 5ccfa29990810a746fd4126c30d8dd83 ""
+  "paper.aux" 1686501056 7431 9d8124e0980749ec9479804fc18d84ec "pdflatex"
+  "paper.out" 1686501056 3281 4c423542c1cd6b73f787bf0ee2774b70 "pdflatex"
+  "paper.tex" 1686501053 15541 5ccfa29990810a746fd4126c30d8dd83 ""
+  "paper.toc" 1686501056 1611 cab403a7a1c5a6a2666d96da9811491a "pdflatex"
   "pictures/digital_puzzle.png" 1685278414 824442 7466b1d5552321dbb751c9abd150b398 ""
   "pictures/example_bad_piece.jpg" 1685289362 99857 7d7ca37ed7fccd7fba563929a4863015 ""
+  "pictures/original_piece.jpeg" 1686490772 64306 57d0d0d439b87701bc872dacf9452b4d ""
+  "pictures/piece_with_no_hole.png" 1686492411 27012 9110839d6f040715cf0dd825f3239b10 ""
   "pictures/real_puzzle.jpg" 1685277425 75274 a6ff7f678f8122b402c845ab0510062e ""
   "pictures/remove_holes_convex_hull.png" 1686492410 9853 d2bbca1dae9160829f2e026dfdaf3dec ""
+  "pictures/remove_holes_filler_areas.png" 1686492410 32750 09b8da8cc4963352281db4db7f59e2fa ""
+  "pictures/remove_knobs_erosion.png" 1686492412 759 de6f386bf2dec014b0da8cf7f638a028 ""
+  "pictures/remove_knobs_expansion.png" 1686492413 1010 b902a913023d76f4dde1731a15d8023d ""
   (generated)
   "paper.aux"
   "paper.log"
