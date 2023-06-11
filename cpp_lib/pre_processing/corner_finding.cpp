@@ -444,9 +444,24 @@ void find_corners(const cv::Mat &input, cv::Point &p1,  cv::Point &p2,  cv::Poin
 
     // find the rectangle
     RotatedRect rect = minAreaRect( main_contour);
+
     // find the 4 points;
     Point2f vertices[4];
     rect.points(vertices);
+
+    if(enable_image_view){
+        Mat preview;
+        cvtColor(piece_with_no_knobs,preview,COLOR_GRAY2BGR);
+
+        for(int i=0; i<4; i++){
+            auto p1 = vertices[i];
+            auto p2 = vertices[(i+1)%4];
+
+            line(preview,p1,p2,Scalar(0,0,255),15);
+        }
+        quick_image_preview(preview,enable_image_view,"find_corners_min_enclosing_rectangle");
+    }
+
 
     //
     //      APPROXIMATION 2
@@ -564,6 +579,18 @@ void find_corners(const cv::Mat &input, cv::Point &p1,  cv::Point &p2,  cv::Poin
         minEnclosingTriangle( main_contour,triangle_points);
         //cout << triangle_points << endl;
 
+        if(enable_image_view){
+            Mat preview;
+            cvtColor(single_corner,preview,COLOR_GRAY2BGR);
+
+            for(int i=0; i<3; i++){
+                auto p1 = triangle_points[i];
+                auto p2 = triangle_points[(i+1)%3];
+
+                line(preview,p1,p2,Scalar(0,0,255),4);
+            }
+            quick_image_preview(preview,enable_image_view,"find_corners_min_enclosing_triangle");
+        }
 
 
         // find the point that is the closest to the original point...
