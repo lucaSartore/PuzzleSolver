@@ -15,10 +15,27 @@ using namespace std;
 using namespace cv;
 
 void do_pre_processing_thread(const std::string& path, int piece_index, int ppi = DEFAULT_PPI, bool enable_image_view = false);
-void remove_holes(const cv::Mat &input, cv::Mat &output,int ppi = DEFAULT_PPI);
-void remove_knobs(const cv::Mat &input, cv::Mat &output, int ppi = DEFAULT_PPI);
-void find_corners(const cv::Mat &input, cv::Point &p1,  cv::Point &p2,  cv::Point &p3,  cv::Point &p4, int ppi = DEFAULT_PPI);
+void remove_holes(const cv::Mat &input, cv::Mat &output,int ppi = DEFAULT_PPI, bool enable_image_view = false);
+void remove_knobs(const cv::Mat &input, cv::Mat &output, int ppi = DEFAULT_PPI, bool enable_image_view = false);
+void find_corners(const cv::Mat &input, cv::Point &p1,  cv::Point &p2,  cv::Point &p3,  cv::Point &p4, int ppi = DEFAULT_PPI, bool enable_image_view = false);
 
+// handle the resize and the condition for a quick preview
+void quick_image_preview(const cv::Mat &image, bool enable_preview, const string& name_of_image_to_save = ""){
+    if(!enable_preview){
+        return;
+    }
+
+
+    if(!name_of_image_to_save.empty()){
+        imwrite(name_of_image_to_save + ".png", image);
+    }
+
+    Mat resize;
+    cv::resize(image,resize,image.size()/3);
+
+    imshow("preview", resize);
+    waitKey(0);
+}
 
 void find_corners(const std::string& path, int number_of_pieces, int ppi, int number_of_cores, bool enable_image_view){
 
@@ -88,15 +105,15 @@ void do_pre_processing_thread(const std::string& path, int piece_index, int ppi,
 
     // removing the hole of the piece
     Mat piece_no_holes;
-    remove_holes(piece,piece_no_holes,ppi);
+    remove_holes(piece,piece_no_holes,ppi,enable_image_view);
 
     // removing the knobs
     Mat piece_no_knobs;
-    remove_knobs(piece_no_holes,piece_no_knobs,ppi);
+    remove_knobs(piece_no_holes,piece_no_knobs,ppi,enable_image_view);
 
     // finding the points
     Point p1,p2,p3,p4;
-    find_corners(piece_no_knobs,p1,p2,p3,p4,ppi);
+    find_corners(piece_no_knobs,p1,p2,p3,p4,ppi,enable_image_view);
 
     // show results
     if(enable_image_view){
@@ -112,7 +129,7 @@ void do_pre_processing_thread(const std::string& path, int piece_index, int ppi,
         line(display,p4,p1,color,thickness);
 
         Mat display_resize;
-        resize(display,display_resize,display.size()/(2*ppi/1200));
+        resize(display,display_resize,display.size()/(3*ppi/1200));
         imshow("piece with corners", display_resize);
         waitKey(0);
     }
@@ -169,7 +186,7 @@ void do_pre_processing_thread(const std::string& path, int piece_index, int ppi,
 #define SECOND_EROSION_KERNEL_SIZE (100*ppi/1200)
 #define MIN_SHRINKING_PERCENTAGE  0.44
 ///this function removes the "holes" of the puzzle_preview, so that it could be processed easily later
-void remove_holes(const Mat &input, Mat &output,const int ppi){
+void remove_holes(const Mat &input, Mat &output,const int ppi, bool preview_enable){
     Mat temp;
     Mat temp2;
     Mat kernel;
@@ -186,9 +203,14 @@ void remove_holes(const Mat &input, Mat &output,const int ppi){
     Mat original_convex_hull;
     quick_convex_hull(piece,original_convex_hull);
 
+    quick_image_preview(original_convex_hull,preview_enable,"remove_holes_convex_hull");
+
     // the filler pieces that can make the original image a convex shape
     Mat filler;
     bitwise_xor(original_convex_hull,piece,filler);
+
+    quick_image_preview(filler,preview_enable,"remove_holes_filler_areas");
+
 
     //erode and expand the border of the image to remove thin line
     Mat filler_eroded;
@@ -279,6 +301,9 @@ void remove_holes(const Mat &input, Mat &output,const int ppi){
             }
         }
     }
+
+    quick_image_preview(piece_no_hole,preview_enable,"piece_with_no_hole");
+
     output = piece_no_hole;
 }
 
@@ -303,7 +328,7 @@ void remove_holes(const Mat &input, Mat &output,const int ppi){
 #define MINIMUM_KNOB_AREA (15000*ppi/1200)
 #define KNOB_REMOVER_RADIUS (250*ppi/1200)
 /// this function take as input an image (that has to have the oles already removed) and remove the knobs
-void remove_knobs(const cv::Mat&input, cv::Mat &output,const int ppi){
+void remove_knobs(const cv::Mat&input, cv::Mat &output,const int ppi, bool enable_image_view){
 
     Mat piece = input, kernel,temp;
 
@@ -322,13 +347,19 @@ void remove_knobs(const cv::Mat&input, cv::Mat &output,const int ppi){
     // eroding and expansion the mask remove the "bumps" along the corners,
     Mat piece_with_smooth_corner;
     erode(piece_resize,temp,kernel);
+
+    quick_image_preview(temp,enable_image_view,"remove_knobs_erosion");
     dilate(temp,piece_with_smooth_corner,kernel);
+    quick_image_preview(piece_with_smooth_corner,enable_image_view,"remove_knobs_expansion");
 
     // bumps_along_corner = piece_resize AND ( NOT piece_with_smooth_corner)
     // this mask now contains the bumps, and the angles of the original image
     Mat bumps_along_corner;
     temp = piece_with_smooth_corner == 0;
     bitwise_and(piece_resize,temp,bumps_along_corner);
+
+    quick_image_preview(bumps_along_corner,enable_image_view,"remove_knobs_knob_pixels");
+
 
     // eroding the `bumps_along_corner_eroded` make the connection piece more distinguishable from the corner of the piece
     kernel = Mat::zeros(Size(KNOB_EROSION_SIZE, KNOB_EROSION_SIZE), CV_8U);
@@ -363,6 +394,8 @@ void remove_knobs(const cv::Mat&input, cv::Mat &output,const int ppi){
         }
     }
 
+    quick_image_preview(piece_with_no_knobs,enable_image_view,"piece_with_no_knobs");
+
     output = piece_with_no_knobs;
 };
 
@@ -387,7 +420,7 @@ void remove_knobs(const cv::Mat&input, cv::Mat &output,const int ppi){
 #define MIN_NUMBER_OF_PIXELS_TO_CONSIDER_AS_CORNER 3000
 /// tis function return the precise coordinates of the 4 angle of the puzzle_preview piece
 /// the image in input must have the knob and hole removed
-void find_corners(const cv::Mat &input, cv::Point &p1,  cv::Point &p2,  cv::Point &p3,  cv::Point &p4,const int ppi){
+void find_corners(const cv::Mat &input, cv::Point &p1,  cv::Point &p2,  cv::Point &p3,  cv::Point &p4,const int ppi, bool enable_image_view){
 
     Mat piece_with_no_knobs = input, kernel,temp,temp2;
 

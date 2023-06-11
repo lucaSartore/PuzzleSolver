@@ -11,12 +11,12 @@ int main(){
 
     string path = "../../../dataset/test_4x4";
 
-    int number_of_pieces = 500;
-    number_of_pieces = split_pieces_into_single_images(path + "/raw",path + "/divided",1200, true);
+    int number_of_pieces = 16;
+    //number_of_pieces = split_pieces_into_single_images(path + "/raw",path + "/divided",1200, true);
 
     cout << "i have found " << number_of_pieces << " puzzle_preview pieces" << endl;
 
-    //do_pre_processing(path+"/divided",number_of_pieces, 1200, true, false);
+    find_corners(path+"/divided",number_of_pieces, 1200, 1, true);
 
     cout << "preprocessing finished" << endl;
 
