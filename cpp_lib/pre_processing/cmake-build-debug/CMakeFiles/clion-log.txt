@@ -1,6 +1,0 @@
-"C:\Program Files\JetBrains\CLion 2022.2.4\bin\cmake\win\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug "-DCMAKE_MAKE_PROGRAM=C:/Program Files/JetBrains/CLion 2022.2.4/bin/ninja/win/ninja.exe" -G Ninja -S C:\Users\lucas\CLionProjects\Puzzle_Solver\cpp_lib\pre_processing -B C:\Users\lucas\CLionProjects\Puzzle_Solver\cpp_lib\pre_processing\cmake-build-debug
-CMake Error at CMakeLists.txt:1 (cmake_minimum_required):
-  CMake 3.24 or higher is required.  You are running version 3.23.2
-
-
--- Configuring incomplete, errors occurred!
