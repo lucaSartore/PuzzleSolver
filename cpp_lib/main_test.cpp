@@ -28,8 +28,8 @@ void debug_thread(){
 
 int main(){
 
-    PuzzleSolver ps(4, 4, "../work_path", "../../dataset/test_4x4/raw",2);
-    //PuzzleSolver ps("../work_path");
+    //PuzzleSolver ps(4, 4, "../work_path", "../../dataset/test_4x4/raw",2);
+    PuzzleSolver ps("../work_path");
 
     ps.set_threshold(100);
 

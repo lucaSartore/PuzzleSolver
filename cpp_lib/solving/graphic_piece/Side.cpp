@@ -56,6 +56,7 @@ Side::Side(Mat& shape, PieceShape* piece_, int piece_side_, Point p1, Point p2, 
     // applying the threshold since the transformation has blurred the border
     border_shape = border_shape>127;
 
+
     //creating 2 lines from the 2 points to the border of the image
     line(border_shape,p1,p1+(p1-p2), Scalar(255),3);
     line(border_shape,p2,p2+(p2-p1), Scalar(255),3);
@@ -67,7 +68,6 @@ Side::Side(Mat& shape, PieceShape* piece_, int piece_side_, Point p1, Point p2, 
     // flood filling significant points to keep only one border
     floodFill(border_shape,Point(0,0),100);
     border_shape = border_shape != 100;
-
 
     int difference = Side::compare_res*Side::compare_res/2 - countNonZero(border_shape);
 

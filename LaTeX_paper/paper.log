@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.5) (preloaded format=pdflatex 2023.5.28)  11 JUN 2023 17:27
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.5) (preloaded format=pdflatex 2023.5.28)  11 JUN 2023 18:02
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -375,24 +375,24 @@ Underfull \hbox (badness 10000) in paragraph at lines 184--188
 <pictures/remove_holes_convex_hull.png, id=149, 1152.305pt x 1440.38126pt>
 File: pictures/remove_holes_convex_hull.png Graphic file (type png)
 <use pictures/remove_holes_convex_hull.png>
-Package pdftex.def Info: pictures/remove_holes_convex_hull.png  used on input line 265.
+Package pdftex.def Info: pictures/remove_holes_convex_hull.png  used on input line 282.
 (pdftex.def)             Requested size: 234.87749pt x 293.58772pt.
 File: pictures/remove_holes_convex_hull.png Graphic file (type png)
 <use pictures/remove_holes_convex_hull.png>
-Package pdftex.def Info: pictures/remove_holes_convex_hull.png  used on input line 271.
+Package pdftex.def Info: pictures/remove_holes_convex_hull.png  used on input line 288.
 (pdftex.def)             Requested size: 234.87749pt x 293.58772pt.
 
-Overfull \hbox (2.2222pt too wide) in paragraph at lines 263--275
+Overfull \hbox (2.2222pt too wide) in paragraph at lines 280--292
 [][] [] 
  []
 
 [6] [7 <./pictures/remove_holes_convex_hull.png (PNG copy)>]
-Underfull \hbox (badness 2478) in paragraph at lines 298--302
+Underfull \hbox (badness 2478) in paragraph at lines 315--319
 []\OT1/cmr/m/n/10 Michael Brand, No easy puz-zles: Hard-ness re-sults for jig-saw puz-zles, 2015. [][]$\OT1/cmtt/m/n/10 https : / / www .
  []
 
 
-Underfull \hbox (badness 1742) in paragraph at lines 305--309
+Underfull \hbox (badness 1742) in paragraph at lines 322--326
 []\OT1/cmr/m/n/10 AbtoSoftware, Com-puter Vi-sion Pow-ers Au-to-matic Jig-saw Puz-zle Solver, 2019. [][]$\OT1/cmtt/m/n/10 https : / / www .
  []
 
@@ -403,13 +403,13 @@ Package rerunfilecheck Info: File `paper.out' has not changed.
 Here is how much of TeX's memory you used:
  12752 strings out of 476411
  217096 string characters out of 5798949
- 1860845 words of memory out of 5000000
+ 1861845 words of memory out of 5000000
  32954 multiletter control sequences out of 15000+600000
  517344 words of font info for 49 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  75i,8n,77p,510b,508s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <C:\Users\lucas\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm1000.pk><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmr9.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on paper.pdf (8 pages, 1362031 bytes).
+Output written on paper.pdf (8 pages, 1363300 bytes).
 PDF statistics:
  229 PDF objects out of 1000 (max. 8388607)
  36 named destinations out of 1000 (max. 500000)
