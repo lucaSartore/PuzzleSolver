@@ -18,6 +18,11 @@ add_executable(
         corner_finding.h
         corner_finding.cpp
 
+
+        ../solving/puzzle_preview/PreviewManager.cpp
+        ../solving/puzzle_preview/PreviewManager.h
+        ../communication/communication_image.h
+        ../communication/communication_image.cpp
         #../solving/logic_piece/PieceConnections.h
         #../solving/logic_piece/PieceConnections.cpp
 )

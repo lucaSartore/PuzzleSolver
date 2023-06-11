@@ -199,17 +199,21 @@ int split_pieces_into_single_images(const std::string& input_path,const std::str
                 // crop it
                 Mat cropped_image = single_piece(Range(y1,y2),Range(x1,x2));
 
-                if(PreviewManager::is_preview_enabled()){
+                if(PreviewManager::is_preview_enabled() || enable_image_view){
                     Mat cropped_image_resized;
                     Mat to_target_resized;
                     resize(cropped_image, cropped_image_resized, Size(400, 400));
                     Mat to_target = image;
                     rectangle(to_target, Point(x1, y1), Point(x2, y2), Scalar(255, 0, 0, 0), 30);
                     resize(to_target, to_target_resized, Size(550, 800));
-//                    imshow("output", cropped_image_resized);
-//                    imshow("where", to_target_resized);
-//                    waitKey(0);
-                    PreviewManager::output_preview_image(to_target_resized);
+                    if(enable_image_view){
+                        imshow("output", cropped_image_resized);
+                        imshow("where", to_target_resized);
+                        waitKey(0);
+                    }
+                    if(PreviewManager::is_preview_enabled()){
+                        PreviewManager::output_preview_image(to_target_resized);
+                    }
                 }
 
 
