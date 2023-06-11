@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.24)
 
 
 project( Processing )
-find_package(OpenCV REQUIRED ../../opencv)
+find_package(OpenCV REQUIRED PATHS ../../opencv)
 include_directories( ${OpenCV_INCLUDE_DIRS} )
 add_executable(
         Processing
