@@ -2,10 +2,13 @@
 \providecommand\hyper@newdestlabel[2]{}
 \providecommand\HyperFirstAtBeginDocument{\AtBeginDocument}
 \HyperFirstAtBeginDocument{\ifx\hyper@anchor\@undefined
+\global\let\oldcontentsline\contentsline
+\gdef\contentsline#1#2#3#4{\oldcontentsline{#1}{#2}{#3}}
 \global\let\oldnewlabel\newlabel
 \gdef\newlabel#1#2{\newlabelxx{#1}#2}
 \gdef\newlabelxx#1#2#3#4#5#6{\oldnewlabel{#1}{{#2}{#3}}}
 \AtEndDocument{\ifx\hyper@anchor\@undefined
+\let\contentsline\oldcontentsline
 \let\newlabel\oldnewlabel
 \fi}
 \fi}
@@ -59,35 +62,59 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.1}The Puzzle To Solve}{5}{subsection.5.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Splitting The Pieces}{6}{subsection.5.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Splitting The Sides}{6}{subsection.5.3}\protected@file@percent }
-\newlabel{fig:image1}{{F4a}{7}{Original binary mask of a piece.\relax }{figure.caption.5}{}}
-\newlabel{fig:image1@cref}{{[subfigure][1][4]F4a}{[1][6][]7}}
-\newlabel{sub@fig:image1}{{a}{7}{Original binary mask of a piece.\relax }{figure.caption.5}{}}
-\newlabel{sub@fig:image1@cref}{{[subfigure][1][4]F4a}{[1][6][]7}}
-\newlabel{fig:image2}{{F4b}{7}{Convex Hull of a piece.\relax }{figure.caption.5}{}}
-\newlabel{fig:image2@cref}{{[subfigure][2][4]F4b}{[1][6][]7}}
-\newlabel{sub@fig:image2}{{b}{7}{Convex Hull of a piece.\relax }{figure.caption.5}{}}
-\newlabel{sub@fig:image2@cref}{{[subfigure][2][4]F4b}{[1][6][]7}}
-\newlabel{fig:image3}{{F4c}{7}{Difference between (b) and (a).\relax }{figure.caption.5}{}}
-\newlabel{fig:image3@cref}{{[subfigure][3][4]F4c}{[1][6][]7}}
-\newlabel{sub@fig:image3}{{c}{7}{Difference between (b) and (a).\relax }{figure.caption.5}{}}
-\newlabel{sub@fig:image3@cref}{{[subfigure][3][4]F4c}{[1][6][]7}}
-\newlabel{fig:image4}{{F4d}{7}{Piece (a) with holes removed.\relax }{figure.caption.5}{}}
-\newlabel{fig:image4@cref}{{[subfigure][4][4]F4d}{[1][6][]7}}
-\newlabel{sub@fig:image4}{{d}{7}{Piece (a) with holes removed.\relax }{figure.caption.5}{}}
-\newlabel{sub@fig:image4@cref}{{[subfigure][4][4]F4d}{[1][6][]7}}
-\newlabel{fig:image5}{{F4e}{7}{Mask (d) eroded.\relax }{figure.caption.5}{}}
-\newlabel{fig:image5@cref}{{[subfigure][5][4]F4e}{[1][6][]7}}
-\newlabel{sub@fig:image5}{{e}{7}{Mask (d) eroded.\relax }{figure.caption.5}{}}
-\newlabel{sub@fig:image5@cref}{{[subfigure][5][4]F4e}{[1][6][]7}}
-\newlabel{fig:imag6}{{F4f}{7}{Mask (e) dilated.\relax }{figure.caption.5}{}}
-\newlabel{fig:imag6@cref}{{[subfigure][6][4]F4f}{[1][6][]7}}
-\newlabel{sub@fig:imag6}{{f}{7}{Mask (e) dilated.\relax }{figure.caption.5}{}}
-\newlabel{sub@fig:imag6@cref}{{[subfigure][6][4]F4f}{[1][6][]7}}
-\@writefile{lof}{\contentsline {figure}{\numberline {F4}{\ignorespaces Steps needed to split an image into his four sides.\relax }}{7}{figure.caption.5}\protected@file@percent }
-\newlabel{fig:splitting_sides}{{F4}{7}{Steps needed to split an image into his four sides.\relax }{figure.caption.5}{}}
-\newlabel{fig:splitting_sides@cref}{{[figure][4][]F4}{[1][6][]7}}
+\newlabel{fig:s_s_og}{{F4a}{7}{Original binary mask of a piece.\relax }{figure.caption.5}{}}
+\newlabel{fig:s_s_og@cref}{{[subfigure][1][4]F4a}{[1][6][]7}}
+\newlabel{sub@fig:s_s_og}{{a}{7}{Original binary mask of a piece.\relax }{figure.caption.5}{}}
+\newlabel{sub@fig:s_s_og@cref}{{[subfigure][1][4]F4a}{[1][6][]7}}
+\newlabel{fig:s_s_ch}{{F4b}{7}{Convex Hull of a piece.\relax }{figure.caption.5}{}}
+\newlabel{fig:s_s_ch@cref}{{[subfigure][2][4]F4b}{[1][6][]7}}
+\newlabel{sub@fig:s_s_ch}{{b}{7}{Convex Hull of a piece.\relax }{figure.caption.5}{}}
+\newlabel{sub@fig:s_s_ch@cref}{{[subfigure][2][4]F4b}{[1][6][]7}}
+\newlabel{fig:fig:s_s_og_minus_ch}{{F4c}{7}{Difference:~\ref {fig:s_s_ch} \textminus ~\ref {fig:s_s_og}.\relax }{figure.caption.5}{}}
+\newlabel{fig:fig:s_s_og_minus_ch@cref}{{[subfigure][3][4]F4c}{[1][6][]7}}
+\newlabel{sub@fig:fig:s_s_og_minus_ch}{{c}{7}{Difference:~\ref {fig:s_s_ch} \textminus ~\ref {fig:s_s_og}.\relax }{figure.caption.5}{}}
+\newlabel{sub@fig:fig:s_s_og_minus_ch@cref}{{[subfigure][3][4]F4c}{[1][6][]7}}
+\newlabel{fig:s_s_no_holes}{{F4d}{7}{Piece~\ref {fig:s_s_og} with holes removed.\relax }{figure.caption.5}{}}
+\newlabel{fig:s_s_no_holes@cref}{{[subfigure][4][4]F4d}{[1][6][]7}}
+\newlabel{sub@fig:s_s_no_holes}{{d}{7}{Piece~\ref {fig:s_s_og} with holes removed.\relax }{figure.caption.5}{}}
+\newlabel{sub@fig:s_s_no_holes@cref}{{[subfigure][4][4]F4d}{[1][6][]7}}
+\newlabel{fig:s_s_erosion}{{F4e}{7}{Mask~\ref {fig:s_s_no_holes} eroded.\relax }{figure.caption.5}{}}
+\newlabel{fig:s_s_erosion@cref}{{[subfigure][5][4]F4e}{[1][6][]7}}
+\newlabel{sub@fig:s_s_erosion}{{e}{7}{Mask~\ref {fig:s_s_no_holes} eroded.\relax }{figure.caption.5}{}}
+\newlabel{sub@fig:s_s_erosion@cref}{{[subfigure][5][4]F4e}{[1][6][]7}}
+\newlabel{fig:s_s_expansion}{{F4f}{7}{Mask~\ref {fig:s_s_erosion} dilated.\relax }{figure.caption.5}{}}
+\newlabel{fig:s_s_expansion@cref}{{[subfigure][6][4]F4f}{[1][6][]7}}
+\newlabel{sub@fig:s_s_expansion}{{f}{7}{Mask~\ref {fig:s_s_erosion} dilated.\relax }{figure.caption.5}{}}
+\newlabel{sub@fig:s_s_expansion@cref}{{[subfigure][6][4]F4f}{[1][6][]7}}
+\newlabel{fig:s_s_no_holes_minus_expansion}{{F4g}{7}{Difference:~\ref {fig:s_s_no_holes} \textminus ~\ref {fig:s_s_expansion}.\relax }{figure.caption.5}{}}
+\newlabel{fig:s_s_no_holes_minus_expansion@cref}{{[subfigure][7][4]F4g}{[1][6][]7}}
+\newlabel{sub@fig:s_s_no_holes_minus_expansion}{{g}{7}{Difference:~\ref {fig:s_s_no_holes} \textminus ~\ref {fig:s_s_expansion}.\relax }{figure.caption.5}{}}
+\newlabel{sub@fig:s_s_no_holes_minus_expansion@cref}{{[subfigure][7][4]F4g}{[1][6][]7}}
+\newlabel{fig:s_s_no_knobs}{{F4h}{7}{Piece~\ref {fig:s_s_no_holes} with knobs removed.\relax }{figure.caption.5}{}}
+\newlabel{fig:s_s_no_knobs@cref}{{[subfigure][8][4]F4h}{[1][6][]7}}
+\newlabel{sub@fig:s_s_no_knobs}{{h}{7}{Piece~\ref {fig:s_s_no_holes} with knobs removed.\relax }{figure.caption.5}{}}
+\newlabel{sub@fig:s_s_no_knobs@cref}{{[subfigure][8][4]F4h}{[1][6][]7}}
+\newlabel{fig:s_s_min_enc_rec}{{F4i}{7}{Min enclosing rectangle of~\ref {fig:s_s_no_knobs}.\relax }{figure.caption.5}{}}
+\newlabel{fig:s_s_min_enc_rec@cref}{{[subfigure][9][4]F4i}{[1][6][]7}}
+\newlabel{sub@fig:s_s_min_enc_rec}{{i}{7}{Min enclosing rectangle of~\ref {fig:s_s_no_knobs}.\relax }{figure.caption.5}{}}
+\newlabel{sub@fig:s_s_min_enc_rec@cref}{{[subfigure][9][4]F4i}{[1][6][]7}}
+\newlabel{fig:s_s_min_enc_triangle}{{F4j}{8}{Min enclosing triangle of the bottom right corner of~\ref {fig:s_s_no_knobs}.\relax }{figure.caption.6}{}}
+\newlabel{fig:s_s_min_enc_triangle@cref}{{[subfigure][10][4]F4j}{[1][8][]8}}
+\newlabel{sub@fig:s_s_min_enc_triangle}{{j}{8}{Min enclosing triangle of the bottom right corner of~\ref {fig:s_s_no_knobs}.\relax }{figure.caption.6}{}}
+\newlabel{sub@fig:s_s_min_enc_triangle@cref}{{[subfigure][10][4]F4j}{[1][8][]8}}
+\newlabel{fig:s_s_corners_found}{{F4k}{8}{The corners of the piece~\ref {fig:s_s_og}.\relax }{figure.caption.6}{}}
+\newlabel{fig:s_s_corners_found@cref}{{[subfigure][11][4]F4k}{[1][8][]8}}
+\newlabel{sub@fig:s_s_corners_found}{{k}{8}{The corners of the piece~\ref {fig:s_s_og}.\relax }{figure.caption.6}{}}
+\newlabel{sub@fig:s_s_corners_found@cref}{{[subfigure][11][4]F4k}{[1][8][]8}}
+\newlabel{fig:s_s_a_piece_side}{{F4l}{8}{One of the sides of the piece~\ref {fig:s_s_og}.\relax }{figure.caption.6}{}}
+\newlabel{fig:s_s_a_piece_side@cref}{{[subfigure][12][4]F4l}{[1][8][]8}}
+\newlabel{sub@fig:s_s_a_piece_side}{{l}{8}{One of the sides of the piece~\ref {fig:s_s_og}.\relax }{figure.caption.6}{}}
+\newlabel{sub@fig:s_s_a_piece_side@cref}{{[subfigure][12][4]F4l}{[1][8][]8}}
+\@writefile{lof}{\contentsline {figure}{\numberline {F4}{\ignorespaces Steps needed to split an image into his four sides.\relax }}{8}{figure.caption.6}\protected@file@percent }
+\newlabel{fig:splitting_sides}{{F4}{8}{Steps needed to split an image into his four sides.\relax }{figure.caption.6}{}}
+\newlabel{fig:splitting_sides@cref}{{[figure][4][]F4}{[1][8][]8}}
 \bibcite{GCL}{1}
 \bibcite{GA}{2}
 \bibcite{ON2Claim}{3}
 \bibcite{Abto}{4}
-\gdef \@abspage@last{8}
+\gdef \@abspage@last{9}

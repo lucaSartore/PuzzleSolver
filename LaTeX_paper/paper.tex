@@ -281,50 +281,95 @@ his 4 sides, this could be done with the following steps:
     \centering
     \includegraphics[width=\linewidth]{pictures/original_piece.jpeg}
     \caption{Original binary mask of a piece.}
-    \label{fig:image1}
+    \label{fig:s_s_og}
   \end{subfigure}
   \hfill
   \begin{subfigure}{0.3\textwidth}
     \centering
     \includegraphics[width=\linewidth]{pictures/remove_holes_convex_hull.png}
     \caption{Convex Hull of a piece.}
-    \label{fig:image2}
+    \label{fig:s_s_ch}
   \end{subfigure}
   \hfill
   \begin{subfigure}{0.3\textwidth}
     \centering
     \includegraphics[width=\linewidth]{pictures/remove_holes_filler_areas.png}
-    \caption{Difference between (b) and (a).}
-    \label{fig:image3}
+    \caption{Difference:~\ref{fig:s_s_ch} \textminus~\ref{fig:s_s_og}.}
+    \label{fig:fig:s_s_og_minus_ch}
   \end{subfigure}
-  %\vspace{1cm}
+  \vspace{1cm}
   \begin{subfigure}{0.3\textwidth}
     \centering
     \includegraphics[width=\linewidth]{pictures/piece_with_no_hole.png}
-    \caption{Piece (a) with holes removed.}
-    \label{fig:image4}
+    \caption{Piece~\ref{fig:s_s_og} with holes removed.}
+    \label{fig:s_s_no_holes}
   \end{subfigure}
   \hfill
   \begin{subfigure}{0.3\textwidth}
     \centering
     \includegraphics[width=\linewidth]{pictures/remove_knobs_erosion.png}
-    \caption{Mask (d) eroded.}
-    \label{fig:image5}
+    \caption{Mask~\ref{fig:s_s_no_holes} eroded.}
+    \label{fig:s_s_erosion}
   \end{subfigure}
   \hfill
   \begin{subfigure}{0.3\textwidth}
     \centering
     \includegraphics[width=\linewidth]{pictures/remove_knobs_expansion.png}
-    \caption{Mask (e) dilated.}
-    \label{fig:imag6}
+    \caption{Mask~\ref{fig:s_s_erosion} dilated.}
+    \label{fig:s_s_expansion}
   \end{subfigure}
+  \vspace{1cm}
+  \begin{subfigure}{0.3\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{pictures/remove_knobs_knob_pixels.png}
+    \caption{Difference:~\ref{fig:s_s_no_holes} \textminus~\ref{fig:s_s_expansion}.}
+    \label{fig:s_s_no_holes_minus_expansion}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{0.3\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{pictures/piece_with_no_knobs.png}
+    \caption{Piece~\ref{fig:s_s_no_holes} with knobs removed.}
+    \label{fig:s_s_no_knobs}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{0.3\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{pictures/find_corners_min_enclosing_rectangle.png}
+    \caption{Min enclosing rectangle of~\ref{fig:s_s_no_knobs}.}
+    \label{fig:s_s_min_enc_rec}
+  \end{subfigure}
+\end{figure}
+\clearpage
+\begin{figure}\ContinuedFloat
+  \begin{subfigure}{0.3\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{pictures/find_corners_min_enclosing_triangle.png}
+    \caption{Min enclosing triangle of the bottom right corner of~\ref{fig:s_s_no_knobs}.}
+    \label{fig:s_s_min_enc_triangle}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{0.3\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{pictures/corners_found.png}
+    \caption{The corners of the piece~\ref{fig:s_s_og}.}
+    \label{fig:s_s_corners_found}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{0.3\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{pictures/piece_side.png}
+    \caption{One of the sides of the piece~\ref{fig:s_s_og}.}
+    \label{fig:s_s_a_piece_side}
+  \end{subfigure}
+  
   \caption{Steps needed to split an image into his four sides.}
   \label{fig:splitting_sides}
   
 \end{figure}
 
 % referneces page
-\newpage
+\clearpage
 \begin{thebibliography}{9}
 
   %Graph Connection Laplacian
