@@ -56,6 +56,12 @@ void piece_comparer_thread(PieceConnection *pieces_connections, PieceShape *piec
                         compatibility = 0;
                     }
 
+
+                    //Mat preview = pieces_shapes[piece_id].get_side(piece_side).get_compare_image(
+                    //        pieces_shapes[other_piece_id].get_side(other_piece_side)
+                    //        );
+                    //imwrite("comparison.png",preview);
+
                     if(PreviewManager::is_preview_enabled()){
                         Mat img = pieces_shapes[piece_id].get_side(piece_side).get_compare_image(
                                 pieces_shapes[other_piece_id].get_side(other_piece_side)
