@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2021/W32TeX) (preloaded format=pdflatex 2022.1.31)  25 JUN 2023 09:33
+=======
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.5) (preloaded format=pdflatex 2023.5.28)  23 JUN 2023 16:18
+>>>>>>> 0d27b4f636da3d8ae20a5c5925bffa311204c7bf
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -347,17 +351,29 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 \openout4 = `paper.toc'.
 
  [2]
+<<<<<<< HEAD
 <pictures/digital_puzzle.png, id=117, 947.03813pt x 306.39468pt>
+=======
+<pictures/digital_puzzle.png, id=121, 947.03813pt x 306.39468pt>
+>>>>>>> 0d27b4f636da3d8ae20a5c5925bffa311204c7bf
 File: pictures/digital_puzzle.png Graphic file (type png)
 <use pictures/digital_puzzle.png>
 Package pdftex.def Info: pictures/digital_puzzle.png  used on input line 82.
 (pdftex.def)             Requested size: 362.9851pt x 117.43874pt.
+<<<<<<< HEAD
 <pictures/real_puzzle.jpg, id=119, 612.2875pt x 408.52625pt>
+=======
+<pictures/real_puzzle.jpg, id=123, 612.2875pt x 408.52625pt>
+>>>>>>> 0d27b4f636da3d8ae20a5c5925bffa311204c7bf
 File: pictures/real_puzzle.jpg Graphic file (type jpg)
 <use pictures/real_puzzle.jpg>
 Package pdftex.def Info: pictures/real_puzzle.jpg  used on input line 88.
 (pdftex.def)             Requested size: 176.00793pt x 117.43874pt.
+<<<<<<< HEAD
 <pictures/example_bad_piece.jpg, id=120, 55.10588pt x 37.0986pt>
+=======
+<pictures/example_bad_piece.jpg, id=124, 55.10588pt x 37.0986pt>
+>>>>>>> 0d27b4f636da3d8ae20a5c5925bffa311204c7bf
 File: pictures/example_bad_piece.jpg Graphic file (type jpg)
 <use pictures/example_bad_piece.jpg>
 Package pdftex.def Info: pictures/example_bad_piece.jpg  used on input line 103.
@@ -386,92 +402,146 @@ Underfull \hbox (badness 10000) in paragraph at lines 187--191
  []
 
 [5]
+<<<<<<< HEAD
 <pictures/original_piece.jpeg, id=167, 1152.305pt x 1440.38126pt>
+=======
+<pictures/original_piece.jpeg, id=170, 1152.305pt x 1440.38126pt>
+>>>>>>> 0d27b4f636da3d8ae20a5c5925bffa311204c7bf
 File: pictures/original_piece.jpeg Graphic file (type jpg)
 <use pictures/original_piece.jpeg>
 Package pdftex.def Info: pictures/original_piece.jpeg  used on input line 288.
 (pdftex.def)             Requested size: 140.92792pt x 176.15703pt.
+<<<<<<< HEAD
 <pictures/remove_holes_convex_hull.png, id=168, 1152.305pt x 1440.38126pt>
+=======
+<pictures/remove_holes_convex_hull.png, id=171, 1152.305pt x 1440.38126pt>
+>>>>>>> 0d27b4f636da3d8ae20a5c5925bffa311204c7bf
 File: pictures/remove_holes_convex_hull.png Graphic file (type png)
 <use pictures/remove_holes_convex_hull.png>
 Package pdftex.def Info: pictures/remove_holes_convex_hull.png  used on input line 295.
 (pdftex.def)             Requested size: 140.92792pt x 176.15703pt.
+<<<<<<< HEAD
 <pictures/remove_holes_filler_areas.png, id=169, 1152.305pt x 1440.38126pt>
+=======
+<pictures/remove_holes_filler_areas.png, id=172, 1152.305pt x 1440.38126pt>
+>>>>>>> 0d27b4f636da3d8ae20a5c5925bffa311204c7bf
 File: pictures/remove_holes_filler_areas.png Graphic file (type png)
 <use pictures/remove_holes_filler_areas.png>
 Package pdftex.def Info: pictures/remove_holes_filler_areas.png  used on input line 302.
 (pdftex.def)             Requested size: 140.92792pt x 176.15703pt.
+<<<<<<< HEAD
 <pictures/piece_with_no_hole.png, id=174, 1152.305pt x 1440.38126pt>
+=======
+<pictures/piece_with_no_hole.png, id=177, 1152.305pt x 1440.38126pt>
+>>>>>>> 0d27b4f636da3d8ae20a5c5925bffa311204c7bf
 File: pictures/piece_with_no_hole.png Graphic file (type png)
 <use pictures/piece_with_no_hole.png>
 Package pdftex.def Info: pictures/piece_with_no_hole.png  used on input line 309.
 (pdftex.def)             Requested size: 140.92792pt x 176.15703pt.
+<<<<<<< HEAD
 <pictures/remove_knobs_erosion.png, id=177, 191.71625pt x 239.89626pt>
+=======
+<pictures/remove_knobs_erosion.png, id=180, 191.71625pt x 239.89626pt>
+>>>>>>> 0d27b4f636da3d8ae20a5c5925bffa311204c7bf
 File: pictures/remove_knobs_erosion.png Graphic file (type png)
 <use pictures/remove_knobs_erosion.png>
 Package pdftex.def Info: pictures/remove_knobs_erosion.png  used on input line 316.
 (pdftex.def)             Requested size: 140.92792pt x 176.35274pt.
+<<<<<<< HEAD
 <pictures/remove_knobs_expansion.png, id=180, 191.71625pt x 239.89626pt>
+=======
+<pictures/remove_knobs_expansion.png, id=183, 191.71625pt x 239.89626pt>
+>>>>>>> 0d27b4f636da3d8ae20a5c5925bffa311204c7bf
 File: pictures/remove_knobs_expansion.png Graphic file (type png)
 <use pictures/remove_knobs_expansion.png>
 Package pdftex.def Info: pictures/remove_knobs_expansion.png  used on input line 323.
 (pdftex.def)             Requested size: 140.92792pt x 176.35274pt.
+<<<<<<< HEAD
 <pictures/remove_knobs_knob_pixels.png, id=183, 191.71625pt x 239.89626pt>
+=======
+<pictures/remove_knobs_knob_pixels.png, id=186, 191.71625pt x 239.89626pt>
+>>>>>>> 0d27b4f636da3d8ae20a5c5925bffa311204c7bf
 File: pictures/remove_knobs_knob_pixels.png Graphic file (type png)
 <use pictures/remove_knobs_knob_pixels.png>
 Package pdftex.def Info: pictures/remove_knobs_knob_pixels.png  used on input line 330.
 (pdftex.def)             Requested size: 140.92792pt x 176.35274pt.
+<<<<<<< HEAD
 <pictures/piece_with_no_knobs.png, id=188, 1152.305pt x 1440.38126pt>
+=======
+<pictures/piece_with_no_knobs.png, id=191, 1152.305pt x 1440.38126pt>
+>>>>>>> 0d27b4f636da3d8ae20a5c5925bffa311204c7bf
 File: pictures/piece_with_no_knobs.png Graphic file (type png)
 <use pictures/piece_with_no_knobs.png>
 Package pdftex.def Info: pictures/piece_with_no_knobs.png  used on input line 337.
 (pdftex.def)             Requested size: 140.92792pt x 176.15703pt.
+<<<<<<< HEAD
 <pictures/find_corners_min_enclosing_rectangle.png, id=191, 1152.305pt x 1440.38126pt>
+=======
+<pictures/find_corners_min_enclosing_rectangle.png, id=194, 1152.305pt x 1440.38126pt>
+>>>>>>> 0d27b4f636da3d8ae20a5c5925bffa311204c7bf
 File: pictures/find_corners_min_enclosing_rectangle.png Graphic file (type png)
 <use pictures/find_corners_min_enclosing_rectangle.png>
 Package pdftex.def Info: pictures/find_corners_min_enclosing_rectangle.png  used on input line 344.
 (pdftex.def)             Requested size: 140.92792pt x 176.15703pt.
  [6] [7 <./pictures/original_piece.jpeg> <./pictures/remove_holes_convex_hull.png (PNG copy)> <./pictures/remove_holes_filler_areas.png (PNG copy)> <./pictures/piece_with_no_hole.png (PNG copy)> <./pictures/remove_knobs_erosion.png (PNG copy)> <./pictures/remove_knobs_expansion.png (PNG copy)> <./pictures/remove_knobs_knob_pixels.png (PNG copy)> <./pictures/piece_with_no_knobs.png (PNG copy)> <./pictures/find_corners_min_enclosing_rectangle.png (PNG copy)>]
+<<<<<<< HEAD
 <pictures/find_corners_min_enclosing_triangle.png, id=207, 188.95593pt x 202.50656pt>
+=======
+<pictures/find_corners_min_enclosing_triangle.png, id=210, 188.95593pt x 202.50656pt>
+>>>>>>> 0d27b4f636da3d8ae20a5c5925bffa311204c7bf
 File: pictures/find_corners_min_enclosing_triangle.png Graphic file (type png)
 <use pictures/find_corners_min_enclosing_triangle.png>
 Package pdftex.def Info: pictures/find_corners_min_enclosing_triangle.png  used on input line 353.
 (pdftex.def)             Requested size: 140.92792pt x 151.03595pt.
+<<<<<<< HEAD
 <pictures/corners_found.png, id=210, 425.33907pt x 535.2497pt>
+=======
+<pictures/corners_found.png, id=213, 425.33907pt x 535.2497pt>
+>>>>>>> 0d27b4f636da3d8ae20a5c5925bffa311204c7bf
 File: pictures/corners_found.png Graphic file (type png)
 <use pictures/corners_found.png>
 Package pdftex.def Info: pictures/corners_found.png  used on input line 360.
 (pdftex.def)             Requested size: 140.92792pt x 177.34349pt.
+<<<<<<< HEAD
 <pictures/piece_side.png, id=213, 1204.5pt x 1204.5pt>
+=======
+<pictures/piece_side.png, id=216, 1204.5pt x 1204.5pt>
+>>>>>>> 0d27b4f636da3d8ae20a5c5925bffa311204c7bf
 File: pictures/piece_side.png Graphic file (type png)
 <use pictures/piece_side.png>
 Package pdftex.def Info: pictures/piece_side.png  used on input line 367.
 (pdftex.def)             Requested size: 140.92792pt x 140.91307pt.
+<<<<<<< HEAD
 <pictures/side_comparation.png, id=216, 301.125pt x 301.125pt>
+=======
+<pictures/side_comparation.png, id=219, 301.125pt x 301.125pt>
+>>>>>>> 0d27b4f636da3d8ae20a5c5925bffa311204c7bf
 File: pictures/side_comparation.png Graphic file (type png)
 <use pictures/side_comparation.png>
 Package pdftex.def Info: pictures/side_comparation.png  used on input line 397.
 (pdftex.def)             Requested size: 206.69333pt x 206.70128pt.
  [8
 
- <./pictures/find_corners_min_enclosing_triangle.png> <./pictures/corners_found.png> <./pictures/piece_side.png (PNG copy)> <./pictures/side_comparation.png (PNG copy)>]
-Underfull \hbox (badness 2478) in paragraph at lines 430--434
+ <./pictures/find_corners_min_enclosing_triangle.png> <./pictures/corners_found.png> <./pictures/piece_side.png (PNG copy)> <./pictures/side_comparation.png (PNG copy)>] [9
+
+]
+Underfull \hbox (badness 2478) in paragraph at lines 432--436
 []\OT1/cmr/m/n/10 Michael Brand, No easy puz-zles: Hard-ness re-sults for jig-saw puz-zles, 2015. [][]$\OT1/cmtt/m/n/10 https : / / www .
  []
 
 
-Underfull \hbox (badness 1742) in paragraph at lines 437--441
+Underfull \hbox (badness 1742) in paragraph at lines 439--443
 []\OT1/cmr/m/n/10 AbtoSoftware, Com-puter Vi-sion Pow-ers Au-to-matic Jig-saw Puz-zle Solver, 2019. [][]$\OT1/cmtt/m/n/10 https : / / www .
  []
 
-[9
-
+[10
 
 ] (./paper.aux)
 Package rerunfilecheck Info: File `paper.out' has not changed.
-(rerunfilecheck)             Checksum: BE3DDB9B1FBBD359682BE5444374A216;3440.
+(rerunfilecheck)             Checksum: 9B8E77912CCB9A1CCAF4A3AE9D0F040B;3494.
  ) 
 Here is how much of TeX's memory you used:
+<<<<<<< HEAD
  12772 strings out of 478287
  218269 string characters out of 5850749
  518551 words of memory out of 5000000
@@ -486,4 +556,19 @@ PDF statistics:
  236 compressed objects within 3 object streams
  40 named destinations out of 1000 (max. 500000)
  225 words of extra memory for PDF output out of 10000 (max. 10000000)
+=======
+ 12976 strings out of 476411
+ 223330 string characters out of 5798949
+ 1864845 words of memory out of 5000000
+ 33154 multiletter control sequences out of 15000+600000
+ 517681 words of font info for 50 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 75i,8n,77p,510b,575s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ <C:\Users\lucas\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm0900.pk> <C:\Users\lucas\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm1000.pk><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmr9.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
+Output written on paper.pdf (10 pages, 1623456 bytes).
+PDF statistics:
+ 311 PDF objects out of 1000 (max. 8388607)
+ 42 named destinations out of 1000 (max. 500000)
+ 233 words of extra memory for PDF output out of 10000 (max. 10000000)
+>>>>>>> 0d27b4f636da3d8ae20a5c5925bffa311204c7bf
 
