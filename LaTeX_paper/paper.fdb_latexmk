@@ -1,6 +1,6 @@
 # Fdb version 3
-["pdflatex"] 1687774941 "c:/Users/lucas/CLionProjects/Puzzle_Solver/LaTeX_paper/paper.tex" "paper.pdf" "paper" 1687774942
-  "c:/Users/lucas/CLionProjects/Puzzle_Solver/LaTeX_paper/paper.tex" 1687774940 24707 e27239edda04c4a2bcc9c02fcf190d02 ""
+["pdflatex"] 1687785846 "c:/Users/lucas/CLionProjects/Puzzle_Solver/LaTeX_paper/paper.tex" "paper.pdf" "paper" 1687785847
+  "c:/Users/lucas/CLionProjects/Puzzle_Solver/LaTeX_paper/paper.tex" 1687785845 26067 3a124adf7cdd8923e951d0aeac2b60c4 ""
   "c:/texlive/2021/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1643624996 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "c:/texlive/2021/texmf-dist/fonts/map/fontname/texfonts.map" 1643627196 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "c:/texlive/2021/texmf-dist/fonts/tfm/jknappen/ec/tcrm0900.tfm" 1643626271 1536 c4f439db76ef96a9c53bc437f35ffe20 ""
@@ -119,10 +119,10 @@
   "c:/texlive/2021/texmf-var/web2c/pdftex/pdflatex.fmt" 1643637429 2796724 109b0937d7944c6e43100082fd388859 ""
   "c:/texlive/2021/texmf.cnf" 1643637282 713 e69b156964470283e0530f5060668171 ""
   "nul" 0 0 d41d8cd98f00b204e9800998ecf8427e ""
-  "paper.aux" 1687774942 11360 83de2d4a6b9fefa0d2da48671aff7b53 "pdflatex"
-  "paper.out" 1687774942 3848 12faf94d7273646697b8ecf5adc19f03 "pdflatex"
-  "paper.tex" 1687774940 24707 e27239edda04c4a2bcc9c02fcf190d02 ""
-  "paper.toc" 1687774942 1875 335c2fe6e2a2af25a5e4428050227c33 "pdflatex"
+  "paper.aux" 1687785847 11616 88bd41f685be3a0105e19e57375eb968 "pdflatex"
+  "paper.out" 1687785847 4092 38769011be17915c8bedbdd8ae2d9b73 "pdflatex"
+  "paper.tex" 1687785845 26067 3a124adf7cdd8923e951d0aeac2b60c4 ""
+  "paper.toc" 1687785847 2049 7c0be4fbc6d0ceea43a7c23d277fe282 "pdflatex"
   "pictures/corners_found.png" 1686549823 47088 624636cf4d75eeb63f11a423c5222c73 ""
   "pictures/digital_puzzle.png" 1685298942 824442 7466b1d5552321dbb751c9abd150b398 ""
   "pictures/example_bad_piece.jpg" 1685298942 99857 7d7ca37ed7fccd7fba563929a4863015 ""

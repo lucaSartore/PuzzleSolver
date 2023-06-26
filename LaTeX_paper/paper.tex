@@ -432,7 +432,7 @@ shore that goes from 0 to 1.\newline
 But the algorithm~\ref{document:GCL} takes as input a binary value,
 which means that it is necessary to apply a threshold to the input
 data to convert them from float to bool.
-\newline \newline
+\subsubsection{Input Data}
 To find the optimal threshold a small 16 piece puzzle has been solved.
 And the following 4 values have been measured, in function of the threshold:
 
@@ -527,8 +527,36 @@ And the following 4 values have been measured, in function of the threshold:
   \end{tabular}
   \end{table}
 
-\centering
-\includesvg[height=3.75in]{pictures/match_metrics_vs_threshold_used.svg}
+\begin{center}
+  \includesvg[height=3.75in]{pictures/match_metrics_vs_threshold_used.svg}
+\end{center}
+
+Assuming the algorithm has to solve a 500 piece puzzle, with a limit match\% of 0.04
+and a corruption rate of 0.057 (data taken from the line in red);
+what would this mean in terms of accuracy of the results?
+
+\subsubsection{Definitions}
+This set of definitions are useful to better understand the next section:
+
+\begin{itemize}
+  \item \textbf{Connection:}\newline
+  When two sides of two different pieces are joined they form a connection.
+  A solved puzzle with \(N\) pieces, (assuming it is squared) has around \(2N\) total connections.
+
+  \item \textbf{Possible Combinations:}\newline
+  A puzzle with N pieces can be put together in many different ways,
+  (even if not all of 	them actually fit together).
+  The total number of possible combinations is \(N! \times 4^N\) where
+  \(N!\) represent all possible way to combinate the pieces in a particular position, and
+  \(4^N\) represents all possible orientations that each piece can have.
+  \item \textbf{Possible Correct Combination:}\newline
+  Is one of the possible combinations where all the connections are considered a match
+  by the comparing algorithm.
+  \item \textbf{Actual Correct Combination:}\newline
+  An Actual Correct Combination is a Possible Combination that
+  is also the correct solution of the original puzzle	
+\end{itemize}
+
 
 % referneces page
 \clearpage
