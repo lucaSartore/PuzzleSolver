@@ -15,6 +15,6 @@
 \contentsline {subsection}{\numberline {5.1}The Puzzle To Solve}{5}{subsection.5.1}%
 \contentsline {subsection}{\numberline {5.2}Splitting The Pieces}{6}{subsection.5.2}%
 \contentsline {subsection}{\numberline {5.3}Splitting The Sides}{6}{subsection.5.3}%
-\contentsline {subsection}{\numberline {5.4}Comparing the sides}{8}{subsection.5.4}%
-\contentsline {section}{\numberline {6}Apling already existing algorithm to the real world}{9}{section.6}%
+\contentsline {subsection}{\numberline {5.4}Comparing The Sides}{8}{subsection.5.4}%
+\contentsline {section}{\numberline {6}Apling Already Existing Algorithms To The Real World}{9}{section.6}%
 \contentsline {subsection}{\numberline {6.1}Proof}{9}{subsection.6.1}%
