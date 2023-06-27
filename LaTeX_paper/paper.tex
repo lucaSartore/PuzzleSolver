@@ -557,6 +557,82 @@ This set of definitions are useful to better understand the next section:
   is also the correct solution of the original puzzle	
 \end{itemize}
 
+\subsubsection{Corruption Rate Analysis}
+\begin{figure}[h]
+  \caption{Neighbors comparison vs Corruption rate of algorithm \ref{document:GCL}. Image taken from pater \cite{GCL} page 34.}\label{fig:GCL_Corruption_Rate}
+  \centering
+  \includegraphics[height=0.35\textwidth]{pictures/corruption_rate.png}
+\end{figure}
+
+From the graph \ref{fig:GCL_Corruption_Rate}, it can be observed that with a corruption rate of 0.057,
+a neighbors comparison value of about 80\%
+can be expected. Which means that one in every 5 connections on average will be wrong.
+So in a puzzle of 500 pieces (which has approximately 1000 connections),
+200 connections will be wrong on average.
+It is fair to say that this is not an ideal result.
+
+
+\subsubsection{Limit Match\% Analysis}
+As seen earlier, the limit match percentage is \(4\%\).\newline \newline
+Given that in a puzzle of N pieces there are around \(2N \) connections,
+the probability of one random combination to be a
+possible correct combination is: \(0.054^{2N}\).\newline \newline
+The total number of possible combinations are \(N! \times 4^N\),
+which means that on average, on a puzzle with \(N\) pieces,
+there will be \(0.054^{2N} \times N! \times 4^N \)
+possible correct combinations.\newline \newline
+For \( N = 500 \) the expected number of possible combinations is around \( 1.5 \times 10^{37} \).
+Which makes the chance of finding the actual correct combination basically zero.
+
+\subsubsection{Conclusion}
+In this case both the match\% and the corruption rate are bad enough to make a correct reconstruction impossible.
+\newline \newline 
+To lower the limit match\% is necessary to increase the threshold, but this would increase the corruption rate.
+\newline \newline
+To lower the corruption rate is necessary to decrease the threshold, but this would increase the limit match\%.
+\newline \newline
+This means that, regardless of the threshold chosen, our comparison algorithm \ref{document:my_comparator}
+can not work with a state of the art solver \ref{document:GCL}.
+
+\subsection{Solutions For The Problem}
+
+There are two way to solve this deadlock:
+
+\subsubsection{Improve The Comparator}
+	
+Improving the comparator can shortly be done.
+Some minor improvements can be made by spending some time tweaking the current algorithm.
+But it is clear that, for such a task,
+the optimal solution is probably to use machine learning.
+
+\subsubsection{Improving The Solver Algorithm}
+
+Different algorithms have different resilience to corrupted data.
+All the major algorithms that have been proposed since now, focus on speed.
+It is possible that an algorithm that focuses on accuracy over speed
+coud work with our comparator.
+
+\subsubsection{The Path Forward}
+
+Improving the comparator is probably the best long term solution,
+but it comes with a problem:\newline
+Manually testing if some pieces fit together, then making a scan, and finally label
+them to create a dataset would require hundreds if not thousands of hours.\newline
+On the other hand improving the solver is not a good solution long term,
+given that it will almost certainly have a worst time complexity,
+but could have some major short term benefit \newline
+In particular it does not require to create a huge dataset,
+and could be used to build one.
+In Fact it could solve hundreds of small puzzles,
+and automatically label the connections using the solution he created.
+\newline\newline
+Given the two options, the author of this paper has chosen to focus on improving
+the solver algorithm. The choice was driven by the lack of the time needed to build a dataset,
+And the belief that creating a new algorithm,
+for then using that to build a dataset,
+would still be faster compared to building a dataset manually.
+
+
 
 % referneces page
 \clearpage
