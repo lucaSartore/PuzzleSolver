@@ -2,6 +2,8 @@ mod shore;
 
 use std::collections::HashSet;
 use std::process::id;
+use std::thread::ScopedJoinHandle;
+use CalculateShoreResult::TopRightImpossibleFit;
 use Direction::DOWN;
 use shore::Shore;
 
@@ -53,7 +55,8 @@ impl Comparable for SingePiece{
 pub struct PieceGroup<'a,T: Comparable>{
     pub pieces: [&'a T;4],
     orientation: usize,
-    ids: HashSet<usize>
+    ids: HashSet<usize>,
+    shore: Shore
 }
 
 impl<'a, T: Comparable> HasSetInIt for PieceGroup<'a, T> {
@@ -88,6 +91,75 @@ impl<'a, T: Comparable> PieceGroup<'a, T> {
     }
     fn set_bottom_right(&mut self, to_set: &'a T){
         self.pieces[(3+self.orientation)%4] = to_set;
+    }
+}
+
+impl<'a, T: Comparable> PieceGroup<'a, T> {
+
+    /// calculate the shore of the current group of pieces
+    fn calculate_shore(&self) -> CalculateShoreResult{
+        let mut shore = Shore::new();
+
+        // comparing top border
+        shore += self.get_top_left(0).compare_to(Direction::RIGHT,self.get_top_right(0),self.orientation,self.orientation);
+        // trowing an error if the piece is impossible
+        if shore.get_shore() == 0 {
+            return CalculateShoreResult::TopRightImpossibleFit;
+        }
+
+
+        // comparing right border
+        shore += self.get_top_right(0).compare_to(Direction::DOWN,self.get_bottom_right(0),self.orientation,self.orientation);
+        // trowing an error if the piece is impossible
+        if shore.get_shore() == 0 {
+            return  CalculateShoreResult::BottomRightImpossibleFit;
+        }
+
+
+        // comparing bottom border
+        shore += self.get_bottom_right(0).compare_to(Direction::LEFT,self.get_bottom_left(0),self.orientation,self.orientation);
+        // trowing an error if the piece is impossible
+        if shore.get_shore() == 0 {
+            return CalculateShoreResult::BottomLeftImpossibleFit;
+        }
+
+        // comparing bottom border
+        shore += self.get_bottom_left(0).compare_to(Direction::UP,self.get_top_left(0),self.orientation,self.orientation);
+        // trowing an error if the piece is impossible
+        if shore.get_shore() == 0 {
+            return CalculateShoreResult::BottomLeftImpossibleFit;
+        }
+
+        // trowing an error if the piece is impossible
+        if shore.get_shore() <= 100 {
+            todo!("insert constant and return code");
+            return CalculateShoreResult::AvregeIsTooLow;
+        }
+
+        // eventing was ok, so i can return the shore itself
+        return CalculateShoreResult::Ok(shore);
+    }
+
+}
+
+impl<'a, T: Comparable> PieceGroup<'a, PieceGroup<'_,T>> {
+    /// calculate the sore of the sub components that make up this piece
+    /// this implementation is for all group of level 2 or higher
+    fn calculate_internal_shore(&self) -> Shore{
+
+        let mut shore = self.get_top_right(0).shore;
+        shore += self.get_top_left(0).shore;
+        shore += self.get_bottom_left(0).shore;
+        shore += self.get_bottom_right(0).shore;
+
+        return shore;
+    }
+}
+impl<'a> PieceGroup<'a, SingePiece> {
+    /// calculate the sore of the sub components that make up this piece
+    /// this implementation is for group of level 1
+    fn calculate_internal_shore(&self) -> Shore{
+        return Shore::new();
     }
 }
 
@@ -132,7 +204,8 @@ impl<'a,T: Comparable + HasSetInIt> PieceGroup<'a,T> {
         let ret = Self{
             pieces: [top_left, top_right,bottom_right, bottom_left],
             orientation: 0,
-            ids
+            ids,
+            shore: Shore::new()
         };
         todo!()
     }
@@ -171,7 +244,8 @@ impl<'a> PieceGroup<'a,SingePiece> {
         let ret = PieceGroup::<'a,SingePiece>{
             pieces: [top_left, top_right,bottom_right, bottom_left],
             orientation: 0,
-            ids
+            ids,
+            shore: Shore::new()
         };
 
         todo!();// calculate the shore
@@ -198,15 +272,14 @@ impl<'a, T:Comparable> Comparable for PieceGroup<'a, T> {
                 if s.get_shore() == 0 {
                     return s;
                 }
-                s.add_assign(&self
+                s += self
                     .get_bottom_right(recursive_orientation)
                     .compare_to(
                         direction,
                         &other.get_bottom_left(recursive_orientation_other),
                         recursive_orientation + self.orientation,
                         recursive_orientation_other + other.orientation,
-                    )
-                );
+                    );
             }
             Direction::LEFT => {
                 s = self
@@ -221,15 +294,14 @@ impl<'a, T:Comparable> Comparable for PieceGroup<'a, T> {
                 if s.get_shore() == 0 {
                     return s;
                 }
-                s.add_assign(&self
+                s += self
                     .get_bottom_left(recursive_orientation)
                     .compare_to(
                         direction,
                         &other.get_bottom_right(recursive_orientation_other),
                         recursive_orientation + self.orientation,
                         recursive_orientation_other + other.orientation,
-                    )
-                );
+                    );
             }
             Direction::UP => {
                 s = self
@@ -244,15 +316,14 @@ impl<'a, T:Comparable> Comparable for PieceGroup<'a, T> {
                 if s.get_shore() == 0 {
                     return s;
                 }
-                s.add_assign(&self
+                s += self
                     .get_top_right(recursive_orientation)
                     .compare_to(
                         direction,
                         &other.get_bottom_right(recursive_orientation_other),
                         recursive_orientation + self.orientation,
                         recursive_orientation_other + other.orientation,
-                    )
-                );
+                    );
             }
             Direction::DOWN => {
                 s = self
@@ -267,15 +338,14 @@ impl<'a, T:Comparable> Comparable for PieceGroup<'a, T> {
                 if s.get_shore() == 0 {
                     return s;
                 }
-                s.add_assign(&self
+                s += self
                     .get_bottom_right(recursive_orientation)
                     .compare_to(
                         direction,
                         &other.get_top_right(recursive_orientation_other),
                         recursive_orientation + self.orientation,
                         recursive_orientation_other + other.orientation,
-                    )
-                );
+                    );
             }
         }
         s
@@ -290,21 +360,32 @@ pub enum GroupCreationResult<'a, T: Comparable>{
     Ok(PieceGroup<'a, T>),
     /// the top right piece contain a piece that is also contained in one of the previous pieces
     TopRightImpossibleCombination,
-    /// the bottom left piece contain a piece that is also contained in one of the previous pieces
-    BottomLeftImpossibleCombination,
     /// the bottom right piece contain a piece that is also contained in one of the previous pieces
     BottomRightImpossibleCombination,
+    /// the bottom left piece contain a piece that is also contained in one of the previous pieces
+    BottomLeftImpossibleCombination,
     /// the top right piece dose not fit with the preius piece
     TopRightImpossibleFit,
+    /// the bottom right piece dose not fit with the preius piece
+    BottomRightImpossibleFit,
     /// the bottom left piece dose not fit with the preius piece
     BottomLeftImpossibleFit,
-    /// the bottom right piece dose not fit with the preius piece
-    BottomRightImpossibleFit
+    /// the shore of the piece is lower that the minimum threshold
+    AvregeIsTooLow
 }
 
 /// when calculating a shore of a group of pieces, this enum will be return to
 pub enum CalculateShoreResult{
-
+    /// all the pieces where compatible, and the shore has been calculated
+    Ok(Shore),
+    /// the top right piece dose not fit with the preius piece
+    TopRightImpossibleFit,
+    /// the bottom right piece dose not fit with the preius piece
+    BottomRightImpossibleFit,
+    /// the bottom left piece dose not fit with the preius piece
+    BottomLeftImpossibleFit,
+    /// the shore of the piece is lower that the minimum threshold
+    AvregeIsTooLow
 }
 
 impl Comparable for i32 {
@@ -319,7 +400,8 @@ fn main(){
     let pg = PieceGroup::<i32>{
         pieces: [&1,&2,&3,&4],
         orientation: 0,
-        ids: HashSet::default()
+        ids: HashSet::default(),
+        shore: Shore::new()
     };
 
     pg.compare_to(DOWN,&pg,0,0);

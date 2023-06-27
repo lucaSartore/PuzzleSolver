@@ -26,9 +26,24 @@ impl Shore {
     pub fn get_shore(&self) -> u8 {
         self.shore
     }
+}
+
+use std::ops;
+
+impl ops::Add for Shore {
+    type Output = Shore;
+    /// Sum operator, this makes a weighted sum of `shore`, using `number` as weight.
+    fn add(self, other: Shore) -> Shore {
+        let mut result = self;
+        result+=other;
+        result
+    }
+}
+
+impl ops::AddAssign for Shore{
 
     /// Sum operator, this makes a weighted sum of `shore`, using `number` as weight.
-    pub fn add_assign(&mut self, other: &Shore) {
+    fn add_assign(&mut self, other: Shore) {
         let other_number = other.number;
         let other_shore = other.shore;
 
@@ -51,13 +66,6 @@ impl Shore {
             / total_number) as u8;
         // Sum numbers.
         self.number = total_number;
-    }
-
-    /// Sum operator, this makes a weighted sum of `shore`, using `number` as weight.
-    pub fn add(&self, other: &Shore) -> Shore {
-        let mut result = *self;
-        result.add_assign(other);
-        result
     }
 }
 
