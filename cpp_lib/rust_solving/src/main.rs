@@ -1,6 +1,7 @@
 mod shore;
 
 use std::collections::HashSet;
+use std::fmt::{Debug, Error, Formatter};
 use std::process::id;
 use std::thread::ScopedJoinHandle;
 use CalculateShoreResult::TopRightImpossibleFit;
@@ -24,6 +25,7 @@ pub trait HasSetInIt{
 }
 
 /// one single piece, keep the ID and his rotation
+#[derive(Debug)]
 pub struct SingePiece{
     id: usize,
     orientation: usize
@@ -388,9 +390,106 @@ pub enum CalculateShoreResult{
     AvregeIsTooLow
 }
 
+/// an array of pieces that represent a possible solution,
+/// the struct can comunicate with the C++ library, and offer the following functionalities:
+/// - Can generate a preview image and send it to the c# lib to be analized
+/// - Can Generate an image for shoring, and return a shore that tels how well sed pieces work together
+struct PieceArray{
+    dim_x: usize,
+    dim_y: usize,
+    pieces: Vec<SingePiece>,
+}
+
+impl PieceArray {
+    /// get a reference to a piece at a specific coordinate
+    pub fn get_piece(&self, x: usize, y: usize) -> Result<&SingePiece,()>{
+        if x >= self.dim_x{
+            return Result::Err(());
+        }
+        if y >= self.dim_y{
+            return Result::Err(());
+        }
+
+        return Ok(&self.pieces[y*self.dim_x+x]);
+    }
+    /// set a piece to a specific coordinates
+    pub fn set_piece(&mut self, x: usize, y: usize, to_be_set: SingePiece) -> Result<(),()>{
+        if x >= self.dim_x{
+            return Result::Err(());
+        }
+        if y >= self.dim_y{
+            return Result::Err(());
+        }
+
+        self.pieces[y*self.dim_x+x] = to_be_set;
+
+        return Ok(());
+    }
+
+    /// return a new piece array with the specified dimensions
+    pub fn new(dim_x: usize, dim_y: usize) -> Self{
+
+        let size = dim_y*dim_x;
+
+        let mut vec = Vec::with_capacity(dim_x*dim_y);
+
+        for i in 0..size{
+            vec.push(SingePiece::new(0,0))
+        }
+
+        Self{
+            dim_x,
+            dim_y,
+            pieces: vec
+        }
+    }
+}
+
+impl Debug for PieceArray {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        let mut s = String::new();
+
+        s += format!("Piece Array with dimensions {}x{}\n",self.dim_x,self.dim_y).as_str();
+
+
+        for y in 0..self.dim_y{
+            for x in 0..self.dim_x{
+                println!("{x}-{y}");
+                let default_cell = SingePiece::new(0,0);
+                let piece = self.get_piece(x,y).unwrap_or(&default_cell);
+                let piece = self.get_piece(x,y).unwrap();
+                s += format!("  {:>4}-{}  |",piece.id, piece.orientation).as_str();
+            }
+            s += "\n";
+        }
+
+        write!(f, "{s}")
+    }
+}
+
 impl Comparable for i32 {
     fn compare_to(&self, direction: Direction, other: &Self, recursive_orientation: usize, recursive_orientation_other: usize) -> Shore {
         todo!()
+    }
+}
+
+#[test]
+fn test_piece_array(){
+
+    let mut piece_array = PieceArray::new(3,5);
+    for x in 0..3{
+        for y in 0..5{
+            piece_array.set_piece(x,y,SingePiece::new(y,x)).unwrap();
+        }
+    }
+    println!("{:?}",piece_array);
+
+    for x in 0..3{
+        for y in 0..5{
+            let piece = piece_array.get_piece(x,y).unwrap();
+            assert_eq!(x,piece.orientation);
+            assert_eq!(y,piece.id);
+        }
     }
 }
 
