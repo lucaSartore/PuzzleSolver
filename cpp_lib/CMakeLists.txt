@@ -62,14 +62,22 @@ set(SOURCE_FILES
         communication/puzzle_solver_dll.cpp
         communication/puzzle_solver_dll.h
 
+
+        rust_solving/src/PieceArrayDLL/piece_array_dll.h
+        rust_solving/src/PieceArrayDLL/piece_array_dll.cpp
+
+
         PuzzleSolver.cpp
         PuzzleSolver.h
         )
 
 
-# library build
-#add_library(PuzzleSolverLib SHARED puzzle_solver_library.cpp puzzle_solver_library.h ${SOURCE_FILES})
+# library for the c# app build
 add_library(PuzzleSolverLib SHARED communication/puzzle_solver_dll.cpp communication/puzzle_solver_dll.h ${SOURCE_FILES})
+target_link_libraries( PuzzleSolverLib ${OpenCV_LIBS} )
+
+# library for rust interop build
+add_library(PieceArrayDll SHARED rust_solving/src/PieceArrayDLL/piece_array_dll.h rust_solving/src/PieceArrayDLL/piece_array_dll.cpp ${SOURCE_FILES})
 target_link_libraries( PuzzleSolverLib ${OpenCV_LIBS} )
 
 # test build
