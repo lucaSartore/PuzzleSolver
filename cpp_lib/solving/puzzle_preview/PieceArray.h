@@ -48,7 +48,7 @@ public:
     int get_dim_x() const;
     /// returns the y dimension of the 2d array
     int get_dim_y() const;
-    /// create an empty piece array
+    /// create an empty piece array with size 1x1
     PieceArray();
     /// copy constructor
     PieceArray(PieceArray & other);

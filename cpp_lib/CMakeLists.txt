@@ -11,7 +11,6 @@ include_directories( ${OpenCV_INCLUDE_DIRS} )
 
 #file to include
 set(SOURCE_FILES
-
         pre_processing/corner_finding.cpp
         pre_processing/corner_finding.h
         pre_processing/piece_splitting.h
@@ -78,7 +77,7 @@ target_link_libraries( PuzzleSolverLib ${OpenCV_LIBS} )
 
 # library for rust interop build
 add_library(PieceArrayDll SHARED rust_solving/src/PieceArrayDLL/piece_array_dll.h rust_solving/src/PieceArrayDLL/piece_array_dll.cpp ${SOURCE_FILES})
-target_link_libraries( PuzzleSolverLib ${OpenCV_LIBS} )
+target_link_libraries( PieceArrayDll ${OpenCV_LIBS} )
 
 # test build
 add_executable(PuzzleSolverTest main_test.cpp ${SOURCE_FILES})
