@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include "../solving/graphic_piece/Side.h"
 #include "../solving/graphic_piece/PieceShape.h"
@@ -15,6 +14,20 @@
 #include "../solving/groped_pieces/grouped_pieces_errors.h"
 #include "../solving/groped_pieces/GroupedPiecesHolder.h"
 #include "../communication/communication_image.h"
+#include "../rust_solving/src/PieceArrayDLL/piece_array_dll.h"
+
+using namespace std;
+void test_rust_integration(){
+
+
+    load_images_to_piece_array_wrapper("../../../dataset/test_2x3/divided/");
+
+    auto a = create_piece_array();
+
+    generate_test_image(a);
+
+    free_images_of_piece_array_wrapper();
+}
 
 void test_piece_array(){
 
