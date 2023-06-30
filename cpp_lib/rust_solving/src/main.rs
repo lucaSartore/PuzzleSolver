@@ -1,4 +1,5 @@
 mod shore;
+mod piece_array;
 
 use std::collections::HashSet;
 use std::fmt::{Debug, Error, Formatter};

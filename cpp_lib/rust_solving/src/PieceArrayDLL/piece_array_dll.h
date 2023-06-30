@@ -19,7 +19,7 @@ void generate_test_image(PieceArrayWrapper* piece_array_wrapper);
 void destroy_piece_array_wrapper(PieceArrayWrapper* to_destroy);
 
 /// load the images of the piece from the specified path
-void load_images_to_piece_array_wrapper(std::string path);
+void load_images_to_piece_array_wrapper(const char* path);
 
 /// delete the images the piece had accumulated
 void free_images_of_piece_array_wrapper();

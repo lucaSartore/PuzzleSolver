@@ -76,8 +76,8 @@ add_library(PuzzleSolverLib SHARED communication/puzzle_solver_dll.cpp communica
 target_link_libraries( PuzzleSolverLib ${OpenCV_LIBS} )
 
 # library for rust interop build
-add_library(PieceArrayDll SHARED rust_solving/src/PieceArrayDLL/piece_array_dll.h rust_solving/src/PieceArrayDLL/piece_array_dll.cpp ${SOURCE_FILES})
-target_link_libraries( PieceArrayDll ${OpenCV_LIBS} )
+add_library(PieceArrayLink MODULE rust_solving/src/PieceArrayDLL/piece_array_dll.h rust_solving/src/PieceArrayDLL/piece_array_dll.cpp ${SOURCE_FILES})
+target_link_libraries( PieceArrayLink ${OpenCV_LIBS} )
 
 # test build
 add_executable(PuzzleSolverTest main_test.cpp ${SOURCE_FILES})

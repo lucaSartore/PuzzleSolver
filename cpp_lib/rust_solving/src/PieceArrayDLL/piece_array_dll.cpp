@@ -12,7 +12,7 @@ struct PieceArrayWrapper{
 PieceImage* PieceArrayWrapper::images = nullptr;
 
 /// load all the piece image on the specified path
-void load_images_to_piece_array_wrapper(string path){
+void load_images_to_piece_array_wrapper(const char* path){
     // count how many piece there are in the folder
     auto iter_files = std::filesystem::directory_iterator(path);
     int number_of_images = (int) count_if(
