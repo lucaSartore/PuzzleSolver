@@ -82,10 +82,10 @@ void calculate_single_thread(const string &input_path, const string &output_path
     // create array of piece shape
     PieceConnection::set_number_of_pieces(number_of_pieces);
     PieceShape::set_origin_path(input_path);
-    PieceShape pieces_shapes[number_of_pieces];
+    auto pieces_shapes = new PieceShape[number_of_pieces];
 
     // create array of piece logic
-    PieceConnection pieces_connections[number_of_pieces];
+    auto pieces_connections = new PieceConnection[number_of_pieces];
 
     // filling both array up with the respective index;
     for(int i=0; i < number_of_pieces; i++){
@@ -144,9 +144,13 @@ void calculate_single_thread(const string &input_path, const string &output_path
          << " sec" << endl;
 
     // save the connections information to the disk
-    for(auto & i : pieces_connections){
-        i.save_as_file(output_path);
+    for(int i=0; i<number_of_pieces; i++){
+            pieces_connections[i].save_as_file(output_path);
     }
+
+
+    delete[] pieces_shapes;
+    delete[] pieces_connections;
 
 }
 

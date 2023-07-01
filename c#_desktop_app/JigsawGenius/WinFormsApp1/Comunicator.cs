@@ -65,46 +65,46 @@ namespace JigsawGenius
 
         // in order for this to work you must add the path to de DLL to your system path
         // in my case is: C:\Users\lucas\CLionProjects\Puzzle_Solver\cpp_lib\cmake-build-debug
-        [DllImport("libPuzzleSolverLib.dll")]
+        [DllImport("PuzzleSolverLib.dll")]
         public static extern unsafe void* open_folder([MarshalAs(UnmanagedType.LPStr)] string path);
 
-        [DllImport("libPuzzleSolverLib.dll")]
+        [DllImport("PuzzleSolverLib.dll")]
         public static extern unsafe void* create_new(uint dim_x, uint dim_y, [MarshalAs(UnmanagedType.LPStr)] string work_path, [MarshalAs(UnmanagedType.LPStr)] string origin_path, uint number_of_cores);
 
-        [DllImport("libPuzzleSolverLib.dll")]
+        [DllImport("PuzzleSolverLib.dll")]
         public static extern unsafe void save_as(void* puzzle_solver, [MarshalAs(UnmanagedType.LPStr)] string new_path);
 
-        [DllImport("libPuzzleSolverLib.dll")]
+        [DllImport("PuzzleSolverLib.dll")]
         public static extern unsafe void free_memory(void* puzzle_solver);
 
-        [DllImport("libPuzzleSolverLib.dll")]
+        [DllImport("PuzzleSolverLib.dll")]
         public static extern unsafe void set_split_threshold(void* puzzle_solver, byte new_threshold);
 
-        [DllImport("libPuzzleSolverLib.dll")]
+        [DllImport("PuzzleSolverLib.dll")]
         public static extern void enable_preview();
 
-        [DllImport("libPuzzleSolverLib.dll")]
+        [DllImport("PuzzleSolverLib.dll")]
         public static extern void disable_preview();
 
-        [DllImport("libPuzzleSolverLib.dll")]
+        [DllImport("PuzzleSolverLib.dll")]
         public static extern PngImagePointer next_preview_image(float max_wait_time);
 
-        [DllImport("libPuzzleSolverLib.dll")]
+        [DllImport("PuzzleSolverLib.dll")]
         public static extern unsafe PngImagePointer get_threshold_preview(void* puzzle_solver);
 
-        [DllImport("libPuzzleSolverLib.dll")]
+        [DllImport("PuzzleSolverLib.dll")]
         public static extern unsafe int get_state(void* puzzle_solver);
 
-        [DllImport("libPuzzleSolverLib.dll")]
+        [DllImport("PuzzleSolverLib.dll")]
         public static extern unsafe int split_image(void* puzzle_solver);
 
-        [DllImport("libPuzzleSolverLib.dll")]
+        [DllImport("PuzzleSolverLib.dll")]
         public static extern unsafe int process_corners(void* puzzle_solver);
 
-        [DllImport("libPuzzleSolverLib.dll")]
+        [DllImport("PuzzleSolverLib.dll")]
         public static extern unsafe int calculate_connections(void* puzzle_solver);
 
-        [DllImport("libPuzzleSolverLib.dll")]
+        [DllImport("PuzzleSolverLib.dll")]
         public static extern unsafe int solve_puzzle(void* puzzle_solver);
     }
 

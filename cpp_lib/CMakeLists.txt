@@ -2,12 +2,17 @@ cmake_minimum_required(VERSION 3.23)
 
 project( PuzzleSolver )
 
-# REMEMBER the bundled version of opencv is compiled with MinGW, if you use the Visual Studio compiler (or others)
-# you need to download another version
 
-# REMEMBER TO ADD: YOUR_PATH\Puzzle_Solver\opencv\x64\mingw\bin\ to your system PATH
+set (CMAKE_CXX_STANDARD 20)
+set (CMAKE_BUILD_TYPE Release)
+
+# REMEMBER the bundled version of opencv is compiled with Visual Studio, if you use other compilers you need to install another version your self
+
+
+# REMEMBER TO ADD: YOUR_PATH\Puzzle_Solver\opencv\x64\vc15\bin\ to your system PATH
 find_package(OpenCV REQUIRED PATHS ../opencv)
 include_directories( ${OpenCV_INCLUDE_DIRS} )
+
 
 #file to include
 set(SOURCE_FILES
@@ -71,17 +76,19 @@ set(SOURCE_FILES
         )
 
 
+
+
 # library for the c# app build
 add_library(PuzzleSolverLib SHARED communication/puzzle_solver_dll.cpp communication/puzzle_solver_dll.h ${SOURCE_FILES})
 target_link_libraries( PuzzleSolverLib ${OpenCV_LIBS} )
 
 # library for rust interop build
-add_library(PieceArrayLink MODULE rust_solving/src/PieceArrayDLL/piece_array_dll.h rust_solving/src/PieceArrayDLL/piece_array_dll.cpp ${SOURCE_FILES})
+add_library(PieceArrayLink SHARED rust_solving/src/PieceArrayDLL/piece_array_dll.h rust_solving/src/PieceArrayDLL/piece_array_dll.cpp ${SOURCE_FILES})
 target_link_libraries( PieceArrayLink ${OpenCV_LIBS} )
 
 # test build
 add_executable(PuzzleSolverTest main_test.cpp ${SOURCE_FILES})
-target_link_libraries( PuzzleSolverTest ${OpenCV_LIBS} )
+target_link_libraries( PuzzleSolverTest ${OpenCV_LIBS})
 
 # enable testing functionality
 enable_testing()

@@ -160,7 +160,7 @@ void PuzzleSolver::load_status(std::string file) {
 
     piece_splitting_set_threshold(split_threshold);
 
-    /*
+
     // load images if we are in final state
     if(state == COMBINATION_CALCULATED){
         images = new PieceImage[number_of_pieces];
@@ -171,7 +171,7 @@ void PuzzleSolver::load_status(std::string file) {
         }
 
         piece_array.load_from_file(work_path+"/results/solution.bin",images);
-    }*/
+    }
 }
 
 void PuzzleSolver::process_corners() {

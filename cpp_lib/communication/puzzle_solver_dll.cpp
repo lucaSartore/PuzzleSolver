@@ -1,18 +1,18 @@
 
 #include "puzzle_solver_dll.h"
 #include "../PuzzleSolver.h"
-void* __declspec(dllexport) open_folder(const char *folder_path){
+__declspec(dllexport)void* open_folder(const char *folder_path){
     try{
         return (void*) new PuzzleSolver(folder_path);
     }catch(std::exception &e){
         return nullptr;
     }
 }
-void __declspec(dllexport) free_memory(void* puzzle_solver){
+__declspec(dllexport) void free_memory(void* puzzle_solver){
     delete (PuzzleSolver*) puzzle_solver;
 }
 
-void* __declspec(dllexport) create_new(unsigned int dim_x, unsigned int dim_y, const char* work_path, const char* origin_path, int number_of_cores){
+__declspec(dllexport) void* create_new(unsigned int dim_x, unsigned int dim_y, const char* work_path, const char* origin_path, int number_of_cores){
     try{
         return (void*) new PuzzleSolver(dim_x,dim_y,work_path,origin_path,number_of_cores);
     }catch(std::exception &e){
@@ -20,12 +20,12 @@ void* __declspec(dllexport) create_new(unsigned int dim_x, unsigned int dim_y, c
     }
 }
 
-void __declspec(dllexport) set_split_threshold(void* puzzle_solver, unsigned char new_threshold){
+__declspec(dllexport) void set_split_threshold(void* puzzle_solver, unsigned char new_threshold){
      ((PuzzleSolver*)puzzle_solver)->set_threshold(new_threshold);
 }
 
 /// return an image that show a binary representation of the piece, to tweak the threshold
-PngImagePointer __declspec(dllexport) get_threshold_preview(void* puzzle_solver){
+__declspec(dllexport) PngImagePointer get_threshold_preview(void* puzzle_solver){
     try{
         return ((PuzzleSolver*)puzzle_solver)->get_test_threshold_image();
     }catch (std::exception &e){
@@ -35,47 +35,47 @@ PngImagePointer __declspec(dllexport) get_threshold_preview(void* puzzle_solver)
 
 
 /// get the curren state of the program
-int __declspec(dllexport) get_state(void* puzzle_solver){
+__declspec(dllexport) int get_state(void* puzzle_solver){
     return (int)((PuzzleSolver*)puzzle_solver)->get_state();
 }
 
 /// split the images into individual pieces, and update `number_of_pieces`
 /// return the number of peaces found
-int __declspec(dllexport) split_image(void* puzzle_solver){
+__declspec(dllexport) int split_image(void* puzzle_solver){
     return ((PuzzleSolver*)puzzle_solver)->split_image();
 }
 
 /// take the splitted images and calculate the corners of each of them
-int __declspec(dllexport) process_corners(void* puzzle_solver){
+__declspec(dllexport) int process_corners(void* puzzle_solver){
     ((PuzzleSolver*)puzzle_solver)->process_corners();
     return 0;
 }
 
 /// calculate all the possible connections and save the results
-int __declspec(dllexport) calculate_connections(void* puzzle_solver){
+__declspec(dllexport) int calculate_connections(void* puzzle_solver){
     ((PuzzleSolver*)puzzle_solver)->calculate_connections();
     return 0;
 }
 
 /// run the solving algorithm and find the best possible combination
 /// return -1 if it dose not find a solution, 0 if he finds one
-int __declspec(dllexport) solve_puzzle(void* puzzle_solver){
+__declspec(dllexport) int solve_puzzle(void* puzzle_solver){
     ((PuzzleSolver*)puzzle_solver)->solve_puzzle();
     return 0;
 }
 
 /// enable the preview
-void __declspec(dllexport) enable_preview(){
+__declspec(dllexport) void enable_preview(){
     PreviewManager::enable_preview();
 }
 
 /// disable the preview
-void __declspec(dllexport) disable_preview(){
+__declspec(dllexport) void disable_preview(){
     PreviewManager::disable_preview();
 }
 
 /// lock the program until the preview image is ready or until the time max_wait_time in seconds has passed, and return an image
-PngImagePointer __declspec(dllexport) next_preview_image(float max_wait_time){
+__declspec(dllexport) PngImagePointer next_preview_image(float max_wait_time){
 
     bool res = PreviewManager::next_preview_image(max_wait_time);
 
