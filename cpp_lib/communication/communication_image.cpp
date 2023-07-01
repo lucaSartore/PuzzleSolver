@@ -4,9 +4,11 @@
 #include <fstream>
 #include <Windows.h>
 
-PngImagePointer::PngImagePointer(uchar* data_,unsigned long long len_){
-    data = data_;
-    len = len_;
+PngImagePointer PngImagePointerConstructor(uchar* data_,unsigned long long len_){
+    PngImagePointer to_return;
+    to_return.data = data_;
+    to_return.len = len_;
+    return to_return;
 }
 
 /// construct an image
@@ -15,7 +17,7 @@ image = image_;
 }
 /// return a raw pointer to the data of the image
 PngImagePointer PngImageClass::get_image_pointer(){
-    return {image.data(),image.size()};
+    return PngImagePointerConstructor(image.data(),image.size());
 }
 
 PngImageClass store_image_to_ram(const cv::Mat &image){

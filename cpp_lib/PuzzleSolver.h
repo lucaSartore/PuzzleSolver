@@ -60,6 +60,11 @@ private:
     friend std::ostream& operator<<(std::ostream& os, const PuzzleSolver& ps);
     /// an image saved in ram, encoded using png used for direct communication
     PngImageClass communication_image;
+    /// pointer to an array containing all the images
+    PieceImage* images;
+    /// the piece array used to generate the preview of the solution one it is found
+    PieceArray piece_array;
+
 public:
     /// create a new instance of the solver
     /// Arguments:
