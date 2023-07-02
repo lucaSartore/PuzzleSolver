@@ -13,8 +13,10 @@ use piece_comparing::InitializationResults::FileNotFound;
 /// when it is initialized, it has loaded the data from the disk and can answer questions about
 /// the pieces matching
 #[derive(Copy, Clone,Debug)]
+#[repr(transparent)]
 pub struct Uninitialized;
 #[derive(Copy, Clone,Debug)]
+#[repr(transparent)]
 pub struct Initialized;
 
 pub trait IsState{}
@@ -32,6 +34,7 @@ static mut NUMBER_OF_PIECES: usize = 0;
 
 #[derive(Copy, Clone,Debug)]
 /// zero size type that allows to compare the puzzle pieces
+#[repr(transparent)]
 pub struct Comparator<T: IsState>{
     state: PhantomData<T>
 }
@@ -54,7 +57,7 @@ impl<T: IsState> Comparator<T> {
     ///  - the value is already initialized
     ///  - it could not find the files
     ///  - the files where in a non correct format
-    fn initialize_comparator(path: &str) -> InitializationResults{
+    pub fn initialize_comparator(path: &str) -> InitializationResults{
 
         // make sure the file has not yet been initialized
         unsafe {
@@ -137,7 +140,7 @@ impl<T: IsState> Comparator<T> {
         });
     }
     /// return an initialized comparator if possible (aka if someone has already initialized the comparator)
-    fn get_initialized_comparator() -> Option<Comparator<Initialized>>{
+    pub fn get_initialized_comparator() -> Option<Comparator<Initialized>>{
         unsafe{
             if SHORES_TABLE.is_empty(){
                 return Option::None;
@@ -153,7 +156,7 @@ impl<T: IsState> Comparator<T> {
 
 impl Comparator<Initialized>{
     /// if the comparator is initialized, it can be used to compare two pieces
-    fn compare(&self,piece1: u64, piece2: u64, side1: u64, side2: u64) -> u8{
+    pub fn compare(&self,piece1: u64, piece2: u64, side1: u64, side2: u64) -> u8{
         unsafe {
             // calculate the address of the shore (the two expression are equivalent)
             //let address = piece1*4*NUMBER_OF_PIECES*4 + side1*NUMBER_OF_PIECES*4 + piece2*4 +side2;
@@ -212,5 +215,10 @@ fn test_comparator(){
     }
 
     println!("{:?}",result);
+}
 
+#[test]
+fn test_zero_size_type(){
+    assert_eq!(std::mem::size_of::<Comparator<Initialized>>(), 0);
+    assert_eq!(std::mem::size_of::<Comparator<Uninitialized>>(), 0);
 }

@@ -1,9 +1,15 @@
+use piece_group::Comparable;
+use crate::piece_comparing::{Comparator, Initialized, Uninitialized, InitializationResults};
 /// one single piece, keep the ID and his rotation
+
+
 #[derive(Debug)]
 #[repr(C)]
+#[allow(improper_ctypes)]
 pub struct SingePiece{
     id: u64,
-    orientation: u64
+    orientation: u64,
+    pub comparator: Comparator<Initialized>
 }
 
 impl SingePiece {
@@ -15,9 +21,14 @@ impl SingePiece {
     }
     pub fn new(id: u64, orientation: u64) -> Self{
         assert!(orientation < 4);
-        Self{
-            id,
-            orientation
+        if let Some(comparator) = Comparator::<Initialized>::get_initialized_comparator(){
+            return Self{
+                id,
+                orientation,
+                comparator
+            };
+        }else{
+            panic!("impossible to create a single unless you initialize the comparator first");
         }
     }
 }

@@ -1,6 +1,6 @@
 use std::fmt::{Debug, Formatter};
 use crate::single_piece::SingePiece;
-
+use crate::piece_comparing::Comparator;
 
 
 #[repr(C)]
@@ -121,10 +121,15 @@ impl Debug for PieceArray {
 mod testing{
     use std::ffi::CString;
     use piece_array::{create_piece_array_wrapper, destroy_piece_array_wrapper, generate_test_image, load_images_to_piece_array_wrapper, PieceArray};
+    use piece_comparing::{Comparator, Initialized};
     use crate::single_piece::SingePiece;
+
+
 
     #[test]
     fn test_piece_array(){
+
+        Comparator::<Initialized>::initialize_comparator(r"..\..\dataset\test_2x3\connections");
 
         let mut piece_array = PieceArray::new(3,5);
         for x in 0..3{
@@ -145,6 +150,9 @@ mod testing{
 
     #[test]
     fn test_link(){
+
+        Comparator::<Initialized>::initialize_comparator(r"..\..\dataset\test_2x3\connections");
+
         unsafe {
             // the path where the program can find the images
             let path = CString::new(r"..\..\dataset\test_2x3\divided").expect("CString::new failed");
