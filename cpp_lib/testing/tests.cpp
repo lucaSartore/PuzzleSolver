@@ -19,10 +19,9 @@
 using namespace std;
 void test_rust_integration(){
 
-
     load_images_to_piece_array_wrapper("../../../dataset/test_2x3/divided/");
 
-    auto a = create_piece_array();
+    auto a = create_piece_array_wrapper();
 
     generate_test_image(a);
 

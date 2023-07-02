@@ -12,7 +12,7 @@ extern "C"{
     typedef struct PieceArrayWrapper PieceArrayWrapper;
 
     /// create a new piece array
-    __declspec(dllexport) PieceArrayWrapper* create_piece_array();
+    __declspec(dllexport) PieceArrayWrapper* create_piece_array_wrapper();
 
     /// generate an image
     __declspec(dllexport) void generate_test_image(PieceArrayWrapper* piece_array_wrapper);

@@ -13,6 +13,7 @@ PieceImage* PieceArrayWrapper::images = nullptr;
 
 /// load all the piece image on the specified path
 __declspec(dllexport) void load_images_to_piece_array_wrapper(const char* path){
+
     // count how many piece there are in the folder
     auto iter_files = std::filesystem::directory_iterator(path);
     int number_of_images = (int) count_if(
@@ -39,7 +40,7 @@ __declspec(dllexport) void free_images_of_piece_array_wrapper(){
     PieceArrayWrapper ::images = nullptr;
 }
 
-__declspec(dllexport) PieceArrayWrapper* create_piece_array(){
+__declspec(dllexport) PieceArrayWrapper* create_piece_array_wrapper(){
     auto pa = new PieceArrayWrapper();
 
     auto pieces_images = PieceArrayWrapper::images;
