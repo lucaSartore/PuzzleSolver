@@ -12,7 +12,7 @@ struct PieceArrayWrapper{
 PieceImage* PieceArrayWrapper::images = nullptr;
 
 /// load all the piece image on the specified path
-void load_images_to_piece_array_wrapper(const char* path){
+__declspec(dllexport) void load_images_to_piece_array_wrapper(const char* path){
     // count how many piece there are in the folder
     auto iter_files = std::filesystem::directory_iterator(path);
     int number_of_images = (int) count_if(
@@ -34,12 +34,12 @@ void load_images_to_piece_array_wrapper(const char* path){
 }
 
 /// free the loaded images form the heep
-void free_images_of_piece_array_wrapper(){
+__declspec(dllexport) void free_images_of_piece_array_wrapper(){
     delete[] PieceArrayWrapper::images;
     PieceArrayWrapper ::images = nullptr;
 }
 
-PieceArrayWrapper* create_piece_array(){
+__declspec(dllexport) PieceArrayWrapper* create_piece_array(){
     auto pa = new PieceArrayWrapper();
 
     auto pieces_images = PieceArrayWrapper::images;
@@ -61,11 +61,11 @@ PieceArrayWrapper* create_piece_array(){
     return pa;
 }
 
-void generate_test_image(PieceArrayWrapper* piece_array_wrapper){
+__declspec(dllexport) void generate_test_image(PieceArrayWrapper* piece_array_wrapper){
     auto img = piece_array_wrapper->pa.get_image(BuildImageMode::PREVIEW);
     cv::imwrite("test.png",img);
 }
 
-void destroy_piece_array_wrapper(PieceArrayWrapper* to_destroy){
+__declspec(dllexport) void destroy_piece_array_wrapper(PieceArrayWrapper* to_destroy){
     delete to_destroy;
 }

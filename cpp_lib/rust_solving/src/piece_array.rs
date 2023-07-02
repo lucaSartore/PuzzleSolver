@@ -1,6 +1,10 @@
 struct PieceArrayWrapper;
 
-//#[link(name = "PieceArrayLink")]
+/// IMPORTANT: this part of the code cannot be compiled with the minWG toolchain,
+/// the msvc tool chain is commended
+/// you can see the tool chain you have install with the command: `rustup show`
+/// the tool chain `stable-x86_64-pc-windows-msvc` is the only one that has been tested, and is
+/// guaranteed to work
 #[link(name="PieceArrayLink", kind = "static")]
 extern "C"{
     /// create a new piece array
