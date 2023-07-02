@@ -44,12 +44,16 @@ private:
     void reset_image(BuildImageMode mode);
 
 public:
+    /// move constructor
+    PieceArray& operator=(PieceArray && other) = default;
     /// returns the x dimension of the 2d array
     int get_dim_x() const;
     /// returns the y dimension of the 2d array
     int get_dim_y() const;
     /// create an empty piece array with size 1x1
     PieceArray();
+    /// create an empty piece array with the specified size
+    PieceArray(int size_x, int size_y);
     /// copy constructor
     PieceArray(PieceArray & other);
     /// move constructor
@@ -84,7 +88,6 @@ public:
     /// load a solution form a file
     void load_from_file(std::string path, PieceImage* images);
 };
-
 
 
 #endif

@@ -1,4 +1,5 @@
 use std::fmt::{Debug, Formatter};
+use libc::size_t;
 use crate::single_piece::SingePiece;
 
 
@@ -16,8 +17,9 @@ struct PieceArrayWrapper{
 
 #[link(name="../cmake-build-debug/PieceArrayLink", kind = "static")]
 extern "C"{
-    /// create a new piece array
-    fn create_piece_array_wrapper() -> *mut PieceArrayWrapper;
+    /// create a new piece array with dimensions size_x x size_y and it will be filled up with the pieces contained in the pieces array,
+    /// following "reading order" (left to right, and then top to bottom)
+    fn create_piece_array_wrapper(size_x: u64, size_y: u64, pieces: *mut SingePiece) -> *mut PieceArrayWrapper;
 
     /// generate an image
     fn generate_test_image(piece_array_wrapper: *mut PieceArrayWrapper);
@@ -113,6 +115,7 @@ impl Debug for PieceArray {
 
 mod testing{
     use std::ffi::CString;
+    use std::ptr::null_mut;
     use piece_array::{create_piece_array_wrapper, destroy_piece_array_wrapper, generate_test_image, load_images_to_piece_array_wrapper, PieceArray};
     use crate::single_piece::SingePiece;
 
@@ -146,8 +149,16 @@ mod testing{
             // load the images
             load_images_to_piece_array_wrapper(path_ptr);
 
+
+            let mut pieces = vec![
+                SingePiece::new(4,0),
+                SingePiece::new(5,3),
+                SingePiece::new(3,3),
+                SingePiece::new(2,0),
+            ];
+
             // create a piece array
-            let pa = create_piece_array_wrapper();
+            let pa = create_piece_array_wrapper(2,2,pieces.as_mut_ptr());
 
             // generate an image
             generate_test_image(pa);

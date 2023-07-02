@@ -6,6 +6,7 @@
 
 int main(){
 
+    test_piece_array_size_constructor(); return 0;
     test_rust_integration(); return 0;
     //test_image_ram_encode(); return 0;
     //test_piece_array_save(); return 0;

@@ -1,3 +1,5 @@
+extern crate libc;
+
 #[allow(dead_code)]
 mod shore;
 #[allow(dead_code)]

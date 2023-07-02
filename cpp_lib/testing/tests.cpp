@@ -21,9 +21,9 @@ void test_rust_integration(){
 
     load_images_to_piece_array_wrapper("../../../dataset/test_2x3/divided/");
 
-    auto a = create_piece_array_wrapper();
+    auto a = create_piece_array_wrapper(1,1, nullptr);
 
-    generate_test_image(a);
+    //generate_test_image(a);
 
     free_images_of_piece_array_wrapper();
 }
@@ -336,5 +336,35 @@ void test_image_ram_encode(){
 
     imshow("original",image);
     imshow("saved", new_image);
+    waitKey(0);
+}
+
+void test_piece_array_size_constructor(){
+
+    PieceArray pa =  PieceArray(2,2);
+
+    PieceImage::set_origin_path("../../../dataset/test_2x3/divided");
+    PieceImage pieces_images[6];
+
+    // filling both array up with the respective index;
+    for(int i=0; i<6;i++){
+        pieces_images[i] = PieceImage(i);
+    }
+
+
+    Holder base = Holder(&pieces_images[4], 0);
+    pa.set(0,0,std::move(base));
+
+    base = Holder(&pieces_images[5], 3);
+    pa.set(1, 0, std::move(base));
+
+    base = Holder(&pieces_images[3], 3);
+    pa.set(0,1,std::move(base));
+
+    base = Holder(&pieces_images[2], 0);
+    pa.set(1,1,std::move(base));
+
+    imshow("image",pa.get_image(PREVIEW));
+
     waitKey(0);
 }

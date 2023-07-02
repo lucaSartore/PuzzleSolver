@@ -6,13 +6,20 @@
 // this file allows the rust puzzle solver to access the functionalities of piece array
 
 
+// a piece and his orientation
+struct SingePiece{
+    uint64_t id;
+    uint64_t orientation;
+};
+
 extern "C"{
     /// a wrapper of piece array that can be used, combined with the functions bellow to
     /// access the piece array functionality from Rust
     typedef struct PieceArrayWrapper PieceArrayWrapper;
 
-    /// create a new piece array
-    __declspec(dllexport) PieceArrayWrapper* create_piece_array_wrapper();
+    /// create a new piece array with dimensions size_x x size_y and it will be filled up with the pieces contained in the pieces array,
+    /// following "reading order" (left to right, and then top to bottom)
+    __declspec(dllexport) PieceArrayWrapper* create_piece_array_wrapper(uint64_t size_x, uint64_t size_y, SingePiece* pieces);
 
     /// generate an image
     __declspec(dllexport) void generate_test_image(PieceArrayWrapper* piece_array_wrapper);

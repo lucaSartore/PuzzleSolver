@@ -40,24 +40,35 @@ __declspec(dllexport) void free_images_of_piece_array_wrapper(){
     PieceArrayWrapper ::images = nullptr;
 }
 
-__declspec(dllexport) PieceArrayWrapper* create_piece_array_wrapper(){
+__declspec(dllexport) PieceArrayWrapper* create_piece_array_wrapper(uint64_t size_x, uint64_t size_y, SingePiece* pieces){
+
+    cout << "size x: " << size_x << " size y: " << size_y << endl;
+
+    // create the array
     auto pa = new PieceArrayWrapper();
 
+    pa->pa = PieceArray(size_x,size_y);
+
+    cout << "piece created" << endl;
+
+
     auto pieces_images = PieceArrayWrapper::images;
-    Holder base = Holder(&pieces_images[4], 0);
-    pa->pa.set(0,0,std::move(base));
-    pa->pa.grow_x();
 
-    base = Holder(&pieces_images[5], 3);
-    pa->pa.set(1, 0, std::move(base));
-    pa->pa.grow_y();
+    // insert the image in the order
+    for(uint64_t y=0; y<size_y; y++){
 
-    base = Holder(&pieces_images[3], 3);
-    pa->pa.set(0,1,std::move(base));
+        for(uint64_t x=0; x<size_x; x++){
 
+            uint64_t id = pieces->id;
+            uint64_t orientation = pieces->orientation;
 
-    base = Holder(&pieces_images[2], 0);
-    pa->pa.set(1,1,std::move(base));
+            cout << id << " " << orientation << endl;
+
+            pa->pa.set(x,y,std::move(Holder(pieces_images+id,orientation)));
+
+            pieces++;
+        }
+    }
 
     return pa;
 }
