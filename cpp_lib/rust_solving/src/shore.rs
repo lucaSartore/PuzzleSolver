@@ -63,7 +63,7 @@ impl ops::AddAssign for Shore{
         // Calculate new shore with weighted average.
         let total_number = self.number + other_number;
         self.shore = ((self.shore as u32 * self.number as u32 + other_shore as u32 * other_number as u32)
-            / total_number) as u8;
+            / total_number + 0.5) as u8;
         // Sum numbers.
         self.number = total_number;
     }
