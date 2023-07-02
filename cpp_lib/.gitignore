@@ -34,3 +34,4 @@
 # ingore temporary files
 work_path/
 cmake-build-debug/
+testing/cmake-build-debug/
