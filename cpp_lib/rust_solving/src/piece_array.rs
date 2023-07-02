@@ -1,5 +1,4 @@
 use std::fmt::{Debug, Formatter};
-use libc::size_t;
 use crate::single_piece::SingePiece;
 
 
@@ -121,7 +120,6 @@ impl Debug for PieceArray {
 
 mod testing{
     use std::ffi::CString;
-    use std::ptr::null_mut;
     use piece_array::{create_piece_array_wrapper, destroy_piece_array_wrapper, generate_test_image, load_images_to_piece_array_wrapper, PieceArray};
     use crate::single_piece::SingePiece;
 

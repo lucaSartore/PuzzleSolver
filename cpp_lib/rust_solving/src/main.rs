@@ -8,6 +8,8 @@ mod piece_array;
 mod single_piece;
 #[allow(dead_code)]
 mod piece_group;
+#[allow(dead_code)]
+mod piece_comparing;
 
 use std::collections::HashSet;
 use piece_group::PieceGroup;
@@ -17,7 +19,7 @@ use shore::Shore;
 
 
 impl Comparable for i32 {
-    fn compare_to(&self, direction: Direction, other: &Self, recursive_orientation: u64, recursive_orientation_other: u64) -> Shore {
+    fn compare_to(&self, _: Direction, _: &Self, _: u64, _: u64) -> Shore {
         todo!()
     }
 }
