@@ -12,7 +12,9 @@ use piece_comparing::InitializationResults::FileNotFound;
 /// compare the images
 /// when it is initialized, it has loaded the data from the disk and can answer questions about
 /// the pieces matching
+#[derive(Copy, Clone,Debug)]
 pub struct Uninitialized;
+#[derive(Copy, Clone,Debug)]
 pub struct Initialized;
 
 pub trait IsState{}
@@ -28,12 +30,12 @@ static mut SHORES_TABLE:  Vec<u8> = vec![];
 /// how many pieces are stored into the array
 static mut NUMBER_OF_PIECES: usize = 0;
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone,Debug)]
 /// zero size type that allows to compare the puzzle pieces
 pub struct Comparator<T: IsState>{
     state: PhantomData<T>
 }
-
+#[derive(Debug,Copy,Clone)]
 pub enum InitializationResults{
     /// the initialization when well
     Ok(Comparator<Initialized>),
@@ -82,7 +84,7 @@ impl<T: IsState> Comparator<T> {
             for first_piece in 0..NUMBER_OF_PIECES{
 
                 // open the of the first piece
-                let file_path = format!("{path}/{first_piece}.bin");
+                let file_path = format!(r"{path}\{first_piece}.bin");
                 let mut file = match File::open(file_path){
                     Ok(v) => v,
                     Err(_) => {
@@ -130,8 +132,9 @@ impl<T: IsState> Comparator<T> {
             // to be sure everything is correct
             assert_eq!(SHORES_TABLE.len(),NUMBER_OF_PIECES*NUMBER_OF_PIECES*4*4);
         }
-
-        todo!()
+        return InitializationResults::Ok(Comparator::<Initialized>{
+            state: PhantomData::default()
+        });
     }
     /// return an initialized comparator if possible (aka if someone has already initialized the comparator)
     fn get_initialized_comparator() -> Option<Comparator<Initialized>>{
@@ -142,7 +145,13 @@ impl<T: IsState> Comparator<T> {
 impl Comparator<Initialized>{
     /// if the comparator is initialized, it can be used to compare two pieces
     fn compare(&self,piece1: u64, piece2: u64, side1: u64, side2: u64) -> u8{
-        todo!()
+        unsafe {
+            // calculate the address of the shore (the two expression are equivalent)
+            //let address = piece1*4*NUMBER_OF_PIECES*4 + side1*NUMBER_OF_PIECES*4 + piece2*4 +side2;
+            let address = ((piece1*4 + side1)*NUMBER_OF_PIECES as u64 + piece2)*4 +side2;
+
+            return SHORES_TABLE[address as usize];
+        }
     }
 }
 
@@ -158,4 +167,41 @@ fn count_files_in_folder(folder: &str) -> Option<usize> {
     } else {
         None
     }
+}
+
+#[test]
+fn test_comparator(){
+
+    let result = Comparator::<Uninitialized>::initialize_comparator(r"..\..\dataset\test_2x3\connections");
+
+
+    let comparator;
+    if let InitializationResults::Ok(val) = result{
+        comparator = val;
+    }else{
+        panic!("loading failed: {:?}",result);
+    }
+
+    println!("{}",comparator.compare(0,2,0,2));
+
+    assert_eq!(comparator.compare(0,2,0,2),(0.669904*255.99) as u8);
+    assert_eq!(comparator.compare(0,1,3,2),(0.607569*255.99) as u8);
+    assert_eq!(comparator.compare(1,4,1,1),(0.307137*255.99) as u8);
+    assert_eq!(comparator.compare(5,4,2,1),(0.775373*255.99) as u8);
+
+    for p1 in 0..6{
+        for p2 in 0..6{
+            for s1 in 0..4{
+                for s2 in 0..4{
+                    assert_eq!(
+                        comparator.compare(p1,p2,s1,s2),
+                        comparator.compare(p2,p1,s2,s1),
+                    )
+                }
+            }
+        }
+    }
+
+    println!("{:?}",result);
+
 }
