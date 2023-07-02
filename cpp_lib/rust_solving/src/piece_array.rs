@@ -27,11 +27,17 @@ extern "C"{
     /// deallocate the memory taken by the array
     fn destroy_piece_array_wrapper(to_destroy: *mut PieceArrayWrapper);
 
-    // load the images of the piece from the specified path
+    /// load the images of the piece from the specified path
     fn load_images_to_piece_array_wrapper(path: *const libc::c_char);
 
-    // delete the images the piece had accumulated
+    /// delete the images the piece had accumulated
     fn free_images_of_piece_array_wrapper();
+
+    /// send a preview image to the c# app for the user to see
+    fn generate_preview_image(piece_array_wrapper: *mut PieceArrayWrapper);
+
+    /// return the shore (aka how well sed pieces fit together) of an image
+    fn get_shore(piece_array_wrapper: *mut PieceArrayWrapper) -> f32;
 }
 
 

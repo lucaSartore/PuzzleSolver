@@ -24,6 +24,12 @@ extern "C"{
     /// generate an image
     __declspec(dllexport) void generate_test_image(PieceArrayWrapper* piece_array_wrapper);
 
+    /// return the shore (aka how well sed pieces fit together) of an image
+    __declspec(dllexport) float get_shore(PieceArrayWrapper* piece_array_wrapper);
+
+    /// send a preview image to the c# app for the user to see
+    __declspec(dllexport) void generate_preview_image(PieceArrayWrapper* piece_array_wrapper);
+
     /// deallocate the memory taken by the array
     __declspec(dllexport) void destroy_piece_array_wrapper(PieceArrayWrapper* to_destroy);
 
