@@ -138,7 +138,16 @@ impl<T: IsState> Comparator<T> {
     }
     /// return an initialized comparator if possible (aka if someone has already initialized the comparator)
     fn get_initialized_comparator() -> Option<Comparator<Initialized>>{
-        todo!()
+        unsafe{
+            if SHORES_TABLE.is_empty(){
+                return Option::None;
+            }
+            return Option::Some(
+                Comparator::<Initialized>{
+                    state: PhantomData::default()
+                }
+            )
+        }
     }
 }
 
