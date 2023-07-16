@@ -14,8 +14,8 @@ impl PieceArrayWrapper {
     pub unsafe fn generate_test_image(&mut self){
         generate_test_image(self)
     }
-    pub unsafe fn destroy_piece_array_wrapper(mut self){
-        destroy_piece_array_wrapper(&mut self)
+    pub unsafe fn destroy_piece_array_wrapper(&mut self){
+        destroy_piece_array_wrapper(self)
     }
     pub unsafe fn load_images_to_piece_array_wrapper(path: &str){
         // the path where the program can find the images
