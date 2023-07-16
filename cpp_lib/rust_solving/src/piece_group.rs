@@ -1,7 +1,9 @@
 use std::collections::HashSet;
+use std::fmt::Debug;
 use std::ops::DivAssign;
 use piece_array::PieceArray;
 use piece_group::Direction::LEFT;
+use piece_group::GroupCreationResult::{BottomLeftImpossibleCombination, BottomRightImpossibleFit};
 use crate::shore::Shore;
 use crate::single_piece::SingePiece;
 use crate::piece_comparing::{Comparator,Initialized,Uninitialized,InitializationResults};
@@ -51,12 +53,18 @@ impl Comparable for SingePiece{
     }
 
 }
-
+#[derive(Debug)]
 pub struct PieceGroup<'a,T: Comparable>{
     pub pieces: [&'a T;4],
     pub orientation: u64,
     pub ids: HashSet<u64>,
     pub shore: Shore
+}
+
+impl<T: Comparable> PieceGroup<'_,T> {
+    pub fn set_orientation(&mut self, new_orientation: u64){
+        self.orientation = new_orientation
+    }
 }
 
 impl<'a, T: Comparable> HasSetInIt for PieceGroup<'a, T> {
@@ -74,10 +82,10 @@ impl<'a, T: Comparable> PieceGroup<'a, T> {
         self.pieces[(1+self.orientation+recursive_orientation) as usize %4]
     }
     fn get_bottom_left(&self, recursive_orientation: u64)->&'a T{
-        self.pieces[(2+self.orientation+recursive_orientation) as usize %4]
+        self.pieces[(3+self.orientation+recursive_orientation) as usize %4]
     }
     fn get_bottom_right(&self, recursive_orientation: u64)->&'a T{
-        self.pieces[(3+self.orientation+recursive_orientation) as usize %4]
+        self.pieces[(2+self.orientation+recursive_orientation) as usize %4]
     }
 
     fn set_top_left(&mut self, to_set: &'a T){
@@ -97,7 +105,7 @@ impl<'a, T: Comparable> PieceGroup<'a, T> {
 impl<'a, T: Comparable> PieceGroup<'a, T> {
 
     /// calculate the shore of the current group of pieces
-    fn calculate_shore(&self) -> CalculateShoreResult{
+    fn calculate_and_set_shore(&mut self) -> CalculateShoreResult{
         let mut shore = Shore::new();
 
         // comparing top border
@@ -135,6 +143,9 @@ impl<'a, T: Comparable> PieceGroup<'a, T> {
             todo!("insert constant and return code");
             return CalculateShoreResult::AvregeIsTooLow;
         }
+
+        // set the calculated shore
+        self.shore = shore;
 
         // eventing was ok, so i can return the shore itself
         return CalculateShoreResult::Ok(shore);
@@ -242,14 +253,25 @@ impl<'a> PieceGroup<'a,SingePiece> {
         );
 
         // create the return object
-        let ret = PieceGroup::<'a,SingePiece>{
+        let mut ret = PieceGroup::<'a,SingePiece>{
             pieces: [top_left, top_right,bottom_right, bottom_left],
             orientation: 0,
             ids,
             shore: Shore::new()
         };
 
-        todo!();// calculate the shore
+        let shore_result = ret.calculate_and_set_shore();
+
+        return GroupCreationResult::Ok(ret);
+        todo!("remove the return");
+
+        match shore_result {
+            CalculateShoreResult::Ok(_) => {},
+            CalculateShoreResult::BottomLeftImpossibleFit => return GroupCreationResult::BottomLeftImpossibleFit,
+            CalculateShoreResult::BottomRightImpossibleFit => return GroupCreationResult::BottomRightImpossibleFit,
+            CalculateShoreResult::TopRightImpossibleFit => return GroupCreationResult::TopRightImpossibleFit,
+            CalculateShoreResult::AvregeIsTooLow => return GroupCreationResult::AvregeIsTooLow
+        }
 
         return GroupCreationResult::Ok(ret);
     }
@@ -361,19 +383,22 @@ impl<'a> PieceArrayFiller for PieceGroup<'a, SingePiece> {
 
         let or = self.orientation + recursive_orientation;
 
-        let mut piece = *self.get_top_left(or);
+        let mut piece = *self.get_top_left(recursive_orientation);
         piece.rotate_by(or);
+
         to_fill.set_piece(start_x, start_y,piece).unwrap();
 
-        piece = *self.get_top_right(or);
+        piece = *self.get_top_right(recursive_orientation);
+        print!("{:?}",piece);
         piece.rotate_by(or);
+        print!("{:?}",piece);
         to_fill.set_piece(start_x+1,start_y,piece).unwrap();
 
-        piece = *self.get_bottom_left(or);
+        piece = *self.get_bottom_left(recursive_orientation);
         piece.rotate_by(or);
         to_fill.set_piece(start_x,start_y+1,piece).unwrap();
 
-        piece = *self.get_bottom_right(or);
+        piece = *self.get_bottom_right(recursive_orientation);
         piece.rotate_by(or);
         to_fill.set_piece(start_x+1,start_y+1,piece).unwrap();
     }
@@ -384,14 +409,12 @@ impl<'a,T: PieceArrayFiller + Comparable + HasKnownLevel> PieceArrayFiller for P
 
         let or = self.orientation + recursive_orientation;
 
-        self.get_top_left(or).fill_piece_array((to_fill),start_x,start_y,or);
-        self.get_top_right(or).fill_piece_array((to_fill),start_x + T::SIDE_LEN,start_y,or);
-        self.get_bottom_left(or).fill_piece_array((to_fill),start_x,start_y + T::SIDE_LEN,or);
-        self.get_top_right(or).fill_piece_array((to_fill),start_x + T::SIDE_LEN,start_y + T::SIDE_LEN,or);
+        self.get_top_left(recursive_orientation).fill_piece_array((to_fill),start_x,start_y,or);
+        self.get_top_right(recursive_orientation).fill_piece_array((to_fill),start_x + T::SIDE_LEN,start_y,or);
+        self.get_bottom_left(recursive_orientation).fill_piece_array((to_fill),start_x,start_y + T::SIDE_LEN,or);
+        self.get_top_right(recursive_orientation).fill_piece_array((to_fill),start_x + T::SIDE_LEN,start_y + T::SIDE_LEN,or);
     }
 }
-
-
 
 impl<'a> HasKnownLevel for PieceGroup<'a, SingePiece> {
     const LEVEL: u64 = 1;
@@ -404,6 +427,7 @@ impl<'a, T: HasKnownLevel + Comparable> HasKnownLevel for PieceGroup<'a, T>  {
 
 /// when trying to create a new group of piece many things can go wrong, this enum is the result
 /// that represent all the errors, as well as the solution
+#[derive(Debug)]
 pub enum GroupCreationResult<'a, T: Comparable>{
     /// created successfully, and return the type
     Ok(PieceGroup<'a, T>),
@@ -423,7 +447,17 @@ pub enum GroupCreationResult<'a, T: Comparable>{
     AvregeIsTooLow
 }
 
+impl<'a, T: Comparable + Debug> GroupCreationResult<'a, T>{
+    fn unwrap(self) -> PieceGroup<'a, T>{
+        if let Self::Ok(e) = self{
+            return e
+        }
+        panic!("call unwrap, bur value was: {:?}", self)
+    }
+}
+
 /// when calculating a shore of a group of pieces, this enum will be return to
+#[derive(Debug)]
 pub enum CalculateShoreResult{
     /// all the pieces where compatible, and the shore has been calculated
     Ok(Shore),
@@ -435,4 +469,54 @@ pub enum CalculateShoreResult{
     BottomLeftImpossibleFit,
     /// the shore of the piece is lower that the minimum threshold
     AvregeIsTooLow
+}
+
+
+mod tests{
+    use piece_array::{PieceArray, PieceArrayWrapper};
+    use piece_comparing::{Comparator, Initialized};
+    use piece_group::{PieceArrayFiller, PieceGroup};
+    use single_piece::SingePiece;
+
+    #[test]
+    fn test_fill_piece_array_2x2(){
+
+        Comparator::<Initialized>::initialize_comparator(r"..\..\dataset\test_2x3\connections");
+
+        let mut pieces = vec![
+            SingePiece::new(4,0),
+            SingePiece::new(5,3),
+            SingePiece::new(3,3),
+            SingePiece::new(2,0),
+        ];
+
+        let mut pg = PieceGroup::<SingePiece>::new(&pieces[0],&pieces[1],&pieces[3], &pieces[2],).unwrap();
+
+        println!("{:?}",pg);
+
+        pg.set_orientation(2);
+
+        let mut pa = PieceArray::new(2,2);
+
+        pg.fill_piece_array(&mut pa,0,0,0);
+
+        println!("{:?}",pa);
+        println!("{:?}",pa.pieces);
+
+        unsafe {
+
+            PieceArrayWrapper::load_images_to_piece_array_wrapper(r"..\..\dataset\test_2x3\divided");
+
+            let paw = pa.get_piece_array_wrapper();
+
+            (*paw).generate_test_image();
+
+            //destroy_piece_array_wrapper(pa)
+
+        }
+
+
+
+    }
+
 }

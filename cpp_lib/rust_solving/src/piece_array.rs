@@ -1,11 +1,28 @@
+use std::ffi::CString;
 use std::fmt::{Debug, Formatter};
+use std::ptr::{null, null_mut};
 use crate::single_piece::SingePiece;
 use crate::piece_comparing::Comparator;
 
 
 #[repr(C)]
-struct PieceArrayWrapper{
+pub struct PieceArrayWrapper{
     _dummy: bool // useless value to disable warning (has no impact on the performance, since it uses this type only as a pointer)
+}
+
+impl PieceArrayWrapper {
+    pub unsafe fn generate_test_image(&mut self){
+        generate_test_image(self)
+    }
+    pub unsafe fn destroy_piece_array_wrapper(mut self){
+        destroy_piece_array_wrapper(&mut self)
+    }
+    pub unsafe fn load_images_to_piece_array_wrapper(path: &str){
+        // the path where the program can find the images
+        let path = CString::new(path).expect("CString::new failed");
+        let path_ptr = path.as_ptr();
+        load_images_to_piece_array_wrapper(path_ptr);
+    }
 }
 
 // IMPORTANT: this part of the code cannot be compiled with the minWG toolchain,
@@ -48,7 +65,7 @@ extern "C"{
 pub struct PieceArray{
     dim_x: u64,
     dim_y: u64,
-    pieces: Vec<SingePiece>,
+    pub pieces: Vec<SingePiece>,
 }
 
 impl PieceArray {
@@ -88,11 +105,17 @@ impl PieceArray {
             vec.push(SingePiece::new(0,0))
         }
 
-        Self{
-            dim_x,
-            dim_y,
-            pieces: vec
+        unsafe {
+            Self{
+                dim_x,
+                dim_y,
+                pieces: vec,
+            }
         }
+    }
+
+    pub unsafe fn get_piece_array_wrapper(&mut self) -> *mut PieceArrayWrapper{
+        create_piece_array_wrapper(self.dim_x,self.dim_y,self.pieces.as_mut_ptr())
     }
 }
 
@@ -106,7 +129,7 @@ impl Debug for PieceArray {
 
         for y in 0..self.dim_y{
             for x in 0..self.dim_x{
-                println!("{x}-{y}");
+                //println!("{x}-{y}");
                 let default_cell = SingePiece::new(0,0);
                 let piece = self.get_piece(x,y).unwrap_or(&default_cell);
                 s += format!("  {:>4}-{}  |",piece.get_id(), piece.get_orientation()).as_str();

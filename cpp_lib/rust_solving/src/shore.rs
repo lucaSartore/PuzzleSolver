@@ -4,6 +4,7 @@ use std::fmt;
 /// need to keep track of the average shore, and the number of pieces the shore keeps track of.
 /// `shore` is used to make a weighted average when combining multiple Shores.
 #[derive(Clone, Copy)]
+#[derive(Debug)]
 pub struct Shore {
     /// The average shore of the n represented connections.
     shore: u8,
