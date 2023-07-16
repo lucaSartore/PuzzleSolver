@@ -1,4 +1,7 @@
 use std::collections::HashSet;
+use std::ops::DivAssign;
+use piece_array::PieceArray;
+use piece_group::Direction::LEFT;
 use crate::shore::Shore;
 use crate::single_piece::SingePiece;
 use crate::piece_comparing::{Comparator,Initialized,Uninitialized,InitializationResults};
@@ -17,6 +20,23 @@ pub trait Comparable{
 pub trait HasSetInIt{
     /// get a set containing the ids of the current set
     fn get_ids(&self) -> &HashSet<u64>;
+}
+
+pub trait PieceArrayFiller{
+    /// given a mutable reference of a piece array to fill, this function fills it with
+    /// grom the start x and y coordinates upward
+    fn fill_piece_array(&self, to_fill: &mut PieceArray, start_x: u64, start_y: u64, recursive_orientation: u64);
+}
+
+pub trait HasKnownLevel{
+    /// the level of the current struct
+    /// level 1 is 2x2
+    /// level 2 is 4x4
+    /// level 3 is 8x8
+    /// and so on
+    const LEVEL: u64;
+    /// the length of the side of the piece group
+    const SIDE_LEN: u64 = (2 as u64).pow(Self::LEVEL as u32);
 }
 
 impl Comparable for SingePiece{
@@ -331,6 +351,54 @@ impl<'a, T:Comparable> Comparable for PieceGroup<'a, T> {
         }
         s
     }
+}
+
+impl<'a> PieceArrayFiller for PieceGroup<'a, SingePiece> {
+    fn fill_piece_array(&self, to_fill: &mut PieceArray, start_x: u64, start_y: u64, recursive_orientation: u64){
+        if false{
+            todo!("remove the unwraps")
+        }
+
+        let or = self.orientation + recursive_orientation;
+
+        let mut piece = *self.get_top_left(or);
+        piece.rotate_by(or);
+        to_fill.set_piece(start_x, start_y,piece).unwrap();
+
+        piece = *self.get_top_right(or);
+        piece.rotate_by(or);
+        to_fill.set_piece(start_x+1,start_y,piece).unwrap();
+
+        piece = *self.get_bottom_left(or);
+        piece.rotate_by(or);
+        to_fill.set_piece(start_x,start_y+1,piece).unwrap();
+
+        piece = *self.get_bottom_right(or);
+        piece.rotate_by(or);
+        to_fill.set_piece(start_x+1,start_y+1,piece).unwrap();
+    }
+}
+
+impl<'a,T: PieceArrayFiller + Comparable + HasKnownLevel> PieceArrayFiller for PieceGroup<'a, T> {
+    fn fill_piece_array(&self, to_fill: &mut PieceArray, start_x: u64, start_y: u64, recursive_orientation: u64){
+
+        let or = self.orientation + recursive_orientation;
+
+        self.get_top_left(or).fill_piece_array((to_fill),start_x,start_y,or);
+        self.get_top_right(or).fill_piece_array((to_fill),start_x + T::SIDE_LEN,start_y,or);
+        self.get_bottom_left(or).fill_piece_array((to_fill),start_x,start_y + T::SIDE_LEN,or);
+        self.get_top_right(or).fill_piece_array((to_fill),start_x + T::SIDE_LEN,start_y + T::SIDE_LEN,or);
+    }
+}
+
+
+
+impl<'a> HasKnownLevel for PieceGroup<'a, SingePiece> {
+    const LEVEL: u64 = 1;
+}
+
+impl<'a, T: HasKnownLevel + Comparable> HasKnownLevel for PieceGroup<'a, T>  {
+    const LEVEL: u64 = 1 + T::LEVEL;
 }
 
 

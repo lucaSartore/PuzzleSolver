@@ -29,6 +29,7 @@ impl Shore {
 }
 
 use std::ops;
+use libc::c_float;
 
 impl ops::Add for Shore {
     type Output = Shore;
@@ -62,8 +63,8 @@ impl ops::AddAssign for Shore{
 
         // Calculate new shore with weighted average.
         let total_number = self.number + other_number;
-        self.shore = ((self.shore as u32 * self.number as u32 + other_shore as u32 * other_number as u32)
-            / total_number + 0.5) as u8;
+        self.shore = ((self.shore as u32 * self.number as u32 + other_shore as u32 * other_number as u32) as f32
+            / total_number as f32 + 0.5 ) as u8;
         // Sum numbers.
         self.number = total_number;
     }

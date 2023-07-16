@@ -179,5 +179,4 @@ mod testing{
             destroy_piece_array_wrapper(pa)
         }
     }
-
 }

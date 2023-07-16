@@ -28,6 +28,7 @@ set(SOURCE_FILES
         solving/solve.h
         solving/solve.cpp
         solving/util.h
+        solving/util.cpp
         solving/constants.h
 
         solving/graphic_piece/Side.cpp
