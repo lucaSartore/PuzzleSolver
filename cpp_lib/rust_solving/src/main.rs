@@ -10,8 +10,12 @@ mod single_piece;
 mod piece_group;
 #[allow(dead_code)]
 mod piece_comparing;
+#[allow(dead_code)]
+mod piece_group_holder;
 
 use std::collections::HashSet;
+use piece_array::PieceArrayWrapper;
+use piece_comparing::{Comparator, Initialized};
 use piece_group::PieceGroup;
 use piece_group::Comparable;
 use piece_group::Direction;
@@ -26,8 +30,11 @@ impl Comparable for i32 {
 
 
 fn main(){
-    println!("hello world!");
+    // load data for the comparator
+    Comparator::<Initialized>::initialize_comparator(r"..\..\dataset\test_2x3\connections");
 
+    // load images for the preview
+    unsafe {PieceArrayWrapper::load_images_to_piece_array_wrapper(r"..\..\dataset\test_2x3\divided");}
     let pg = PieceGroup::<i32>{
         pieces: [&1,&2,&3,&4],
         orientation: 0,

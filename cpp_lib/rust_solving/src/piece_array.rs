@@ -143,8 +143,8 @@ impl Debug for PieceArray {
 
 mod testing{
     use std::ffi::CString;
-    use piece_array::{create_piece_array_wrapper, destroy_piece_array_wrapper, generate_test_image, load_images_to_piece_array_wrapper, PieceArray};
-    use piece_comparing::{Comparator, Initialized};
+    use crate::piece_array::{create_piece_array_wrapper, destroy_piece_array_wrapper, generate_test_image, load_images_to_piece_array_wrapper, PieceArray};
+    use crate::piece_comparing::{Comparator, Initialized};
     use crate::single_piece::SingePiece;
 
 

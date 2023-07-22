@@ -1,12 +1,12 @@
 use std::fmt::format;
 use std::marker::PhantomData;
 use std::str::CharIndices;
-use piece_group::Comparable;
+use crate::piece_group::Comparable;
 use std::fs;
 use std::fs::File;
 use std::path::Path;
 use std::io::Read;
-use piece_comparing::InitializationResults::FileNotFound;
+use crate::piece_comparing::InitializationResults::FileNotFound;
 
 /// the state of te comparator, when the comparator is uninitialized he can't
 /// compare the images

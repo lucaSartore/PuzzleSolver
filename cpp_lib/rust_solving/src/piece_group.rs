@@ -1,9 +1,9 @@
 use std::collections::HashSet;
 use std::fmt::Debug;
 use std::ops::DivAssign;
-use piece_array::PieceArray;
-use piece_group::Direction::LEFT;
-use piece_group::GroupCreationResult::{BottomLeftImpossibleCombination, BottomRightImpossibleFit};
+use crate::piece_array::PieceArray;
+use crate::piece_group::Direction::LEFT;
+use crate::piece_group::GroupCreationResult::{BottomLeftImpossibleCombination, BottomRightImpossibleFit};
 use crate::shore::Shore;
 use crate::single_piece::SingePiece;
 use crate::piece_comparing::{Comparator,Initialized,Uninitialized,InitializationResults};
@@ -12,7 +12,6 @@ pub enum Direction {UP, RIGHT, DOWN, LEFT}
 
 /// trait for all piece or group of pieces that can be compared between each other
 pub trait Comparable{
-
     /// compare this piece two another piece from an orientation. the recursive orientations are needed to keep track of
     /// how many times the pieces has been rotated
     fn compare_to(&self, direction: Direction,other: &Self, recursive_orientation: u64, recursive_orientation_other: u64) -> Shore;
@@ -41,6 +40,11 @@ pub trait HasKnownLevel{
     const SIDE_LEN: u64 = (2 as u64).pow(Self::LEVEL as u32);
 }
 
+/// can set the orientation of a piece or group of pieces
+pub trait HasOrientation{
+    fn set_orientation(&mut self, new_orientation: u64);
+}
+
 impl Comparable for SingePiece{
     fn compare_to(&self, direction: Direction,other: &Self, recursive_orientation: u64, recursive_orientation_other: u64) -> Shore{
         let v = self.comparator.compare(
@@ -61,8 +65,8 @@ pub struct PieceGroup<'a,T: Comparable>{
     pub shore: Shore
 }
 
-impl<T: Comparable> PieceGroup<'_,T> {
-    pub fn set_orientation(&mut self, new_orientation: u64){
+impl<T: Comparable> HasOrientation for PieceGroup<'_,T> {
+    fn set_orientation(&mut self, new_orientation: u64){
         self.orientation = new_orientation
     }
 }
@@ -181,7 +185,7 @@ impl<'a,T: Comparable + HasSetInIt> PieceGroup<'a,T> {
 
         let top_left_ids = top_left.get_ids();
         let top_right_ids = top_right.get_ids();
-        /*
+
         //if the two pieces has an element in common the group is invalid
         if !top_left_ids.is_disjoint(top_right_ids) {
             return GroupCreationResult::TopRightImpossibleCombination;
@@ -210,7 +214,7 @@ impl<'a,T: Comparable + HasSetInIt> PieceGroup<'a,T> {
 
         //create the set of the group we are creating
         ids.extend(bottom_left_ids);
-        */
+
         let ids = HashSet::new();
 
         if false{
@@ -479,10 +483,10 @@ pub enum CalculateShoreResult{
 
 
 mod tests{
-    use piece_array::{PieceArray, PieceArrayWrapper};
-    use piece_comparing::{Comparator, Initialized};
-    use piece_group::{PieceArrayFiller, PieceGroup};
-    use single_piece::SingePiece;
+    use crate::piece_array::{PieceArray, PieceArrayWrapper};
+    use crate::piece_comparing::{Comparator, Initialized};
+    use crate::piece_group::{PieceArrayFiller, PieceGroup};
+    use crate::single_piece::SingePiece;
 
     #[test]
     fn test_fill_piece_array_2x2(){
@@ -535,12 +539,12 @@ mod tests{
         let mut pg3 = PieceGroup::<SingePiece>::new(&pieces[0],&pieces[1],&pieces[3], &pieces[2],).unwrap();
 
         pg1.set_orientation(3);
-        pg2.set_orientation(0);
+        pg2.set_orientation(2);
         pg3.set_orientation(1);
 
         let mut pg4x4 = PieceGroup::<PieceGroup::<SingePiece>>::new(&pg0,&pg1,&pg2,&pg3).unwrap();
 
-        pg4x4.set_orientation(1);
+        //pg4x4.set_orientation(1);
 
         let mut pa = PieceArray::new(4,4);
 

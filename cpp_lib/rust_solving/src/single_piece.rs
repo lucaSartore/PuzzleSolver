@@ -1,4 +1,4 @@
-use piece_group::Comparable;
+use crate::piece_group::{Comparable, HasOrientation, PieceGroup};
 use crate::piece_comparing::{Comparator, Initialized, Uninitialized, InitializationResults};
 
 /// one single piece, keep the ID and his rotation
@@ -36,5 +36,10 @@ impl SingePiece {
     pub fn rotate_by(&mut self, q: u64){
         self.orientation = (self.orientation+q)%4;
     }
+}
 
+impl HasOrientation for SingePiece {
+    fn set_orientation(&mut self, new_orientation: u64){
+        self.orientation = new_orientation
+    }
 }
