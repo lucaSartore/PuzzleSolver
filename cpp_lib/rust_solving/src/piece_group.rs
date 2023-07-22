@@ -45,6 +45,11 @@ pub trait HasOrientation{
     fn set_orientation(&mut self, new_orientation: u64);
 }
 
+/// trait for all the elements that can be merged in one big component
+pub trait IsSubComponent: Sized + Comparable{
+    fn merge_together<'a>(top_left: &'a Self, top_right: &'a Self, bottom_right: &'a Self, bottom_left: &'a Self) -> GroupCreationResult<'a ,Self>;
+}
+
 impl Comparable for SingePiece{
     fn compare_to(&self, direction: Direction,other: &Self, recursive_orientation: u64, recursive_orientation_other: u64) -> Shore{
         let v = self.comparator.compare(
@@ -181,7 +186,7 @@ impl<'a> PieceGroup<'a, SingePiece> {
 /// implementation of the new function for the second and above levels
 impl<'a,T: Comparable + HasSetInIt> PieceGroup<'a,T> {
 
-    fn new(top_left: &'a T, top_right: &'a T, bottom_right: &'a T, bottom_left: &'a T) -> GroupCreationResult<'a,T>{
+    pub fn new(top_left: &'a T, top_right: &'a T, bottom_right: &'a T, bottom_left: &'a T) -> GroupCreationResult<'a,T>{
 
         let top_left_ids = top_left.get_ids();
         let top_right_ids = top_right.get_ids();
@@ -236,7 +241,7 @@ impl<'a,T: Comparable + HasSetInIt> PieceGroup<'a,T> {
 /// implementation of the new function for the first and above levels
 impl<'a> PieceGroup<'a,SingePiece> {
 
-    fn new(top_left: &'a SingePiece, top_right: &'a SingePiece, bottom_right: &'a SingePiece, bottom_left: &'a SingePiece) -> GroupCreationResult<'a,SingePiece>{
+    pub fn new(top_left: &'a SingePiece, top_right: &'a SingePiece, bottom_right: &'a SingePiece, bottom_left: &'a SingePiece) -> GroupCreationResult<'a,SingePiece>{
 
         //if they have the same id, return an error
         if top_left.get_id() == top_right.get_id(){
@@ -466,6 +471,18 @@ impl<'a, T: Comparable + Debug> GroupCreationResult<'a, T>{
     }
 }
 
+impl IsSubComponent for SingePiece {
+    fn merge_together<'a>(top_left: &'a Self, top_right: &'a Self, bottom_right: &'a Self, bottom_left: &'a Self) -> GroupCreationResult<'a, Self> {
+        PieceGroup::<Self>::new(top_left, top_right, bottom_right, bottom_left)
+    }
+}
+
+impl<'b,T: Comparable + HasSetInIt> IsSubComponent for PieceGroup<'b,T>{
+    fn merge_together<'a>(top_left: &'a Self, top_right: &'a Self, bottom_right: &'a Self, bottom_left: &'a Self) -> GroupCreationResult<'a, Self> {
+        PieceGroup::<Self>::new(top_left, top_right, bottom_right, bottom_left)
+    }
+}
+
 /// when calculating a shore of a group of pieces, this enum will be return to
 #[derive(Debug)]
 pub enum CalculateShoreResult{
@@ -561,7 +578,5 @@ mod tests{
             (*paw).destroy_piece_array_wrapper();
 
         }
-
-
     }
 }

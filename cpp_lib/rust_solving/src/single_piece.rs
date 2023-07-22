@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+use crate::piece_group::HasSetInIt;
 use crate::piece_group::{Comparable, HasOrientation, PieceGroup};
 use crate::piece_comparing::{Comparator, Initialized, Uninitialized, InitializationResults};
 

@@ -165,6 +165,11 @@ impl Comparator<Initialized>{
             return SHORES_TABLE[address as usize];
         }
     }
+    pub fn get_number_of_pieces(&self) -> usize{
+        unsafe{
+            return NUMBER_OF_PIECES
+        }
+    }
 }
 
 /// return the numer of files present in a folder
