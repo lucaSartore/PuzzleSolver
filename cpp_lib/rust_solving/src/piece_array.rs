@@ -23,6 +23,7 @@ impl PieceArrayWrapper {
         let path_ptr = path.as_ptr();
         load_images_to_piece_array_wrapper(path_ptr);
     }
+    pub unsafe fn get_shore(&mut self) -> f32{ get_shore(self)}
 }
 
 // IMPORTANT: this part of the code cannot be compiled with the minWG toolchain,

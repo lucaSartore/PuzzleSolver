@@ -389,7 +389,7 @@ impl<'a, T:Comparable> Comparable for PieceGroup<'a, T> {
         s
     }
 }
-
+/*
 impl<'a> PieceArrayFiller for PieceGroup<'a, SingePiece> {
     fn fill_piece_array(&self, to_fill: &mut PieceArray, start_x: u64, start_y: u64, recursive_orientation: u64){
         if false{
@@ -418,7 +418,7 @@ impl<'a> PieceArrayFiller for PieceGroup<'a, SingePiece> {
         to_fill.set_piece(start_x+1,start_y+1,piece).unwrap();
     }
 }
-
+*/
 impl<'a,T: PieceArrayFiller + Comparable + HasKnownLevel> PieceArrayFiller for PieceGroup<'a, T> {
     fn fill_piece_array(&self, to_fill: &mut PieceArray, start_x: u64, start_y: u64, recursive_orientation: u64){
 
@@ -429,10 +429,6 @@ impl<'a,T: PieceArrayFiller + Comparable + HasKnownLevel> PieceArrayFiller for P
         self.get_bottom_left(recursive_orientation).fill_piece_array((to_fill),start_x,start_y + T::SIDE_LEN,or);
         self.get_bottom_right(recursive_orientation).fill_piece_array((to_fill),start_x + T::SIDE_LEN,start_y + T::SIDE_LEN,or);
     }
-}
-
-impl<'a> HasKnownLevel for PieceGroup<'a, SingePiece> {
-    const LEVEL: u64 = 1;
 }
 
 impl<'a, T: HasKnownLevel + Comparable> HasKnownLevel for PieceGroup<'a, T>  {
