@@ -7,15 +7,16 @@ use crate::piece_group::HasOrientation;
 use crate::piece_group_holder::PieceGroupHolder;
 use std::collections::LinkedList;
 use std::sync::Mutex;
+use rayon::prelude::*;
 
-pub fn solve<T: Clone + HasOrientation + Send + Comparable + IsSubComponent + HasKnownLevel + PieceArrayFiller>(pgh: &PieceGroupHolder<T>){
+pub fn solve<T: Clone + HasOrientation + Send + Comparable + IsSubComponent + HasKnownLevel + PieceArrayFiller + Sync>(pgh: &PieceGroupHolder<T>){
     let size = pgh.get_size();
 
-    // cre
+    // create the list for the output pieces
     let mut output_vec = Mutex::new(LinkedList::<PieceGroup<T>>::new());
 
     // the function to apply for every iteration of the loop
-    let x = |top_left_index: usize| {
+    let solve_lambda_function = |top_left_index: usize| {
 
         // select all 3 other components one by one. start from top_left_index +1 to avoid duplicates
         'top_right_index_loop:
@@ -131,5 +132,15 @@ pub fn solve<T: Clone + HasOrientation + Send + Comparable + IsSubComponent + Ha
         }
 
     };
+
+    (0..size).into_par_iter().for_each(
+        |x| solve_lambda_function(x)
+    );
+
+    // convert list to vector
+    let output_vec: Vec<PieceGroup<T>> = output_vec.lock().unwrap().iter().map(|x| x.clone()).collect();
+
+    // create the new piece group holder
+    let pgh_out = PieceGroupHolder::new(output_vec);
 
 }
