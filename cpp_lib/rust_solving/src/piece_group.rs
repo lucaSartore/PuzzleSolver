@@ -63,27 +63,27 @@ impl Comparable for SingePiece{
 
 }
 #[derive(Debug, Clone)]
-pub struct PieceGroup<'a,T: Comparable + Clone>{
+pub struct PieceGroup<'a,T: Comparable + Clone + IsSubComponent>{
     pub pieces: [&'a T;4],
     pub orientation: u64,
     pub ids: HashSet<u64>,
     pub shore: Shore
 }
 
-impl<T: Comparable + Clone> HasOrientation for PieceGroup<'_,T> {
+impl<T: Comparable + Clone + IsSubComponent> HasOrientation for PieceGroup<'_,T> {
     fn set_orientation(&mut self, new_orientation: u64){
         self.orientation = new_orientation
     }
 }
 
-impl<'a, T: Comparable + Clone> HasSetInIt for PieceGroup<'a, T> {
+impl<'a, T: Comparable + Clone + IsSubComponent> HasSetInIt for PieceGroup<'a, T> {
     fn get_ids(&self) -> &HashSet<u64> {
         &self.ids
     }
 }
 
 /// functions to get a specific sub piece of the group
-impl<'a, T: Comparable + Clone> PieceGroup<'a, T> {
+impl<'a, T: Comparable + Clone + IsSubComponent> PieceGroup<'a, T> {
     fn get_top_left(&self, recursive_orientation: u64)->&'a T{
         self.pieces[(0+self.orientation+recursive_orientation) as usize %4]
     }
@@ -111,7 +111,7 @@ impl<'a, T: Comparable + Clone> PieceGroup<'a, T> {
     }
 }
 
-impl<'a, T: Comparable + Clone> PieceGroup<'a, T> {
+impl<'a, T: Comparable + Clone + IsSubComponent> PieceGroup<'a, T> {
 
     /// calculate the shore of the current group of pieces
     fn calculate_and_set_shore(&mut self) -> CalculateShoreResult{
@@ -162,7 +162,7 @@ impl<'a, T: Comparable + Clone> PieceGroup<'a, T> {
 
 }
 
-impl<'a, T: Comparable + Clone> PieceGroup<'a, PieceGroup<'_,T>> {
+impl<'a, T: Comparable + Clone + IsSubComponent + HasSetInIt> PieceGroup<'a, PieceGroup<'_,T>> {
     /// calculate the sore of the sub components that make up this piece
     /// this implementation is for all group of level 2 or higher
     fn calculate_internal_shore(&self) -> Shore{
@@ -184,7 +184,7 @@ impl<'a> PieceGroup<'a, SingePiece> {
 }
 
 /// implementation of the new function for the second and above levels
-impl<'a,T: Comparable + HasSetInIt + Clone> PieceGroup<'a,T> {
+impl<'a,T: Comparable + HasSetInIt + Clone + IsSubComponent> PieceGroup<'a,T> {
 
     pub fn new(top_left: &'a T, top_right: &'a T, bottom_right: &'a T, bottom_left: &'a T) -> GroupCreationResult<'a,T>{
 
@@ -294,7 +294,7 @@ impl<'a> PieceGroup<'a,SingePiece> {
 }
 
 
-impl<'a, T:Comparable + Clone> Comparable for PieceGroup<'a, T> {
+impl<'a, T:Comparable + Clone + IsSubComponent> Comparable for PieceGroup<'a, T> {
     fn compare_to(&self, direction: Direction,other: &Self, recursive_orientation: u64, recursive_orientation_other: u64) -> Shore{
         let mut s;
         match direction {
@@ -419,7 +419,7 @@ impl<'a> PieceArrayFiller for PieceGroup<'a, SingePiece> {
     }
 }
 */
-impl<'a,T: PieceArrayFiller + Comparable + HasKnownLevel + Clone> PieceArrayFiller for PieceGroup<'a, T> {
+impl<'a,T: PieceArrayFiller + Comparable + HasKnownLevel + Clone + IsSubComponent> PieceArrayFiller for PieceGroup<'a, T> {
     fn fill_piece_array(&self, to_fill: &mut PieceArray, start_x: u64, start_y: u64, recursive_orientation: u64){
 
         let or = self.orientation + recursive_orientation;
@@ -431,7 +431,7 @@ impl<'a,T: PieceArrayFiller + Comparable + HasKnownLevel + Clone> PieceArrayFill
     }
 }
 
-impl<'a, T: HasKnownLevel + Comparable + Clone> HasKnownLevel for PieceGroup<'a, T>  {
+impl<'a, T: HasKnownLevel + Comparable + Clone + IsSubComponent> HasKnownLevel for PieceGroup<'a, T>  {
     const LEVEL: u64 = 1 + T::LEVEL;
 }
 
@@ -439,7 +439,7 @@ impl<'a, T: HasKnownLevel + Comparable + Clone> HasKnownLevel for PieceGroup<'a,
 /// when trying to create a new group of piece many things can go wrong, this enum is the result
 /// that represent all the errors, as well as the solution
 #[derive(Debug)]
-pub enum GroupCreationResult<'a, T: Comparable + Clone>{
+pub enum GroupCreationResult<'a, T: Comparable + Clone + IsSubComponent>{
     /// created successfully, and return the type
     Ok(PieceGroup<'a, T>),
     /// the top right piece contain a piece that is also contained in one of the previous pieces
@@ -458,7 +458,7 @@ pub enum GroupCreationResult<'a, T: Comparable + Clone>{
     AvregeIsTooLow
 }
 
-impl<'a, T: Comparable + Debug + Clone> GroupCreationResult<'a, T>{
+impl<'a, T: Comparable + Debug + Clone + IsSubComponent> GroupCreationResult<'a, T>{
     fn unwrap(self) -> PieceGroup<'a, T>{
         if let Self::Ok(e) = self{
             return e
@@ -473,7 +473,7 @@ impl IsSubComponent for SingePiece {
     }
 }
 
-impl<'b,T: Comparable + HasSetInIt + Clone> IsSubComponent for PieceGroup<'b,T>{
+impl<'b,T: Comparable + HasSetInIt + Clone + IsSubComponent> IsSubComponent for PieceGroup<'b,T>{
     fn merge_together<'a>(top_left: &'a Self, top_right: &'a Self, bottom_right: &'a Self, bottom_left: &'a Self) -> GroupCreationResult<'a, Self> {
         PieceGroup::<Self>::new(top_left, top_right, bottom_right, bottom_left)
     }

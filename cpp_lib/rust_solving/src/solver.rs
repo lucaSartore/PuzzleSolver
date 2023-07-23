@@ -143,4 +143,5 @@ pub fn solve<T: Clone + HasOrientation + Send + Comparable + IsSubComponent + Ha
     // create the new piece group holder
     let pgh_out = PieceGroupHolder::new(output_vec);
 
+    solve::<PieceGroup<T>>(&pgh_out);
 }
