@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 use crate::piece_array::PieceArray;
-use crate::piece_group::{HasKnownLevel, HasSetInIt, PieceArrayFiller};
+use crate::piece_group::{HasKnownLevel, PieceArrayFiller};
 use crate::piece_group::{Comparable, HasOrientation, PieceGroup};
 use crate::piece_comparing::{Comparator, Initialized, Uninitialized, InitializationResults};
 

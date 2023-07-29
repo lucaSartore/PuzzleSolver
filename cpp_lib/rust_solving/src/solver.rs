@@ -1,6 +1,5 @@
 use crate::piece_array::PieceArray;
-use crate::piece_group::{GroupCreationResult, HasKnownLevel, IsSubComponent, PieceArrayFiller};
-use crate::piece_group::HasSetInIt;
+use crate::piece_group::{CanCreateSet, GroupCreationResult, HasKnownLevel, IsSubComponent, PieceArrayFiller};
 use crate::piece_group::PieceGroup;
 use crate::piece_group::Comparable;
 use crate::piece_group::HasOrientation;
@@ -9,7 +8,7 @@ use std::collections::LinkedList;
 use std::sync::Mutex;
 use rayon::prelude::*;
 
-pub fn solve<T: Clone + HasOrientation + Send + Comparable + IsSubComponent + HasKnownLevel + PieceArrayFiller + Sync>(pgh: &PieceGroupHolder<T>){
+pub fn solve<T: Clone + HasOrientation + Send + Comparable + IsSubComponent + HasKnownLevel + PieceArrayFiller + Sync + CanCreateSet<T>>(pgh: &PieceGroupHolder<T>){
     let size = pgh.get_size();
 
     // create the list for the output pieces

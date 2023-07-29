@@ -1,12 +1,15 @@
 use std::collections::HashSet;
 use std::fmt::Debug;
 use std::ops::DivAssign;
+use std::process::id;
 use crate::piece_array::PieceArray;
 use crate::piece_group::Direction::LEFT;
 use crate::piece_group::GroupCreationResult::{BottomLeftImpossibleCombination, BottomRightImpossibleFit};
 use crate::shore::Shore;
 use crate::single_piece::SingePiece;
 use crate::piece_comparing::{Comparator,Initialized,Uninitialized,InitializationResults};
+
+
 #[derive(Clone,Copy)]
 pub enum Direction {UP, RIGHT, DOWN, LEFT}
 
@@ -15,12 +18,6 @@ pub trait Comparable{
     /// compare this piece two another piece from an orientation. the recursive orientations are needed to keep track of
     /// how many times the pieces has been rotated
     fn compare_to(&self, direction: Direction,other: &Self, recursive_orientation: u64, recursive_orientation_other: u64) -> Shore;
-}
-
-/// trait for all the level that has an hash set in ti (all except the first)
-pub trait HasSetInIt{
-    /// get a set containing the ids of the current set
-    fn get_ids(&self) -> &HashSet<u64>;
 }
 
 pub trait PieceArrayFiller{
@@ -43,6 +40,10 @@ pub trait HasKnownLevel{
 /// can set the orientation of a piece or group of pieces
 pub trait HasOrientation{
     fn set_orientation(&mut self, new_orientation: u64);
+}
+
+pub trait CanCreateSet<T: IsSubComponent + CanCreateSet<T>>{
+    fn get_set<'a>(top_left: &'a T, top_right: &'a T, bottom_right: &'a T, bottom_left: &'a T) -> Result<HashSet<u64>,GroupCreationResult<'a, T>>;
 }
 
 /// trait for all the elements that can be merged in one big component
@@ -76,7 +77,7 @@ impl<T: Comparable + Clone + IsSubComponent> HasOrientation for PieceGroup<'_,T>
     }
 }
 
-impl<'a, T: Comparable + Clone + IsSubComponent> HasSetInIt for PieceGroup<'a, T> {
+impl<'a, T: Comparable + Clone + IsSubComponent> PieceGroup<'a, T> {
     fn get_ids(&self) -> &HashSet<u64> {
         &self.ids
     }
@@ -162,7 +163,7 @@ impl<'a, T: Comparable + Clone + IsSubComponent> PieceGroup<'a, T> {
 
 }
 
-impl<'a, T: Comparable + Clone + IsSubComponent + HasSetInIt> PieceGroup<'a, PieceGroup<'_,T>> {
+impl<'a, T: Comparable + Clone + IsSubComponent  + CanCreateSet<T>> PieceGroup<'a, PieceGroup<'_,T>> {
     /// calculate the sore of the sub components that make up this piece
     /// this implementation is for all group of level 2 or higher
     fn calculate_internal_shore(&self) -> Shore{
@@ -184,43 +185,18 @@ impl<'a> PieceGroup<'a, SingePiece> {
 }
 
 /// implementation of the new function for the second and above levels
-impl<'a,T: Comparable + HasSetInIt + Clone + IsSubComponent> PieceGroup<'a,T> {
+impl<'a,T: Comparable + Clone + IsSubComponent + CanCreateSet<T>> PieceGroup<'a,T> {
 
     pub fn new(top_left: &'a T, top_right: &'a T, bottom_right: &'a T, bottom_left: &'a T) -> GroupCreationResult<'a,T>{
 
-        let top_left_ids = top_left.get_ids();
-        let top_right_ids = top_right.get_ids();
 
-        //if the two pieces has an element in common the group is invalid
-        if !top_left_ids.is_disjoint(top_right_ids) {
-            return GroupCreationResult::TopRightImpossibleCombination;
-        }
 
-        // create the set of the group we are creating
-        let mut ids = top_left_ids.clone();
-        ids.extend(top_right_ids);
+        let ids = T::get_set(&top_left, &top_right, &bottom_right, &bottom_left);
 
-        let bottom_right_ids = bottom_right.get_ids();
-
-        //if the two pieces has an element in common the group is invalid
-        if !ids.is_disjoint(bottom_right_ids) {
-            return GroupCreationResult::BottomRightImpossibleCombination;
-        }
-
-        //create the set of the group we are creating
-        ids.extend(top_right_ids);
-
-        let bottom_left_ids = bottom_left.get_ids();
-
-        //if the two pieces has an element in common the group is invalid
-        if !ids.is_disjoint(bottom_left_ids) {
-            return GroupCreationResult::BottomLeftImpossibleCombination;
-        }
-
-        //create the set of the group we are creating
-        ids.extend(bottom_left_ids);
-
-        let ids = HashSet::new();
+        let ids = match ids {
+            Result::Ok(e) => e,
+            Result::Err(err) => return err
+        };
 
         if false{
             todo!("calculate shore")
@@ -235,60 +211,6 @@ impl<'a,T: Comparable + HasSetInIt + Clone + IsSubComponent> PieceGroup<'a,T> {
         };
 
         GroupCreationResult::Ok(ret)
-    }
-
-}
-/// implementation of the new function for the first and above levels
-impl<'a> PieceGroup<'a,SingePiece> {
-
-    pub fn new(top_left: &'a SingePiece, top_right: &'a SingePiece, bottom_right: &'a SingePiece, bottom_left: &'a SingePiece) -> GroupCreationResult<'a,SingePiece>{
-
-        //if they have the same id, return an error
-        if top_left.get_id() == top_right.get_id(){
-            return GroupCreationResult::TopRightImpossibleCombination;
-        }
-
-        //if they have the same id, return an error
-        if top_left.get_id() == bottom_right.get_id() ||  top_right.get_id() == bottom_right.get_id(){
-            return GroupCreationResult::BottomRightImpossibleCombination;
-        }
-
-        //if they have the same id, return an error
-        if top_left.get_id() == bottom_left.get_id() ||  top_right.get_id() == bottom_left.get_id() || bottom_right.get_id() == bottom_left.get_id(){
-            return GroupCreationResult::BottomRightImpossibleCombination;
-        }
-
-        let ids = HashSet::from(
-            [
-                top_left.get_id(),
-                top_right.get_id(),
-                bottom_right.get_id(),
-                bottom_left.get_id()
-            ]
-        );
-
-        // create the return object
-        let mut ret = PieceGroup::<'a,SingePiece>{
-            pieces: [top_left, top_right,bottom_right, bottom_left],
-            orientation: 0,
-            ids,
-            shore: Shore::new()
-        };
-
-        let shore_result = ret.calculate_and_set_shore();
-
-        return GroupCreationResult::Ok(ret);
-        todo!("remove the return");
-
-        match shore_result {
-            CalculateShoreResult::Ok(_) => {},
-            CalculateShoreResult::BottomLeftImpossibleFit => return GroupCreationResult::BottomLeftImpossibleFit,
-            CalculateShoreResult::BottomRightImpossibleFit => return GroupCreationResult::BottomRightImpossibleFit,
-            CalculateShoreResult::TopRightImpossibleFit => return GroupCreationResult::TopRightImpossibleFit,
-            CalculateShoreResult::AvregeIsTooLow => return GroupCreationResult::AvregeIsTooLow
-        }
-
-        return GroupCreationResult::Ok(ret);
     }
 
 }
@@ -473,9 +395,77 @@ impl IsSubComponent for SingePiece {
     }
 }
 
-impl<'b,T: Comparable + HasSetInIt + Clone + IsSubComponent> IsSubComponent for PieceGroup<'b,T>{
+impl<'b,T: Comparable + Clone + IsSubComponent + CanCreateSet<T>> IsSubComponent for PieceGroup<'b,T>{
     fn merge_together<'a>(top_left: &'a Self, top_right: &'a Self, bottom_right: &'a Self, bottom_left: &'a Self) -> GroupCreationResult<'a, Self> {
         PieceGroup::<Self>::new(top_left, top_right, bottom_right, bottom_left)
+    }
+}
+impl<'b,T: IsSubComponent + CanCreateSet<T>> CanCreateSet<PieceGroup<'b,T>> for PieceGroup<'b,T>{
+    fn get_set<'a>(top_left: &'a PieceGroup<'b,T>, top_right: &'a PieceGroup<'b,T>, bottom_right: &'a PieceGroup<'b,T>, bottom_left: &'a PieceGroup<'b,T>) -> Result<HashSet<u64>, GroupCreationResult<'a, PieceGroup<'b,T>>> {
+
+        let top_left_ids = top_left.get_ids();
+        let top_right_ids = top_right.get_ids();
+
+        //if the two pieces has an element in common the group is invalid
+        if !top_left_ids.is_disjoint(top_right_ids) {
+            return Result::Err(GroupCreationResult::TopRightImpossibleCombination);
+        }
+
+        // create the set of the group we are creating
+        let mut ids = top_left_ids.clone();
+        ids.extend(top_right_ids);
+
+        let bottom_right_ids = bottom_right.get_ids();
+
+        //if the two pieces has an element in common the group is invalid
+        if !ids.is_disjoint(bottom_right_ids) {
+            return Result::Err(GroupCreationResult::BottomRightImpossibleCombination);
+        }
+
+        //create the set of the group we are creating
+        ids.extend(top_right_ids);
+
+        let bottom_left_ids = bottom_left.get_ids();
+
+        //if the two pieces has an element in common the group is invalid
+        if !ids.is_disjoint(bottom_left_ids) {
+            return Result::Err(GroupCreationResult::BottomLeftImpossibleCombination);
+        }
+
+        //create the set of the group we are creating
+        ids.extend(bottom_left_ids);
+
+        return Ok(ids);
+    }
+}
+
+impl CanCreateSet<SingePiece> for SingePiece {
+    fn get_set<'a>(top_left: &'a SingePiece, top_right: &'a SingePiece, bottom_right: &'a SingePiece, bottom_left: &'a SingePiece) -> Result<HashSet<u64>, GroupCreationResult<'a, SingePiece>> {
+
+        if top_left.get_id() == top_right.get_id(){
+            return Result::Err(GroupCreationResult::TopRightImpossibleCombination);
+        }
+
+        //if they have the same id, return an error
+        if top_left.get_id() == bottom_right.get_id() ||  top_right.get_id() == bottom_right.get_id(){
+            return Result::Err(GroupCreationResult::BottomRightImpossibleCombination);
+        }
+
+        //if they have the same id, return an error
+        if top_left.get_id() == bottom_left.get_id() ||  top_right.get_id() == bottom_left.get_id() || bottom_right.get_id() == bottom_left.get_id(){
+            return Result::Err(GroupCreationResult::BottomRightImpossibleCombination);
+        }
+
+        let ids = HashSet::from(
+            [
+                top_left.get_id(),
+                top_right.get_id(),
+                bottom_right.get_id(),
+                bottom_left.get_id()
+            ]
+        );
+
+        return Ok(ids);
     }
 }
 
