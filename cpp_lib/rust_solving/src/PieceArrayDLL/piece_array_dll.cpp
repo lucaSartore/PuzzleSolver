@@ -11,6 +11,10 @@ using namespace std;
 struct PieceArrayWrapper{
     static PieceImage* images;
     PieceArray pa;
+
+    PieceArrayWrapper(uint64_t size_x, uint64_t size_y){
+        pa = PieceArray(size_x,size_y);
+    }
 };
 PieceImage* PieceArrayWrapper::images = nullptr;
 
@@ -45,9 +49,7 @@ __declspec(dllexport) void free_images_of_piece_array_wrapper(){
 
 __declspec(dllexport) PieceArrayWrapper* create_piece_array_wrapper(uint64_t size_x, uint64_t size_y, SingePiece* pieces){
     // create the array
-    auto pa = new PieceArrayWrapper();
-
-    pa->pa = PieceArray(size_x,size_y);
+    auto pa = new PieceArrayWrapper(size_x,size_y);
 
     auto pieces_images = PieceArrayWrapper::images;
 
@@ -67,9 +69,9 @@ __declspec(dllexport) PieceArrayWrapper* create_piece_array_wrapper(uint64_t siz
     return pa;
 }
 
-__declspec(dllexport) void generate_test_image(PieceArrayWrapper* piece_array_wrapper){
+__declspec(dllexport) void generate_test_image(PieceArrayWrapper* piece_array_wrapper,const char* path){
     auto img = piece_array_wrapper->pa.get_image(BuildImageMode::PREVIEW);
-    cv::imwrite("test.png",img);
+    cv::imwrite(path,img);
 }
 
 __declspec(dllexport) void destroy_piece_array_wrapper(PieceArrayWrapper* to_destroy){

@@ -11,8 +11,11 @@ pub struct PieceArrayWrapper{
 }
 
 impl PieceArrayWrapper {
-    pub unsafe fn generate_test_image(&mut self){
-        generate_test_image(self)
+    pub unsafe fn generate_test_image(&mut self, path: &str){
+        // convert the path
+        let path = CString::new(path).expect("CString::new failed");
+        let path_ptr = path.as_ptr();
+        generate_test_image(self,path_ptr)
     }
     pub unsafe fn destroy_piece_array_wrapper(&mut self){
         destroy_piece_array_wrapper(self)
@@ -39,7 +42,7 @@ extern "C"{
     fn create_piece_array_wrapper(size_x: u64, size_y: u64, pieces: *mut SingePiece) -> *mut PieceArrayWrapper;
 
     /// generate an image
-    fn generate_test_image(piece_array_wrapper: *mut PieceArrayWrapper);
+    fn generate_test_image(piece_array_wrapper: *mut PieceArrayWrapper,path: *const libc::c_char);
 
     /// deallocate the memory taken by the array
     fn destroy_piece_array_wrapper(to_destroy: *mut PieceArrayWrapper);

@@ -22,7 +22,7 @@ extern "C"{
     __declspec(dllexport) PieceArrayWrapper* create_piece_array_wrapper(uint64_t size_x, uint64_t size_y, SingePiece* pieces);
 
     /// generate an image
-    __declspec(dllexport) void generate_test_image(PieceArrayWrapper* piece_array_wrapper);
+    __declspec(dllexport) void generate_test_image(PieceArrayWrapper* piece_array_wrapper,const char* path);
 
     /// return the shore (aka how well sed pieces fit together) of an image
     __declspec(dllexport) float get_shore(PieceArrayWrapper* piece_array_wrapper);

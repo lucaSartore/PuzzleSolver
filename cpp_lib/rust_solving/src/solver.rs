@@ -7,9 +7,14 @@ use crate::piece_group_holder::PieceGroupHolder;
 use std::collections::LinkedList;
 use std::sync::Mutex;
 use rayon::prelude::*;
+use crate::constants::MIN_SHORE_PIECE_ARRAY;
 
+pub const TEST: bool = true;
 
 pub fn solve<T: NextLevelOrPanic>(pgh: &PieceGroupHolder<T>){
+
+    println!("The level {} has started",T::LEVEL);
+
     let size = pgh.get_size();
 
     // create the list for the output pieces
@@ -56,16 +61,22 @@ pub fn solve<T: NextLevelOrPanic>(pgh: &PieceGroupHolder<T>){
                                         GroupCreationResult::Ok(e) => e,
                                         // the piece group has an avrege shore that is lower then the minimum threshold,
                                         // so i do not add it to the list and go on with the next combination
-                                        GroupCreationResult::AvregeIsTooLow => continue,
+                                        GroupCreationResult::AvregeIsTooLow => {
+                                            //println!("skip because of: AvregeIsTooLow");
+                                            continue;
+                                        }
                                         // the piece is an impossible combination (because one of the pieces is repeated)
                                         // so i skip to the next iteration of his loop
                                         GroupCreationResult::TopRightImpossibleCombination => {
+                                            //println!("skip because of: TopRightImpossibleCombination");
                                             continue 'top_right_index_loop
                                         }
                                         GroupCreationResult::BottomLeftImpossibleCombination => {
+                                            //println!("skip because of: BottomLeftImpossibleCombination");
                                             continue 'bottom_left_index_loop
                                         }
                                         GroupCreationResult::BottomRightImpossibleCombination => {
+                                            //println!("skip because of: BottomRightImpossibleCombination");
                                             continue 'bottom_right_index_loop
                                         }
                                         GroupCreationResult::TopRightImpossibleFit => {
@@ -75,23 +86,30 @@ pub fn solve<T: NextLevelOrPanic>(pgh: &PieceGroupHolder<T>){
                                             // (all the possible orientation of the top right and top left has been tested
                                             // witch means that the second piece is no longer an option
                                             if failed_top_right_placement >= 16{
+                                                //println!("skip because of: TopRightImpossibleFit-1");
                                                 continue 'top_right_index_loop
                                             }
 
                                             // if the above condition is not met, just test a new orientation
+                                            //println!("skip because of: TopRightImpossibleFit-0");
                                             continue 'top_left_orientation_loop
                                         }
                                         GroupCreationResult::BottomLeftImpossibleFit => {
                                             failed_bottom_right_placement += 1;
 
                                             if failed_top_right_placement >= 64{
+                                                //println!("skip because of: BottomLeftImpossibleFit-1");
                                                 continue 'bottom_left_index_loop
+
                                             }
 
                                             // if the above condition is not met, just test a new orientation
+                                            //println!("skip because of: BottomLeftImpossibleFit-0");
                                             continue 'bottom_left_orientation_loop
                                         }
                                         GroupCreationResult::BottomRightImpossibleFit => {
+                                            // todo forse devo incrementare uno dei contatori?
+                                            //println!("skip because of: BottomRightImpossibleFit");
                                             continue 'bottom_right_orientation_loop
                                         }
                                     };
@@ -111,14 +129,24 @@ pub fn solve<T: NextLevelOrPanic>(pgh: &PieceGroupHolder<T>){
                                     unsafe {
                                         let mut paw = pa.get_piece_array_wrapper();
 
-                                        // todo!( make shore a constant)
                                         // if the shore is to low i continue on the next iteration
-                                        if (*paw).get_shore() < 0.35{
+                                        if (*paw).get_shore() < MIN_SHORE_PIECE_ARRAY{
+                                            (*paw).destroy_piece_array_wrapper();
                                             continue;
                                         }
 
+                                        // only for debug: test this one
+                                        if TEST{
+                                            let path = format!(
+                                                "output_images\\{}_{}_{}_{}_{}_{}_{}_{}.png",
+                                                top_left_index,top_right_index,bottom_right_index,bottom_left_index,
+                                                top_left_orientation,top_right_orientation,bottom_right_orientation,bottom_left_orientation
+                                            );
+                                            (*paw).generate_test_image(path.as_str());
+                                        }
+
                                         // deallocate memory
-                                        (*paw).destroy_piece_array_wrapper()
+                                        (*paw).destroy_piece_array_wrapper();
                                     }
 
                                     // add the element to the list
@@ -130,7 +158,7 @@ pub fn solve<T: NextLevelOrPanic>(pgh: &PieceGroupHolder<T>){
                 }
             }
         }
-
+        println!("finish: {top_left_index}");
     };
 
     (0..size).into_par_iter().for_each(
@@ -140,10 +168,12 @@ pub fn solve<T: NextLevelOrPanic>(pgh: &PieceGroupHolder<T>){
     // convert list to vector
     let output_vec: Vec<PieceGroup<T>> = output_vec.lock().unwrap().iter().map(|x| x.clone()).collect();
 
+    println!("I found {} pieces",output_vec.len());
+
     // create the new piece group holder
     let pgh_out = PieceGroupHolder::new(output_vec);
 
     // call the next iteration of the current function, and panic if it has not been compiled
-    // the limit is 10 iterations... or a 1M pieces puzzle
+    // the limit is 10 iterations... or a 4M pieces puzzle
     T::next_or_panic(&pgh_out);
 }

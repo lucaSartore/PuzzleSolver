@@ -17,6 +17,7 @@ mod piece_group_holder;
 #[allow(dead_code)]
 mod solver;
 
+mod constants;
 
 use std::collections::HashSet;
 use piece_array::PieceArrayWrapper;
@@ -29,25 +30,16 @@ use shore::Shore;
 use single_piece::SingePiece;
 
 
-impl Comparable for i32 {
-    fn compare_to(&self, _: Direction, _: &Self, _: u64, _: u64) -> Shore {
-        todo!()
-    }
-}
-
-
 fn main(){
     // load data for the comparator
-    let init_cmp = Comparator::<Initialized>::initialize_comparator(r"..\..\dataset\test_2x3\connections");
+    let init_cmp = Comparator::<Initialized>::initialize_comparator(r"..\..\dataset\test_4x4\connections").unwrap();
 
-    // check for the result of the initialization
-    let init_cmp = match init_cmp {
-        InitializationResults::Ok(e) => e,
-        _ => {
-            println!("initialization failed because of error: {:?}",init_cmp);
-            return;
-        }
-    };
+
+
+    unsafe {
+        PieceArrayWrapper::load_images_to_piece_array_wrapper(r"..\..\dataset\test_4x4\divided");
+    }
+
 
     // create the vector with the basic pieces inside
     let number_of_pieces = init_cmp.get_number_of_pieces();

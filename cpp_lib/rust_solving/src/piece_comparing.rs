@@ -52,6 +52,16 @@ pub enum InitializationResults{
     FileHasWrongFormat
 }
 
+impl InitializationResults {
+    pub fn unwrap(&self) -> Comparator<Initialized>{
+        if let InitializationResults::Ok(val) = *self{
+            return val;
+        }else{
+            panic!("Call unwrap on: {:?}",self);
+        }
+    }
+}
+
 impl<T: IsState> Comparator<T> {
     /// try to initialize the piece, and return an error if:
     ///  - the value is already initialized
