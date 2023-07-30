@@ -1,5 +1,5 @@
 use crate::piece_array::PieceArray;
-use crate::piece_group::{CanCreateSet, GroupCreationResult, HasKnownLevel, IsSubComponent, PieceArrayFiller};
+use crate::piece_group::{CanCreateSet, GroupCreationResult, HasKnownLevel, IsSubComponent, PieceArrayFiller,NextLevelOrPanic};
 use crate::piece_group::PieceGroup;
 use crate::piece_group::Comparable;
 use crate::piece_group::HasOrientation;
@@ -8,7 +8,8 @@ use std::collections::LinkedList;
 use std::sync::Mutex;
 use rayon::prelude::*;
 
-pub fn solve<T: Clone + HasOrientation + Send + Comparable + IsSubComponent + HasKnownLevel + PieceArrayFiller + Sync + CanCreateSet<T>>(pgh: &PieceGroupHolder<T>){
+
+pub fn solve<T: NextLevelOrPanic>(pgh: &PieceGroupHolder<T>){
     let size = pgh.get_size();
 
     // create the list for the output pieces
@@ -142,5 +143,7 @@ pub fn solve<T: Clone + HasOrientation + Send + Comparable + IsSubComponent + Ha
     // create the new piece group holder
     let pgh_out = PieceGroupHolder::new(output_vec);
 
-    solve::<PieceGroup<T>>(&pgh_out);
+    // call the next iteration of the current function, and panic if it has not been compiled
+    // the limit is 10 iterations... or a 1M pieces puzzle
+    T::next_or_panic(&pgh_out);
 }

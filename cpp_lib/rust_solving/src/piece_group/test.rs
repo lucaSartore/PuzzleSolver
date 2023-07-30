@@ -38,7 +38,9 @@ mod tests{
 
     #[test]
     fn test_fill_piece_array_4x4() {
-
+        // remember:
+        // the combination tested here is not actualy possible, for this test to work is necessary to
+        // disable the cech inside the piece group constructor
 
         Comparator::<Initialized>::initialize_comparator(r"..\..\dataset\test_2x3\connections");
 

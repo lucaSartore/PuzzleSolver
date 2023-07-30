@@ -2,6 +2,8 @@ use crate::piece_array::PieceArray;
 use crate::piece_group::{Comparable, HasKnownLevel, IsSubComponent, PieceGroup};
 use crate::single_piece::SingePiece;
 
+
+/// a trait for all single pieces, or group of pieces that can fill a piece array
 pub trait PieceArrayFiller{
     /// given a mutable reference of a piece array to fill, this function fills it with
     /// grom the start x and y coordinates upward

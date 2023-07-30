@@ -25,7 +25,7 @@ pub enum GroupCreationResult<'a, T: Comparable + Clone + IsSubComponent>{
 }
 
 impl<'a, T: Comparable + Debug + Clone + IsSubComponent> GroupCreationResult<'a, T>{
-    fn unwrap(self) -> PieceGroup<'a, T>{
+    pub fn unwrap(self) -> PieceGroup<'a, T>{
         if let Self::Ok(e) = self{
             return e
         }

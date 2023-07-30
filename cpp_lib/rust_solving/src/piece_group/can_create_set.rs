@@ -2,6 +2,7 @@ use std::collections::HashSet;
 use crate::piece_group::{GroupCreationResult, IsSubComponent, PieceGroup};
 use crate::single_piece::SingePiece;
 
+/// a trait for all single pieces, or group of pieces that can create a set of ids
 pub trait CanCreateSet<T: IsSubComponent + CanCreateSet<T>>{
     fn get_set<'a>(top_left: &'a T, top_right: &'a T, bottom_right: &'a T, bottom_left: &'a T) -> Result<HashSet<u64>,GroupCreationResult<'a, T>>;
 }

@@ -33,6 +33,9 @@ pub use is_sub_component::IsSubComponent;
 mod return_enums;
 pub use  return_enums::{CalculateShoreResult,GroupCreationResult};
 
+mod next_level_or_panic;
+pub use next_level_or_panic::NextLevelOrPanic;
+
 mod test;
 
 

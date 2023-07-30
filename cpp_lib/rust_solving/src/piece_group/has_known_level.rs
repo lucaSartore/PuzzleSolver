@@ -1,6 +1,7 @@
 use crate::piece_group::{Comparable, IsSubComponent, PieceGroup};
 use crate::single_piece::SingePiece;
 
+/// a trait for all single pieces, or group of pieces that have a known level
 pub trait HasKnownLevel{
     /// the level of the current struct
     /// level 1 is 2x2
