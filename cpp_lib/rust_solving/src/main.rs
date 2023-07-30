@@ -1,68 +1,4 @@
-//#![allow(incomplete_features)]
-#![feature(generic_const_exprs)]
 
-use std::fmt::Binary;
-use std::marker::PhantomData;
-
-struct Foo<T: HasLevel>{
-    t: PhantomData<T>
-}
-
-
-fn func<T: HasLevel + NextOrPanic>()
-{
-    println!("{}",T::LEVEL);
-
-
-    T::next_or_panic()
-}
-
-
-
-trait NextOrPanic{
-    fn next_or_panic();
-}
-impl NextOrPanic for i32{
-    fn next_or_panic() {
-        func::<Foo<i32>>()
-    }
-}
-impl NextOrPanic for Foo<i32>{
-    fn next_or_panic() {
-        func::<Foo<Foo<i32>>>()
-    }
-}
-impl NextOrPanic for Foo<Foo<i32>>{
-    fn next_or_panic() {
-        func::<Foo<Foo<Foo<i32>>>>()
-    }
-}
-
-impl NextOrPanic for Foo<Foo<Foo<i32>>>{
-    fn next_or_panic() {
-        panic!("the limit has been reached!")
-    }
-}
-
-impl HasLevel for i32 {
-    const LEVEL: usize = 0;
-}
-
-impl<T: HasLevel> HasLevel for Foo<T>{
-    const LEVEL: usize = T::LEVEL+1;
-}
-
-pub trait HasLevel{
-    const LEVEL: usize;
-    const IN_RANGE: bool = Self::LEVEL < 4;
-}
-
-
-
-fn main(){
-    func::<i32>();
-}
-/*
 extern crate libc;
 
 #[allow(dead_code)]
@@ -126,4 +62,4 @@ fn main(){
 
     solver::solve(&pgh);
 
-}*/
+}

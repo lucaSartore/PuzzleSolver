@@ -11,7 +11,7 @@ use crate::piece_comparing::{Comparator, Initialized, Uninitialized, Initializat
 #[derive(Copy,Clone)]
 pub struct SingePiece{
     id: u64,
-    orientation: u64,
+    pub(crate) orientation: u64,
     /// zero sized type to compare the pieces, dose not need to be passed to c
     pub comparator: Comparator<Initialized>
 }
@@ -41,27 +41,7 @@ impl SingePiece {
     }
 }
 
-impl HasOrientation for SingePiece {
-    fn set_orientation(&mut self, new_orientation: u64){
-        self.orientation = new_orientation
-    }
-}
-
-impl HasKnownLevel for SingePiece{
-    const LEVEL: u64 = 0;
-}
 
 
-impl PieceArrayFiller for SingePiece {
-    fn fill_piece_array(&self, to_fill: &mut PieceArray, start_x: u64, start_y: u64, recursive_orientation: u64){
-        if false{
-            todo!("remove the unwraps")
-        }
 
-        let mut piece = self.clone();
 
-        piece.rotate_by(recursive_orientation);
-
-        to_fill.set_piece(start_x,start_y,piece).unwrap();
-    }
-}
