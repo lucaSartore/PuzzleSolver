@@ -63,7 +63,7 @@ impl CanCreateSet<SingePiece> for SingePiece {
 
         //if they have the same id, return an error
         if top_left.get_id() == bottom_left.get_id() ||  top_right.get_id() == bottom_left.get_id() || bottom_right.get_id() == bottom_left.get_id(){
-            return Result::Err(GroupCreationResult::BottomRightImpossibleCombination);
+            return Result::Err(GroupCreationResult::BottomLeftImpossibleCombination);
         }
 
         let ids = HashSet::from(

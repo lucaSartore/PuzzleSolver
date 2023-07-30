@@ -254,6 +254,15 @@ void solve_thread(GroupedPiecesHolder<N> *input_pieces, atomic<int> * index, ato
                                             // if shore is high enough, add into list
                                             result_list_mutex->lock();
                                             result_list->push_back(std::move(new_piece));
+
+                                            // write the file to the disk
+                                            string output_path = std::format(
+                                                "{}_{}_{}_{}_{}_{}_{}_{}.png",
+                                                top_left_index , top_right_index,bottom_right_index,bottom_left_index,
+                                                top_left_orientation,top_right_orientation,bottom_right_orientation,bottom_left_orientation
+                                            );
+                                            imwrite(output_path,array.get_image(PREVIEW));
+
                                             result_list_mutex->unlock();
 
                                             // update tee number of found pieces

@@ -1,0 +1,2 @@
+pub const MIN_SHORE_PIECE_ARRAY: f32 = 0.975;
+pub const MIN_SHORE_PIECE_GROUP: u8 = 127;

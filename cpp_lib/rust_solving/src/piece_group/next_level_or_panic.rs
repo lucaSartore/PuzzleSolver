@@ -1,4 +1,4 @@
-use crate::piece_group::{CanCreateSet, Comparable, HasKnownLevel, HasOrientation, IsSubComponent, PieceArrayFiller, PieceGroup};
+use crate::piece_group::{AddShoreOfSubComponents, CanCreateSet, Comparable, HasKnownLevel, HasOrientation, IsSubComponent, PieceArrayFiller, PieceGroup};
 use crate::piece_group_holder::PieceGroupHolder;
 use crate::single_piece::SingePiece;
 use super::super::solver::solve;
@@ -8,7 +8,7 @@ use super::super::solver::solve;
 /// such a function would generate infinite versions of itself making it impossible to compile
 /// this trait will decide on a type by type whether or not to call the next function... preventing this issue
 /// this trait also group all the trait necessary fro the function to work
-pub trait NextLevelOrPanic: Clone + HasOrientation + Send + Comparable + IsSubComponent + HasKnownLevel + PieceArrayFiller + Sync + CanCreateSet<Self>{
+pub trait NextLevelOrPanic: Clone + HasOrientation + Send + Comparable + IsSubComponent + HasKnownLevel + PieceArrayFiller + Sync + CanCreateSet<Self> + AddShoreOfSubComponents{
     fn next_or_panic(pgh: &PieceGroupHolder<PieceGroup<Self>>);
 }
 
