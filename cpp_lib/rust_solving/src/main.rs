@@ -59,13 +59,15 @@ fn main(){
     let pgh = PieceGroupHolder::new(v);
 
 
-    let tl = pgh.get(1,1);
+    /*
+    //4_5_6_12_3_3_2_0
+    let tl = pgh.get(4,3);
 
-    let tr = pgh.get(3,0);
+    let tr = pgh.get(5,3);
 
-    let br = pgh.get(9,3);
+    let br = pgh.get(6,2);
 
-    let bl = pgh.get(8,3);
+    let bl = pgh.get(12,0);
 
     let cmp = piece_comparing::Comparator::<Initialized>::get_initialized_comparator().unwrap();
     println!("{:?}",cmp.compare(3,9,2,1));
@@ -76,8 +78,6 @@ fn main(){
 
     // create the piece array with the appropriate size
     let mut pa = PieceArray::new(2,2);
-
-
 
     // fill the piece array with the piece group
     pg.fill_piece_array(&mut pa,0,0,0);
@@ -94,10 +94,9 @@ fn main(){
         (*paw).destroy_piece_array_wrapper();
     }
     println!("{:?}",pg);
+*/
 
 
-
-
-    //solver::solve(&pgh);
+    solver::solve(&pgh);
 
 }

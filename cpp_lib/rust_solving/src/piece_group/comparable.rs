@@ -14,13 +14,13 @@ impl Comparable for SingePiece{
         let side_this = ( self.orientation as i64 + (direction as i64) + recursive_orientation as i64)%4;
 
         let side_other = ( other.orientation as i64 + (-direction as i64) + recursive_orientation_other as i64)%4;
-
+        /*
         println!("{},{},{},{}",
                 self.get_id(),
                 other.get_id(),
                 side_this,
                 side_other
-        );
+        );*/
 
         let v = self.comparator.compare(
             self.get_id(),

@@ -68,7 +68,7 @@ void solve_puzzle_function(
         piece_images[i] = PieceImage(i,input_path_images);
     }
 
-//    // todo: remove this print
+
 //    cout << "CMP: " << pieces_connection[1].compare(2,3,3) << endl;
 
     // creating the list of level 1 pieces;
@@ -195,7 +195,10 @@ void solve_recursive(unsigned int dim_x,unsigned int dim_y,GroupedPiecesHolder<N
 
 template<int N>
 void solve_thread(GroupedPiecesHolder<N> *input_pieces, atomic<int> * index, atomic<int> * found, std::list<GroupedPieces<N+1>> *result_list, mutex *result_list_mutex, PieceImage* images){
-
+    /*if(N == 2){
+        cout << "EXITING" << endl;
+        exit(69);
+    }*/
     // calculate total length
     int number_of_pieces = input_pieces->get_length();
 
