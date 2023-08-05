@@ -5,7 +5,6 @@
 #include <sstream>
 #include <string>
 #include <assert.h>
-
 using namespace std;
 
 int PieceConnection::number_of_pieces = 0;
@@ -24,11 +23,12 @@ void PieceConnection::save_as_file(string path) {
 
     // open as binary
     FILE* file = fopen(path.c_str(),"wb");
-
     // salve all the values
-    for(auto this_side: connections){
-        for(int piece = 0; piece < number_of_pieces; piece++){
-            for(auto shore: this_side[piece].shores){
+
+    for(int side=0; side<4; side++){
+        for(int i=0; i<number_of_pieces; i++){
+            for(int side_other=0; side_other < 4; side_other++){
+                float shore = this->compare(side,i,side_other);
                 fwrite(&shore,sizeof(float),1,file);
             }
         }
@@ -58,15 +58,17 @@ void PieceConnection::became(string path, int id) {
         throw runtime_error("file not found");
     }
 
-    // salve all the values
-    for(auto this_side: connections){
-        for(int piece = 0; piece < number_of_pieces; piece++){
-            for(auto &shore: this_side[piece].shores){
+    // load all values
+    for(int side=0; side<4; side++){
+        for(int i=0; i<number_of_pieces; i++){
+            for(int side_other=0; side_other < 4; side_other++){
+                float shore;
                 if(!feof(file)){
                     fread(&shore,sizeof(float),1,file);
                 }else{
                     throw runtime_error("binary file not compatible");
                 }
+                this->insert_matching_piece(side,i,side_other,shore);
             }
         }
     }
@@ -92,8 +94,10 @@ string PieceConnection::get_side_as_string(int side) const {
     string s = string("{");
     for(int i=0; i<number_of_pieces; i++){
         auto elem = connections[side][i];
-        for(int side_other=0; side_other < 4; side_other++)
-        s+= std::to_string(i) + "_" + std::to_string(side_other) + ": " + std::to_string(elem.shores[side_other]) + ", ";
+        for(int side_other=0; side_other < 4; side_other++){
+            float shore = this->compare(side,i,side_other);
+            s+= std::to_string(i) + "_" + std::to_string(side_other) + ": " + std::to_string(shore) + ", ";
+        }
     }
     s+= "}";
     return std::move(s);
@@ -163,7 +167,7 @@ PieceConnection::~PieceConnection() {
     }
 }
 
-float PieceConnection::compare(int this_piece_side, int other_piece_id, int other_piece_side) {
+float PieceConnection::compare(int this_piece_side, int other_piece_id, int other_piece_side) const{
     return connections[this_piece_side][other_piece_id].shores[other_piece_side];
 }
 

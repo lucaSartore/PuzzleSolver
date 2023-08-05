@@ -54,7 +54,7 @@ public:
     /// return a string representation of the current piece
     std::string to_string();
     /// let you compare this piece with an other piece.
-    float compare(int this_piece_side, int other_piece_id, int other_piece_side);
+    float compare(int this_piece_side, int other_piece_id, int other_piece_side) const;
 };
 
 
