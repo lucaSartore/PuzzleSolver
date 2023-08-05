@@ -19,6 +19,9 @@ mod solver;
 
 mod constants;
 
+mod finalize_piece_array;
+
+
 use std::collections::HashSet;
 use piece_array::PieceArrayWrapper;
 use piece_comparing::{Comparator, InitializationResults, Initialized};
@@ -97,6 +100,6 @@ fn main(){
 */
 
 
-    solver::solve(&pgh);
+    solver::solve(&pgh,".\\",4,4);
 
 }

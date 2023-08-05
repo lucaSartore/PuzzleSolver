@@ -38,6 +38,12 @@ extern "C"{
 
     /// delete the images the piece had accumulated
     __declspec(dllexport) void free_images_of_piece_array_wrapper();
+
+    /// save the current piece array wrapper in a binary file
+    __declspec(dllexport) void save_as_binary(PieceArrayWrapper* piece_array_wrapper, const char* path);
+
+    /// send to the c# frontend a preview image (if preview is enable)
+    __declspec(dllexport) void send_preview_image(PieceArrayWrapper* piece_array_wrapper);
 };
 
 #endif //PUZZLE_SOLVER_PIECE_ARRAY_DLL_H

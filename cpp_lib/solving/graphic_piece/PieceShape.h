@@ -8,7 +8,6 @@
 #include "Side.h"
 #include <iostream>
 #include <opencv2/opencv.hpp>
-# define PUT_DEBUG_NUMBER_INSIDE_THE_PIECE true
 
 using namespace cv;
 using namespace std;

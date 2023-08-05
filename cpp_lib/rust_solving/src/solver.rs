@@ -8,16 +8,11 @@ use std::collections::LinkedList;
 use std::sync::Mutex;
 use rayon::prelude::*;
 use crate::constants::MIN_SHORE_PIECE_ARRAY;
-
-const PANIC_AT: [usize;8] = [4,5,6,12,3,3,2,0];
-
-const PANIC_N: usize = ((((((((PANIC_AT[0])*100+PANIC_AT[1])*100+PANIC_AT[2])*100+PANIC_AT[3])
-                          *100+PANIC_AT[4])*100+PANIC_AT[5])*100+PANIC_AT[6])*100+PANIC_AT[7]);
-
+use crate::finalize_piece_array::finalize_piece_array;
 
 pub const TEST: bool = true;
 
-pub fn solve<T: NextLevelOrPanic>(pgh: &PieceGroupHolder<T>){
+pub fn solve<T: NextLevelOrPanic>(pgh: &PieceGroupHolder<T>, output_path: &str, size_x: u64, size_y: u64) -> bool{
 
     println!("The level {} has started",T::LEVEL);
 
@@ -51,24 +46,6 @@ pub fn solve<T: NextLevelOrPanic>(pgh: &PieceGroupHolder<T>){
                             for bottom_right_orientation in 0..4{
                                 'bottom_left_orientation_loop:
                                 for bottom_left_orientation in 0..4{
-
-                                    /*
-                                    println!(
-                                        "{}_{}_{}_{}_{}_{}_{}_{}",
-                                        top_left_index,top_right_index,bottom_right_index,bottom_left_index,
-                                        top_left_orientation,top_right_orientation,bottom_right_orientation,bottom_left_orientation
-                                    );
-
-
-                                    let panic_at = [top_left_index,top_right_index,bottom_right_index,bottom_left_index,
-                                        top_left_orientation,top_right_orientation,bottom_right_orientation,bottom_left_orientation];
-
-                                    let panic_n = ((((((((panic_at[0])*100+panic_at[1])*100+panic_at[2])*100+panic_at[3])
-                                        *100+panic_at[4])*100+panic_at[5])*100+panic_at[6])*100+panic_at[7]);
-
-                                    if panic_n > PANIC_N{
-                                        panic!();
-                                    }*/
 
                                     // get the 4 element our sub piece will be made of
                                     let top_left= pgh.get(top_left_index,top_left_orientation);
@@ -159,18 +136,8 @@ pub fn solve<T: NextLevelOrPanic>(pgh: &PieceGroupHolder<T>){
                                             (*paw).destroy_piece_array_wrapper();
                                             continue;
                                         }
-                                        //println!("good combo");
-                                        // only for debug: test this one
-                                        /*
-                                        if TEST{
-                                            let path = format!(
-                                                "output_images\\{}_{}_{}_{}_{}_{}_{}_{}_RUST.png",
-                                                top_left_index,top_right_index,bottom_right_index,bottom_left_index,
-                                                top_left_orientation,top_right_orientation,bottom_right_orientation,bottom_left_orientation
-                                            );
-                                            (*paw).generate_test_image(path.as_str());
-                                        }*/
-
+                                        // send the prevew image to the c# backend
+                                        (*paw).send_preview_image();
                                         // deallocate memory
                                         (*paw).destroy_piece_array_wrapper();
                                     }
@@ -201,5 +168,5 @@ pub fn solve<T: NextLevelOrPanic>(pgh: &PieceGroupHolder<T>){
 
     // call the next iteration of the current function, and panic if it has not been compiled
     // the limit is 10 iterations... or a 4M pieces puzzle
-    T::next_or_panic(&pgh_out);
+    return T::next_or_panic(&pgh_out, output_path, size_x, size_y);
 }

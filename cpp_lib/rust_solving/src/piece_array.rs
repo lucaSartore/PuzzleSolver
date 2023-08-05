@@ -7,7 +7,7 @@ use crate::piece_comparing::Comparator;
 
 #[repr(C)]
 pub struct PieceArrayWrapper{
-    _dummy: bool // useless value to disable warning (has no impact on the performance, since it uses this type only as a pointer)
+    _dummy: bool // useless value to disable warning (has no impact on the performance, since the program uses this type only as a pointer)
 }
 
 impl PieceArrayWrapper {
@@ -27,6 +27,17 @@ impl PieceArrayWrapper {
         load_images_to_piece_array_wrapper(path_ptr);
     }
     pub unsafe fn get_shore(&mut self) -> f32{ get_shore(self)}
+
+    pub unsafe fn save_as_binary(&mut self, path: &str){
+        // convert the path
+        let path = CString::new(path).expect("CString::new failed");
+        let path_ptr = path.as_ptr();
+        save_as_binary(self, path_ptr);
+    }
+
+    pub unsafe fn send_preview_image(&mut self){
+        send_preview_image(self);
+    }
 }
 
 // IMPORTANT: this part of the code cannot be compiled with the minWG toolchain,
@@ -58,6 +69,12 @@ extern "C"{
 
     /// return the shore (aka how well sed pieces fit together) of an image
     fn get_shore(piece_array_wrapper: *mut PieceArrayWrapper) -> f32;
+
+    /// save the current piece array wrapper in a binary file
+    fn save_as_binary(piece_array_wrapper: *mut PieceArrayWrapper, path: *const libc::c_char);
+
+    /// send to the c# frontend a preview image (if preview is enable)
+    fn send_preview_image(piece_array_wrapper: *mut PieceArrayWrapper);
 }
 
 
