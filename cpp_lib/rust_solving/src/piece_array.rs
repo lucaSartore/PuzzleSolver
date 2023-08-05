@@ -46,7 +46,8 @@ impl PieceArrayWrapper {
 // the tool chain `stable-x86_64-pc-windows-msvc` is the only one that has been tested, and is
 // guaranteed to work
 
-#[link(name="../cmake-build-debug/PieceArrayLink", kind = "static")]
+//#[link(name="cpp_lib//cmake-build-debug//PieceArrayLink", kind = "static")]
+#[link(name="C://Users//lucas//CLionProjects//Puzzle_Solver//cpp_lib//cmake-build-debug//PieceArrayLink", kind = "static")]
 extern "C"{
     /// create a new piece array with dimensions size_x x size_y and it will be filled up with the pieces contained in the pieces array,
     /// following "reading order" (left to right, and then top to bottom)

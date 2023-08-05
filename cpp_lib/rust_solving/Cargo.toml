@@ -3,7 +3,10 @@ name = "rust_solving"
 version = "0.1.0"
 edition = "2021"
 
+[lib]
+name = "rust_solving_lib"
+crate-type = ["staticlib"]
+
 [dependencies]
 libc = "0.2"
 rayon = "1.7.0"
-rand = "0.8.5"
