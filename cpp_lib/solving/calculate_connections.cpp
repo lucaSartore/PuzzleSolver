@@ -35,6 +35,7 @@ void calculate_all_connections(std::string input_path, std::string output_path,u
 }
 
 void piece_comparer_thread(PieceConnection *pieces_connections, PieceShape *pieces_shapes,unsigned int number_of_pieces, atomic<int> *index){
+
     while (true) {
         int piece_id = std::atomic_fetch_add(index,1);
 
@@ -191,6 +192,12 @@ void calculate_multi_thread(const string &input_path, const string &output_path,
     // array of pointers to thread
     auto *threads = new thread[processor_count];
 
+//    // todo: remove this tebug print
+//    // check for compatibility
+//    float compatibility = pieces_shapes[1].get_side(2).compare_to(
+//            pieces_shapes[3].get_side(3)
+//    );
+//    cout << "RAW-CMP: " << compatibility << endl;
 
     auto start = chrono::steady_clock::now();
 
@@ -214,7 +221,7 @@ void calculate_multi_thread(const string &input_path, const string &output_path,
 
     cout << "Execution time in seconds [multi threaded]: "
          << chrono::duration_cast<chrono::seconds>(end - start).count()
-         << " sec";
+         << " sec" << endl;
 
     // free the memory allocated
     delete[] threads;
