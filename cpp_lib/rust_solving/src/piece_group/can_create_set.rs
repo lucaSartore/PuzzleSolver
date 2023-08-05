@@ -52,17 +52,17 @@ impl<'b,T: IsSubComponent + CanCreateSet<T>> CanCreateSet<PieceGroup<'b,T>> for 
 impl CanCreateSet<SingePiece> for SingePiece {
     fn get_set<'a>(top_left: &'a SingePiece, top_right: &'a SingePiece, bottom_right: &'a SingePiece, bottom_left: &'a SingePiece) -> Result<HashSet<u64>, GroupCreationResult<'a, SingePiece>> {
 
-        if top_left.get_id() == top_right.get_id(){
+        if top_left.id == top_right.id{
             return Result::Err(GroupCreationResult::TopRightImpossibleCombination);
         }
 
         //if they have the same id, return an error
-        if top_left.get_id() == bottom_right.get_id() ||  top_right.get_id() == bottom_right.get_id(){
+        if top_left.id == bottom_right.id ||  top_right.id == bottom_right.id{
             return Result::Err(GroupCreationResult::BottomRightImpossibleCombination);
         }
 
         //if they have the same id, return an error
-        if top_left.get_id() == bottom_left.get_id() ||  top_right.get_id() == bottom_left.get_id() || bottom_right.get_id() == bottom_left.get_id(){
+        if top_left.id == bottom_left.id || top_right.id == bottom_left.id || bottom_right.id == bottom_left.id{
             return Result::Err(GroupCreationResult::BottomLeftImpossibleCombination);
         }
 

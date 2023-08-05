@@ -9,6 +9,13 @@ use std::sync::Mutex;
 use rayon::prelude::*;
 use crate::constants::MIN_SHORE_PIECE_ARRAY;
 
+const PANIC_AT: [usize;8] = [1,3,9,8,1,0,3,3];
+
+
+const PANIC_N: usize = ((((((((PANIC_AT[0])*100+PANIC_AT[1])*100+PANIC_AT[2])*100+PANIC_AT[3])
+                          *100+PANIC_AT[4])*100+PANIC_AT[5])*100+PANIC_AT[6])*100+PANIC_AT[7]);
+
+
 pub const TEST: bool = true;
 
 pub fn solve<T: NextLevelOrPanic>(pgh: &PieceGroupHolder<T>){
@@ -46,6 +53,24 @@ pub fn solve<T: NextLevelOrPanic>(pgh: &PieceGroupHolder<T>){
                                 'bottom_left_orientation_loop:
                                 for bottom_left_orientation in 0..4{
 
+
+                                    println!(
+                                        "{}_{}_{}_{}_{}_{}_{}_{}",
+                                        top_left_index,top_right_index,bottom_right_index,bottom_left_index,
+                                        top_left_orientation,top_right_orientation,bottom_right_orientation,bottom_left_orientation
+                                    );
+
+
+                                    let panic_at = [top_left_index,top_right_index,bottom_right_index,bottom_left_index,
+                                        top_left_orientation,top_right_orientation,bottom_right_orientation,bottom_left_orientation];
+
+                                    let panic_n = ((((((((panic_at[0])*100+panic_at[1])*100+panic_at[2])*100+panic_at[3])
+                                        *100+panic_at[4])*100+panic_at[5])*100+panic_at[6])*100+panic_at[7]);
+
+                                    if panic_n > PANIC_N {
+                                        panic!();
+                                    }
+
                                     // get the 4 element our sub piece will be made of
                                     let top_left= pgh.get(top_left_index,top_left_orientation);
                                     let top_right= pgh.get(top_right_index,top_right_orientation);
@@ -62,21 +87,21 @@ pub fn solve<T: NextLevelOrPanic>(pgh: &PieceGroupHolder<T>){
                                         // the piece group has an avrege shore that is lower then the minimum threshold,
                                         // so i do not add it to the list and go on with the next combination
                                         GroupCreationResult::AvregeIsTooLow => {
-                                            //println!("skip because of: AvregeIsTooLow");
+                                            println!("skip because of: AvregeIsTooLow");
                                             continue;
                                         }
                                         // the piece is an impossible combination (because one of the pieces is repeated)
                                         // so i skip to the next iteration of his loop
                                         GroupCreationResult::TopRightImpossibleCombination => {
-                                            //println!("skip because of: TopRightImpossibleCombination");
+                                            println!("skip because of: TopRightImpossibleCombination");
                                             continue 'top_right_index_loop
                                         }
                                         GroupCreationResult::BottomLeftImpossibleCombination => {
-                                            //println!("skip because of: BottomLeftImpossibleCombination");
+                                            println!("skip because of: BottomLeftImpossibleCombination");
                                             continue 'bottom_left_index_loop
                                         }
                                         GroupCreationResult::BottomRightImpossibleCombination => {
-                                            //println!("skip because of: BottomRightImpossibleCombination");
+                                            println!("skip because of: BottomRightImpossibleCombination");
                                             continue 'bottom_right_index_loop
                                         }
                                         GroupCreationResult::TopRightImpossibleFit => {
@@ -86,30 +111,30 @@ pub fn solve<T: NextLevelOrPanic>(pgh: &PieceGroupHolder<T>){
                                             // (all the possible orientation of the top right and top left has been tested
                                             // witch means that the second piece is no longer an option
                                             if failed_top_right_placement >= 16{
-                                                //println!("skip because of: TopRightImpossibleFit-1");
+                                                println!("skip because of: TopRightImpossibleFit-1");
                                                 continue 'top_right_index_loop
                                             }
 
                                             // if the above condition is not met, just test a new orientation
-                                            //println!("skip because of: TopRightImpossibleFit-0");
-                                            continue 'top_left_orientation_loop
+                                            println!("skip because of: TopRightImpossibleFit-0");
+                                            continue 'top_right_orientation_loop
                                         }
                                         GroupCreationResult::BottomLeftImpossibleFit => {
                                             failed_bottom_right_placement += 1;
 
                                             if failed_top_right_placement >= 64{
-                                                //println!("skip because of: BottomLeftImpossibleFit-1");
+                                                println!("skip because of: BottomLeftImpossibleFit-1");
                                                 continue 'bottom_left_index_loop
 
                                             }
 
                                             // if the above condition is not met, just test a new orientation
-                                            //println!("skip because of: BottomLeftImpossibleFit-0");
+                                            println!("skip because of: BottomLeftImpossibleFit-0");
                                             continue 'bottom_left_orientation_loop
                                         }
                                         GroupCreationResult::BottomRightImpossibleFit => {
                                             // todo forse devo incrementare uno dei contatori?
-                                            //println!("skip because of: BottomRightImpossibleFit");
+                                            println!("skip because of: BottomRightImpossibleFit");
                                             continue 'bottom_right_orientation_loop
                                         }
                                     };
@@ -132,9 +157,10 @@ pub fn solve<T: NextLevelOrPanic>(pgh: &PieceGroupHolder<T>){
                                         // if the shore is to low i continue on the next iteration
                                         if (*paw).get_shore() < MIN_SHORE_PIECE_ARRAY{
                                             (*paw).destroy_piece_array_wrapper();
+                                            println!("skip because of: MIN_SHORE_PIECE_ARRAY");
                                             continue;
                                         }
-
+                                        println!("good combo");
                                         // only for debug: test this one
                                         if TEST{
                                             let path = format!(
@@ -161,7 +187,7 @@ pub fn solve<T: NextLevelOrPanic>(pgh: &PieceGroupHolder<T>){
         println!("finish: {top_left_index}");
     };
 
-    (0..size).into_par_iter().for_each(
+    (0..size).into_iter().for_each(
         |x| solve_lambda_function(x)
     );
 

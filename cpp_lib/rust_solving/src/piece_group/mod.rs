@@ -146,6 +146,7 @@ impl<'a,T: Comparable + Clone + IsSubComponent + CanCreateSet<T> + AddShoreOfSub
 
         // returning an error if the piece is impossible
         if shore_tot.get_shore() <= MIN_SHORE_PIECE_GROUP{
+            //todo!(uncommeent this)
             return AvregeIsTooLow;
         }
 

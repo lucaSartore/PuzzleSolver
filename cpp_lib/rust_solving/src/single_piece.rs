@@ -10,7 +10,7 @@ use crate::piece_comparing::{Comparator, Initialized, Uninitialized, Initializat
 #[allow(improper_ctypes)]
 #[derive(Copy,Clone)]
 pub struct SingePiece{
-    id: u64,
+    pub id: u64,
     pub(crate) orientation: u64,
     /// zero sized type to compare the pieces, dose not need to be passed to c
     pub comparator: Comparator<Initialized>

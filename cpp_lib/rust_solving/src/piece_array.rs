@@ -199,8 +199,7 @@ mod testing{
             // create a piece array
             let pa = create_piece_array_wrapper(2,2,pieces.as_mut_ptr());
 
-            // generate an image
-            generate_test_image(pa);
+            (*pa).generate_test_image("test.png");
 
             // free the image in memory
             destroy_piece_array_wrapper(pa)

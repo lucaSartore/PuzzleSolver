@@ -68,6 +68,9 @@ void solve_puzzle_function(
         piece_images[i] = PieceImage(i,input_path_images);
     }
 
+//    // todo: remove this print
+//    cout << "CMP: " << pieces_connection[1].compare(2,3,3) << endl;
+
     // creating the list of level 1 pieces;
     list<GroupedPieces<1>> initial_list = {};
     for(int i=0; i < number_of_pieces; i++){

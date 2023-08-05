@@ -29,7 +29,7 @@ mod tests{
 
             let paw = pa.get_piece_array_wrapper();
 
-            (*paw).generate_test_image();
+            (*paw).generate_test_image("test.png");
 
             (*paw).destroy_piece_array_wrapper();
 
@@ -74,7 +74,7 @@ mod tests{
 
             let paw = pa.get_piece_array_wrapper();
 
-            (*paw).generate_test_image();
+            (*paw).generate_test_image("test.png");
 
             (*paw).destroy_piece_array_wrapper();
 

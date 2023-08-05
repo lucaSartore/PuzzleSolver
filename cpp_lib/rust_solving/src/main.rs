@@ -28,6 +28,10 @@ use piece_group::Direction;
 use piece_group_holder::PieceGroupHolder;
 use shore::Shore;
 use single_piece::SingePiece;
+use crate::constants::MIN_SHORE_PIECE_ARRAY;
+use crate::piece_array::PieceArray;
+use crate::piece_group::PieceArrayFiller;
+use crate::solver::TEST;
 
 
 fn main(){
@@ -50,9 +54,50 @@ fn main(){
         );
     }
 
+
     // convert the vector in piece group holder
     let pgh = PieceGroupHolder::new(v);
 
-    solver::solve(&pgh);
+
+    let tl = pgh.get(1,1);
+
+    let tr = pgh.get(3,0);
+
+    let br = pgh.get(9,3);
+
+    let bl = pgh.get(8,3);
+
+    let cmp = piece_comparing::Comparator::<Initialized>::get_initialized_comparator().unwrap();
+    println!("{:?}",cmp.compare(3,9,2,1));
+
+    let pg = PieceGroup::new(tl,tr,br,bl);
+
+    let pg = pg.unwrap();
+
+    // create the piece array with the appropriate size
+    let mut pa = PieceArray::new(2,2);
+
+
+
+    // fill the piece array with the piece group
+    pg.fill_piece_array(&mut pa,0,0,0);
+
+    // calling the c++ dll
+    unsafe {
+        let mut paw = pa.get_piece_array_wrapper();
+
+        (*paw).generate_test_image("missing.png");
+
+        println!("shore: {}",(*paw).get_shore());
+
+        // deallocate memory
+        (*paw).destroy_piece_array_wrapper();
+    }
+    println!("{:?}",pg);
+
+
+
+
+    //solver::solve(&pgh);
 
 }

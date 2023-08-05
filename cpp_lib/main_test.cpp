@@ -57,6 +57,7 @@ int main(){
     //t1 = thread(debug_thread);
 
     try{
+
         ps.solve_puzzle();
     }catch(wrong_state_exception &e){
         cout << "skip solve puzzle" << endl;
