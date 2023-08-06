@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.23)
 
 project( PuzzleSolver )
 
-
 set (CMAKE_CXX_STANDARD 20)
 set (CMAKE_BUILD_TYPE Release)
 
@@ -10,11 +9,29 @@ set (CMAKE_BUILD_TYPE Release)
 
 
 # REMEMBER TO ADD: YOUR_PATH\Puzzle_Solver\opencv\x64\vc15\bin\ to your system PATH
-find_package(OpenCV REQUIRED PATHS ../opencv)
+find_package(OpenCV REQUIRED PATHS  C:/Users/lucas/CLionProjects/Puzzle_Solver/opencv/)
 include_directories( ${OpenCV_INCLUDE_DIRS} )
 
+# the source file necessary to compile piece array
+set(SOURCE_FILES_PIECE_ARRAY
+        solving/puzzle_preview/PieceArray.cpp
+        solving/puzzle_preview/PieceArray.h
+        solving/puzzle_preview/PieceImmage.cpp
+        solving/puzzle_preview/PieceImage.h
+        solving/puzzle_preview/Holder.cpp
+        solving/puzzle_preview/Holder.h
+        solving/puzzle_preview/point_indexes.h
+        solving/puzzle_preview/PreviewManager.cpp
+        solving/puzzle_preview/PreviewManager.h
 
-#file to include
+        solving/util.h
+        solving/util.cpp
+
+        communication/communication_image.cpp
+        communication/communication_image.h
+        )
+
+#the source missing from SOURCE_FILES_PIECE_ARRAY necessary to compile everything
 set(SOURCE_FILES
         pre_processing/corner_finding.cpp
         pre_processing/corner_finding.h
@@ -27,8 +44,6 @@ set(SOURCE_FILES
         solving/calculate_connections.h
         solving/solve.h
         solving/solve.cpp
-        solving/util.h
-        solving/util.cpp
         solving/constants.h
 
         solving/graphic_piece/Side.cpp
@@ -52,21 +67,8 @@ set(SOURCE_FILES
         solving/groped_pieces/GroupedPiecesHolder.tpp
         solving/groped_pieces/GroupedPiecesHolder.h
 
-        solving/puzzle_preview/PieceArray.cpp
-        solving/puzzle_preview/PieceArray.h
-        solving/puzzle_preview/PieceImmage.cpp
-        solving/puzzle_preview/PieceImage.h
-        solving/puzzle_preview/Holder.cpp
-        solving/puzzle_preview/Holder.h
-        solving/puzzle_preview/point_indexes.h
-        solving/puzzle_preview/PreviewManager.cpp
-        solving/puzzle_preview/PreviewManager.h
-
-        communication/communication_image.cpp
-        communication/communication_image.h
         communication/puzzle_solver_dll.cpp
         communication/puzzle_solver_dll.h
-
 
         rust_solving/src/PieceArrayDLL/piece_array_dll.h
         rust_solving/src/PieceArrayDLL/piece_array_dll.cpp
@@ -78,15 +80,13 @@ set(SOURCE_FILES
         PuzzleSolver.h
         )
 
-
-
-
 # library for the c# app build
 add_library(
         PuzzleSolverLib SHARED
         communication/puzzle_solver_dll.cpp
         communication/puzzle_solver_dll.h
         ${SOURCE_FILES}
+        ${SOURCE_FILES_PIECE_ARRAY}
         rust_solving/rust_solving_lib.h
 )
 target_link_libraries( PuzzleSolverLib ${OpenCV_LIBS} )
@@ -96,20 +96,21 @@ target_link_libraries(PuzzleSolverLib C:/Users/lucas/CLionProjects/Puzzle_Solver
 # library for rust interop build
 add_library(
         PieceArrayLink SHARED
-        ${SOURCE_FILES}
-        rust_solving/rust_solving_lib.h
+        ${SOURCE_FILES_PIECE_ARRAY}
+        rust_solving/src/PieceArrayDLL/piece_array_dll.cpp
+        rust_solving/src/PieceArrayDLL/piece_array_dll.h
 )
 target_link_libraries(PieceArrayLink ${OpenCV_LIBS} )
-target_link_libraries(PieceArrayLink C:/Users/lucas/CLionProjects/Puzzle_Solver/dlls_output/rust_solving_lib.dll.lib)
 
 # test build
 add_executable(
         PuzzleSolverTest
         main_test.cpp
         ${SOURCE_FILES}
+        ${SOURCE_FILES_PIECE_ARRAY}
         rust_solving/rust_solving_lib.h
 )
-target_link_libraries( PuzzleSolverTest ${OpenCV_LIBS})
+target_link_libraries(PuzzleSolverTest ${OpenCV_LIBS})
 target_link_libraries(PuzzleSolverTest C:/Users/lucas/CLionProjects/Puzzle_Solver/dlls_output/rust_solving_lib.dll.lib)
 
 # enable testing functionality
