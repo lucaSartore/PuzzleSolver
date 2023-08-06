@@ -533,3 +533,19 @@ void PieceArray::save_as_file(std::string path) {
     }
 
 }
+
+PieceArray::PieceArray(int size_x, int size_y) {
+
+    assert(size_x>0);
+    assert(size_y>0);
+
+    has_been_completed = false;
+    image = Mat::zeros(Size(STARTING_DIMENSIONS,STARTING_DIMENSIONS),CV_8UC3);
+    dim_x = size_x;
+    dim_y = size_x;
+    // create the x dimension
+    pieces = vector<vector<Holder>>(size_x);
+    for(int i=0; i<size_x; i++){
+        pieces[i] = vector<Holder>(size_y);
+    }
+}

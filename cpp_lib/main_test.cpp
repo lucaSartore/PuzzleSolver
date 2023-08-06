@@ -28,8 +28,9 @@ void debug_thread(){
 
 int main(){
 
-    //PuzzleSolver ps(4, 4, "../work_path", "../../dataset/test_4x4/raw",2);
-    PuzzleSolver ps("../work_path");
+
+    PuzzleSolver ps(4, 4, "../work_path", "../../dataset/test_4x4/raw",2);
+    //PuzzleSolver ps("../work_path");
 
     ps.set_threshold(100);
 
@@ -52,8 +53,8 @@ int main(){
         cout << "skip calculate connections" << endl;
     }
 
-    //thread t1;
-    //t1 = thread(debug_thread);
+    thread t1;
+    t1 = thread(debug_thread);
 
     try{
         ps.solve_puzzle();
@@ -64,7 +65,7 @@ int main(){
     //imshow("lalala",ps.get_result());
     //waitKey(0);
 
-    //t1.join();
+    t1.join();
 
     return 0;
 

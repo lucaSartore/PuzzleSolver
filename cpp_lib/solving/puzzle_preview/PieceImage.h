@@ -5,6 +5,7 @@
 #ifndef PIECECLASS_PIECEIMAGE_H
 #define PIECECLASS_PIECEIMAGE_H
 
+# define PUT_DEBUG_NUMBER_INSIDE_THE_PIECE false
 #include <opencv2/opencv.hpp>
 #include <iostream>
 

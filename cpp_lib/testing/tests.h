@@ -14,3 +14,5 @@ void test_grouped_piece_holder();
 void test_piece_array_save();
 void test_preview_manager();
 void test_image_ram_encode();
+void test_rust_integration();
+void test_piece_array_size_constructor();

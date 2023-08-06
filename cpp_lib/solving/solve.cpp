@@ -68,6 +68,9 @@ void solve_puzzle_function(
         piece_images[i] = PieceImage(i,input_path_images);
     }
 
+
+//    cout << "CMP: " << pieces_connection[1].compare(2,3,3) << endl;
+
     // creating the list of level 1 pieces;
     list<GroupedPieces<1>> initial_list = {};
     for(int i=0; i < number_of_pieces; i++){
@@ -192,7 +195,10 @@ void solve_recursive(unsigned int dim_x,unsigned int dim_y,GroupedPiecesHolder<N
 
 template<int N>
 void solve_thread(GroupedPiecesHolder<N> *input_pieces, atomic<int> * index, atomic<int> * found, std::list<GroupedPieces<N+1>> *result_list, mutex *result_list_mutex, PieceImage* images){
-
+    /*if(N == 2){
+        cout << "EXITING" << endl;
+        exit(69);
+    }*/
     // calculate total length
     int number_of_pieces = input_pieces->get_length();
 
@@ -254,6 +260,15 @@ void solve_thread(GroupedPiecesHolder<N> *input_pieces, atomic<int> * index, ato
                                             // if shore is high enough, add into list
                                             result_list_mutex->lock();
                                             result_list->push_back(std::move(new_piece));
+
+                                            // write the file to the disk
+                                            string output_path = std::format(
+                                                "{}_{}_{}_{}_{}_{}_{}_{}.png",
+                                                top_left_index , top_right_index,bottom_right_index,bottom_left_index,
+                                                top_left_orientation,top_right_orientation,bottom_right_orientation,bottom_left_orientation
+                                            );
+                                            imwrite(output_path,array.get_image(PREVIEW));
+
                                             result_list_mutex->unlock();
 
                                             // update tee number of found pieces

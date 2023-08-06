@@ -107,8 +107,8 @@ Side::Side(Mat& shape, PieceShape* piece_, int piece_side_, Point p1, Point p2, 
 
 Mat Side::get_compare_image(const Side &other)const {
 
-
     Mat other_border_shape_rotated;
+
     rotate(other.border_shape, other_border_shape_rotated, ROTATE_180);
     Mat and_mask, or_mask;
     bitwise_and(border_shape, other_border_shape_rotated, and_mask);

@@ -37,36 +37,36 @@ Shore GroupedPieces<N>::compare_to(Direction direction, GroupedPieces<N> &other,
     Shore s;
     switch (direction) {
         case RIGHT:
-            s += this->get_top_right(recursive_orientation)->compare_to(direction,*other.get_top_left(recursive_orientation),recursive_orientation+orientation,recursive_orientation_other+other.orientation);
+            s += this->get_top_right(recursive_orientation)->compare_to(direction,*other.get_top_left(recursive_orientation_other),recursive_orientation+orientation,recursive_orientation_other+other.orientation);
             // early evaluation to save time
             if(s.get_shore() == 0){
                 return s;
             }
-            s += this->get_bottom_right(recursive_orientation)->compare_to(direction,*other.get_bottom_left(recursive_orientation),recursive_orientation+orientation,recursive_orientation_other+other.orientation);
+            s += this->get_bottom_right(recursive_orientation)->compare_to(direction,*other.get_bottom_left(recursive_orientation_other),recursive_orientation+orientation,recursive_orientation_other+other.orientation);
             break;
         case LEFT:
-            s += this->get_top_left(recursive_orientation)->compare_to(direction,*other.get_top_right(recursive_orientation),recursive_orientation+orientation,recursive_orientation_other+other.orientation);
+            s += this->get_top_left(recursive_orientation)->compare_to(direction,*other.get_top_right(recursive_orientation_other),recursive_orientation+orientation,recursive_orientation_other+other.orientation);
             // early evaluation to save time
             if(s.get_shore() == 0){
                 return s;
             }
-            s += this->get_bottom_left(recursive_orientation)->compare_to(direction,*other.get_bottom_right(recursive_orientation),recursive_orientation+orientation,recursive_orientation_other+other.orientation);
+            s += this->get_bottom_left(recursive_orientation)->compare_to(direction,*other.get_bottom_right(recursive_orientation_other),recursive_orientation+orientation,recursive_orientation_other+other.orientation);
             break;
         case UP:
-            s += this->get_top_left(recursive_orientation)->compare_to(direction,*other.get_bottom_left(recursive_orientation),recursive_orientation+orientation,recursive_orientation_other+other.orientation);
+            s += this->get_top_left(recursive_orientation)->compare_to(direction,*other.get_bottom_left(recursive_orientation_other),recursive_orientation+orientation,recursive_orientation_other+other.orientation);
             // early evaluation to save time
             if(s.get_shore() == 0){
                 return s;
             }
-            s += this->get_top_right(recursive_orientation)->compare_to(direction,*other.get_bottom_right(recursive_orientation),recursive_orientation+orientation,recursive_orientation_other+other.orientation);
+            s += this->get_top_right(recursive_orientation)->compare_to(direction,*other.get_bottom_right(recursive_orientation_other),recursive_orientation+orientation,recursive_orientation_other+other.orientation);
             break;
         case DOWN:
-            s += this->get_bottom_left(recursive_orientation)->compare_to(direction,*other.get_top_left(recursive_orientation),recursive_orientation+orientation,recursive_orientation_other+other.orientation);
+            s += this->get_bottom_left(recursive_orientation)->compare_to(direction,*other.get_top_left(recursive_orientation_other),recursive_orientation+orientation,recursive_orientation_other+other.orientation);
             // early evaluation to save time
             if(s.get_shore() == 0){
                 return s;
             }
-            s += this->get_bottom_right(recursive_orientation)->compare_to(direction,*other.get_top_right(recursive_orientation),recursive_orientation+orientation,recursive_orientation_other+other.orientation);
+            s += this->get_bottom_right(recursive_orientation)->compare_to(direction,*other.get_top_right(recursive_orientation_other),recursive_orientation+orientation,recursive_orientation_other+other.orientation);
             break;
         default:
             throw std::runtime_error("unknown direction");

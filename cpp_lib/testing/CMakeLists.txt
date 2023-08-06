@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.23)
 
+set (CMAKE_CXX_STANDARD 20)
+#set (CMAKE_BUILD_TYPE Release)
+
 
 project( Test )
 find_package(OpenCV REQUIRED PATHS ../../opencv)
@@ -46,5 +49,8 @@ add_executable(
 
         ../communication/communication_image.cpp
         ../communication/communication_image.h
+
+        ../rust_solving/src/PieceArrayDLL/piece_array_dll.cpp
+        ../rust_solving/src/PieceArrayDLL/piece_array_dll.h
 )
 target_link_libraries( Test ${OpenCV_LIBS} )

@@ -35,6 +35,7 @@ void calculate_all_connections(std::string input_path, std::string output_path,u
 }
 
 void piece_comparer_thread(PieceConnection *pieces_connections, PieceShape *pieces_shapes,unsigned int number_of_pieces, atomic<int> *index){
+
     while (true) {
         int piece_id = std::atomic_fetch_add(index,1);
 
@@ -56,10 +57,9 @@ void piece_comparer_thread(PieceConnection *pieces_connections, PieceShape *piec
                         compatibility = 0;
                     }
 
-
                     //Mat preview = pieces_shapes[piece_id].get_side(piece_side).get_compare_image(
                     //        pieces_shapes[other_piece_id].get_side(other_piece_side)
-                    //        );    
+                    //        );
                     //imwrite("comparison.png",preview);
 
                     if(PreviewManager::is_preview_enabled()){
@@ -83,10 +83,10 @@ void calculate_single_thread(const string &input_path, const string &output_path
     // create array of piece shape
     PieceConnection::set_number_of_pieces(number_of_pieces);
     PieceShape::set_origin_path(input_path);
-    PieceShape pieces_shapes[number_of_pieces];
+    auto pieces_shapes = new PieceShape[number_of_pieces];
 
     // create array of piece logic
-    PieceConnection pieces_connections[number_of_pieces];
+    auto pieces_connections = new PieceConnection[number_of_pieces];
 
     // filling both array up with the respective index;
     for(int i=0; i < number_of_pieces; i++){
@@ -145,9 +145,13 @@ void calculate_single_thread(const string &input_path, const string &output_path
          << " sec" << endl;
 
     // save the connections information to the disk
-    for(auto & i : pieces_connections){
-        i.save_as_file(output_path);
+    for(int i=0; i<number_of_pieces; i++){
+            pieces_connections[i].save_as_file(output_path);
     }
+
+
+    delete[] pieces_shapes;
+    delete[] pieces_connections;
 
 }
 
@@ -188,6 +192,12 @@ void calculate_multi_thread(const string &input_path, const string &output_path,
     // array of pointers to thread
     auto *threads = new thread[processor_count];
 
+//    // todo: remove this tebug print
+//    // check for compatibility
+//    float compatibility = pieces_shapes[1].get_side(2).compare_to(
+//            pieces_shapes[3].get_side(3)
+//    );
+//    cout << "RAW-CMP: " << compatibility << endl;
 
     auto start = chrono::steady_clock::now();
 
@@ -211,7 +221,7 @@ void calculate_multi_thread(const string &input_path, const string &output_path,
 
     cout << "Execution time in seconds [multi threaded]: "
          << chrono::duration_cast<chrono::seconds>(end - start).count()
-         << " sec";
+         << " sec" << endl;
 
     // free the memory allocated
     delete[] threads;

@@ -2,16 +2,20 @@ cmake_minimum_required(VERSION 3.23)
 
 project( PuzzleSolver )
 
-# REMEMBER the bundled version of opencv is compiled with MinGW, if you use the Visual Studio compiler (or others)
-# you need to download another version
 
-# REMEMBER TO ADD: YOUR_PATH\Puzzle_Solver\opencv\x64\mingw\bin\ to your system PATH
+set (CMAKE_CXX_STANDARD 20)
+set (CMAKE_BUILD_TYPE Release)
+
+# REMEMBER the bundled version of opencv is compiled with Visual Studio, if you use other compilers you need to install another version your self
+
+
+# REMEMBER TO ADD: YOUR_PATH\Puzzle_Solver\opencv\x64\vc15\bin\ to your system PATH
 find_package(OpenCV REQUIRED PATHS ../opencv)
 include_directories( ${OpenCV_INCLUDE_DIRS} )
 
+
 #file to include
 set(SOURCE_FILES
-
         pre_processing/corner_finding.cpp
         pre_processing/corner_finding.h
         pre_processing/piece_splitting.h
@@ -24,6 +28,7 @@ set(SOURCE_FILES
         solving/solve.h
         solving/solve.cpp
         solving/util.h
+        solving/util.cpp
         solving/constants.h
 
         solving/graphic_piece/Side.cpp
@@ -62,19 +67,50 @@ set(SOURCE_FILES
         communication/puzzle_solver_dll.cpp
         communication/puzzle_solver_dll.h
 
+
+        rust_solving/src/PieceArrayDLL/piece_array_dll.h
+        rust_solving/src/PieceArrayDLL/piece_array_dll.cpp
+
+        rust_solving/src/PieceArrayDLL/piece_array_dll.h
+        rust_solving/src/PieceArrayDLL/piece_array_dll.cpp
+
         PuzzleSolver.cpp
         PuzzleSolver.h
         )
 
 
-# library build
-#add_library(PuzzleSolverLib SHARED puzzle_solver_library.cpp puzzle_solver_library.h ${SOURCE_FILES})
-add_library(PuzzleSolverLib SHARED communication/puzzle_solver_dll.cpp communication/puzzle_solver_dll.h ${SOURCE_FILES})
+
+
+# library for the c# app build
+add_library(
+        PuzzleSolverLib SHARED
+        communication/puzzle_solver_dll.cpp
+        communication/puzzle_solver_dll.h
+        ${SOURCE_FILES}
+        rust_solving/rust_solving_lib.h
+)
 target_link_libraries( PuzzleSolverLib ${OpenCV_LIBS} )
+target_link_libraries(PuzzleSolverLib C:/Users/lucas/CLionProjects/Puzzle_Solver/dlls_output/rust_solving_lib.dll.lib)
+
+
+# library for rust interop build
+add_library(
+        PieceArrayLink SHARED
+        ${SOURCE_FILES}
+        rust_solving/rust_solving_lib.h
+)
+target_link_libraries(PieceArrayLink ${OpenCV_LIBS} )
+target_link_libraries(PieceArrayLink C:/Users/lucas/CLionProjects/Puzzle_Solver/dlls_output/rust_solving_lib.dll.lib)
 
 # test build
-add_executable(PuzzleSolverTest main_test.cpp ${SOURCE_FILES})
-target_link_libraries( PuzzleSolverTest ${OpenCV_LIBS} )
+add_executable(
+        PuzzleSolverTest
+        main_test.cpp
+        ${SOURCE_FILES}
+        rust_solving/rust_solving_lib.h
+)
+target_link_libraries( PuzzleSolverTest ${OpenCV_LIBS})
+target_link_libraries(PuzzleSolverTest C:/Users/lucas/CLionProjects/Puzzle_Solver/dlls_output/rust_solving_lib.dll.lib)
 
 # enable testing functionality
 enable_testing()

@@ -12,6 +12,8 @@
 using namespace cv;
 using namespace std;
 
+
+
 class PieceShape {
 private:
     // path where you can find the images saved

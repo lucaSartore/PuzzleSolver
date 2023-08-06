@@ -8,11 +8,12 @@
  * */
 
 // contain a raw pointer and the len information of an array
-struct PngImagePointer{
+typedef struct PngImagePointer{
     uchar* data;
     unsigned long long len ;
-    PngImagePointer(uchar* data_,unsigned long long len_);
-};
+}PngImagePointer;
+
+PngImagePointer PngImagePointerConstructor(uchar* data_,unsigned long long len_);
 
 class PngImageClass{
 private:

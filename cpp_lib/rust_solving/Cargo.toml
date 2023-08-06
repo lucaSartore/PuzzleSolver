@@ -1,0 +1,12 @@
+[package]
+name = "rust_solving"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "rust_solving_lib"
+crate-type = ["cdylib"]
+
+[dependencies]
+libc = "0.2"
+rayon = "1.7.0"

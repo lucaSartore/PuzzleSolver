@@ -882,6 +882,11 @@ INPUT ./svg-inkscape/match_metrics_vs_threshold_used_svg-tex.pdf
 INPUT ./svg-inkscape/match_metrics_vs_threshold_used_svg-tex.pdf
 INPUT ./svg-inkscape/match_metrics_vs_threshold_used_svg-tex.pdf
 INPUT ./svg-inkscape/match_metrics_vs_threshold_used_svg-tex.pdf
+INPUT ./pictures/corruption_rate.png
+INPUT ./pictures/corruption_rate.png
+INPUT pictures/corruption_rate.png
+INPUT ./pictures/corruption_rate.png
+INPUT ./pictures/corruption_rate.png
 INPUT c:/texlive/2021/texmf-dist/fonts/tfm/public/cm/cmtt10.tfm
 INPUT paper.aux
 INPUT ./paper.out
