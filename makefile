@@ -1,9 +1,11 @@
 
 # target for the PieceArray DLL that the rust library uses
 PieceArrayLink:
-	copy .\cpp_lib\cmake-build-debug\PieceArrayLink.dll .\dlls_output\PieceArrayLink.dll
-	copy .\cpp_lib\cmake-build-debug\PieceArrayLink.dll.manifest .\dlls_output\PieceArrayLink.dll.manifest
-
+	cmake --build C:\Users\lucas\CLionProjects\Puzzle_Solver\cpp_lib\cmake-build-debug --target PieceArrayLink -j 9
+	copy .\cpp_lib\cmake-build-debug\Debug\PieceArrayLink.dll .\dlls_output\PieceArrayLink.dll
+	copy .\cpp_lib\cmake-build-debug\Debug\PieceArrayLink.exp .\dlls_output\PieceArrayLink.exp
+	copy .\cpp_lib\cmake-build-debug\Debug\PieceArrayLink.lib .\dlls_output\PieceArrayLink.lib
+	copy .\cpp_lib\cmake-build-debug\Debug\PieceArrayLink.pdb .\dlls_output\PieceArrayLink.pdb
 
 # target for the rust library DLL that will be used by the puzzle solver
 RustLib: PieceArrayLink
@@ -17,16 +19,16 @@ RustLib: PieceArrayLink
 # target for the main c++ DLL that will be used by the c# "front end" for the app
 PuzzleSolverLib: RustLib
 	cmake --build C:\Users\lucas\CLionProjects\Puzzle_Solver\cpp_lib\cmake-build-debug --target PuzzleSolverLib -j 9
-	copy .\cpp_lib\cmake-build-debug\PuzzleSolverLib.dll .\dlls_output\PuzzleSolverLib.dll
-	copy .\cpp_lib\cmake-build-debug\PuzzleSolverLib.dll.manifest .\dlls_output\PuzzleSolverLib.dll.manifest
-	copy .\cpp_lib\cmake-build-debug\PuzzleSolverLib.exp .\dlls_output\PuzzleSolverLib.exp
-	copy .\cpp_lib\cmake-build-debug\PuzzleSolverLib.lib .\dlls_output\PuzzleSolverLib.lib
+	copy .\cpp_lib\cmake-build-debug\Debug\PuzzleSolverLib.dll .\dlls_output\PuzzleSolverLib.dll
+	copy .\cpp_lib\cmake-build-debug\Debug\PuzzleSolverLib.exp .\dlls_output\PuzzleSolverLib.exp
+	copy .\cpp_lib\cmake-build-debug\Debug\PuzzleSolverLib.lib .\dlls_output\PuzzleSolverLib.lib
+	copy .\cpp_lib\cmake-build-debug\Debug\PuzzleSolverLib.pdb .\dlls_output\PuzzleSolverLib.pdb
 
 uninstall:
 	rmdir /s /q .\cpp_lib\cmake-build-debug
 
 
 install:
-	cmake -DCMAKE_BUILD_TYPE=Debug "-DCMAKE_MAKE_PROGRAM=C:/Program Files/JetBrains/CLion 2022.2.4/bin/ninja/win/ninja.exe" -G Ninja -S C:\Users\lucas\CLionProjects\Puzzle_Solver\cpp_lib -B C:\Users\lucas\CLionProjects\Puzzle_Solver\cpp_lib\cmake-build-debug
+	cmake -S C:\Users\lucas\CLionProjects\Puzzle_Solver\cpp_lib -B C:\Users\lucas\CLionProjects\Puzzle_Solver\cpp_lib\cmake-build-debug
 #cmake -S .\cpp_lib -B .\cpp_lib\cmake-build-debug
 
