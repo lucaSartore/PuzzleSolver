@@ -71,6 +71,8 @@ set(SOURCE_FILES
         rust_solving/src/PieceArrayDLL/piece_array_dll.h
         rust_solving/src/PieceArrayDLL/piece_array_dll.cpp
 
+        rust_solving/src/PieceArrayDLL/piece_array_dll.h
+        rust_solving/src/PieceArrayDLL/piece_array_dll.cpp
 
         PuzzleSolver.cpp
         PuzzleSolver.h
@@ -80,16 +82,35 @@ set(SOURCE_FILES
 
 
 # library for the c# app build
-add_library(PuzzleSolverLib SHARED communication/puzzle_solver_dll.cpp communication/puzzle_solver_dll.h ${SOURCE_FILES})
+add_library(
+        PuzzleSolverLib SHARED
+        communication/puzzle_solver_dll.cpp
+        communication/puzzle_solver_dll.h
+        ${SOURCE_FILES}
+        rust_solving/rust_solving_lib.h
+)
 target_link_libraries( PuzzleSolverLib ${OpenCV_LIBS} )
+target_link_libraries(PuzzleSolverLib C:/Users/lucas/CLionProjects/Puzzle_Solver/dlls_output/rust_solving_lib.dll.lib)
+
 
 # library for rust interop build
-add_library(PieceArrayLink SHARED rust_solving/src/PieceArrayDLL/piece_array_dll.h rust_solving/src/PieceArrayDLL/piece_array_dll.cpp ${SOURCE_FILES})
-target_link_libraries( PieceArrayLink ${OpenCV_LIBS} )
+add_library(
+        PieceArrayLink SHARED
+        ${SOURCE_FILES}
+        rust_solving/rust_solving_lib.h
+)
+target_link_libraries(PieceArrayLink ${OpenCV_LIBS} )
+target_link_libraries(PieceArrayLink C:/Users/lucas/CLionProjects/Puzzle_Solver/dlls_output/rust_solving_lib.dll.lib)
 
 # test build
-add_executable(PuzzleSolverTest main_test.cpp ${SOURCE_FILES})
+add_executable(
+        PuzzleSolverTest
+        main_test.cpp
+        ${SOURCE_FILES}
+        rust_solving/rust_solving_lib.h
+)
 target_link_libraries( PuzzleSolverTest ${OpenCV_LIBS})
+target_link_libraries(PuzzleSolverTest C:/Users/lucas/CLionProjects/Puzzle_Solver/dlls_output/rust_solving_lib.dll.lib)
 
 # enable testing functionality
 enable_testing()

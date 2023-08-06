@@ -21,7 +21,6 @@ mod constants;
 
 mod finalize_piece_array;
 
-
 use std::collections::HashSet;
 use libc::size_t;
 use piece_array::PieceArrayWrapper;
@@ -36,9 +35,22 @@ use crate::constants::MIN_SHORE_PIECE_ARRAY;
 use crate::piece_array::PieceArray;
 use crate::piece_group::PieceArrayFiller;
 use crate::solver::TEST;
-use std::ffi::CStr;
+use std::ffi::{c_void, CStr};
+use std::ptr::null;
+
+// type of a function pointer in c that is used for the preview callback
+type CallbackFunc = unsafe extern "C" fn(*mut PieceArrayWrapper);
+static mut CALL_BACK_FUNC: CallbackFunc = null_func;
+pub unsafe extern "C" fn null_func(paw: *mut PieceArrayWrapper){}
+
 #[no_mangle]
-pub extern "C" fn solve_puzzle(path_images: *const libc::c_char,path_connections: *const libc::c_char,path_output: *const libc::c_char, size_x: u64, size_y: u64) -> bool{
+pub extern "C" fn solve_puzzle_rust(path_images: *const libc::c_char,path_connections: *const libc::c_char,path_output: *const libc::c_char, size_x: u32, size_y: u32, callback_func: CallbackFunc) -> bool{
+
+    // initialize the call back function
+    unsafe {
+        CALL_BACK_FUNC = callback_func;
+    }
+
     // convert all the strings in c string
     let path_images = unsafe { CStr::from_ptr(path_images) };
     let path_images = path_images.to_str().unwrap();
@@ -70,7 +82,7 @@ pub extern "C" fn solve_puzzle(path_images: *const libc::c_char,path_connections
     let pgh = PieceGroupHolder::new(v);
 
     // call the solving function
-    return solver::solve(&pgh,path_output,4,4);
+    return solver::solve(&pgh,path_output,4 as u64,4 as u64);
 }
 
 #[test]

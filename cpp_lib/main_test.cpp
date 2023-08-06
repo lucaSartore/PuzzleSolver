@@ -54,10 +54,9 @@ int main(){
     }
 
     thread t1;
-    //t1 = thread(debug_thread);
+    t1 = thread(debug_thread);
 
     try{
-
         ps.solve_puzzle();
     }catch(wrong_state_exception &e){
         cout << "skip solve puzzle" << endl;
@@ -66,7 +65,7 @@ int main(){
     //imshow("lalala",ps.get_result());
     //waitKey(0);
 
-    //t1.join();
+    t1.join();
 
     return 0;
 

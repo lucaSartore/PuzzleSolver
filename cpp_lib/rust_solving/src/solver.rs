@@ -7,6 +7,7 @@ use crate::piece_group_holder::PieceGroupHolder;
 use std::collections::LinkedList;
 use std::sync::Mutex;
 use rayon::prelude::*;
+use crate::CALL_BACK_FUNC;
 use crate::constants::MIN_SHORE_PIECE_ARRAY;
 use crate::finalize_piece_array::finalize_piece_array;
 
@@ -137,7 +138,9 @@ pub fn solve<T: NextLevelOrPanic>(pgh: &PieceGroupHolder<T>, output_path: &str, 
                                             continue;
                                         }
                                         // send the prevew image to the c# backend
-                                        (*paw).send_preview_image();
+                                        //(*paw).send_preview_image();
+                                        CALL_BACK_FUNC(paw);
+
                                         // deallocate memory
                                         (*paw).destroy_piece_array_wrapper();
                                     }
@@ -168,5 +171,5 @@ pub fn solve<T: NextLevelOrPanic>(pgh: &PieceGroupHolder<T>, output_path: &str, 
 
     // call the next iteration of the current function, and panic if it has not been compiled
     // the limit is 10 iterations... or a 4M pieces puzzle
-    return T::next_or_panic(&pgh_out, output_path, size_x, size_y);
+    T::next_or_panic(&pgh_out, output_path, size_x, size_y)
 }

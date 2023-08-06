@@ -54,6 +54,6 @@ pub fn finalize_piece_array<T: NextLevelOrPanic>(pgh: &PieceGroupHolder<T>, outp
         (*paw).destroy_piece_array_wrapper();
     }
 
-
+    println!("Return 1");
     return true;
 }

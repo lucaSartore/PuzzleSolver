@@ -100,6 +100,7 @@ __declspec(dllexport) void save_as_binary(PieceArrayWrapper* piece_array_wrapper
 /// send to the c# frontend a preview image (if preview is enable)
 __declspec(dllexport) void send_preview_image(PieceArrayWrapper* piece_array_wrapper){
     // send image to c# front end
+    std::cout << "Preview: " << PreviewManager::is_preview_enabled() << std::endl;
     if(PreviewManager::is_preview_enabled()){
         cv::Mat image = piece_array_wrapper->pa.get_image(PREVIEW);
         crop_image_to_remove_black_gb(image);

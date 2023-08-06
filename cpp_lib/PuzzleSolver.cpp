@@ -10,7 +10,7 @@
 #include "pre_processing/corner_finding.h"
 #include "solving/calculate_connections.h"
 #include "solving/solve.h"
-
+#include "rust_solving/rust_solving_lib.h"
 using namespace std;
 
 PuzzleSolver::PuzzleSolver(int dim_x, int dim_y, std::string work_path_, std::string origin_pat_,int number_of_cores_) {
@@ -170,7 +170,7 @@ void PuzzleSolver::load_status(std::string file) {
             images[i] = PieceImage(i);
         }
 
-        piece_array.load_from_file(work_path+"/results/solution.bin",images);
+        piece_array.load_from_file(work_path+"/results/result.bin",images);
     }
 }
 
@@ -200,11 +200,28 @@ void PuzzleSolver::calculate_connections() {
 
 }
 
+
 void PuzzleSolver::solve_puzzle() {
     if(state != CONNECTION_CALCULATED){
         throw wrong_state_exception();
     }
 
+    bool result = solve_puzzle_rust(
+            (work_path+"/divided").c_str(),
+            (work_path+"/connections").c_str(),
+            (work_path + "/results/").c_str(),
+            final_dim_x,
+            final_dim_y,
+            *send_preview_image
+            );
+
+    if (result){
+        cout << "the puzzle has been solved" << endl;
+    }else{
+        cout << "the puzzle has not been solved" << endl;
+    }
+
+    /*
     // find the solutions
     solve_puzzle_function(
             work_path+"/connections",
@@ -215,7 +232,7 @@ void PuzzleSolver::solve_puzzle() {
             number_of_pieces,
             number_of_cores
             );
-
+    */
     state = COMBINATION_CALCULATED;
 
     save_status();
