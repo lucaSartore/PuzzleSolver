@@ -87,6 +87,9 @@ pub extern "C" fn solve_puzzle_rust(path_images: *const libc::c_char,path_connec
 
 #[test]
 fn main_test(){
+
+    println!("Start main test!");
+
     use crate::{*};
     // load data for the comparator
     let init_cmp = Comparator::<Initialized>::initialize_comparator(r"..\..\dataset\test_4x4\connections").unwrap();
