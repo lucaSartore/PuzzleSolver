@@ -120,7 +120,7 @@ impl<'a,T: Comparable + Clone + IsSubComponent + CanCreateSet<T> + AddShoreOfSub
         // comparing top border
         shore = top_right.compare_to(Direction::DOWN,bottom_right,0,0);
         // returning error if the piece is impossible
-        if shore.get_shore() == 0 {
+        if shore.get_shore() == 0  {
             return BottomRightImpossibleFit;
         }
         shore_tot += shore;

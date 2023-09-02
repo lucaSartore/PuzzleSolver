@@ -1,4 +1,5 @@
-use std::fmt::Debug;
+
+use std::fmt::{Debug, Formatter};
 use crate::piece_group::{Comparable, IsSubComponent, PieceGroup};
 use crate::shore::Shore;
 
@@ -23,6 +24,7 @@ pub enum GroupCreationResult<'a, T: Comparable + Clone + IsSubComponent>{
     /// the shore of the piece is lower that the minimum threshold
     AvregeIsTooLow
 }
+
 
 impl<'a, T: Comparable + Debug + Clone + IsSubComponent> GroupCreationResult<'a, T>{
     pub fn unwrap(self) -> PieceGroup<'a, T>{
