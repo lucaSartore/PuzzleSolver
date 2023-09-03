@@ -6,6 +6,7 @@ use std::time::Duration;
 use libc::tolower;
 use rayon::prelude::*;
 use crate::piece_group::{Comparable, Direction, HasOrientation};
+use crate::shore::Shore;
 
 
 /// this struct is used to keep all of the possible combination of one rotation of piece array group in scope
@@ -81,7 +82,8 @@ impl<'a,T: Clone + HasOrientation + Send + Sync + Comparable> PieceGroupHolder<T
 pub struct PieceRef<'a,T>{
     pub index: usize,
     pub orientation: usize,
-    pub reference: &'a T
+    pub reference: &'a T,
+    pub shore: Shore
 }
 
 impl<'a,T> Debug for PieceRef<'a,T>{
@@ -91,11 +93,12 @@ impl<'a,T> Debug for PieceRef<'a,T>{
 }
 
 impl<'a,T> PieceRef<'a,T> {
-    pub fn new(index: usize, orientation: usize, reference: &'a T) -> Self{
+    pub fn new(index: usize, orientation: usize, reference: &'a T,shore: Shore) -> Self{
         return Self{
             index,
             orientation,
-            reference
+            reference,
+            shore
         }
     }
 }
@@ -184,35 +187,6 @@ impl<'a,T> MatchesForOnePiece<'a,T> {
     }
 }
 
-#[test]
-fn t(){
-
-    let v: Vec<i32> = vec![];
-    let a = v.as_slice();
-
-    println!("{:?}",&a);
-
-    println!("{:?}",&a[0..]);
-
-    let v: Vec<i32> = vec![0,1,2,3,4,5,6,7];
-    let a = v.as_slice();
-
-    println!("{:?}",&a);
-
-    println!("{:?}",&a[0..]);
-
-
-    println!("{:?}",&a[4..]);
-
-
-    println!("{:?}",&a[7..]);
-
-    println!("{:?}",&a[8..]);
-
-}
-
-
-
 
 #[derive(Debug)]
 pub struct MatchForOnePieceAllOrientation<'a,T>{
@@ -223,14 +197,14 @@ pub struct MatchForOnePieceAllOrientation<'a,T>{
 impl<'a,T: Clone + HasOrientation + Send + Sync + Comparable> MatchForOnePieceAllOrientation<'a,T> {
 
     /// the piece that will be insert must match with the piece this struct represent, on the UP direction
-    pub fn insert_match(&mut self, this_piece_orientation: usize, to_insert_index: usize, to_insert_orientation: usize, pgh: &'a PieceGroupHolder<T>){
+    pub fn insert_match(&mut self, this_piece_orientation: usize, to_insert_index: usize, to_insert_orientation: usize, pgh: &'a PieceGroupHolder<T>, shore: Shore){
 
         for (i,direction) in zip(0..4, [Direction::UP,Direction::RIGHT,Direction::DOWN, Direction::LEFT]){
 
             let orientation_this = (this_piece_orientation+4-i)%4;
             let orientation_other = (to_insert_orientation+4-i)%4;
 
-            let p = PieceRef::new(to_insert_index, orientation_other, pgh.get(to_insert_index, orientation_other));
+            let p = PieceRef::new(to_insert_index, orientation_other, pgh.get(to_insert_index, orientation_other),shore);
             self.matches[orientation_this].insert_match(p,direction);
         }
     }
@@ -272,8 +246,8 @@ impl<'a,T: Clone + HasOrientation + Send + Sync + Comparable> MatchForAllPieces<
     }
 
     /// first piece must match on second piece on the direction UP
-    pub fn insert_match(&mut self, first_index: usize, first_orientation: usize, second_index: usize, second_orientation: usize, pgh: &'a PieceGroupHolder<T>){
-        self.matches[first_index].insert_match(first_orientation, second_index, second_orientation, pgh);
+    pub fn insert_match(&mut self, first_index: usize, first_orientation: usize, second_index: usize, second_orientation: usize, pgh: &'a PieceGroupHolder<T>, shore: Shore){
+        self.matches[first_index].insert_match(first_orientation, second_index, second_orientation, pgh, shore);
     }
 
     /// finalize the object by building `piece_index_to_aray_begin`
@@ -308,15 +282,16 @@ impl<'a,T: Clone + HasOrientation + Send + Sync + Comparable> MatchForAllPieces<
                         let first_piece = pgh.get(first_piece_index,first_piece_orientation);
                         let second_piece = pgh.get(second_piece_index,second_piece_orientation);
 
-                        if first_piece.compare_to(Direction::UP,second_piece,0,0).get_shore() != 0{
-                            to_return.insert_match(first_piece_index,first_piece_orientation,second_piece_index,second_piece_orientation,pgh);
+                        let shore =  first_piece.compare_to(Direction::UP,second_piece,0,0);
+
+                        if shore.get_shore() != 0{
+                            to_return.insert_match(first_piece_index,first_piece_orientation,second_piece_index,second_piece_orientation,pgh,shore);
                         }
                     }
                 }
             }
         }
         to_return.finalize();
-
         return to_return;
     }
 }

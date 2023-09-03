@@ -96,9 +96,10 @@ impl<'a> PieceGroup<'a, SingePiece> {
 }
 
 /// implementation of the new function for the second and above levels
+/// `already_calculated_shores` is a vect with the shores for the comparison top_left-top_right; top_right-bottom_right and bottom_right-bottom_left
 impl<'a,T: Comparable + Clone + IsSubComponent + CanCreateSet<T> + AddShoreOfSubComponents> PieceGroup<'a,T> {
 
-    pub fn new(top_left: &'a T, top_right: &'a T, bottom_right: &'a T, bottom_left: &'a T) -> GroupCreationResult<'a,T>{
+    pub fn new(top_left: &'a T, top_right: &'a T, bottom_right: &'a T, bottom_left: &'a T, already_calculated_shores: [Shore;3]) -> GroupCreationResult<'a,T>{
         let ids = T::get_set(&top_left, &top_right, &bottom_right, &bottom_left);
 
         let ids = match ids {
@@ -115,43 +116,12 @@ impl<'a,T: Comparable + Clone + IsSubComponent + CanCreateSet<T> + AddShoreOfSub
         if shore.get_shore() == 0 {
             return BottomLeftImpossibleFit;
         }
-        shore_tot = shore;
-
-        // comparing top border
-        shore = top_left.compare_to(Direction::RIGHT,top_right,0,0);
-        // returning error if the piece is impossible
-        if shore.get_shore() == 0 {
-            panic!();
-            return TopRightImpossibleFit;
-        }
-        shore_tot += shore;
-
-        // comparing top border
-        shore = top_right.compare_to(Direction::DOWN,bottom_right,0,0);
-        // returning error if the piece is impossible
-        if shore.get_shore() == 0  {
-            panic!();
-            return BottomRightImpossibleFit;
-        }
-        shore_tot += shore;
-
-
-        // comparing top border
-        shore = bottom_right.compare_to(Direction::LEFT,bottom_left,0,0);
-        // returning error if the piece is impossible
-        if shore.get_shore() == 0 {
-            panic!();
-            return BottomLeftImpossibleFit;
-        }
-        shore_tot += shore;
-
-
+        shore_tot = shore + already_calculated_shores[0] + already_calculated_shores[1] + already_calculated_shores[2];
 
 
 
         // returning an error if the piece is impossible
         if shore_tot.get_shore() <= MIN_SHORE_PIECE_GROUP{
-            //todo!(uncommeent this)
             return AvregeIsTooLow;
         }
 

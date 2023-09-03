@@ -1,3 +1,4 @@
+
 use crate::piece_array::PieceArray;
 use crate::piece_group::{CanCreateSet, GroupCreationResult, HasKnownLevel, IsSubComponent, PieceArrayFiller, NextLevelOrPanic, Direction};
 use crate::piece_group::PieceGroup;
@@ -31,9 +32,11 @@ pub fn solve<T: NextLevelOrPanic + Debug>(pgh: &PieceGroupHolder<T>, output_path
     // the function to apply for every iteration of the loop
     let solve_lambda_function = |top_left_index: usize| {
 
+        'top_left_orientation_loop:
         for top_left_orientation in 0..4 {
             let top_left = pgh.get(top_left_index, top_left_orientation);
 
+            'top_right_loop:
             for top_right_ref in match_for_all_pieces.get_matches_with_higher_index(top_left_index,top_left_orientation,Direction::RIGHT,top_left_index){
 
                 let top_right_index = top_right_ref.index;
@@ -41,6 +44,7 @@ pub fn solve<T: NextLevelOrPanic + Debug>(pgh: &PieceGroupHolder<T>, output_path
                 let top_right_orientation = top_right_ref.orientation;
                 let top_right = top_right_ref.reference;
 
+                'bottom_right_loop:
                 for bottom_right_ref in match_for_all_pieces.get_matches_with_higher_index(top_right_index, top_right_orientation, Direction::DOWN,top_left_index){
 
                     let bottom_right_index = bottom_right_ref.index;
@@ -48,24 +52,26 @@ pub fn solve<T: NextLevelOrPanic + Debug>(pgh: &PieceGroupHolder<T>, output_path
                     let bottom_right_orientation = bottom_right_ref.orientation;
                     let bottom_right = bottom_right_ref.reference;
 
+                    'bottom_left_loop:
                     for bottom_left_ref in match_for_all_pieces.get_matches_with_higher_index(bottom_right_index, bottom_right_orientation, Direction::LEFT,top_left_index){
-
-                        let bottom_left_index = bottom_left_ref.index;
 
                         let bottom_left = bottom_left_ref.reference;
 
+                        let already_calculated_shores = [top_right_ref.shore, bottom_right_ref.shore, bottom_left_ref.shore];
+
                         // create a super piece with the 4 sub piece
-                        let pgr = T::merge_together(top_left, top_right, bottom_right, bottom_left);
+                        let pgr = T::merge_together(top_left, top_right, bottom_right, bottom_left,already_calculated_shores);
 
                         // based on the
                         let pg = match pgr {
                             // the piece group is a good possible combination, so i add it to the list of options
                             GroupCreationResult::Ok(e) => e,
-
-                            _ => {
-                                //println!("{:?}",pgr);
-                                continue;
-                            }
+                            GroupCreationResult::TopRightImpossibleCombination => continue 'top_right_loop,
+                            GroupCreationResult::BottomRightImpossibleCombination => continue 'bottom_left_loop,
+                            GroupCreationResult::BottomLeftImpossibleCombination => continue 'bottom_left_loop,
+                            GroupCreationResult::BottomLeftImpossibleFit => continue 'bottom_left_loop,
+                            GroupCreationResult::AvregeIsTooLow => continue,
+                            _ => panic!("unexpected error!")
                         };
 
                         // now it is possible to check if the pieces match graphically, calling the c++ func
