@@ -37,27 +37,21 @@ pub fn solve<T: NextLevelOrPanic + Debug>(pgh: &PieceGroupHolder<T>, output_path
             for top_right_ref in match_for_all_pieces.get_matches_with_higher_index(top_left_index,top_left_orientation,Direction::RIGHT,top_left_index){
 
                 let top_right_index = top_right_ref.index;
-                if top_right_index <= top_left_index{
-                    //continue;
-                }
+
                 let top_right_orientation = top_right_ref.orientation;
                 let top_right = top_right_ref.reference;
 
                 for bottom_right_ref in match_for_all_pieces.get_matches_with_higher_index(top_right_index, top_right_orientation, Direction::DOWN,top_left_index){
 
                     let bottom_right_index = bottom_right_ref.index;
-                    if bottom_right_index <= top_left_index{
-                        //continue;
-                    }
+
                     let bottom_right_orientation = bottom_right_ref.orientation;
                     let bottom_right = bottom_right_ref.reference;
 
                     for bottom_left_ref in match_for_all_pieces.get_matches_with_higher_index(bottom_right_index, bottom_right_orientation, Direction::LEFT,top_left_index){
 
                         let bottom_left_index = bottom_left_ref.index;
-                        if bottom_left_index <= top_left_index{
-                            //continue;
-                        }
+
                         let bottom_left = bottom_left_ref.reference;
 
                         // create a super piece with the 4 sub piece
@@ -96,7 +90,7 @@ pub fn solve<T: NextLevelOrPanic + Debug>(pgh: &PieceGroupHolder<T>, output_path
                                 (*paw).destroy_piece_array_wrapper();
                                 continue;
                             }
-                            println!("{:?}",pg);
+                            //println!("{:?}",pg);
                             // send the prevew image to the c# backend
                             CALL_BACK_FUNC(paw);
 

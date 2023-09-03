@@ -6,7 +6,6 @@ use std::time::Duration;
 use libc::tolower;
 use rayon::prelude::*;
 use crate::piece_group::{Comparable, Direction, HasOrientation};
-use crate::piece_group::Direction::RIGHT;
 
 
 /// this struct is used to keep all of the possible combination of one rotation of piece array group in scope
@@ -102,8 +101,14 @@ impl<'a,T> PieceRef<'a,T> {
 }
 #[derive(Debug)]
 pub struct MatchesForOnePiece<'a,T>{
-    // for each of the 4 directions this vector contains the pieces that can match
+    /// for each of the 4 directions, this vector contains the pieces that can match
     matches: [Vec<PieceRef<'a,T>>;4],
+    /// for each of the 4 directions, this vector mapp one of the indexes of the piece
+    /// to the index of the matches array that contains that contains a match with an index
+    /// higher that the original index
+    /// this is used because in the final version all pieces insert must have an index that is
+    /// higher that the index of the first piece. to avoid duplications
+    map_piece_index_to_aray_begin: [Vec<usize>;4]
 }
 
 impl<'a,T> MatchesForOnePiece<'a,T> {
@@ -117,6 +122,17 @@ impl<'a,T> MatchesForOnePiece<'a,T> {
         }
     }
 
+    /// return slice of matches
+    pub fn get_matches_with_higher_index(&self, direction: Direction, base_index: usize) -> &[PieceRef<T>]{
+        let (slize, map) = match direction {
+            Direction::UP    => (self.matches[0].as_slice(), self.map_piece_index_to_aray_begin[0].as_slice()),
+            Direction::RIGHT => (self.matches[1].as_slice(), self.map_piece_index_to_aray_begin[1].as_slice()),
+            Direction::DOWN  => (self.matches[2].as_slice(), self.map_piece_index_to_aray_begin[2].as_slice()),
+            Direction::LEFT  => (self.matches[3].as_slice(), self.map_piece_index_to_aray_begin[3].as_slice()),
+        };
+        return &slize[map[base_index]..]
+    }
+
     pub fn insert_match(&mut self, to_insert: PieceRef<'a,T>, direction: Direction){
         match direction {
             Direction::UP => self.matches[0].push(to_insert),
@@ -128,10 +144,76 @@ impl<'a,T> MatchesForOnePiece<'a,T> {
 
     pub fn new() -> Self{
         Self{
-            matches: [vec![],vec![],vec![],vec![]]
+            matches: [vec![],vec![],vec![],vec![]],
+            map_piece_index_to_aray_begin: [vec![],vec![],vec![],vec![]]
         }
     }
+
+    /// finalize the object by building `piece_index_to_aray_begin`
+    pub fn finalize(&mut self, number_of_pieces: usize){
+
+        let v = Vec::with_capacity(number_of_pieces);
+        self.map_piece_index_to_aray_begin = [v.clone(),v.clone(),v.clone(),v];
+
+        for direction in 0..4{
+
+            let slice_matches = &self.matches[direction];
+            let slice_map = &mut self.map_piece_index_to_aray_begin[direction];
+
+            let size_matches = slice_matches.len();
+
+            let mut index_matches = 0;
+
+            for index_map in 0..number_of_pieces{
+                loop {
+                    if index_matches == size_matches{
+                        break;
+                    }
+
+                    if slice_matches[index_matches].index > index_map{
+                        break;
+                    }
+
+                    index_matches+=1;
+                }
+
+                slice_map.push(index_matches)
+            }
+        }
+
+    }
 }
+
+#[test]
+fn t(){
+
+    let v: Vec<i32> = vec![];
+    let a = v.as_slice();
+
+    println!("{:?}",&a);
+
+    println!("{:?}",&a[0..]);
+
+    let v: Vec<i32> = vec![0,1,2,3,4,5,6,7];
+    let a = v.as_slice();
+
+    println!("{:?}",&a);
+
+    println!("{:?}",&a[0..]);
+
+
+    println!("{:?}",&a[4..]);
+
+
+    println!("{:?}",&a[7..]);
+
+    println!("{:?}",&a[8..]);
+
+}
+
+
+
+
 #[derive(Debug)]
 pub struct MatchForOnePieceAllOrientation<'a,T>{
     /// keep the possible match depending on all the possible orientations of the current piece
@@ -156,6 +238,15 @@ impl<'a,T: Clone + HasOrientation + Send + Sync + Comparable> MatchForOnePieceAl
     pub fn get_matches(&self, orientation: usize, direction: Direction) -> &[PieceRef<T>]{
         self.matches[orientation].get_matches(direction)
     }
+    pub fn get_matches_with_higher_index(&self, orientation: usize, direction: Direction,base_index: usize) -> &[PieceRef<T>]{
+        self.matches[orientation].get_matches_with_higher_index(direction,base_index)
+    }
+    /// finalize the object by building `piece_index_to_aray_begin`
+    pub fn finalize(&mut self, number_of_pieces: usize){
+        for x in 0..4{
+            self.matches[x].finalize(number_of_pieces);
+        }
+    }
 
     pub fn new() -> Self{
         Self{
@@ -177,44 +268,24 @@ impl<'a,T: Clone + HasOrientation + Send + Sync + Comparable> MatchForAllPieces<
     }
     /// same as `get_matches` but filter the slice so that only the item with index than the asked one get returnd
     pub fn get_matches_with_higher_index(&self, piece_index: usize, piece_orientation: usize, direction: Direction, base_index: usize) ->  &[PieceRef<T>]{
-        let base = self.get_matches(piece_index,piece_orientation, direction);
-
-        // from is included to is excluded
-        fn binary_search<T>(base: &[PieceRef<T>], mut from: usize, mut to:usize, value: usize) -> usize{
-            if from == to{
-                return from;
-            }
-
-            let middle = (from + to) / 2;
-
-            if base[middle].index <= value{
-                from = (middle + to)/2;
-            }else{
-                to = (middle + from)/2;
-            }
-
-            return binary_search::<T>(base,from,to,value);
-        }
-
-        if base.len() == 0{
-            return base;
-        }
-
-        let mut index = binary_search(base,0,base.len(),base_index);
-
-        for e in &base[index..]{
-            if e.index > base_index{
-                break
-            }
-            index+=1;
-        }
-
-        return &base[index..];
+        self.matches[piece_index].get_matches_with_higher_index(piece_orientation, direction,base_index)
     }
 
     /// first piece must match on second piece on the direction UP
     pub fn insert_match(&mut self, first_index: usize, first_orientation: usize, second_index: usize, second_orientation: usize, pgh: &'a PieceGroupHolder<T>){
         self.matches[first_index].insert_match(first_orientation, second_index, second_orientation, pgh);
+    }
+
+    /// finalize the object by building `piece_index_to_aray_begin`
+    pub fn finalize(&mut self){
+
+        let number_of_pieces = self.matches.len();
+
+        self.matches.par_iter_mut().for_each(
+            |x|{
+                x.finalize(number_of_pieces);
+            }
+        )
     }
 
     pub fn new(pgh: &'a PieceGroupHolder<T>) -> Self{
@@ -244,7 +315,7 @@ impl<'a,T: Clone + HasOrientation + Send + Sync + Comparable> MatchForAllPieces<
                 }
             }
         }
-
+        to_return.finalize();
 
         return to_return;
     }

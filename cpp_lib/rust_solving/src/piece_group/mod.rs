@@ -110,17 +110,27 @@ impl<'a,T: Comparable + Clone + IsSubComponent + CanCreateSet<T> + AddShoreOfSub
         let mut shore;
 
         // comparing top border
+        shore = bottom_left.compare_to(Direction::UP,top_left,0,0);
+        // returning error if the piece is impossible
+        if shore.get_shore() == 0 {
+            return BottomLeftImpossibleFit;
+        }
+        shore_tot = shore;
+
+        // comparing top border
         shore = top_left.compare_to(Direction::RIGHT,top_right,0,0);
         // returning error if the piece is impossible
         if shore.get_shore() == 0 {
+            panic!();
             return TopRightImpossibleFit;
         }
-        shore_tot = shore;
+        shore_tot += shore;
 
         // comparing top border
         shore = top_right.compare_to(Direction::DOWN,bottom_right,0,0);
         // returning error if the piece is impossible
         if shore.get_shore() == 0  {
+            panic!();
             return BottomRightImpossibleFit;
         }
         shore_tot += shore;
@@ -130,18 +140,13 @@ impl<'a,T: Comparable + Clone + IsSubComponent + CanCreateSet<T> + AddShoreOfSub
         shore = bottom_right.compare_to(Direction::LEFT,bottom_left,0,0);
         // returning error if the piece is impossible
         if shore.get_shore() == 0 {
+            panic!();
             return BottomLeftImpossibleFit;
         }
         shore_tot += shore;
 
 
-        // comparing top border
-        shore = bottom_left.compare_to(Direction::UP,top_left,0,0);
-        // returning error if the piece is impossible
-        if shore.get_shore() == 0 {
-            return BottomLeftImpossibleFit;
-        }
-        shore_tot += shore;
+
 
 
         // returning an error if the piece is impossible
