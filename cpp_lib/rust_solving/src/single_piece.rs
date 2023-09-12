@@ -3,7 +3,7 @@ use crate::piece_array::PieceArray;
 use crate::piece_group::{HasKnownLevel, PieceArrayFiller};
 use crate::piece_group::{Comparable, HasOrientation, PieceGroup};
 use crate::piece_comparing::{Comparator, Initialized, Uninitialized, InitializationResults};
-use crate::piece_sub_components::PieceBasicComponents;
+use crate::piece_basics_components::PieceBasicComponents;
 
 #[repr(C)]
 #[derive(Debug)]

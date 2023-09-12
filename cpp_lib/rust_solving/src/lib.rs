@@ -17,7 +17,7 @@ mod piece_group_holder;
 #[allow(dead_code)]
 mod solver;
 #[allow(dead_code)]
-mod piece_sub_components;
+mod piece_basics_components;
 
 mod constants;
 
@@ -39,7 +39,7 @@ use crate::piece_group::PieceArrayFiller;
 use crate::solver::TEST;
 use std::ffi::{c_void, CStr};
 use std::ptr::null;
-use crate::piece_sub_components::PieceBasicComponents;
+use crate::piece_basics_components::PieceBasicComponents;
 
 // type of a function pointer in c that is used for the preview callback
 type CallbackFunc = unsafe extern "C" fn(*mut PieceArrayWrapper);
