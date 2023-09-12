@@ -32,6 +32,6 @@ impl PieceArrayFiller for SingePiece {
 
         piece.rotate_by(recursive_orientation);
 
-        to_fill.set_piece(start_x,start_y,piece).unwrap();
+        to_fill.set_piece(start_x,start_y,piece.c_piece.clone()).unwrap();
     }
 }

@@ -16,6 +16,8 @@ mod piece_comparing;
 mod piece_group_holder;
 #[allow(dead_code)]
 mod solver;
+#[allow(dead_code)]
+mod piece_basics_components;
 
 mod constants;
 
@@ -37,6 +39,7 @@ use crate::piece_group::PieceArrayFiller;
 use crate::solver::TEST;
 use std::ffi::{c_void, CStr};
 use std::ptr::null;
+use crate::piece_basics_components::PieceBasicComponents;
 
 // type of a function pointer in c that is used for the preview callback
 type CallbackFunc = unsafe extern "C" fn(*mut PieceArrayWrapper);
@@ -100,6 +103,7 @@ fn main_test(){
 
     // create the vector with the basic pieces inside
     let number_of_pieces = init_cmp.get_number_of_pieces();
+    PieceBasicComponents::initialize(number_of_pieces);
     let mut v = Vec::<SingePiece>::with_capacity(number_of_pieces);
     for n in 0..init_cmp.get_number_of_pieces(){
         v.push(

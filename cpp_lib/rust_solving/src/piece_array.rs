@@ -1,7 +1,6 @@
 use std::ffi::CString;
 use std::fmt::{Debug, Formatter};
-use std::ptr::{null, null_mut};
-use crate::single_piece::SingePiece;
+use crate::single_piece::{CSinglePiece, SingePiece};
 use crate::piece_comparing::Comparator;
 
 
@@ -52,7 +51,7 @@ impl PieceArrayWrapper {
 extern "C"{
     /// create a new piece array with dimensions size_x x size_y and it will be filled up with the pieces contained in the pieces array,
     /// following "reading order" (left to right, and then top to bottom)
-    fn create_piece_array_wrapper(size_x: u64, size_y: u64, pieces: *mut SingePiece) -> *mut PieceArrayWrapper;
+    fn create_piece_array_wrapper(size_x: u64, size_y: u64, pieces: *mut CSinglePiece) -> *mut PieceArrayWrapper;
 
     /// generate an image
     fn generate_test_image(piece_array_wrapper: *mut PieceArrayWrapper,path: *const libc::c_char);
@@ -88,12 +87,12 @@ extern "C"{
 pub struct PieceArray{
     dim_x: u64,
     dim_y: u64,
-    pub pieces: Vec<SingePiece>,
+    pub pieces: Vec<CSinglePiece>,
 }
 
 impl PieceArray {
     /// get a reference to a piece at a specific coordinate
-    pub fn get_piece(&self, x: u64, y: u64) -> Result<&SingePiece,()>{
+    pub fn get_piece(&self, x: u64, y: u64) -> Result<&CSinglePiece,()>{
         if x >= self.dim_x{
             return Result::Err(());
         }
@@ -104,7 +103,7 @@ impl PieceArray {
         return Ok(&self.pieces[(y*self.dim_x+x) as usize]);
     }
     /// set a piece to a specific coordinates
-    pub fn set_piece(&mut self, x: u64, y: u64, to_be_set: SingePiece) -> Result<(),()>{
+    pub fn set_piece(&mut self, x: u64, y: u64, to_be_set: CSinglePiece) -> Result<(),()>{
         if x >= self.dim_x{
             return Result::Err(());
         }
@@ -125,7 +124,7 @@ impl PieceArray {
         let mut vec = Vec::with_capacity((dim_x*dim_y) as usize);
 
         for _ in 0..size{
-            vec.push(SingePiece::new(0,0))
+            vec.push(CSinglePiece{id: 0,orientation: 0})
         }
 
         unsafe {
@@ -150,12 +149,13 @@ impl Debug for PieceArray {
         s += format!("Piece Array with dimensions {}x{}\n",self.dim_x,self.dim_y).as_str();
 
 
+        let default_cell = CSinglePiece{id: 0, orientation: 0};
+
         for y in 0..self.dim_y{
             for x in 0..self.dim_x{
                 //println!("{x}-{y}");
-                let default_cell = SingePiece::new(0,0);
                 let piece = self.get_piece(x,y).unwrap_or(&default_cell);
-                s += format!("  {:>4}-{}  |",piece.get_id(), piece.get_orientation()).as_str();
+                s += format!("  {:>4}-{}  |",piece.id, piece.orientation).as_str();
             }
             s += "\n";
         }
@@ -168,7 +168,7 @@ mod testing{
     use std::ffi::CString;
     use crate::piece_array::{create_piece_array_wrapper, destroy_piece_array_wrapper, generate_test_image, load_images_to_piece_array_wrapper, PieceArray};
     use crate::piece_comparing::{Comparator, Initialized};
-    use crate::single_piece::SingePiece;
+    use crate::single_piece::{CSinglePiece, SingePiece};
 
 
 
@@ -180,7 +180,7 @@ mod testing{
         let mut piece_array = PieceArray::new(3,5);
         for x in 0..3{
             for y in 0..5{
-                piece_array.set_piece(x,y,SingePiece::new(y,x)).unwrap();
+                piece_array.set_piece(x,y,CSinglePiece::new(y,x)).unwrap();
             }
         }
         println!("{:?}",piece_array);
@@ -188,8 +188,8 @@ mod testing{
         for x in 0..3{
             for y in 0..5{
                 let piece = piece_array.get_piece(x,y).unwrap();
-                assert_eq!(x,piece.get_orientation());
-                assert_eq!(y,piece.get_id());
+                assert_eq!(x,piece.orientation);
+                assert_eq!(y,piece.id);
             }
         }
     }
@@ -216,7 +216,10 @@ mod testing{
             ];
 
             // create a piece array
-            let pa = create_piece_array_wrapper(2,2,pieces.as_mut_ptr());
+
+            let mut c_pieces: Vec<_> = pieces.into_iter().map(|x| x.c_piece).collect();
+
+            let pa = create_piece_array_wrapper(2,2,c_pieces.as_mut_ptr());
 
             (*pa).generate_test_image("test.png");
 

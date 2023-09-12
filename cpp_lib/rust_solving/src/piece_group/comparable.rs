@@ -11,9 +11,9 @@ pub trait Comparable{
 impl Comparable for SingePiece{
     fn compare_to(&self, direction: Direction,other: &Self, recursive_orientation: u64, recursive_orientation_other: u64) -> Shore{
 
-        let side_this = ( self.orientation as i64 + (direction as i64) + recursive_orientation as i64)%4;
+        let side_this = ( self.get_orientation() as i64 + (direction as i64) + recursive_orientation as i64)%4;
 
-        let side_other = ( other.orientation as i64 + (-direction as i64) + recursive_orientation_other as i64)%4;
+        let side_other = ( other.get_orientation() as i64 + (-direction as i64) + recursive_orientation_other as i64)%4;
         /*
         println!("{},{},{},{}",
                 self.get_id(),
