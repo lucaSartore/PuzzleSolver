@@ -65,7 +65,6 @@ __declspec(dllexport) PieceArrayWrapper* create_piece_array_wrapper(uint64_t siz
             pieces++;
         }
     }
-
     return pa;
 }
 

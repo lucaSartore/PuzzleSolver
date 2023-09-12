@@ -14,6 +14,6 @@ impl<T: Comparable + Clone + IsSubComponent> HasOrientation for PieceGroup<'_,T>
 
 impl HasOrientation for SingePiece {
     fn set_orientation(&mut self, new_orientation: u64){
-        self.orientation = new_orientation
+        self.c_piece.orientation = new_orientation
     }
 }
