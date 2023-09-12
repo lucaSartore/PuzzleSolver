@@ -8,6 +8,7 @@ use crate::piece_group::GroupCreationResult::{AvregeIsTooLow, BottomLeftImpossib
 use crate::shore::Shore;
 use crate::single_piece::SingePiece;
 use crate::piece_comparing::{Comparator,Initialized,Uninitialized,InitializationResults};
+use crate::piece_group_holder::PieceRef;
 
 mod comparable;
 pub use comparable::Comparable;
@@ -99,45 +100,40 @@ impl<'a> PieceGroup<'a, SingePiece> {
 /// `already_calculated_shores` is a vect with the shores for the comparison top_left-top_right; top_right-bottom_right and bottom_right-bottom_left
 impl<'a,T: Comparable + Clone + IsSubComponent + CanCreateSet<T> + AddShoreOfSubComponents> PieceGroup<'a,T> {
 
-    pub fn new(top_left: &'a T, top_right: &'a T, bottom_right: &'a T, bottom_left: &'a T, already_calculated_shores: [Shore;3]) -> GroupCreationResult<'a,T>{
-        let ids = T::get_set(&top_left, &top_right, &bottom_right, &bottom_left);
+    pub fn new(top_left: &'a T, top_right: &PieceRef<'a,T>, bottom_right: &PieceRef<'a,T>, bottom_left:  &PieceRef<'a,T>) -> GroupCreationResult<'a,T>{
+        let ids = T::get_set(top_left, top_right.reference, bottom_right.reference, bottom_left.reference);
+
 
         let ids = match ids {
             Result::Ok(e) => e,
             Result::Err(err) => return err
         };
 
-        let mut shore_tot;
-        let mut shore;
-
         // comparing top border
-        shore = bottom_left.compare_to(Direction::UP,top_left,0,0);
+        let mut shore = bottom_left.reference.compare_to(Direction::UP,top_left,0,0);
         // returning error if the piece is impossible
         if shore.get_shore() == 0 {
             return BottomLeftImpossibleFit;
         }
-        shore_tot = shore + already_calculated_shores[0] + already_calculated_shores[1] + already_calculated_shores[2];
-
-
+        shore += top_right.shore + bottom_right.shore + bottom_left.shore;
 
         // returning an error if the piece is impossible
-        if shore_tot.get_shore() <= MIN_SHORE_PIECE_GROUP{
+        if shore.get_shore() <= MIN_SHORE_PIECE_GROUP{
             return AvregeIsTooLow;
         }
 
         // adding the avrege of the 4 sub components
-        top_left.add_shore_of_sub_components(&mut shore_tot);
-        top_right.add_shore_of_sub_components(&mut shore_tot);
-        bottom_right.add_shore_of_sub_components(&mut shore_tot);
-        bottom_left.add_shore_of_sub_components(&mut shore_tot);
-
+        top_left.add_shore_of_sub_components(&mut shore);
+        top_right.reference.add_shore_of_sub_components(&mut shore);
+        bottom_right.reference.add_shore_of_sub_components(&mut shore);
+        bottom_left.reference.add_shore_of_sub_components(&mut shore);
 
         // create the return object
         let ret = Self{
-            pieces: [top_left, top_right,bottom_right, bottom_left],
+            pieces: [top_left, top_right.reference,bottom_right.reference, bottom_left.reference],
             orientation: 0,
             ids,
-            shore: shore_tot
+            shore
         };
 
         GroupCreationResult::Ok(ret)

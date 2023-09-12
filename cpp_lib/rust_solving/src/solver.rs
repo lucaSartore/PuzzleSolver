@@ -37,30 +37,17 @@ pub fn solve<T: NextLevelOrPanic + Debug>(pgh: &PieceGroupHolder<T>, output_path
             let top_left = pgh.get(top_left_index, top_left_orientation);
 
             'top_right_loop:
-            for top_right_ref in match_for_all_pieces.get_matches_with_higher_index(top_left_index,top_left_orientation,Direction::RIGHT,top_left_index){
-
-                let top_right_index = top_right_ref.index;
-
-                let top_right_orientation = top_right_ref.orientation;
-                let top_right = top_right_ref.reference;
+            for top_right in match_for_all_pieces.get_matches_with_higher_index_explicit(top_left_index,top_left_orientation,Direction::RIGHT,top_left_index){
 
                 'bottom_right_loop:
-                for bottom_right_ref in match_for_all_pieces.get_matches_with_higher_index(top_right_index, top_right_orientation, Direction::DOWN,top_left_index){
+                for bottom_right in match_for_all_pieces.get_matches_with_higher_index(top_right, Direction::DOWN,top_left_index){
 
-                    let bottom_right_index = bottom_right_ref.index;
-
-                    let bottom_right_orientation = bottom_right_ref.orientation;
-                    let bottom_right = bottom_right_ref.reference;
 
                     'bottom_left_loop:
-                    for bottom_left_ref in match_for_all_pieces.get_matches_with_higher_index(bottom_right_index, bottom_right_orientation, Direction::LEFT,top_left_index){
-
-                        let bottom_left = bottom_left_ref.reference;
-
-                        let already_calculated_shores = [top_right_ref.shore, bottom_right_ref.shore, bottom_left_ref.shore];
+                    for bottom_left in match_for_all_pieces.get_matches_with_higher_index(bottom_right, Direction::LEFT,top_left_index){
 
                         // create a super piece with the 4 sub piece
-                        let pgr = T::merge_together(top_left, top_right, bottom_right, bottom_left,already_calculated_shores);
+                        let pgr = T::merge_together(top_left, top_right, bottom_right, bottom_left);
 
                         // based on the
                         let pg = match pgr {

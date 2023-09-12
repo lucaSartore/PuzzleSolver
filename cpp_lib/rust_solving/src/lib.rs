@@ -16,6 +16,8 @@ mod piece_comparing;
 mod piece_group_holder;
 #[allow(dead_code)]
 mod solver;
+#[allow(dead_code)]
+mod piece_sub_components;
 
 mod constants;
 
