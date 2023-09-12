@@ -127,13 +127,13 @@ impl PieceArray {
             vec.push(CSinglePiece{id: 0,orientation: 0})
         }
 
-        unsafe {
-            Self{
-                dim_x,
-                dim_y,
-                pieces: vec,
-            }
+
+        Self{
+            dim_x,
+            dim_y,
+            pieces: vec,
         }
+
     }
 
     pub unsafe fn get_piece_array_wrapper(&mut self) -> *mut PieceArrayWrapper{

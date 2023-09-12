@@ -25,8 +25,8 @@ pub use has_known_level::HasKnownLevel;
 mod has_orientation;
 pub use has_orientation::HasOrientation;
 
-mod can_create_set;
-pub use can_create_set::CanCreateBasicComponents;
+mod has_basic_components;
+pub use has_basic_components::HasBasicComponents;
 
 mod is_sub_component;
 pub use is_sub_component::IsSubComponent;
@@ -99,13 +99,13 @@ impl<'a> PieceGroup<'a, SingePiece> {
 
 /// implementation of the new function for the second and above levels
 /// `already_calculated_shores` is a vect with the shores for the comparison top_left-top_right; top_right-bottom_right and bottom_right-bottom_left
-impl<'a,T: Comparable + Clone + IsSubComponent + CanCreateBasicComponents<T> + AddShoreOfSubComponents> PieceGroup<'a,T> {
+impl<'a,T: Comparable + Clone + IsSubComponent + HasBasicComponents<T> + AddShoreOfSubComponents> PieceGroup<'a,T> {
 
     pub fn new(top_left: &'a T, top_right: &PieceRef<'a,T>, bottom_right: &PieceRef<'a,T>, bottom_left:  &PieceRef<'a,T>) -> GroupCreationResult<'a,T>{
-        let ids = T::get_set(top_left, top_right.reference, bottom_right.reference, bottom_left.reference);
 
+        let basic_components = T::merge_basic_components(top_left, top_right, bottom_right, bottom_left);
 
-        let basic_components = match ids {
+        let basic_components = match basic_components {
             Result::Ok(e) => e,
             Result::Err(err) => return err
         };
