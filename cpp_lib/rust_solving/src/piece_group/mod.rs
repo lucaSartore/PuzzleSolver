@@ -26,7 +26,7 @@ mod has_orientation;
 pub use has_orientation::HasOrientation;
 
 mod can_create_set;
-pub use can_create_set::CanCreateSet;
+pub use can_create_set::CanCreateBasicComponents;
 
 mod is_sub_component;
 pub use is_sub_component::IsSubComponent;
@@ -40,6 +40,7 @@ pub use next_level_or_panic::NextLevelOrPanic;
 mod add_shore_of_sub_components;
 pub use add_shore_of_sub_components::AddShoreOfSubComponents;
 use crate::constants::MIN_SHORE_PIECE_GROUP;
+use crate::piece_basics_components::PieceBasicComponents;
 
 mod test;
 
@@ -48,13 +49,13 @@ mod test;
 pub struct PieceGroup<'a,T: Comparable + Clone + IsSubComponent>{
     pub pieces: [&'a T;4],
     pub orientation: u64,
-    pub ids: HashSet<u64>,
+    pub basic_components: PieceBasicComponents,
     pub shore: Shore
 }
 
 impl<'a, T: Comparable + Clone + IsSubComponent> PieceGroup<'a, T> {
-    fn get_ids(&self) -> &HashSet<u64> {
-        &self.ids
+    fn get_basic_components(&self) -> &PieceBasicComponents {
+        &self.basic_components
     }
 }
 
@@ -98,13 +99,13 @@ impl<'a> PieceGroup<'a, SingePiece> {
 
 /// implementation of the new function for the second and above levels
 /// `already_calculated_shores` is a vect with the shores for the comparison top_left-top_right; top_right-bottom_right and bottom_right-bottom_left
-impl<'a,T: Comparable + Clone + IsSubComponent + CanCreateSet<T> + AddShoreOfSubComponents> PieceGroup<'a,T> {
+impl<'a,T: Comparable + Clone + IsSubComponent + CanCreateBasicComponents<T> + AddShoreOfSubComponents> PieceGroup<'a,T> {
 
     pub fn new(top_left: &'a T, top_right: &PieceRef<'a,T>, bottom_right: &PieceRef<'a,T>, bottom_left:  &PieceRef<'a,T>) -> GroupCreationResult<'a,T>{
         let ids = T::get_set(top_left, top_right.reference, bottom_right.reference, bottom_left.reference);
 
 
-        let ids = match ids {
+        let basic_components = match ids {
             Result::Ok(e) => e,
             Result::Err(err) => return err
         };
@@ -132,7 +133,7 @@ impl<'a,T: Comparable + Clone + IsSubComponent + CanCreateSet<T> + AddShoreOfSub
         let ret = Self{
             pieces: [top_left, top_right.reference,bottom_right.reference, bottom_left.reference],
             orientation: 0,
-            ids,
+            basic_components,
             shore
         };
 

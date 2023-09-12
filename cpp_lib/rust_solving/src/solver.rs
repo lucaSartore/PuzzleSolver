@@ -1,6 +1,6 @@
 
 use crate::piece_array::PieceArray;
-use crate::piece_group::{CanCreateSet, GroupCreationResult, HasKnownLevel, IsSubComponent, PieceArrayFiller, NextLevelOrPanic, Direction};
+use crate::piece_group::{CanCreateBasicComponents, GroupCreationResult, HasKnownLevel, IsSubComponent, PieceArrayFiller, NextLevelOrPanic, Direction};
 use crate::piece_group::PieceGroup;
 use crate::piece_group::Comparable;
 use crate::piece_group::HasOrientation;
