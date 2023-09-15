@@ -28,7 +28,6 @@ pub fn solve<T: NextLevelOrPanic + Debug>(pgh: &PieceGroupHolder<T>, output_path
     // create the list for the output pieces
     let mut output_vec = Mutex::new(LinkedList::<PieceGroup<T>>::new());
 
-
     // the function to apply for every iteration of the loop
     let solve_lambda_function = |top_left_index: usize| {
 
@@ -63,34 +62,34 @@ pub fn solve<T: NextLevelOrPanic + Debug>(pgh: &PieceGroupHolder<T>, output_path
 
                         // now it is possible to check if the pieces match graphically, calling the c++ func
 
+                        if T::LEVEL == 1 {
+                            // create the piece array with the appropriate size
+                            let mut pa = PieceArray::new(
+                                PieceGroup::<T>::SIDE_LEN,
+                                PieceGroup::<T>::SIDE_LEN
+                            );
 
-                        // create the piece array with the appropriate size
-                        let mut pa = PieceArray::new(
-                            PieceGroup::<T>::SIDE_LEN,
-                            PieceGroup::<T>::SIDE_LEN
-                        );
+                            // fill the piece array with the piece group
+                            pg.fill_piece_array(&mut pa, 0, 0, 0);
 
-                        // fill the piece array with the piece group
-                        pg.fill_piece_array(&mut pa, 0, 0, 0);
+                            // calling the c++ dll
+                            unsafe {
+                                let mut paw = pa.get_piece_array_wrapper();
 
-                        // calling the c++ dll
-                        unsafe {
-                            let mut paw = pa.get_piece_array_wrapper();
+                                // if the shore is to low i continue on the next iteration
 
-                            // if the shore is to low i continue on the next iteration
-                            if (*paw).get_shore() < MIN_SHORE_PIECE_ARRAY {
-                                //println!("skip because of: MIN_SHORE_PIECE_ARRAY: {}",(*paw).get_shore());
+                                if (*paw).get_shore() < MIN_SHORE_PIECE_ARRAY {
+                                    //println!("skip because of: MIN_SHORE_PIECE_ARRAY: {}",(*paw).get_shore());
+                                    (*paw).destroy_piece_array_wrapper();
+                                    continue;
+                                }
+                                //println!("{:?}",pg);
+                                // send the prevew image to the c# backend
+                                CALL_BACK_FUNC(paw);
+                                // deallocate memory
                                 (*paw).destroy_piece_array_wrapper();
-                                continue;
                             }
-                            //println!("{:?}",pg);
-                            // send the prevew image to the c# backend
-                            CALL_BACK_FUNC(paw);
-
-                            // deallocate memory
-                            (*paw).destroy_piece_array_wrapper();
                         }
-
                         // add the element to the list
                         output_vec.lock().unwrap().push_back(pg);
 
@@ -112,7 +111,7 @@ pub fn solve<T: NextLevelOrPanic + Debug>(pgh: &PieceGroupHolder<T>, output_path
     let output_vec: Vec<PieceGroup<T>> = output_vec.lock().unwrap().iter().map(|x| x.clone()).collect();
 
     println!("I found {} pieces",output_vec.len());
-
+    //panic!();
     // create the new piece group holder
     let pgh_out = PieceGroupHolder::new(output_vec);
 

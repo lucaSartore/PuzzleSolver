@@ -5,6 +5,7 @@ use std::sync::Mutex;
 use std::time::Duration;
 use libc::tolower;
 use rayon::prelude::*;
+use crate::constants::MIN_SHORE_SINGLE_SIDE;
 use crate::piece_basics_components::PieceBasicComponents;
 use crate::piece_group::{Comparable, Direction, HasBasicComponents, HasOrientation, IsSubComponent};
 use crate::shore::Shore;
@@ -314,7 +315,7 @@ impl<'a,T: Clone + HasOrientation + Send + Sync + Comparable + IsSubComponent + 
                             Err(_) => continue
                         };
 
-                        if shore.get_shore() != 0{
+                        if shore.get_shore() > MIN_SHORE_SINGLE_SIDE{
                             to_return.insert_match(first_piece_index,first_piece_orientation,second_piece_index,second_piece_orientation,pgh,shore, basic_components);
                         }
 

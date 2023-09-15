@@ -16,3 +16,4 @@ void test_preview_manager();
 void test_image_ram_encode();
 void test_rust_integration();
 void test_piece_array_size_constructor();
+void test_comparing();

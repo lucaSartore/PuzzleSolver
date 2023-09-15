@@ -69,21 +69,29 @@ Side::Side(Mat& shape, PieceShape* piece_, int piece_side_, Point p1, Point p2, 
     floodFill(border_shape,Point(0,0),100);
     border_shape = border_shape != 100;
 
-    int difference = Side::compare_res*Side::compare_res/2 - countNonZero(border_shape);
+    // distance from the highest white pixel and the horizontal middle of the image
+    int top_distance = Side::compare_res/2-cv::boundingRect(border_shape).y;
+    // distance from the lowest black pixel and the horizontal middle of the image
+    int bottom_distance = cv::boundingRect(255-border_shape).height-Side::compare_res/2;
 
-
-    //std::cout << difference << std::endl;
-
-    if (difference > 15000){
-        kind = SideKind::FEMALE;
-        //std::cout << "female" << std::endl;
-    }else if(difference < -15000){
+    //if (difference > 15000){
+    if (top_distance + bottom_distance < 30){
+        kind = SideKind::BORDER;
+        //std::cout << "border" << std::endl;
+    }else if(top_distance > bottom_distance){
         kind = SideKind::MALE;
         //std::cout << "male" << std::endl;
     }else{
-        kind = SideKind::BORDER;
-        //std::cout << "border" << std::endl;
+        kind = SideKind::FEMALE;
+        //std::cout << "female" << std::endl;
     }
+
+    /*
+    std::cout << top_distance << " " << bottom_distance  << std::endl;
+    Mat temp;
+    resize(border_shape,temp,Size(400,400));
+    imshow("test",temp);
+    waitKey(0);*/
 
     // calculating making the kenny filter to the border
     Mat canny_border;

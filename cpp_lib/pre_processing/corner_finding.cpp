@@ -11,6 +11,9 @@
 #include "../solving/puzzle_preview/PreviewManager.h"
 #include <thread>
 
+// if this is defined the program will insert debug images
+//#define DEBUG
+
 using namespace std;
 using namespace cv;
 
@@ -332,6 +335,10 @@ void remove_knobs(const cv::Mat&input, cv::Mat &output,const int ppi, bool enabl
 
     Mat piece = input, kernel,temp;
 
+    #ifdef DEBUG
+    show(piece);
+    #endif
+
     // resize the image to low resolution to make the process faster (since we don't need too muck precision)
     Mat piece_resize;
     resize(piece,piece_resize,piece.size()/RESIZE_DIVISION_FACTOR);
@@ -339,6 +346,7 @@ void remove_knobs(const cv::Mat&input, cv::Mat &output,const int ppi, bool enabl
     // just to be sure that there are no tiny dost inside the original mask...
     floodFill(piece_resize,Point(0,0),Scalar(100));
     piece_resize = piece_resize != 100;
+
 
     // creating kernel for erosion and expansion
     kernel = Mat::zeros(Size(EROSION_AND_EXPANSION_SIZE, EROSION_AND_EXPANSION_SIZE), CV_8U);
@@ -348,8 +356,15 @@ void remove_knobs(const cv::Mat&input, cv::Mat &output,const int ppi, bool enabl
     Mat piece_with_smooth_corner;
     erode(piece_resize,temp,kernel);
 
+    #ifdef DEBUG
+        show(temp);
+    #endif
+
     quick_image_preview(temp,enable_image_view,"remove_knobs_erosion");
     dilate(temp,piece_with_smooth_corner,kernel);
+    #ifdef DEBUG
+        show(piece_with_smooth_corner);
+    #endif
     quick_image_preview(piece_with_smooth_corner,enable_image_view,"remove_knobs_expansion");
 
     // bumps_along_corner = piece_resize AND ( NOT piece_with_smooth_corner)
@@ -357,6 +372,10 @@ void remove_knobs(const cv::Mat&input, cv::Mat &output,const int ppi, bool enabl
     Mat bumps_along_corner;
     temp = piece_with_smooth_corner == 0;
     bitwise_and(piece_resize,temp,bumps_along_corner);
+
+    #ifdef DEBUG
+        show(bumps_along_corner);
+    #endif
 
     quick_image_preview(bumps_along_corner,enable_image_view,"remove_knobs_knob_pixels");
 
@@ -393,7 +412,9 @@ void remove_knobs(const cv::Mat&input, cv::Mat &output,const int ppi, bool enabl
             circle(piece_with_no_knobs,Point(c_x,c_y),KNOB_REMOVER_RADIUS,Scalar(0),-1);
         }
     }
-
+    #ifdef DEBUG
+        show(piece_with_no_knobs);
+    #endif
     quick_image_preview(piece_with_no_knobs,enable_image_view,"piece_with_no_knobs");
 
     output = piece_with_no_knobs;
