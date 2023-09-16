@@ -384,8 +384,9 @@ void test_comparing(){
     //p0.get_side(2).compare_to(p6.get_side(0), true);
 
     calculate_all_connections(
-            "../../../../dataset/test_16x16_digital/divided",
-            "../../../../dataset/test_16x16_digital/connections",
-            256
+            "../../../../dataset/test_32x32_digital/divided",
+            "../../../../dataset/test_32x32_digital/connections",
+            1024,
+            4
             );
 }
