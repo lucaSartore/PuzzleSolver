@@ -75,7 +75,7 @@ Side::Side(Mat& shape, PieceShape* piece_, int piece_side_, Point p1, Point p2, 
     int bottom_distance = cv::boundingRect(255-border_shape).height-Side::compare_res/2;
 
     //if (difference > 15000){
-    if (top_distance + bottom_distance < 30){
+    if (top_distance + bottom_distance < 45){
         kind = SideKind::BORDER;
         //std::cout << "border" << std::endl;
     }else if(top_distance > bottom_distance){

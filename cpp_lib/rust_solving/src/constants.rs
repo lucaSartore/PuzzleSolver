@@ -1,3 +1,5 @@
 pub const MIN_SHORE_PIECE_ARRAY: f32 = 0.975;
-pub const MIN_SHORE_PIECE_GROUP: u8 = 150;
-pub const MIN_SHORE_SINGLE_SIDE: u8 = 125;
+//pub const MIN_SHORE_PIECE_GROUP: u8 = 150;
+//pub const MIN_SHORE_SINGLE_SIDE: u8 = 125;
+pub const MIN_SHORE_PIECE_GROUP: u8 = 130;
+pub const MIN_SHORE_SINGLE_SIDE: u8 = 80;
