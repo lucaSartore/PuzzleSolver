@@ -103,7 +103,7 @@ pub fn solve<T: NextLevelOrPanic + Debug>(pgh: &PieceGroupHolder<T>, output_path
     };
 
 
-    (0..1).into_par_iter().for_each(
+    (0..size).into_par_iter().for_each(
         |x| solve_lambda_function(x)
     );
 
@@ -111,7 +111,7 @@ pub fn solve<T: NextLevelOrPanic + Debug>(pgh: &PieceGroupHolder<T>, output_path
     let output_vec: Vec<PieceGroup<T>> = output_vec.lock().unwrap().iter().map(|x| x.clone()).collect();
 
     println!("I found {} pieces",output_vec.len());
-    panic!();
+    //panic!();
     // create the new piece group holder
     let pgh_out = PieceGroupHolder::new(output_vec);
 

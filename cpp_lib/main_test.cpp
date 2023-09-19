@@ -30,7 +30,8 @@ int main(){
 
     cout << "Test" << endl;
 
-    PuzzleSolver ps(4, 4, "../../work_path", "../../../dataset/test_4x4/raw",2);
+    //PuzzleSolver ps(4, 4, "../../work_path", "../../../dataset/test_4x4/raw",2);
+    PuzzleSolver ps("C:\\Users\\lucas\\Desktop\\output");
     //PuzzleSolver ps("../work_path");
 
     ps.set_threshold(100);

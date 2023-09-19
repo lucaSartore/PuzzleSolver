@@ -74,6 +74,7 @@ pub extern "C" fn solve_puzzle_rust(path_images: *const libc::c_char,path_connec
 
     // create the vector with the basic pieces inside
     let number_of_pieces = init_cmp.get_number_of_pieces();
+    PieceBasicComponents::initialize(number_of_pieces);
     let mut v = Vec::<SingePiece>::with_capacity(number_of_pieces);
     for n in 0..init_cmp.get_number_of_pieces(){
         v.push(
@@ -85,7 +86,7 @@ pub extern "C" fn solve_puzzle_rust(path_images: *const libc::c_char,path_connec
     let pgh = PieceGroupHolder::new(v);
 
     // call the solving function
-    return solver::solve(&pgh,path_output,4 as u64,4 as u64);
+    return solver::solve(&pgh,path_output,size_x as u64,size_y as u64);
 }
 
 #[test]
@@ -95,7 +96,7 @@ fn main_test(){
 
 
 
-    /*
+/*
     const CONNECTIONS_PATH: &str = r"..\..\dataset\test_4x4\connections";
     const DIVIDED_PATH: &str = r"..\..\dataset\test_4x4\divided";
     const SIZE_X: u64 = 4;
