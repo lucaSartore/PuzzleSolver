@@ -1,6 +1,4 @@
 
-extern crate libc;
-extern crate core;
 
 #[allow(dead_code)]
 mod shore;
@@ -102,11 +100,17 @@ fn main_test(){
     const SIZE_X: u64 = 4;
     const SIZE_Y: u64 = 4;*/
 
-
+    /*
     const CONNECTIONS_PATH: &str = r"..\..\dataset\test_8x8\connections";
     const DIVIDED_PATH: &str = r"..\..\dataset\test_8x8\divided";
     const SIZE_X: u64 = 8;
-    const SIZE_Y: u64 = 8;
+    const SIZE_Y: u64 = 8;*/
+
+
+    const CONNECTIONS_PATH: &str = r"..\..\dataset\test_4x4_digital\connections";
+    const DIVIDED_PATH: &str = r"..\..\dataset\test_4x4_digital\divided";
+    const SIZE_X: u64 = 4;
+    const SIZE_Y: u64 = 4;
 
     /*
     const CONNECTIONS_PATH: &str = r"..\..\dataset\test_8x8_digital\connections";
