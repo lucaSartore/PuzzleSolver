@@ -10,6 +10,7 @@
 #include "corner_finding.h"
 #include "../solving/puzzle_preview/PreviewManager.h"
 #include <thread>
+#include "../solving/graphic_piece/PieceShape.h"
 
 // if this is defined the program will insert debug images
 //#define DEBUG
@@ -165,6 +166,44 @@ void do_pre_processing_thread(const std::string& path, int piece_index, int ppi,
     file.close();
 }
 
+
+void convert_coordinates_to_json(const std::string& input_path, int number_of_pieces, const std::string& output_path){
+    PieceShape::set_origin_path(input_path);
+
+    ofstream file;
+    file.open (output_path,ios::out);
+
+    file<<"["<<endl;
+
+    for(int i=0; i<number_of_pieces; i++){
+        PieceShape p = PieceShape(i);
+
+        file << "\t{" << std::endl;
+        file << "\t\t\"piece_id\": " << i << "," << std::endl;
+        for(int j = 0; j < 4; j++){
+
+            auto p1 = p.get_point(j);
+            auto p2 = p.get_point((j + 1) % 4);
+
+            file << "\t\t\"side_" << j << "\": {" << std::endl;
+            file << "\t\t\t\"p1\": {\"x\":" << p1.x << ", \"y\":" << p1.y << "}," << std::endl;
+            file << "\t\t\t\"p2\": {\"x\":" << p2.x << ", \"y\":" << p2.y << "}" << std::endl;
+
+            if(j < 3)
+                file << "\t\t}," << std::endl;
+            else
+                file << "\t\t}" << std::endl;
+        }
+
+        if(i < number_of_pieces - 1)
+            file << "\t}," << std::endl;
+        else
+            file << "\t}" << std::endl;
+
+    }
+
+    file<<"]" << endl;
+}
 
 // this function remove the holes of the puzzle_preview in the following way:
 // - the algorithm find the filler of a piece.

@@ -181,6 +181,8 @@ void PuzzleSolver::process_corners() {
     // find the corners
     find_corners(work_path + "/divided/",number_of_pieces,DEFAULT_PPI,number_of_cores);
 
+    convert_coordinates_to_json(work_path + "/divided/", number_of_pieces, work_path + "/results/corners.json");
+
     // update the state;
     state = CORNER_PROCESSED;
 
@@ -195,6 +197,8 @@ void PuzzleSolver::calculate_connections() {
     calculate_all_connections(work_path + "/divided/", work_path + "/connections", number_of_pieces,number_of_cores,false);
     // update state
     state = CONNECTION_CALCULATED;
+
+
 
     save_status();
 
