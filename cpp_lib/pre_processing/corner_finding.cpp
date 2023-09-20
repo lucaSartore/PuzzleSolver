@@ -176,14 +176,34 @@ void convert_coordinates_to_json(const std::string& input_path, int number_of_pi
     file<<"["<<endl;
 
     for(int i=0; i<number_of_pieces; i++){
-        PieceShape p = PieceShape(i);
+
+
+        string data_path = input_path + string("\\") + to_string(i) + string(".txt");
+
+        // get coordinates
+        string line;
+        ifstream data = ifstream(data_path);
+
+        assert(data.is_open());
+
+        Point points[4];
+
+        // read the points
+        for (auto & point : points) {
+            std::getline(data, line);
+            std::stringstream ss(line);
+            char c[6], a;
+            int x, y;
+            ss >> c >> a >> x >> a >> y >> a;
+            point = Point(x, y);
+        }
 
         file << "\t{" << std::endl;
         file << "\t\t\"piece_id\": " << i << "," << std::endl;
         for(int j = 0; j < 4; j++){
 
-            auto p1 = p.get_point(j);
-            auto p2 = p.get_point((j + 1) % 4);
+            auto p1 = points[j];
+            auto p2 =points[(j + 1) % 4];
 
             file << "\t\t\"side_" << j << "\": {" << std::endl;
             file << "\t\t\t\"p1\": {\"x\":" << p1.x << ", \"y\":" << p1.y << "}," << std::endl;

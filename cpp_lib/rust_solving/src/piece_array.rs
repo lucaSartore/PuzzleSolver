@@ -156,7 +156,7 @@ impl PieceArray {
         /// given a side of a piece, and an orientation of sed piece this function return
         /// the direction sed side is pointing
         fn side_and_orientation_to_direction(side: u64, orientation: u64) -> Direction{
-            let n = (side + orientation)%4;
+            let n = (4 + side - orientation)%4;
             match n {
                 0 => UP,
                 1 => RIGHT,
@@ -169,7 +169,7 @@ impl PieceArray {
         /// given the orientation of a piece, and one direction, this function
         /// return the side on that direction
         fn orientation_and_direction_to_side(orientation: u64, direction: Direction) -> u64{
-            (orientation + direction as u64)%4
+            ( orientation + direction as u64)%4
         }
 
         let mut result = Vec::with_capacity((self.dim_x*self.dim_y) as usize);

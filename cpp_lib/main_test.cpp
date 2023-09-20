@@ -49,8 +49,6 @@ int main(){
         cout << "skip process corners" << endl;
     }
 
-    exit(11);
-
     try{
         ps.calculate_connections();
     }catch(wrong_state_exception &e){
@@ -58,7 +56,7 @@ int main(){
     }
 
     thread t1;
-    t1 = thread(debug_thread);
+    //t1 = thread(debug_thread);
 
     try{
         ps.solve_puzzle();

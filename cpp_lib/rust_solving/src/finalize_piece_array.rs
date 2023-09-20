@@ -41,6 +41,8 @@ pub fn finalize_piece_array<T: NextLevelOrPanic>(pgh: &PieceGroupHolder<T>, outp
         Option::None => return false
     };
 
+    println!("{:?}",best);
+
     // save the connections result
     best.save_actual_connections_to_json(format!("{}\\connections_result.json",output_path).as_str()).unwrap_or_else(|e| println!("print connections to json has failed for error: {:?}",e));
 
