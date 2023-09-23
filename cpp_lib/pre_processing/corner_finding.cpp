@@ -10,6 +10,10 @@
 #include "corner_finding.h"
 #include "../solving/puzzle_preview/PreviewManager.h"
 #include <thread>
+#include "../solving/graphic_piece/PieceShape.h"
+
+// if this is defined the program will insert debug images
+//#define DEBUG
 
 using namespace std;
 using namespace cv;
@@ -162,6 +166,64 @@ void do_pre_processing_thread(const std::string& path, int piece_index, int ppi,
     file.close();
 }
 
+
+void convert_coordinates_to_json(const std::string& input_path, int number_of_pieces, const std::string& output_path){
+    PieceShape::set_origin_path(input_path);
+
+    ofstream file;
+    file.open (output_path,ios::out);
+
+    file<<"["<<endl;
+
+    for(int i=0; i<number_of_pieces; i++){
+
+
+        string data_path = input_path + string("\\") + to_string(i) + string(".txt");
+
+        // get coordinates
+        string line;
+        ifstream data = ifstream(data_path);
+
+        assert(data.is_open());
+
+        Point points[4];
+
+        // read the points
+        for (auto & point : points) {
+            std::getline(data, line);
+            std::stringstream ss(line);
+            char c[6], a;
+            int x, y;
+            ss >> c >> a >> x >> a >> y >> a;
+            point = Point(x, y);
+        }
+
+        file << "\t{" << std::endl;
+        file << "\t\t\"piece_id\": " << i << "," << std::endl;
+        for(int j = 0; j < 4; j++){
+
+            auto p1 = points[j];
+            auto p2 =points[(j + 1) % 4];
+
+            file << "\t\t\"side_" << j << "\": {" << std::endl;
+            file << "\t\t\t\"p1\": {\"x\":" << p1.x << ", \"y\":" << p1.y << "}," << std::endl;
+            file << "\t\t\t\"p2\": {\"x\":" << p2.x << ", \"y\":" << p2.y << "}" << std::endl;
+
+            if(j < 3)
+                file << "\t\t}," << std::endl;
+            else
+                file << "\t\t}" << std::endl;
+        }
+
+        if(i < number_of_pieces - 1)
+            file << "\t}," << std::endl;
+        else
+            file << "\t}" << std::endl;
+
+    }
+
+    file<<"]" << endl;
+}
 
 // this function remove the holes of the puzzle_preview in the following way:
 // - the algorithm find the filler of a piece.
@@ -332,6 +394,10 @@ void remove_knobs(const cv::Mat&input, cv::Mat &output,const int ppi, bool enabl
 
     Mat piece = input, kernel,temp;
 
+    #ifdef DEBUG
+    show(piece);
+    #endif
+
     // resize the image to low resolution to make the process faster (since we don't need too muck precision)
     Mat piece_resize;
     resize(piece,piece_resize,piece.size()/RESIZE_DIVISION_FACTOR);
@@ -339,6 +405,7 @@ void remove_knobs(const cv::Mat&input, cv::Mat &output,const int ppi, bool enabl
     // just to be sure that there are no tiny dost inside the original mask...
     floodFill(piece_resize,Point(0,0),Scalar(100));
     piece_resize = piece_resize != 100;
+
 
     // creating kernel for erosion and expansion
     kernel = Mat::zeros(Size(EROSION_AND_EXPANSION_SIZE, EROSION_AND_EXPANSION_SIZE), CV_8U);
@@ -348,8 +415,15 @@ void remove_knobs(const cv::Mat&input, cv::Mat &output,const int ppi, bool enabl
     Mat piece_with_smooth_corner;
     erode(piece_resize,temp,kernel);
 
+    #ifdef DEBUG
+        show(temp);
+    #endif
+
     quick_image_preview(temp,enable_image_view,"remove_knobs_erosion");
     dilate(temp,piece_with_smooth_corner,kernel);
+    #ifdef DEBUG
+        show(piece_with_smooth_corner);
+    #endif
     quick_image_preview(piece_with_smooth_corner,enable_image_view,"remove_knobs_expansion");
 
     // bumps_along_corner = piece_resize AND ( NOT piece_with_smooth_corner)
@@ -357,6 +431,10 @@ void remove_knobs(const cv::Mat&input, cv::Mat &output,const int ppi, bool enabl
     Mat bumps_along_corner;
     temp = piece_with_smooth_corner == 0;
     bitwise_and(piece_resize,temp,bumps_along_corner);
+
+    #ifdef DEBUG
+        show(bumps_along_corner);
+    #endif
 
     quick_image_preview(bumps_along_corner,enable_image_view,"remove_knobs_knob_pixels");
 
@@ -393,7 +471,9 @@ void remove_knobs(const cv::Mat&input, cv::Mat &output,const int ppi, bool enabl
             circle(piece_with_no_knobs,Point(c_x,c_y),KNOB_REMOVER_RADIUS,Scalar(0),-1);
         }
     }
-
+    #ifdef DEBUG
+        show(piece_with_no_knobs);
+    #endif
     quick_image_preview(piece_with_no_knobs,enable_image_view,"piece_with_no_knobs");
 
     output = piece_with_no_knobs;

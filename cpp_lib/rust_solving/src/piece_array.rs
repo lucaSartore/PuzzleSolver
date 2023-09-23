@@ -1,8 +1,13 @@
+use std::collections::{HashMap, HashSet};
 use std::ffi::CString;
 use std::fmt::{Debug, Formatter};
+use std::fs::File;
+use std::io::{SeekFrom, Write};
 use crate::single_piece::{CSinglePiece, SingePiece};
 use crate::piece_comparing::Comparator;
-
+use serde::{Deserialize, Serialize};
+use crate::piece_group::Direction;
+use crate::piece_group::Direction::{DOWN, LEFT, RIGHT, UP};
 
 #[repr(C)]
 pub struct PieceArrayWrapper{
@@ -127,17 +132,134 @@ impl PieceArray {
             vec.push(CSinglePiece{id: 0,orientation: 0})
         }
 
-        unsafe {
-            Self{
-                dim_x,
-                dim_y,
-                pieces: vec,
+        Self{
+            dim_x,
+            dim_y,
+            pieces: vec,
+        }
+    }
+
+    /// save the connections to a json (intended to used for ML training)
+    pub fn save_actual_connections_to_json(&self, path: &str) -> Result<(),std::io::Error>{
+
+        /// get the piece that is at a certain direction
+        fn get_piece_on_direction(mut x: u64, mut y: u64, direction: Direction, pa: &PieceArray) -> Result<&CSinglePiece,()>{
+            match direction {
+                Direction::UP => y = y.wrapping_sub(1),
+                Direction::RIGHT => x+=1,
+                Direction::DOWN => y+=1,
+                Direction::LEFT => x = x.wrapping_sub(1),
+            };
+            pa.get_piece(x,y)
+        }
+
+        /// given a side of a piece, and an orientation of sed piece this function return
+        /// the direction sed side is pointing
+        fn side_and_orientation_to_direction(side: u64, orientation: u64) -> Direction{
+            let n = (4 + side - orientation)%4;
+            match n {
+                0 => UP,
+                1 => RIGHT,
+                2 => DOWN,
+                3 => LEFT,
+                _ => panic!() // impossible given the %4
             }
         }
+
+        /// given the orientation of a piece, and one direction, this function
+        /// return the side on that direction
+        fn orientation_and_direction_to_side(orientation: u64, direction: Direction) -> u64{
+            ( orientation + direction as u64)%4
+        }
+
+        let mut result = Vec::with_capacity((self.dim_x*self.dim_y) as usize);
+
+        for x in 0..self.dim_x{
+            for y in 0..self.dim_y{
+
+                let this_piece = self.get_piece(x,y).unwrap();
+
+                let this_piece_id = this_piece.id;
+                let this_piece_orientation = this_piece.orientation;
+
+                let mut connections = [Option::<SingleConnection>::None;4];
+
+                for i in 0..4{
+                    let direction = side_and_orientation_to_direction(i,this_piece_orientation);
+                    let connection_0 = match  get_piece_on_direction(x,y,direction,self){
+                        Result::Ok(e) => {
+                            let side_other_piece = orientation_and_direction_to_side(e.orientation,-direction);
+                            Option::Some(SingleConnection::new(e.id,side_other_piece))
+                        }
+                        Result::Err(_) => {
+                            Option::None
+                        }
+                    };
+                    connections[i as usize]=connection_0;
+                }
+
+                let connection_for_one_piece = ConnectionForOnePiece::new(
+                    this_piece_id,
+                    connections[0],
+                    connections[1],
+                    connections[2],
+                    connections[3],
+                );
+
+                result.push(connection_for_one_piece);
+            }
+        }
+
+        let result_string = serde_json::to_string(&result).unwrap();
+
+
+        println!("{}",result_string);
+
+        let mut file = File::create(path)?;
+        file.write(result_string.as_bytes())?;
+        Result::Ok(())
     }
 
     pub unsafe fn get_piece_array_wrapper(&mut self) -> *mut PieceArrayWrapper{
         create_piece_array_wrapper(self.dim_x,self.dim_y,self.pieces.as_mut_ptr())
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Copy, Clone)]
+/// represent all the connections that one specific piece has on his 4 sides
+struct ConnectionForOnePiece{
+    piece_id: u64,
+    side_0: Option<SingleConnection>,
+    side_1: Option<SingleConnection>,
+    side_2: Option<SingleConnection>,
+    side_3: Option<SingleConnection>
+}
+
+impl ConnectionForOnePiece {
+    pub fn new(piece_id: u64, side_0: Option<SingleConnection>, side_1: Option<SingleConnection>,
+           side_2: Option<SingleConnection>, side_3: Option<SingleConnection>) -> Self{
+        ConnectionForOnePiece{
+            piece_id,
+            side_0,
+            side_1,
+            side_2,
+            side_3
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Copy, Clone)]
+/// represent a connection ot one piece and a specific side of that piece
+struct SingleConnection{
+    pub piece: u64,
+    pub side: u64
+}
+impl SingleConnection {
+    pub fn new(piece: u64,side: u64) -> Self{
+        SingleConnection{
+            piece,
+            side
+        }
     }
 }
 

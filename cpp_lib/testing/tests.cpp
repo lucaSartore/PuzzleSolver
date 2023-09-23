@@ -15,7 +15,7 @@
 #include "../solving/groped_pieces/GroupedPiecesHolder.h"
 #include "../communication/communication_image.h"
 #include "../rust_solving/src/PieceArrayDLL/piece_array_dll.h"
-
+#include "../solving/calculate_connections.h"
 using namespace std;
 void test_rust_integration(){
 
@@ -367,4 +367,25 @@ void test_piece_array_size_constructor(){
     imshow("image",pa.get_image(PREVIEW));
 
     waitKey(0);
+}
+
+
+void test_comparing(){
+
+    cout << "aaa" << endl;
+    PieceShape::set_origin_path("../../../../dataset/test_4x4_digital/divided");
+
+    PieceShape p0 = PieceShape(0);
+    PieceShape p1 = PieceShape(1);
+    PieceShape p6 = PieceShape(6);
+
+    //p0.get_side(1).compare_to(p1.get_side(3), true);
+
+    //p0.get_side(2).compare_to(p6.get_side(0), true);
+
+    calculate_all_connections(
+            "../../../../dataset/test_8x8/divided",
+            "../../../../dataset/test_8x8/connections",
+            64
+            );
 }

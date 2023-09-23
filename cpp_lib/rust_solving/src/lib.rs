@@ -1,6 +1,4 @@
 
-extern crate libc;
-extern crate core;
 
 #[allow(dead_code)]
 mod shore;
@@ -74,6 +72,7 @@ pub extern "C" fn solve_puzzle_rust(path_images: *const libc::c_char,path_connec
 
     // create the vector with the basic pieces inside
     let number_of_pieces = init_cmp.get_number_of_pieces();
+    PieceBasicComponents::initialize(number_of_pieces);
     let mut v = Vec::<SingePiece>::with_capacity(number_of_pieces);
     for n in 0..init_cmp.get_number_of_pieces(){
         v.push(
@@ -85,7 +84,7 @@ pub extern "C" fn solve_puzzle_rust(path_images: *const libc::c_char,path_connec
     let pgh = PieceGroupHolder::new(v);
 
     // call the solving function
-    return solver::solve(&pgh,path_output,4 as u64,4 as u64);
+    return solver::solve(&pgh,path_output,size_x as u64,size_y as u64);
 }
 
 #[test]
@@ -93,12 +92,44 @@ fn main_test(){
 
     println!("Start main test!");
 
+
+
+
+    const CONNECTIONS_PATH: &str = r"..\..\dataset\test_4x4\connections";
+    const DIVIDED_PATH: &str = r"..\..\dataset\test_4x4\divided";
+    const SIZE_X: u64 = 4;
+    const SIZE_Y: u64 = 4;
+
+    /*
+    const CONNECTIONS_PATH: &str = r"..\..\dataset\test_8x8\connections";
+    const DIVIDED_PATH: &str = r"..\..\dataset\test_8x8\divided";
+    const SIZE_X: u64 = 8;
+    const SIZE_Y: u64 = 8;*/
+
+    /*
+    const CONNECTIONS_PATH: &str = r"..\..\dataset\test_4x4_digital\connections";
+    const DIVIDED_PATH: &str = r"..\..\dataset\test_4x4_digital\divided";
+    const SIZE_X: u64 = 4;
+    const SIZE_Y: u64 = 4;*/
+
+    /*
+    const CONNECTIONS_PATH: &str = r"..\..\dataset\test_8x8_digital\connections";
+    const DIVIDED_PATH: &str = r"..\..\dataset\test_8x8_digital\divided";
+    const SIZE_X: u64 = 8;
+    const SIZE_Y: u64 = 8;*/
+
+    /*
+    const CONNECTIONS_PATH: &str = r"..\..\dataset\test_16x16_digital\connections";
+    const DIVIDED_PATH: &str = r"..\..\dataset\test_16x16_digital\divided";
+    const SIZE_X: u64 = 16;
+    const SIZE_Y: u64 = 16;*/
+
     use crate::{*};
     // load data for the comparator
-    let init_cmp = Comparator::<Initialized>::initialize_comparator(r"..\..\dataset\test_4x4\connections").unwrap();
+    let init_cmp = Comparator::<Initialized>::initialize_comparator(CONNECTIONS_PATH).unwrap();
 
     unsafe {
-        PieceArrayWrapper::load_images_to_piece_array_wrapper(r"..\..\dataset\test_4x4\divided");
+        PieceArrayWrapper::load_images_to_piece_array_wrapper(DIVIDED_PATH);
     }
 
     // create the vector with the basic pieces inside
@@ -114,6 +145,6 @@ fn main_test(){
     // convert the vector in piece group holder
     let pgh = PieceGroupHolder::new(v);
 
-    solver::solve(&pgh,".\\",4,4);
+    solver::solve(&pgh,".\\",SIZE_X,SIZE_Y);
 
 }

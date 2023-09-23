@@ -1,4 +1,4 @@
-use crate::piece_group::{CanCreateBasicComponents, Comparable, GroupCreationResult, PieceGroup};
+use crate::piece_group::{HasBasicComponents, Comparable, GroupCreationResult, PieceGroup};
 use crate::piece_group_holder::PieceRef;
 use crate::shore::Shore;
 use crate::single_piece::SingePiece;
@@ -14,7 +14,7 @@ impl IsSubComponent for SingePiece {
     }
 }
 
-impl<'b,T: Comparable + Clone + IsSubComponent + CanCreateBasicComponents<T>> IsSubComponent for PieceGroup<'b,T>{
+impl<'b,T: Comparable + Clone + IsSubComponent + HasBasicComponents<T>> IsSubComponent for PieceGroup<'b,T>{
     fn merge_together<'a>(top_left: &'a Self, top_right: &PieceRef<'a,Self>, bottom_right: &PieceRef<'a,Self>, bottom_left: &PieceRef<'a,Self>) -> GroupCreationResult<'a, Self> {
         PieceGroup::<Self>::new(top_left, top_right, bottom_right, bottom_left)
     }

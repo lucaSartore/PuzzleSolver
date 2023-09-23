@@ -1,11 +1,13 @@
 use std::cell::RefCell;
-use std::fmt::{Debug, Formatter};
+use std::fmt::{Binary, Debug, Formatter};
 use std::iter::zip;
 use std::sync::Mutex;
 use std::time::Duration;
 use libc::tolower;
 use rayon::prelude::*;
-use crate::piece_group::{Comparable, Direction, HasOrientation};
+use crate::constants::MIN_SHORE_SINGLE_SIDE;
+use crate::piece_basics_components::PieceBasicComponents;
+use crate::piece_group::{Comparable, Direction, HasBasicComponents, HasOrientation, IsSubComponent};
 use crate::shore::Shore;
 
 
@@ -79,12 +81,21 @@ impl<'a,T: Clone + HasOrientation + Send + Sync + Comparable> PieceGroupHolder<T
 }
 
 /// reference one piece inside `PieceGroupHolder` keeping his index, orientation and reference
-#[derive(Copy, Clone)]
+/// the struct also keep a "cash" with the shore and the sub component of the comparison between
+/// him and an other piece.
+/// the other piece is the "key" to get a list of all the pieces that match
+#[derive(Clone)]
 pub struct PieceRef<'a,T>{
+    /// index of the piece that is been referenced
     pub index: usize,
+    /// orientation of the piece that is been referenced
     pub orientation: usize,
+    /// pointer to the piece thai is been referenced
     pub reference: &'a T,
-    pub shore: Shore
+    /// shore of the comparison between the current piece and the other piece
+    pub shore: Shore,
+    /// shore of the comparison between the current piece and the other piece
+    pub basic_components: PieceBasicComponents
 }
 
 impl<'a,T> Debug for PieceRef<'a,T>{
@@ -94,12 +105,13 @@ impl<'a,T> Debug for PieceRef<'a,T>{
 }
 
 impl<'a,T> PieceRef<'a,T> {
-    pub fn new(index: usize, orientation: usize, reference: &'a T,shore: Shore) -> Self{
+    pub fn new(index: usize, orientation: usize, reference: &'a T,shore: Shore, basic_components: PieceBasicComponents) -> Self{
         return Self{
             index,
             orientation,
             reference,
-            shore
+            shore,
+            basic_components
         }
     }
 }
@@ -159,6 +171,7 @@ impl<'a,T> MatchesForOnePiece<'a,T> {
         let v = Vec::with_capacity(number_of_pieces);
         self.map_piece_index_to_aray_begin = [v.clone(),v.clone(),v.clone(),v];
 
+        // build the connection in all 4 directions
         for direction in 0..4{
 
             let slice_matches = &self.matches[direction];
@@ -198,14 +211,14 @@ pub struct MatchForOnePieceAllOrientation<'a,T>{
 impl<'a,T: Clone + HasOrientation + Send + Sync + Comparable> MatchForOnePieceAllOrientation<'a,T> {
 
     /// the piece that will be insert must match with the piece this struct represent, on the UP direction
-    pub fn insert_match(&mut self, this_piece_orientation: usize, to_insert_index: usize, to_insert_orientation: usize, pgh: &'a PieceGroupHolder<T>, shore: Shore){
+    pub fn insert_match(&mut self, this_piece_orientation: usize, to_insert_index: usize, to_insert_orientation: usize, pgh: &'a PieceGroupHolder<T>, shore: Shore, basic_components: PieceBasicComponents){
 
         for (i,direction) in zip(0..4, [Direction::UP,Direction::RIGHT,Direction::DOWN, Direction::LEFT]){
 
             let orientation_this = (this_piece_orientation+4-i)%4;
             let orientation_other = (to_insert_orientation+4-i)%4;
 
-            let p = PieceRef::new(to_insert_index, orientation_other, pgh.get(to_insert_index, orientation_other),shore);
+            let p = PieceRef::new(to_insert_index, orientation_other, pgh.get(to_insert_index, orientation_other),shore, basic_components.clone());
             self.matches[orientation_this].insert_match(p,direction);
         }
     }
@@ -235,7 +248,7 @@ pub struct MatchForAllPieces<'a,T>{
     matches: Vec<MatchForOnePieceAllOrientation<'a,T>>
 }
 
-impl<'a,T: Clone + HasOrientation + Send + Sync + Comparable> MatchForAllPieces<'a,T> {
+impl<'a,T: Clone + HasOrientation + Send + Sync + Comparable + IsSubComponent + HasBasicComponents<T>> MatchForAllPieces<'a,T> {
 
     /// return slice pointing to all pieces that can match the requested piece, along the requred direction
     pub fn get_matches(&self,  piece: &PieceRef<'a,T>, direction: Direction) ->  &[PieceRef<T>]{
@@ -256,8 +269,8 @@ impl<'a,T: Clone + HasOrientation + Send + Sync + Comparable> MatchForAllPieces<
     }
 
     /// first piece must match on second piece on the direction UP
-    pub fn insert_match(&mut self, first_index: usize, first_orientation: usize, second_index: usize, second_orientation: usize, pgh: &'a PieceGroupHolder<T>, shore: Shore){
-        self.matches[first_index].insert_match(first_orientation, second_index, second_orientation, pgh, shore);
+    pub fn insert_match(&mut self, first_index: usize, first_orientation: usize, second_index: usize, second_orientation: usize, pgh: &'a PieceGroupHolder<T>, shore: Shore, basic_components: PieceBasicComponents){
+        self.matches[first_index].insert_match(first_orientation, second_index, second_orientation, pgh, shore, basic_components);
     }
 
     /// finalize the object by building `piece_index_to_aray_begin`
@@ -283,6 +296,7 @@ impl<'a,T: Clone + HasOrientation + Send + Sync + Comparable> MatchForAllPieces<
 
         let mut to_return = Self{ matches };
 
+        // build the list of matching pieces for each piece: O(n^2)
         for first_piece_index in 0..size{
             // todo: this could became first_piece_index+1..size, by reversing the orientations could make 1/2 of the operations in here
             for second_piece_index in 0..size{
@@ -294,9 +308,18 @@ impl<'a,T: Clone + HasOrientation + Send + Sync + Comparable> MatchForAllPieces<
 
                         let shore =  first_piece.compare_to(Direction::UP,second_piece,0,0);
 
-                        if shore.get_shore() != 0{
-                            to_return.insert_match(first_piece_index,first_piece_orientation,second_piece_index,second_piece_orientation,pgh,shore);
+                        let basic_components = PieceBasicComponents::merge(first_piece.get_basic_components(),second_piece.get_basic_components());
+
+                        let basic_components = match basic_components {
+                            Ok(e) => e,
+                            Err(_) => continue
+                        };
+
+                        if shore.get_shore() > MIN_SHORE_SINGLE_SIDE{
+                            to_return.insert_match(first_piece_index,first_piece_orientation,second_piece_index,second_piece_orientation,pgh,shore, basic_components);
                         }
+
+
                     }
                 }
             }

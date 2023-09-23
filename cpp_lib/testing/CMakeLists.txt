@@ -1,8 +1,7 @@
 cmake_minimum_required(VERSION 3.23)
 
 set (CMAKE_CXX_STANDARD 20)
-#set (CMAKE_BUILD_TYPE Release)
-
+set (CMAKE_BUILD_TYPE Release)
 
 project( Test )
 find_package(OpenCV REQUIRED PATHS ../../opencv)
@@ -14,6 +13,7 @@ add_executable(
         tests.cpp
 
         ../solving/util.h
+        ../solving/util.cpp
         ../solving/constants.h
 
         ../solving/graphic_piece/Side.cpp
@@ -36,6 +36,9 @@ add_executable(
         ../solving/groped_pieces/grouped_pieces_errors.h
         ../solving/groped_pieces/GroupedPiecesHolder.tpp
         ../solving/groped_pieces/GroupedPiecesHolder.h
+
+        ../solving/calculate_connections.cpp
+        ../solving/calculate_connections.h
 
         ../solving/puzzle_preview/PieceArray.cpp
         ../solving/puzzle_preview/PieceArray.h

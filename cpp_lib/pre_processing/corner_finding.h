@@ -13,6 +13,8 @@
 /// you can specify the number of cores you want to use, if tou put 0 it will be detected automatically
 void find_corners(const std::string& path, int number_of_pieces, int ppi = DEFAULT_PPI, int number_of_cores = 0, bool enable_image_view = false);
 
-
+/// take a path where the results have been saved using the function ``find_corners` and convert them to a json file
+/// that will be be saved in the output path
+void convert_coordinates_to_json(const std::string& input_path, int number_of_pieces, const std::string& output_path);
 
 #endif //PROCESSING_CORNER_FINDING_H

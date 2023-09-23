@@ -92,6 +92,7 @@ add_library(
 target_link_libraries( PuzzleSolverLib ${OpenCV_LIBS} )
 target_link_libraries(PuzzleSolverLib C:/Users/lucas/CLionProjects/Puzzle_Solver/dlls_output/rust_solving_lib.dll.lib)
 
+message(${OpenCV_LIBS})
 
 # library for rust interop build
 add_library(
