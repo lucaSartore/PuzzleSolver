@@ -11,6 +11,8 @@
 #include "../solving/puzzle_preview/PreviewManager.h"
 #include <thread>
 #include "../solving/graphic_piece/PieceShape.h"
+#include <fstream>
+#include <utility>
 
 // if this is defined the program will insert debug images
 //#define DEBUG
@@ -691,4 +693,62 @@ void find_corners(const cv::Mat &input, cv::Point &p1,  cv::Point &p2,  cv::Poin
     p2 = vertices_precise[1];
     p3 = vertices_precise[2];
     p4 = vertices_precise[3];
+}
+
+
+void export_sides_result(const std::string& input_images_path,const std::string& input_coordinates_path,const std::string& output_path, int number_of_pieces){
+
+    for(int i=0; i<number_of_pieces;i++){
+
+        //############## get coordinates ###################
+        Point points[4];
+        string line;
+        ifstream data (input_coordinates_path + "/" + to_string(i) + ".txt");
+
+        assert(data.is_open());
+
+        // read the points
+        for (auto & point : points) {
+            std::getline(data, line);
+            std::stringstream ss(line);
+            char c[6], a;
+            int x, y;
+            ss >> c >> a >> x >> a >> y >> a;
+            point = Point(x, y);
+        }
+
+        //calculate center of the piece
+        Point center = (points[0]+points[1]+points[2]+points[3])/4;
+
+        //############## get image ###################
+
+        Mat image = imread(input_images_path + "/" + to_string(i) + ".jpeg");
+
+
+        for(int side=0; side<4; side++){
+            Point p1 = points[side];
+            Point p2 = points[(side+1)%4];
+
+            Mat border_shape = Mat::zeros(1500, 1500, image.type());
+
+            // Calculate the midpoint between p1 and p2
+            float midX = (p1.x + p2.x) / 2.0f;
+            float midY = (p1.y + p2.y) / 2.0f;
+
+            // Calculate the angle between p1 and p2
+            float angle = std::atan2(p2.y - p1.y, p2.x - p1.x) * 180.0f / CV_PI;
+
+            // Create a transformation matrix to rotate and move the input image
+            // docs: https://docs.opencv.org/3.4/da/d54/group__imgproc__transform.html#gafbbc470ce83812914a70abfb604f4326
+            cv::Mat transform = cv::getRotationMatrix2D(cv::Point2f((p1+p2)/2), angle, 1.0);
+            transform.at<double>(0, 2) += (float)1500/2 - midX;
+            transform.at<double>(1, 2) += (float)1500/2 - midY;
+
+            // Apply the transformation to the input image and put it in the output image
+            warpAffine(image, border_shape, transform, border_shape.size());
+
+            imwrite(output_path + "/" + to_string(i) + "_" + to_string(side) + ".jpeg", border_shape);
+        }
+
+    }
 }

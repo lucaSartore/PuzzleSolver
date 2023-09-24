@@ -15,7 +15,7 @@ using namespace cv;
 /// how many pixels a piece's area has to be big for it to be considered an actual piece
 #define PIECE_MINIMUM_AREA (50000*ppi/1200)
 /// how many pixel of margin the function keeps when cropping an image
-#define CROP_MARGIN (50*ppi/1200)
+#define CROP_MARGIN (750*ppi/1200)
 /// kernel of the morphologyEx open filter that will be apply to the mask
 #define MORPH_OPEN_KERNEL (10*ppi/1200)
 /// kernel of the morphologyEx open filter that will be apply to the mask
@@ -93,7 +93,7 @@ cv::Mat piece_splitting_get_test_threshold_image(const std::string& input_path){
 
 /// this function take as input a input_path where some scansion of a puzzle_preview is made
 /// and split them into many single pieces
-int split_pieces_into_single_images(const std::string& input_path,const std::string& output_path,const int ppi, bool enable_image_view){
+int split_pieces_into_single_images(const std::string& input_path,const std::string& output_path, const std::string& result_path,const int ppi, bool enable_image_view){
 
     // a temporary value  to quick operations
     Mat temp, kernel;
@@ -201,6 +201,16 @@ int split_pieces_into_single_images(const std::string& input_path,const std::str
 
                 // crop it
                 Mat cropped_image = single_piece(Range(y1,y2),Range(x1,x2));
+
+                // apply the same crop to the original image. export an image that is intended to be used
+                // to train a piece comparing model
+                Mat result_image = image(Range(y1,y2),Range(x1,x2));
+
+                //calculate input_path
+                string result_path_image = result_path + string("/") + to_string(piece_index) + string(".jpeg");
+
+                //save the file
+                imwrite(result_path_image,result_image);
 
                 if(PreviewManager::is_preview_enabled() || enable_image_view){
                     Mat cropped_image_resized;

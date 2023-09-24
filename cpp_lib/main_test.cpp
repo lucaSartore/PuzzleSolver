@@ -6,7 +6,7 @@
 #include "PuzzleSolver.h"
 #include <thread>
 #include <opencv2/opencv.hpp>
-
+#include "pre_processing/corner_finding.h"
 using namespace std;
 using namespace cv;
 
@@ -27,6 +27,11 @@ void debug_thread(){
 }
 
 int main(){
+
+    //export_sides_result("C:\\Users\\lucas\\Desktop\\results\\results\\pieces","C:\\Users\\lucas\\Desktop\\results\\divided","C:\\Users\\lucas\\Desktop\\results\\results\\sides", 16);
+
+    //return 0;
+
 
     cout << "Test" << endl;
 
