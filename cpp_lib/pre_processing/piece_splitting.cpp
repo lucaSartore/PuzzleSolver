@@ -63,6 +63,9 @@ cv::Mat piece_splitting_get_test_threshold_image(const std::string& input_path){
     threshold(mask, temp, THRESHOLD, 255, THRESH_BINARY);
     mask = temp;
 
+    // create a black rectangle around the image to make shure floodDill has effect
+    rectangle(mask,Point(0,0),Point(mask.cols-1, mask.rows-1),Scalar(0));
+
     // unsung flood feel form the borders to remove the possible black pixels inside the pieces
     floodFill(mask,Point(0,0),100);
     mask = mask != 100;

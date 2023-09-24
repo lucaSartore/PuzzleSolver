@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -29,7 +29,7 @@ namespace JigsawGenius
 
         private void _testButton_Click(object sender, EventArgs e)
         {
-            _comunicator.SetSplitThreshold((byte)thresholdTrackBar.Value);
+            _comunicator.SetSplitThreshold(thresholdTrackBar.Value);
             pictureBox1.Image = _comunicator.GetThresholdPreview();
         }
 
