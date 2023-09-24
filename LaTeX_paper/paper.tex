@@ -57,17 +57,55 @@
 \newpage
 
 \section{Abstract}
-The jigsaw puzzle problem has been in the eye of computer scientists for a while,
-and some clever solutions have already been found. These algorithms are made to
-work with a “digital” jigsaw puzzle~\ref{fig:figure_digital_puzzle},
-but there aren't papers (at least not popular enough to be searchable)
-that try to apply the solution
-to a “real world” jigsaw puzzle~\ref{fig:figure_real_puzzle}.\newline
-The problem has been tackled by some small projects. But, as said earlier,
-the process and eventual challenges has never been documented by a full paper,
-this wants to be the first.\newline
-As a bonus the paper will also cover the creation of a user friendly app
-that will be open source and free to use.
+This paper examines the Jigsaw puzzle problem,
+which has already been extensively studied in the literature.
+Several algorithms with efficient time complexity have been developed
+specifically for "digital" jigsaw puzzles. However, the counterpart:
+the "real world" jigsaw puzzle, has received relatively little attention
+in the literature. While some small-scale projects have addressed this issue,
+we were unable to find any papers discussing it.
+
+The puzzle problem can be divided into two separate components: the "Comparator"
+whose objective is to determine whether two sides of two pieces fit together,
+and the "Solver" whose objective is to use the information provided
+by the comparator to find the best way to fit some pieces together.
+
+Solving the problem in the real world has proven to be more challenging compared
+to the digital realm.
+This is because all measurements in the real world are noisier than those
+in the digital world, making it challenging to obtain accurate data from the Comparator.
+The Solver poses its own set of challenges, as it is an example of a
+multiobjective optimization problem. Specifically, one objective is to have
+the fastest algorithm possible,
+while the other objective is to create an algorithm that performs well with
+imprecise data. The latter objective is particularly important when solving
+real-world puzzles.
+
+In the first half of this paper, a Comparator is developed, and its accuracy
+is evaluated.
+The data is then used to demonstrate its incompatibility with the current
+state-of-the-art algorithm. At this juncture,
+two options remain to solve the problem:
+either create a superior Comparator or design a
+Solver that can operate with noisier data.
+
+The most promising approach to improving the Comparator
+involves utilizing machine learning, but this requires a substantial amount of data.
+Conversely, creating a better Solver is a less straightforward task.
+However, if successful, it could potentially serve as a labeling tool
+to generate the dataset needed to train a superior Comparator.
+
+The second part of this paper focuses on developing a
+new Solver algorithm specifically designed to work with noisy data.
+While the Solver created may not be considered state-of-the-art,
+as its time complexity ultimately ends up being worse than the current
+best algorithms, it could still play a fundamental role in solving the problem.
+As mentioned earlier, it could be employed to solve many small-sized
+puzzles and use the results to train a better Comparator.
+
+In conclusion, this paper outlines the additional challenges that the real-world
+puzzle problem presents compared to its digital counterpart.
+Additionally, it lays the groundwork for a superior machine learning-based Comparator.
 
 \section{Introduction}
 \subsection{Classification}
