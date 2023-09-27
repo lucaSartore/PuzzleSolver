@@ -31,9 +31,9 @@
 \usepackage[table,xcdraw]{xcolor}
 
 % to include svg images
-\usepackage{svg}
+%\usepackage{svg}
 
-% settings for how to indend the page when neaded
+% settings for how to indent the page when needed
 \newenvironment{indented_section}
   {\adjustwidth{3em}{0pt}}
   {\endadjustwidth}
@@ -60,14 +60,14 @@
 This paper examines the Jigsaw puzzle problem,
 which has already been extensively studied in the literature.
 Several algorithms with efficient time complexity have been developed
-specifically for "digital" jigsaw puzzles. However, the counterpart:
-the "real world" jigsaw puzzle, has received relatively little attention
+specifically for 'digital' jigsaw puzzles. However, the counterpart:
+the 'real world' jigsaw puzzle, has received relatively little attention
 in the literature. While some small-scale projects have addressed this issue,
 we were unable to find any papers discussing it.
 
-The puzzle problem can be divided into two separate components: the "Comparator"
+The puzzle problem can be divided into two separate components: the 'Comparator'
 whose objective is to determine whether two sides of two pieces fit together,
-and the "Solver" whose objective is to use the information provided
+and the 'Solver' whose objective is to use the information provided
 by the comparator to find the best way to fit some pieces together.
 
 Solving the problem in the real world has proven to be more challenging compared
@@ -113,8 +113,7 @@ This paper will focus on type 2 puzzles. A type 2 puzzle is a puzzle where the p
 \subsection{Digital vs Real-World Jigsaw Puzzles}
 
 There is  another important distinction between different types of puzzles.
-They can be divided into “digital” and “real world” jigsaw puzzles.
-\label{document:DigitalVSReal}
+They can be divided into “digital” and “real world” jigsaw puzzles.\label{document:DigitalVSReal}
 
 % figure of digital jigsaw puzzle    
 \begin{figure}[h]
@@ -160,7 +159,7 @@ All the algorithms that will be analyzed are composed of 3 sub algorithms:
 
     \subsubsection{The Splitter:} This component takes as input one or more images
     containing all the pieces. It then split all the pieces from each other,
-    9and split each piece into his four sides.\label{document:splitter}
+    and split each piece into his four sides.\label{document:splitter}
 
     \subsubsection{The Comparator:} This component compares each side with all the
     others, in order to understand whether they match or not.\newline
@@ -179,7 +178,7 @@ All the algorithms that will be analyzed are composed of 3 sub algorithms:
 \end{indented_section}
 
 \subsection{Solving Jigsaw Puzzles By The Graph Connection Laplacian~\cite{GCL}}
-This algorithm falls in the “binary comparison” category~\ref{document:comparator}.
+This algorithm falls in the “binary comparison” category~\cref{document:comparator}.
 And can be used to understand the strength and weaknesses
 of this approach.\newline
 The main benefit of this approach is speed,  having a binary comparison allows
@@ -192,7 +191,6 @@ The negative aspect might be the accuracy, since by using only two states
 To quantify accuracy the paper used the “neighbors comparison” metric,
 which “calculates the percentage of pairs of image patches that are matched correctly”.\newline
 \label{document:GCL}
-
 
 \subsection{A Genetic Algorithm-Based Solver for Very Large Jigsaw Puzzles~\cite{GA}}
 This paper applies a genetic algorithm to the jigsaw puzzle problem, with some promising results.\newline
@@ -565,9 +563,12 @@ And the following 4 values have been measured, in function of the threshold:
   \end{tabular}
   \end{table}
 
-\begin{center}
-  \includesvg[height=3.75in]{pictures/match_metrics_vs_threshold_used.svg}
-\end{center}
+
+\begin{figure}[h]
+    \caption{match metrics vs threshold used}\label{fig:match_metrics_vs_threshold_used}
+    \centering
+    \includegraphics[height=0.5\textwidth]{pictures/match_metrics_vs_threshold_used.png}
+\end{figure}
 
 Assuming the algorithm has to solve a 500 piece puzzle, with a limit match\% of 0.04
 and a corruption rate of 0.057 (data taken from the line in red);
