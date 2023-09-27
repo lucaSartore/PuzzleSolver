@@ -3,6 +3,9 @@
 % Required for inserting images
 \usepackage{graphicx}
 
+% to have precise image placement
+\usepackage{float}
+
 % to insert hiperlinks
 \usepackage[colorlinks=true,linkcolor=cyan]{hyperref}
 
@@ -60,14 +63,14 @@
 This paper examines the Jigsaw puzzle problem,
 which has already been extensively studied in the literature.
 Several algorithms with efficient time complexity have been developed
-specifically for 'digital' jigsaw puzzles. However, the counterpart:
-the 'real world' jigsaw puzzle, has received relatively little attention
+specifically for ``digital''~\ref{fig:figure_digital_puzzle} jigsaw puzzles. However, the counterpart:
+the ``real world' jigsaw puzzle, has received relatively little attention
 in the literature. While some small-scale projects have addressed this issue,
 we were unable to find any papers discussing it.
 
-The puzzle problem can be divided into two separate components: the 'Comparator'
+The puzzle problem can be divided into two separate components: the ``Comparator''~\ref{document:comparator}
 whose objective is to determine whether two sides of two pieces fit together,
-and the 'Solver' whose objective is to use the information provided
+and the ``Solver''~\ref{document:solver} whose objective is to use the information provided
 by the comparator to find the best way to fit some pieces together.
 
 Solving the problem in the real world has proven to be more challenging compared
@@ -116,15 +119,15 @@ There is  another important distinction between different types of puzzles.
 They can be divided into “digital” and “real world” jigsaw puzzles.\label{document:DigitalVSReal}
 
 % figure of digital jigsaw puzzle    
-\begin{figure}[h]
+\begin{figure}[H]
     \caption{An example of a “digital” jigsaw  puzzle}\label{fig:figure_digital_puzzle}
     \centering
     \includegraphics[height=0.25\textwidth]{pictures/digital_puzzle.png}
 \end{figure}
 
 % figure of real jigsaw puzzle    
-\begin{figure}[h]
-    \caption{An example of a “real world” jigsaw  puzzle}\label{fig:figure_real_puzzle}
+\begin{figure}[H]
+    \caption{An example of a ``real world'' jigsaw  puzzle}~\label{fig:figure_real_puzzle}
     \includegraphics[height=0.25\textwidth]{pictures/real_puzzle.jpg}
     \centering
 
@@ -136,9 +139,8 @@ obtaining accurate matches of a piece's characteristics
 is far easier with a digital puzzle,
 since there are far less things that can go wrong.
 
-
-% figure of a mesurement error
-\begin{figure}[h]
+% figure of a measurement error
+\begin{figure}[H]
     \caption{An example of what can go wrong when dealing with the real world}\label{fig:figure_measurement_error}
     \includegraphics[height=0.25\textwidth]{pictures/example_bad_piece.jpg}
     \centering
@@ -153,7 +155,6 @@ that will be useful for the next sections.
 \subsection{General Structure Of The Algorithms}
 
 All the algorithms that will be analyzed are composed of 3 sub algorithms:
-
 
 \begin{indented_section}
 
@@ -178,19 +179,18 @@ All the algorithms that will be analyzed are composed of 3 sub algorithms:
 \end{indented_section}
 
 \subsection{Solving Jigsaw Puzzles By The Graph Connection Laplacian~\cite{GCL}}
-This algorithm falls in the “binary comparison” category~\cref{document:comparator}.
+This algorithm falls in the ``binary comparison'' category~\cref{document:comparator}.
 And can be used to understand the strength and weaknesses
 of this approach.\newline
 The main benefit of this approach is speed,  having a binary comparison allows
 some specific optimization, in particular the use of some graph theory techniques.\newline
 The  algorithm has a time complexity of ruffly \(O(N^2)\). Which is in line with the theoretical
 minimum for jigsaw puzzle solving, according to the study:
-“No easy puzzles: Hardness results for jigsaw puzzles~\cite{ON2Claim}”.\newline
+``No easy puzzles: Hardness results for jigsaw puzzles~\cite{ON2Claim}''.\newline
 The negative aspect might be the accuracy, since by using only two states
 (match or not match) some informations are lost, compared to a non binary comparison.
-To quantify accuracy the paper used the “neighbors comparison” metric,
-which “calculates the percentage of pairs of image patches that are matched correctly”.\newline
-\label{document:GCL}
+To quantify accuracy the paper used the ``neighbors compariso'' metric,
+which ``calculates the percentage of pairs of image patches that are matched correctly''.\label{document:GCL}
 
 \subsection{A Genetic Algorithm-Based Solver for Very Large Jigsaw Puzzles~\cite{GA}}
 This paper applies a genetic algorithm to the jigsaw puzzle problem, with some promising results.\newline
@@ -205,53 +205,63 @@ of the algorithm itself, and the accuracy results are equivalent,
 if not slightly worse than the previous algorithm.\newline
 It is important to keep in mind that for the very nature of genetic algorithms,
 it might be possible that the accuracy would have been better if they had allowed
-it to run for more generations.\newline
-\label{document:GA}
+it to run for more generations.\label{document:GA}
 
 \subsection{Computer Vision Powers Automatic Jigsaw Puzzle Solver~\cite{Abto}}
-The solutions~\ref{document:GCL} and~\ref{document:GA} can be considered “state of the art” for digital jigsaw puzzles.
-But, as already introduced in section~\ref{document:DigitalVSReal} and better explained in section TODO,
+The solutions~\ref{document:GCL} and~\ref{document:GA} can be considered ``state-of-the-art'' for digital jigsaw puzzles.
+But, as already introduced in section~\ref{document:DigitalVSReal},
 appalling the solution to the real world can be challenging.\newline
-This solution is possibly a “state of the art” for real world puzzles.\newline
-In reality calling this a “solution” is incorrect,
+This solution is one of the best, and well documented implementations for real world puzzles.\newline
+In reality calling this ``solution'' is incorrect,
 since all it does is find the best 8 matches and asks the user which one to place.
 Making the algorithm not autonomous.\newline
 Even ignoring this major detail, making an analysis of this solution has proven to be challenging,
 since the article is more of a publicity stunt than an academic paper.
-In fact, the code is not open source and the information about the time needed to solve the puzzle is missing.\newline
+In fact, the code is not open source and the informations about the time needed to solve the puzzle are missing.\newline
 The article only shows a single puzzle solved, with a 9$\times$6 dimension.\newline
-Even with all of these problems this article still is one of the best example of a solution for real world puzzle.
+Even with all of these caveats this article still is one of the best example of a solution for real world puzzles.
 
 \section{The Objective Of This Paper}
 After reading some of the previous literature for this problem, some conclusions could be drawn:
-The problem of “digital jigsaw puzzle” has been solved many times, and is already well optimized.\newline
-On the other hand, the problem of “real world jigsaw puzzle” has mostly been ignored\newline
+The problem of ``digital'' jigsaw puzzle has been solved many times, and is already well optimized.\newline
+On the other hand, the problem of ``real world'' jigsaw puzzle has mostly been ignored
 by the academic community.\newline
+The first objective for this paper is to fill this void, and been the first formal paper to analyze the
+``real world'' jigsaw puzzle problem.\newline
+The second objective of this paper is to use the research that has been done to create a labeling tool.\newline
+The reason behind this objective is that the biggest challenge for real world puzzles is creating a
+reliable comparator~\ref{document:comparator}. That can deal with all the noisy 
+mages you get from the real world.\newline
+It is easy to see how a machine learning based comparator would probably be the best solution, 
+but this has some problems, in fact having to manually scan and label thousands of individual puzzle
+pieces to train the model would take ages.
+Instead using an automatic tool would be abel to scan a small $4\times4$ puzzle in one shot,
+solve it, and return the labeled data in just a couple minutes.
 
-The objective of this paper is to fill this void, by answering the following questions:
-\begin{itemize}
-    \item Can the current state of the art solutions for digital puzzles be used for real world puzzles, or the unpredictable nature of real world data makes it impossible?
-    \item If the algorithms cannot be applied to the real world, what is a possible solution that is more redundant to imprecise data?
-
-  \end{itemize}
 
 \section{The Setup}
 
-To answer these questions, some data to start with,
-and an algorithm to analyze the data; in particular the necessary components are:
-
+This is the 
 
 \subsection{The Puzzle To Solve}
 
 The first step is finding a real world puzzle to solve;
-It has been decided to use a classic 500 piece puzzle, and use a printer's
-scanner to digitize the pieces.\newline
+It has been decided to use a classic 1000 piece 66cm x 50cm  puzzle, and use a printer's
+scanner to digitize the pieces.\newline 
 The puzzle has been scanned in various sub-sizes to allow the testing of different configurations. 
 A resolution of 1200 ppi has been used to ensure a sharp and precise image
 of the piece, as seen in image~\ref{fig:figure_measurement_error}.
-The puzzle has been scanned backward, since the comparator algorithm
-that has been used REF does not use colors,
-and having an uniform color would make splitting the pieces easier.
+The puzzle has been scanned backward, using a black background.
+
+This choice has been dictated by the fact that the scanner used has the flashlight
+slightly off centered from the scanner's sensor.
+And this causes a shadows to be cast on one side of the pieces.
+A black background has been chosen to solve the problem of the shadow.
+And then the pieces has been flipped backward, since many of them where black,
+and it was difficult to separate them from the background.
+In the future it would be possible to scan the pieces in the correct orientation,
+by using a different scanner.
+
 
 \subsection{Splitting The Pieces}
 As introduced in section~\ref{document:splitter}, the first step to solve a puzzle
