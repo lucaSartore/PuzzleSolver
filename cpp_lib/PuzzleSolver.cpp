@@ -28,7 +28,7 @@ PuzzleSolver::PuzzleSolver(int dim_x, int dim_y, std::string work_path_, std::st
 
     number_of_pieces = 0;
 
-    split_threshold = 100;
+    split_threshold = 70;
 
     communication_image = PngImageClass();
 
