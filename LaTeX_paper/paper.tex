@@ -1,3 +1,4 @@
+
 \documentclass{article}
 
 % Required for inserting images
@@ -32,6 +33,33 @@
 
 % for the table
 \usepackage[table,xcdraw]{xcolor}
+
+% code highlighter
+\usepackage{listings}
+
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\definecolor{orage}{rgb}{0,0.26,0.99}
+
+\lstset{frame=tb,
+  language=python,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{orage},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
 
 % to include svg images
 %\usepackage{svg}
@@ -749,6 +777,77 @@ than the constant MIN\_SHORE\_PIECE\_GROUP.
 The process also checks that all individual pieces inside a newly
 created object are different (because obviously is impossible to reuse the same piece twice to solve a puzzle)
 \subsection{The Algorithm}
+
+As mentioned earlier, the algorithm is implemented with a recursive function.
+The function is generic, and can take as input objects of any level.
+
+A Function of level N takes as input a list of objects of level N,
+and creates all possible objects with level N+1.
+Then it uses the newly created objects to generate a recursive call on a version
+of itself with level N+1.
+This process is repeated until the desired size is reached.
+
+
+\begin{minipage}{\textwidth}
+\begin{lstlisting}
+  # This function returns a list of object that match with `piece_to_match'
+  # along the direction `direction'.
+  # It also filters the data to return only pieces with an index greater than `index_filter'
+  # This function is executed in constant time, since it relies on some pre-processing of the data
+  def get_matches(piece_to_match, direction, index_filter):
+      ...
+
+  def solve<T>(pieces: List<T>):
+
+      number_of_pieces = pieces.length()
+
+      found_pieces = List::<PieceGroup<T>>::new()
+
+      # this function compare all pieces with the others, and build some data structures
+      # that are used from the function `get_matches'
+	   # the time complexity is o(N^2)
+      do_pre_processing(pieces)
+
+      # test all possible combinations for the top left piece
+      for top_left_index in 0..number_of_pieces:
+	       for top_left_orientation in 0..4:
+
+          # get the top left piece
+          top_left = get_piece(top_left_index, top_left_orientation)
+
+          # test all possible combinations of top_right, bottom_right and bottom_left
+          for top_right in get_matches(top_left, RIGHT, top_left_index):
+	           for bottom_right in get_matches(top_right, DOWN , top_left_index):
+                  for bottom_left in get_matches(bottom_right, LEFT, top_left_index):
+
+                      # try to create the new piece group
+                      new_element = PieceGroup::new(top_left, top_right, bottom_right,bottom_left)
+
+                      if new_element.is_valid():
+                          # if the 4 pieces can fit together the newly created piece
+                          # is added to the list of found pieces
+                          found_pieces.add_element(new_element)
+                      else:
+                          # otherwise the program check what the case of the 
+                          # invalid creation is, and generate a continue
+                          # on the respective loop, to speed up the operations
+                          continue_failure_cause_loop()
+
+      # at the end a recursive call is generated 
+      return solve::<PieceGroup<T>>(found_pieces)
+
+\end{lstlisting}
+\end{minipage}
+The procedure begins by testing all possible pieces and orientations as the top\_right piece.
+Then continues by finding all the other 3 pieces in an efficient way thanks to get\_matches.
+When the program has an hypothesis on the 4 pieces that can build a new piece it tries to create it.\newline
+The creation process does some checks, and if everything is successful it adds the piece to the list of found pieces.
+If the creation is not successful it figures out which piece has caused the failure, and moves to the next iteration of the respective loop.\newline
+When all combinations have been found, the function makes a recursive call and the process is repeated.\newline
+The process ensures that the piece in the top\_left is always the one with the lower index.
+This is done to avoid building the same piece 4 times with 4 different orientations.\newline
+One advantage of this algorithm is that the outer edge for loop can be easily parallelized to achieve better performances.
+
 
 
 % referneces page
