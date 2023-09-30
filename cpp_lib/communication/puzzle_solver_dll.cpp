@@ -20,7 +20,7 @@ __declspec(dllexport) void* create_new(unsigned int dim_x, unsigned int dim_y, c
     }
 }
 
-__declspec(dllexport) void set_split_threshold(void* puzzle_solver, unsigned char new_threshold){
+__declspec(dllexport) void set_split_threshold(void* puzzle_solver, int new_threshold){
      ((PuzzleSolver*)puzzle_solver)->set_threshold(new_threshold);
 }
 

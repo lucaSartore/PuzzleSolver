@@ -28,7 +28,7 @@ PuzzleSolver::PuzzleSolver(int dim_x, int dim_y, std::string work_path_, std::st
 
     number_of_pieces = 0;
 
-    split_threshold = 100;
+    split_threshold = 70;
 
     communication_image = PngImageClass();
 
@@ -38,7 +38,7 @@ PuzzleSolver::PuzzleSolver(int dim_x, int dim_y, std::string work_path_, std::st
     filesystem::remove_all(work_path);
 
     // creating the 4 folders used for save the data of the program
-    string paths_to_create[] = {"", "/raw","/divided","/connections","/results"};
+    string paths_to_create[] = {"", "/raw","/divided","/connections","/results", "/results/pieces","/results/sides"};
     for(const auto& to_create: paths_to_create) {
         string path = work_path + to_create;
 
@@ -90,7 +90,7 @@ int PuzzleSolver::split_image() {
     piece_splitting_set_threshold(split_threshold);
 
     // split the images
-    number_of_pieces = split_pieces_into_single_images(work_path + "/raw/", work_path + "/divided/");
+    number_of_pieces = split_pieces_into_single_images(work_path + "/raw/", work_path + "/divided/", work_path + "/results/pieces/");
     // update the state
     state = IMAGE_SPLITTED;
     // save the current status
@@ -195,6 +195,11 @@ void PuzzleSolver::calculate_connections() {
     }
     // calculate all combinations
     calculate_all_connections(work_path + "/divided/", work_path + "/connections", number_of_pieces,number_of_cores,false);
+
+    // save the sides in the result
+    export_sides_result(work_path + "\\results\\pieces\\", work_path + "\\divided\\",work_path + "\\results\\sides\\", number_of_pieces);
+
+
     // update state
     state = CONNECTION_CALCULATED;
 

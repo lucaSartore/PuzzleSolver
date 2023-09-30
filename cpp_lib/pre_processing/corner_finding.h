@@ -17,4 +17,10 @@ void find_corners(const std::string& path, int number_of_pieces, int ppi = DEFAU
 /// that will be be saved in the output path
 void convert_coordinates_to_json(const std::string& input_path, int number_of_pieces, const std::string& output_path);
 
+
+/// this function take the input images, and the coordinates on that images and then create the images
+/// of the 4 sides, intended to be used to train a model
+void export_sides_result(const std::string& input_images_path,const std::string& input_coordinates_path,const std::string& output_path, int number_of_pieces);
+
+
 #endif //PROCESSING_CORNER_FINDING_H

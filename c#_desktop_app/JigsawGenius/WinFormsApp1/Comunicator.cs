@@ -78,7 +78,7 @@ namespace JigsawGenius
         public static extern unsafe void free_memory(void* puzzle_solver);
 
         [DllImport("PuzzleSolverLib.dll")]
-        public static extern unsafe void set_split_threshold(void* puzzle_solver, byte new_threshold);
+        public static extern unsafe void set_split_threshold(void* puzzle_solver, int new_threshold);
 
         [DllImport("PuzzleSolverLib.dll")]
         public static extern void enable_preview();
@@ -143,7 +143,7 @@ namespace JigsawGenius
             }
         }
 
-        public void SetSplitThreshold(byte treshold)
+        public void SetSplitThreshold(int treshold)
         {
             unsafe
             {
