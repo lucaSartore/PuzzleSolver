@@ -634,14 +634,10 @@ there will be \(0.054^{2N} \times N! \times 4^N \)
 possible correct combinations.\newline \newline
 For \( N = 500 \) the expected number of possible combinations is around \( 1.5 \times 10^{37} \).
 Which makes the chance of finding the actual correct combination basically zero.
-
 \subsubsection{Conclusion}
 In this case both the match\% and the corruption rate are bad enough to make a correct reconstruction impossible.
-\newline \newline 
 To lower the limit match\% is necessary to increase the threshold, but this would increase the corruption rate.
-\newline \newline
 To lower the corruption rate is necessary to decrease the threshold, but this would increase the limit match\%.
-\newline \newline
 This means that, regardless of the threshold chosen, our comparison algorithm \ref{document:my_comparator}
 can not work with a state of the art solver \ref{document:GCL}.
 
@@ -661,7 +657,7 @@ the optimal solution is probably to use machine learning.
 Different algorithms have different resilience to corrupted data.
 All the major algorithms that have been proposed since now, focus on speed.
 It is possible that an algorithm that focuses on accuracy over speed
-coud work with our comparator.
+could work with our comparator.
 
 \subsubsection{The Path Forward}
 
@@ -688,8 +684,70 @@ would still be faster compared to building a dataset manually.
 The Solver that has been created is not the main focus of this paper,
 and cannot be considered state-of-the-art if compared with the current best
 digital puzzle solver. But can probably be considered so if compared with current
-"real world" puzzle Solvers.
+``real world'' puzzle Solvers.z
 
+\subsection{Overview}
+The algorithm itself is relatively simple.
+It is a recursive procedure that begins by identifying all 2x2 sets of pieces that match by combining four individual pieces.
+It then proceeds to identify all 4x4 sets of matching pieces by combining four 2x2 pieces, and so on.\newline
+
+\subsection{Basic Components}
+To solve the puzzle two fundamental object are used
+\begin{itemize}
+  \item SinglePiece: which contains information about a single puzzle piece.
+  \item PieceGroup\(<\)T\(>\) where T can be either a PieceGroup or a SinglePiece\newline
+  This element encompasses four elements of type T, each with its own position (top right, top left, bottom left, bottom right).
+\end{itemize}
+Both SinglePiece and PieceGroup have an ``orientation'' attribute that goes from 0 to 3~\ref{fig:orientation}.
+\begin{figure}[H]
+  \caption{orientation attribute of an object}\label{fig:orientation}
+  \centering
+  \includegraphics[height=0.3\textwidth]{pictures/orientation.png}
+\end{figure}
+
+\subsubsection{The Levels}
+
+These objects are assigned levels:
+\begin{itemize}
+\item SinglePiece is at level 0, representing a 1x1 ``solution'' to a puzzle.
+\item PieceGroup\(<\)SinglePiece\(>\) is at level 1, representing a 2x2 solution to a puzzle.
+\item PieceGroup\(<\)PieceGroup\(<\)SinglePiece\(>>\) is at level 2, representing a 4x4 solution to a puzzle, and so forth.
+\end{itemize}
+
+\subsubsection{The Behaviors}
+
+These basic objects also have the following shared behaviors:
+\begin{itemize}
+  \item 4 objects of level N can be combined to build an object of level N+1.
+  \item One object of level N has 4 sides, each of which can be compared with a side of an element of level N. This results in a compatibility shore.
+  \begin{itemize}
+    \item The comparing shore for level 0 objects is just the shore given by the comparator~\ref{document:comparator}.
+    \item The comparing shore for level N+1 objects is the average between two comparisons made with objects of level N
+  \end{itemize}
+\end{itemize}
+
+\subsubsection{Combining four objects}
+
+When combining four objects into one, some comparisons are executed to ensure that the resulting piece is a valid  combination.
+\begin{itemize}
+  \item The right side of the object in the top left position is compared with the left side of the object in the top right position~\ref{fig:merge_pieces}(1).
+  \item The bottom side of the objection the top right position is compared with the top side of the object in the bottom right position~\ref{fig:merge_pieces}(2).
+  \item The left side of the objection the bottom right position is compared with the right side of the object in the bottom left position~\ref{fig:merge_pieces}(3).
+  \item The top side of the objection the bottom left position is compared with the bottom side of the object in the top left position~\ref{fig:merge_pieces}(4).
+\end{itemize}
+
+\begin{figure}[H]
+  \caption{Example of a combination of four objects in to one}\label{fig:merge_pieces}
+  \centering
+  \includegraphics[height=0.3\textwidth]{pictures/merge_pieces.png}
+\end{figure}
+
+In order for the created object to be considered valid all of the comparisons must have a shore higher
+than the constant MIN\_SHORE\_SINGLE\_SIDE. And the average of the four comparisons must be greater
+than the constant MIN\_SHORE\_PIECE\_GROUP.
+
+The process also checks that all individual pieces inside a newly
+created object are different (because obviously is impossible to reuse the same piece twice to solve a puzzle)
 \subsection{The Algorithm}
 
 
