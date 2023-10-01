@@ -849,6 +849,128 @@ This is done to avoid building the same piece 4 times with 4 different orientati
 One advantage of this algorithm is that the outer edge for loop can be easily parallelized to achieve better performances.
 
 
+\section{The Labeling tool}
+When the program solves a puzzle it also exports some files that could be used in the future to train
+a machine-learning based comparator.
+This section is here to explain the data available and the format used.
+
+One piece is uniquely identified by his id piece\_id.
+The id is an integer that goes from 0 to Number of pieces - 1.
+Each piece has 4 sides that can be identified by the side side\_id,
+an integer that goes from 0 to 3.
+
+\subsection{Image of each piece}
+
+Inside the folder results/pieces the program will generate one image
+for each one of the pieces of the puzzle. The pieces will be named \{piece\_id\}.jpeg.
+An example can be seen in \ref{fig:result_pieces}
+
+\begin{figure}[H]
+  \caption{}\label{fig:result_pieces}
+  \centering
+  \includegraphics[height=0.3\textwidth]{pictures/result_pieces.jpeg}
+\end{figure}
+
+\subsection{Image of each side}
+
+Inside the folder results/sides the program will generate one image 
+for each side of each piece. The images will be named \{piece\_id\}\_\{side\_id\}.jpeg.
+An example can be seen in \ref{fig:result_sides}
+
+\begin{figure}[H]
+  \caption{}\label{fig:result_sides}
+  \centering
+  \includegraphics[height=0.3\textwidth]{pictures/result_sides.jpeg}
+\end{figure}
+
+\subsection{Corners of each piece}
+The file corners.json will be generated inside the folder results.
+This file will contain a list of pieces.
+Each piece has 4 sides, and each side has the coordinates of the two points
+that delimit itself.\newline
+An example of the generated json can be seen below.
+
+
+\begin{minipage}{\textwidth}
+  \begin{lstlisting}
+    [
+      {
+        "piece_id": 0,
+        "side_0": {
+          "p1": {"x":955, "y":1924},
+          "p2": {"x":1024, "y":1016}
+        },
+        "side_1": {
+          "p1": {"x":1024, "y":1016},
+          "p2": {"x":1850, "y":1028}
+        },
+        "side_2": {
+          "p1": {"x":1850, "y":1028},
+          "p2": {"x":1814, "y":1992}
+        },
+        "side_3": {
+          "p1": {"x":1814, "y":1992},
+          "p2": {"x":955, "y":1924}
+        }
+      },
+      {...},
+      {...},
+      ...
+    ]
+  \end{lstlisting}
+\end{minipage}
+
+\subsection{Match for each side}
+The file connections\_result.json will be generated
+inside the folder results. This file will contain a list of pieces,
+each piece has 4 sides, and each side has a link to the side of the piece
+that matches it. The link can be null if the side is along the border.\newline
+An example of the generated json can be seen below.
+
+
+\begin{minipage}{\textwidth}
+  \begin{lstlisting}
+    [
+      {
+        "piece_id": 12,
+        "side_0": {
+            "piece": 5,
+            "side": 0
+        },
+        "side_1": {
+            "piece": 8,
+            "side": 0
+        },
+        "side_2": {
+            "piece": 0,
+            "side": 0
+        },
+        "side_3": null
+      },
+      {...},
+      {...},
+      ...
+    ]
+  
+  \end{lstlisting}
+\end{minipage}
+
+
+\section{Conclusions}
+In conclusion, this paper's objective can be considered achieved.
+It has been documented why real-world puzzles are harder than digital puzzles.
+It has also been shown that the same algorithm can have drastically worse
+performance when working with real-world puzzles compared to digital ones.
+
+A highly effective labeling tool has also been developed.
+It could be used in the future to create a machine learning-based comparator that could significantly
+improve the time needed to solve this problem by providing more accurate data.
+
+Even the solver that has been created can be considered a success.
+His time complexity is horrible if compared with current state-of-the-art digital puzzle solvers.
+But if compared with real world one the algorithm is probably one of the best, if not the best, available online.
+
+
 
 % referneces page
 \clearpage
