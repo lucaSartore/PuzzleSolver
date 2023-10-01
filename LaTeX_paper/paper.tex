@@ -28,6 +28,8 @@
 % to allow putting description text to te side of an image
 \usepackage{wrapfig}
 
+\usepackage{multirow}
+
 % rule for reference to fugures
 \pretocmd{\thefigure}{F}{}{}
 
@@ -249,7 +251,7 @@ In fact, the code is not open source and the informations about the time needed 
 The article only shows a single puzzle solved, with a 9$\times$6 dimension.\newline
 Even with all of these caveats this article still is one of the best example of a solution for real world puzzles.
 
-\section{The Objective Of This Paper}
+\section{The Objective Of This Paper}\label{document:objective}
 After reading some of the previous literature for this problem, some conclusions could be drawn:
 The problem of ``digital'' jigsaw puzzle has been solved many times, and is already well optimized.\newline
 On the other hand, the problem of ``real world'' jigsaw puzzle has mostly been ignored
@@ -614,7 +616,7 @@ Assuming the algorithm has to solve a 500 piece puzzle, with a limit match\% of 
 and a corruption rate of 0.057 (data taken from the line in red);
 what would this mean in terms of accuracy of the results?
 
-\subsubsection{Definitions}
+\subsubsection{Definitions}\label{document:proof_definitions}
 This set of definitions are useful to better understand the next section:
 
 \begin{itemize}
@@ -708,7 +710,7 @@ the solver algorithm. The choice was driven by the belief that creating a new al
 for then using that to build a dataset,
 would still be faster compared to building a dataset manually.
 
-\section{The Solver}
+\section{The Solver}\label{document:my_solver}
 The Solver that has been created is not the main focus of this paper,
 and cannot be considered state-of-the-art if compared with the current best
 digital puzzle solver. But can probably be considered so if compared with current
@@ -754,7 +756,7 @@ These basic objects also have the following shared behaviors:
   \end{itemize}
 \end{itemize}
 
-\subsubsection{Combining four objects}
+\subsubsection{Combining four objects}\label{document:combining_four_objects}
 
 When combining four objects into one, some comparisons are executed to ensure that the resulting piece is a valid  combination.
 \begin{itemize}
@@ -847,6 +849,73 @@ When all combinations have been found, the function makes a recursive call and t
 The process ensures that the piece in the top\_left is always the one with the lower index.
 This is done to avoid building the same piece 4 times with 4 different orientations.\newline
 One advantage of this algorithm is that the outer edge for loop can be easily parallelized to achieve better performances.
+
+\section{Testing Results}
+
+In this section the solver that has been proposed by this paper will be tested.
+This test will serve two purposes:
+Understanding the performance and limitations of the proposed algorithm
+Been able to test the same algorithm with both digital, and real world jigsaw puzzles, to understand the differences between the two.
+
+\subsection{Setup}
+The test sample consist in 5 different puzzle:
+\begin{itemize}
+  \item a 4x4 real world puzzle
+  \item a 8x8 real world puzzle
+  \item a 4x4 digital puzzle
+  \item a 8x8 digital puzzle
+  \item a 16x16 digital puzzle
+\end{itemize}
+The real world puzzles have been obtained with a printer’s scanner,
+and the digital puzzles have been obtained from \url{https://puzzle.telegnom.org/}.\newline
+The constants MIN\_SHORE\_SINGLE\_SIDE and MIN\_SHORE\_PIECE\_GROUP mentioned in section
+\ref{document:combining_four_objects} were set at different values
+depending on the nature of the puzzle (real or digital).\newline
+The test has been performed on a ryzen 5 5600 CPU with 16 GB of RAM.
+The time measured in the test does not include the execution time of the Comparator
+\ref{document:my_comparator}, but only the one of the Solver~\ref{document:my_solver}.
+
+\subsection{Results}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{
+  >{\columncolor[HTML]{D9EAD3}}c 
+  >{\columncolor[HTML]{D0E0E3}}c 
+  >{\columncolor[HTML]{E6B8AF}}c 
+  >{\columncolor[HTML]{FCE5CD}}c }
+  \cellcolor[HTML]{B6D7A8} &
+    \cellcolor[HTML]{A2C4C9} &
+    \multicolumn{2}{c}{\cellcolor[HTML]{EA9999}Execution time {[}s{]}} \\
+  \multirow{-2}{*}{\cellcolor[HTML]{B6D7A8}Size} &
+    \multirow{-2}{*}{\cellcolor[HTML]{A2C4C9}Pieces} &
+    \cellcolor[HTML]{DD7E6B}Digital puzzle &
+    \cellcolor[HTML]{F9CB9C}Real Puzzle \\
+  4x4   & 16  & 4   & 59   \\
+  8x8   & 64  & 30  & 2851 \\
+  16X16 & 256 & 377 & N/A 
+  \end{tabular}
+\end{table}
+
+\subsection{Accuracy}
+It is important to note that the project does not have a way to evaluate the accuracy
+of the results automatically. But the accuracy for the two real world puzzles
+has been asserted manually. And both of them are 100\% correct.
+
+\subsection{Analysis}
+
+This paper has claimed from the start that real world puzzles were harder than digital ones.
+Some intuitive explanations were given to justify this claim,
+but a formal proof has never been given.
+This test finally proves the claim, by showing that the same algorithm can have vastly
+different time performances depending on the accuracy of the input data.
+
+It is fair to say that the performance of the algorithm are not amazing,
+but they are good enough to achieve the objective of this paper \ref{document:objective}.
+It is also worth remembering that the problem itself is extremely complex.
+Using the formula introduced in section \ref{document:proof_definitions} we can calculate that a 64 piece puzzle,
+like the one that has been solved before, has approximately \(4 \cdot 10^{127}\) possible combinations.
+\[C = N! \cdot 4^N =  64! \cdot 4^{64} \approx 4.32 \cdot 10^{127}\]
 
 
 \section{The Labeling tool}
