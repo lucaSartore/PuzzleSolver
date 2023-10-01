@@ -116,7 +116,7 @@ real-world puzzles.
 
 In the first half of this paper, a Comparator is developed, and its accuracy
 is evaluated.
-The data is then used to demonstrate its incompatibility with the current
+The data are then used to demonstrate its incompatibility with the current
 state-of-the-art algorithm. At this juncture,
 two options remain to solve the problem:
 either create a superior Comparator or design a
@@ -142,11 +142,13 @@ Additionally, it lays the groundwork for a superior machine learning-based Compa
 
 \section{Introduction}
 \subsection{Classification}
-This paper will focus on type 2 puzzles. A type 2 puzzle is a puzzle where the position, and the orientation of each piece is unknown. 
+This paper will focus on Type 2 puzzles. A Type 2 puzzle is one where the position and orientation of each piece are unknown.
 \subsection{Digital vs Real-World Jigsaw Puzzles}
 
 There is  another important distinction between different types of puzzles.
-They can be divided into “digital” and “real world” jigsaw puzzles.\label{document:DigitalVSReal}
+They can be divided into “digital”~\ref{fig:figure_digital_puzzle} and “real world”~\ref{fig:figure_real_puzzle} jigsaw puzzles.
+The difference between the two is quite self explanatory, and can be observed in the respective pictures.
+\label{document:DigitalVSReal}
 
 % figure of digital jigsaw puzzle    
 \begin{figure}[H]
@@ -167,7 +169,9 @@ The reason this distinction is important is because,
 despite the generic concept of the puzzle not changing,
 obtaining accurate matches of a piece's characteristics
 is far easier with a digital puzzle,
-since there are far less things that can go wrong.
+since there are far fewer things that can go wrong.
+For example, a piece's shape may be distorted by
+a low-quality cut, as seen in picture \ref{fig:figure_measurement_error}
 
 % figure of a measurement error
 \begin{figure}[H]
@@ -177,10 +181,10 @@ since there are far less things that can go wrong.
 \end{figure}
 
 \section{Previous Literature}
-This section will analyze 3 different algorithms that have been proposed
-as a solution of type 2 puzzles. The objective is to understand the
-strengths and the weaknesses of each one, to build up some knowledge
-that will be useful for the next sections.
+This section will analyze three different algorithms that have been
+proposed as solutions for type 2 puzzles.
+The objective is to understand the strengths and weaknesses of each one,
+in order to build up knowledge that will be useful for the next sections.
 
 \subsection{General Structure Of The Algorithms}
 
@@ -189,7 +193,7 @@ All the algorithms that will be analyzed are composed of 3 sub algorithms:
 \begin{indented_section}
 
     \subsubsection{The Splitter:} This component takes as input one or more images
-    containing all the pieces. It then split all the pieces from each other,
+    containing all the pieces. It then separates all the pieces from each other,
     and split each piece into his four sides.\label{document:splitter}
 
     \subsubsection{The Comparator:} This component compares each side with all the
@@ -201,78 +205,93 @@ All the algorithms that will be analyzed are composed of 3 sub algorithms:
     In contrast a “Non Binary Comparison” can give any value between 0 and 1.
     This allows states of uncertainty to be represented.\label{document:comparator}
 
-    \subsubsection{The Solver:} This component  uses the information provided by the
-    Comparator~\ref{document:comparator}, and tries to find a solution
+    \subsubsection{The Solver:} This component utilizes the information provided by the
+    Comparator~\ref{document:comparator}, and attempts to find a solution
     (i.e.\ a position and an orientation for each piece)
     that is the most likely to be correct.\label{document:solver}
 
 \end{indented_section}
 
 \subsection{Solving Jigsaw Puzzles By The Graph Connection Laplacian~\cite{GCL}}
-This algorithm falls in the ``binary comparison'' category~\cref{document:comparator}.
+This algorithm falls within the ``binary comparison'' category~\ref{document:comparator}.
 And can be used to understand the strength and weaknesses
 of this approach.\newline
-The main benefit of this approach is speed,  having a binary comparison allows
-some specific optimization, in particular the use of some graph theory techniques.\newline
-The  algorithm has a time complexity of ruffly \(O(N^2)\). Which is in line with the theoretical
-minimum for jigsaw puzzle solving, according to the study:
+The primary advantage of this approach lies in its speed;
+the utilization of binary comparison permits specific optimizations,
+particularly leveraging graph theory techniques.\newline
+The algorithm exhibits a time complexity of approximately \(O(N^2)\),
+a value consistent with the theoretical minimum for
+jigsaw puzzle solving, as outlined in the study
 ``No easy puzzles: Hardness results for jigsaw puzzles~\cite{ON2Claim}''.\newline
-The negative aspect might be the accuracy, since by using only two states
-(match or not match) some informations are lost, compared to a non binary comparison.
+However, a potential drawback may arise in terms of accuracy.
+This stems from the fact that, with only two states
+(matching or not matching),
+certain details may be lost when compared to a non-binary comparison. 
 To quantify accuracy the paper used the ``neighbors compariso'' metric,
 which ``calculates the percentage of pairs of image patches that are matched correctly''.\label{document:GCL}
 
 \subsection{A Genetic Algorithm-Based Solver for Very Large Jigsaw Puzzles~\cite{GA}}
-This paper applies a genetic algorithm to the jigsaw puzzle problem, with some promising results.\newline
-The algorithm seems to have a \(O(N^2)\) time complexity, with time slightly lower than the previous example
-(But it is impossible to know for sure which one is faster, given that they didn't specify the hardware used).\newline
-The paper has used the same method to evaluate accuracy that the previous one used
-(neighbors comparison) so it is easy to compare them.\newline
-The algorithm falls in the “Non binary comparison”~\ref{document:comparator};
-this should give it an advantage, since it has more data to work with.\newline
+This paper employs genetic algorithms to address the
+jigsaw puzzle problem, yielding promising results.\newline
+The algorithm seems to have a \(O(N^2)\) time complexity,
+with execution time slightly lower than the previous example
+(However, it remains uncertain which one is faster, as the papers did not specify
+the particular hardware configuration used).\newline
+The paper adopts the same evaluation method for accuracy as the previous example,
+namely neighbor comparison, facilitating direct comparison between the two approaches.
+This algorithm falls under the category of “Non binary comparison”~\ref{document:comparator}
+a distinction that theoretically grants it an advantage due to the increased granularity
+of input data.
 Unfortunately this advantage does not compensate for the worst precision
 of the algorithm itself, and the accuracy results are equivalent,
 if not slightly worse than the previous algorithm.\newline
 It is important to keep in mind that for the very nature of genetic algorithms,
 it might be possible that the accuracy would have been better if they had allowed
-it to run for more generations.\label{document:GA}
+the algorithm to run for more generations.\label{document:GA}
 
 \subsection{Computer Vision Powers Automatic Jigsaw Puzzle Solver~\cite{Abto}}
-The solutions~\ref{document:GCL} and~\ref{document:GA} can be considered ``state-of-the-art'' for digital jigsaw puzzles.
-But, as already introduced in section~\ref{document:DigitalVSReal},
-appalling the solution to the real world can be challenging.\newline
-This solution is one of the best, and well documented implementations for real world puzzles.\newline
-In reality calling this ``solution'' is incorrect,
-since all it does is find the best 8 matches and asks the user which one to place.
-Making the algorithm not autonomous.\newline
-Even ignoring this major detail, making an analysis of this solution has proven to be challenging,
-since the article is more of a publicity stunt than an academic paper.
-In fact, the code is not open source and the informations about the time needed to solve the puzzle are missing.\newline
-The article only shows a single puzzle solved, with a 9$\times$6 dimension.\newline
-Even with all of these caveats this article still is one of the best example of a solution for real world puzzles.
+Solutions~\ref{document:GCL} and~\ref{document:GA} can be considered ``state-of-the-art''
+for digital jigsaw puzzles.
+However, as already introduced in section ~\ref{document:DigitalVSReal},
+translating these solutions to the real world can be challenging.\newline
+This article represents one of the most comprehensive and well-documented
+implementations for real-world puzzles. However,
+it's important to note that referring to this approach as a 'solution'
+may be misleading, as it primarily identifies the top eight matching
+pieces for a specific point and subsequently relies on user input to make
+the final placement decision
+This aspect renders the algorithm non-autonomous..\newline
+Even disregarding this significant detail,
+conducting an analysis of this solution has proven to be challenging,
+as the article leans more towards a publicity stunt than an academic paper.
+In fact, the code is not open source, and information regarding the time needed
+to solve the puzzle is absent. The article only showcases a single puzzle solved,
+with dimensions of 9\(\times\)6.\newline
+Despite these limitations, this article still stands as one of the best examples of a solution
+for real-world puzzles.
 
 \section{The Objective Of This Paper}\label{document:objective}
-After reading some of the previous literature for this problem, some conclusions could be drawn:
-The problem of ``digital'' jigsaw puzzle has been solved many times, and is already well optimized.\newline
-On the other hand, the problem of ``real world'' jigsaw puzzle has mostly been ignored
+After reading some of the previous literature on this problem, some conclusions could be drawn:
+The problem of digital jigsaw puzzle has been solved many times, and is already well optimized.\newline
+On the other hand, the problem of real-world jigsaw puzzle has mostly been ignored
 by the academic community.\newline
 The first objective for this paper is to fill this void, and been the first formal paper to analyze the
-``real world'' jigsaw puzzle problem.\newline
-The second objective of this paper is to use the research that has been done to create a labeling tool.\newline
+real-world jigsaw puzzle problem.\newline
+The second objective is to use the research that will be conducted for this paper to create a labeling tool.\newline
 The reason behind this objective is that the biggest challenge for real world puzzles is creating a
-reliable comparator~\ref{document:comparator}. That can deal with all the noisy 
-images you get from the real world.\newline
+reliable comparator~\ref{document:comparator}, that could provide accurate information even with noisy 
+input data, that are obtained from real-world measure.\newline
 It is easy to see how a machine learning based comparator would probably be the best solution, 
 but this has some problems, in fact having to manually scan and label thousands of individual puzzle
 pieces to train the model would take ages.
-Instead an automatic tool would be abel to scan a small $4\times4$ puzzle in one shot,
-solve it, and return the labeled data in just a couple minutes.
+Instead an automatic tool would allow to scan a small $4\times4$ puzzle in one shot,
+solve it, and return the labeled data in just minutes.
 
 
 \section{The Setup}
 
-To fulfill the objective of this paper three some data to work with are needed.
-This section will cover the input data used, and the Splitter~\ref{document:splitter}
+To fulfill the objective of this paper some data to work with are needed.
+This section will cover the input data used as well as the Splitter~\ref{document:splitter}
 and Comparator~\ref{document:comparator} algorithms.
 
 \subsection{The Puzzle To Solve}
