@@ -271,18 +271,18 @@ Despite these limitations, this article still stands as one of the best examples
 for real-world puzzles.
 
 \section{The Objective Of This Paper}\label{document:objective}
-After reading some of the previous literature on this problem, some conclusions could be drawn:
-The problem of digital jigsaw puzzle has been solved many times, and is already well optimized.\newline
-On the other hand, the problem of real-world jigsaw puzzle has mostly been ignored
-by the academic community.\newline
-The first objective for this paper is to fill this void, and been the first formal paper to analyze the
-real-world jigsaw puzzle problem.\newline
-The second objective is to use the research that will be conducted for this paper to create a labeling tool.\newline
-The reason behind this objective is that the biggest challenge for real world puzzles is creating a
+After a review of the existing literature on this problem, some conclusions could be drawn:
+The "digital" jigsaw puzzle dilemma has been extensively addressed and is already
+well-optimized. Conversely, the "real-world" counterpart has largely been
+overlooked within the academic community.\newline
+The first objective for this paper is to fill this void, and been the first formal paper
+to analyze the real-world jigsaw puzzle problem.\newline
+The second objective is to use the forthcoming research to create a labeling tool.\newline
+This objective is motivated by the fact that the biggest challenge for real world puzzles is creating a
 reliable comparator~\ref{document:comparator}, that could provide accurate information even with noisy 
-input data, that are obtained from real-world measure.\newline
+input images, that are obtained from real-world measure.\newline
 It is easy to see how a machine learning based comparator would probably be the best solution, 
-but this has some problems, in fact having to manually scan and label thousands of individual puzzle
+but this poses problems, in fact having to manually scan and label thousands of individual puzzle
 pieces to train the model would take ages.
 Instead an automatic tool would allow to scan a small $4\times4$ puzzle in one shot,
 solve it, and return the labeled data in just minutes.
@@ -290,22 +290,26 @@ solve it, and return the labeled data in just minutes.
 
 \section{The Setup}
 
-To fulfill the objective of this paper some data to work with are needed.
-This section will cover the input data used as well as the Splitter~\ref{document:splitter}
+To fulfill the objectives of this paper,
+it is essential to have the necessary data for analysis.
+This section will encompass the input data utilized,
+as well as the Splitter~\ref{document:splitter}
 and Comparator~\ref{document:comparator} algorithms.
 
 \subsection{The Puzzle To Solve}
 
-The first step is finding a real world puzzle to solve;
-It has been decided to use a classic 1000 piece 66cm x 50cm  puzzle, and use a printer's
-scanner to digitize the pieces.\newline 
-The puzzle has been scanned in various sub-sizes to allow the testing of different configurations. 
-A resolution of 1200 ppi has been used to ensure a sharp and precise image
-of the piece, as seen in image~\ref{fig:figure_measurement_error}.
+The first step involves selecting a real-world
+puzzle for solving. It has been decided to utilize a
+classic 1000-piece puzzle measuring 66cm x 50cm.
+A printer's scanner is employed to digitize the individual pieces.\newline 
+
+The puzzle has been scanned in various sub-sizes to facilitate the testing of different configurations.
+A resolution of 1200 pixels per inch (ppi) has been employed to ensure a sharp and precise
+depiction of the pieces, as seen in image~\ref{fig:figure_measurement_error}.
 The puzzle has been scanned backward, using a black background.
 
 This choice has been dictated by the fact that the scanner used has the flashlight
-slightly off centered from the scanner's sensor.
+slightly off-centered from the scanner's sensor.
 And this causes a shadows to be cast on one side of the pieces.
 A black background has been chosen to solve the problem of the shadow.
 And then the pieces has been flipped backward, since many of them where black,
