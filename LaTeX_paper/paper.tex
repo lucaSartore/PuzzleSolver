@@ -228,7 +228,8 @@ This stems from the fact that, with only two states
 (matching or not matching),
 certain details may be lost when compared to a non-binary comparison. 
 To quantify accuracy the paper used the ``neighbors compariso'' metric,
-which ``calculates the percentage of pairs of image patches that are matched correctly''.\label{document:GCL}
+which ``calculates the percentage of pairs of image patches that are matched correctly''.
+This will be useful later\label{document:GCL}
 
 \subsection{A Genetic Algorithm-Based Solver for Very Large Jigsaw Puzzles~\cite{GA}}
 This paper employs genetic algorithms to address the
@@ -256,31 +257,35 @@ However, as already introduced in section ~\ref{document:DigitalVSReal},
 translating these solutions to the real world can be challenging.\newline
 This article represents one of the most comprehensive and well-documented
 implementations for real-world puzzles. However,
-it's important to note that referring to this approach as a 'solution'
+it's important to note that referring to this approach as a ``solution''
 may be misleading, as it primarily identifies the top eight matching
 pieces for a specific point and subsequently relies on user input to make
-the final placement decision
+the final placement decision.
 This aspect renders the algorithm non-autonomous..\newline
 Even disregarding this significant detail,
 conducting an analysis of this solution has proven to be challenging,
 as the article leans more towards a publicity stunt than an academic paper.
-In fact, the code is not open source, and information regarding the time needed
-to solve the puzzle is absent. The article only showcases a single puzzle solved,
+In fact, the code is not open source, and informations regarding the time needed
+to solve the puzzle are absent. The article only showcases a single puzzle solved,
 with dimensions of 9\(\times\)6.\newline
 Despite these limitations, this article still stands as one of the best examples of a solution
 for real-world puzzles.
 
 \section{The Objective Of This Paper}\label{document:objective}
 After a review of the existing literature on this problem, some conclusions could be drawn:
-The "digital" jigsaw puzzle dilemma has been extensively addressed and is already
-well-optimized. Conversely, the "real-world" counterpart has largely been
-overlooked within the academic community.\newline
+The ``digital'' jigsaw puzzle dilemma has been extensively addressed and is already
+well-optimized. Conversely, the ``real-world'' counterpart has largely been
+overlooked within the academic community.
+
 The first objective for this paper is to fill this void, and been the first formal paper
-to analyze the real-world jigsaw puzzle problem.\newline
-The second objective is to use the forthcoming research to create a labeling tool.\newline
+to analyze the real-world jigsaw puzzle problem.
+
+The second objective is to use the forthcoming research to create a labeling tool.
+
 This objective is motivated by the fact that the biggest challenge for real world puzzles is creating a
 reliable comparator~\ref{document:comparator}, that could provide accurate information even with noisy 
-input images, that are obtained from real-world measure.\newline
+input images, that are obtained from real-world measure.
+
 It is easy to see how a machine learning based comparator would probably be the best solution, 
 but this poses problems, in fact having to manually scan and label thousands of individual puzzle
 pieces to train the model would take ages.
@@ -301,7 +306,7 @@ and Comparator~\ref{document:comparator} algorithms.
 The first step involves selecting a real-world
 puzzle for solving. It has been decided to utilize a
 classic 1000-piece puzzle measuring 66cm x 50cm.
-A printer's scanner is employed to digitize the individual pieces.\newline 
+A printer's scanner is employed to digitize the individual pieces.
 
 The puzzle has been scanned in various sub-sizes to facilitate the testing of different configurations.
 A resolution of 1200 pixels per inch (ppi) has been employed to ensure a sharp and precise
@@ -354,7 +359,7 @@ his 4 sides, this could be done with the following steps:
   It can be noted that these filler areas have distinct shapes,
   depending on what has generated them (either a ``hole'' or a ``knob'').
   Therefore they can be categorized.
-  Finally the filler areas are added back to the only if
+  Finally the filler areas are added back to the original only if
   they originated from a hole. This results in an image where the holes
   have been filled~\ref{fig:s_s_no_holes}
 
@@ -368,7 +373,7 @@ his 4 sides, this could be done with the following steps:
   It is important to note that the shape of a blob can vary significantly depending on whether it originated
   from an ``angle'' or a ``knob'' and thus they can be classified accordingly.
   Following this, the program proceeds to eliminate from the hole-free
-  image all pixels that are in close proximity to a blob generated by a knob.
+  image~\ref{fig:s_s_no_holes} all pixels that are in close proximity to a blob generated by a knob.
   This operation yields an image that is both devoid of knobs and holes~\ref{fig:s_s_no_knobs}.
   
   \item \textbf{Find the coordinates of the four corners:}\newline
@@ -392,7 +397,7 @@ his 4 sides, this could be done with the following steps:
   \item \textbf{Split each piece into four sides using the previously found coordinates:}\newline
 	After the program has successfully identified the four corner coordinates,
   it can straightforwardly derive each of the four sides.
-  An example of a single side can be seen in image F4l.~\ref{fig:s_s_a_piece_side}.
+  An example of a single side can be seen in image .~\ref{fig:s_s_a_piece_side}.
 \end{itemize}
 
 \begin{figure}
@@ -489,7 +494,7 @@ his 4 sides, this could be done with the following steps:
 
 \subsection{Comparing The Sides}\label{document:my_comparator}
 The last step in the setup, is to compare the sides that have been
-generated before.\newline
+generated before.
 In order to generate a compatibility shore,
 the program compute the following steps:
 
@@ -529,7 +534,7 @@ regarding the algorithm's accuracy in relation to the corruption rate,
 which is crucial for this analysis.
 
 The conducted tests reveal that the Comparator developed in this paper~\ref{document:my_comparator}
-and the "Graph Connection Laplacian" solution ~\ref{document:my_comparator} are not compatible with each other.
+and the ``Graph Connection Laplacian'' solution ~\ref{document:my_comparator} are not compatible with each other.
 A formal proof supporting this assertion is presented subsequently.
 
 \subsection{Proof}
@@ -552,7 +557,7 @@ And the following 4 values have been measured, in function of the threshold:
   solution they are actually close to each other. Ideally this should be 1.
   
   \item \textbf{limit match\%:}\newline
-  Given that this measure has been taken on a 16 piece puzzle,
+  Given that this measures has been taken on a 16 piece puzzle,
   the match\% is highly influenced by the correct piece matching together.
   With a bigger puzzle the match\% would be lower (Given that the amount
   of correct couple of sides scales with N, while the amount of
@@ -647,7 +652,7 @@ And the following 4 values have been measured, in function of the threshold:
 Now, let's consider Algorithm \ref{document:GCL} tasked with solving a 500-piece puzzle
 using our Comparator \ref{document:my_comparator}.
 A threshold of 0.425 is chosen;
-This implies a imit match\% of 0.04 and a corruption rate of 0.057.
+This implies a limit match\% of 0.04 and a corruption rate of 0.057.
 What would this mean in terms of accuracy of the results?
 
 \subsubsection{Definitions}\label{document:proof_definitions}
@@ -760,18 +765,20 @@ generate a dataset, would still be a more time-efficient
 approach compared to manually constructing a dataset.
 
 \section{The Solver}\label{document:my_solver}
-The Solver that has been created is not the main focus of this paper,
-and cannot be considered state-of-the-art if compared with the current best
-digital puzzle solver. But can probably be considered so if compared with current
-``real world'' puzzle Solvers.
+The Solver that has been developed is not the primary focus of this
+paper and cannot be considered state-of-the-art when compared
+to the current best digital puzzle solvers. However, it may be
+considered as such when compared to existing ``real-world'' puzzle solvers.
 
 \subsection{Overview}
-The algorithm itself is relatively simple.
-It is a recursive procedure that begins by identifying all 2x2 sets of pieces that match by combining four individual pieces.
-It then proceeds to identify all 4x4 sets of matching pieces by combining four 2x2 pieces, and so on.\newline
+The algorithm itself is relatively straightforward.
+It operates as a recursive procedure, initiating by recognizing all 2x2
+sets of matching pieces through the combination of four individual pieces.
+Subsequently, it extends this process to identify all 4x4 sets of matching pieces
+by aggregating four 2x2 pieces, and this pattern continues recursively.
 
 \subsection{Basic Components}
-To solve the puzzle two fundamental object are used
+To implement the algorithm two fundamental object are defined
 \begin{itemize}
   \item SinglePiece: which contains information about a single puzzle piece.
   \item PieceGroup\(<\)T\(>\) where T can be either a PieceGroup or a SinglePiece\newline
@@ -800,7 +807,7 @@ These basic objects also have the following shared behaviors:
   \item 4 objects of level N can be combined to build an object of level N+1.
   \item One object of level N has 4 sides, each of which can be compared with a side of an element of level N. This results in a compatibility shore.
   \begin{itemize}
-    \item The comparing shore for level 0 objects is just the shore given by the comparator~\ref{document:comparator}.
+    \item The comparing shore for level 0 objects is just the shore given by the Comparator~\ref{document:comparator}.
     \item The comparing shore for level N+1 objects is the average between two comparisons made with objects of level N
   \end{itemize}
 \end{itemize}
@@ -821,7 +828,7 @@ When combining four objects into one, some comparisons are executed to ensure th
   \includegraphics[height=0.3\textwidth]{pictures/merge_pieces.png}
 \end{figure}
 
-In order for the created object to be considered valid all of the comparisons must have a shore higher
+In order for the created object to be considered valid all of the comparisons must have a shore greater
 than the constant MIN\_SHORE\_SINGLE\_SIDE. And the average of the four comparisons must be greater
 than the constant MIN\_SHORE\_PIECE\_GROUP.
 
@@ -901,10 +908,13 @@ One advantage of this algorithm is that the outer edge for loop can be easily pa
 
 \section{Testing Results}
 
-In this section the solver that has been proposed by this paper will be tested.
-This test will serve two purposes:
-Understanding the performance and limitations of the proposed algorithm
-Been able to test the same algorithm with both digital, and real world jigsaw puzzles, to understand the differences between the two.
+In this section, the solver proposed by this paper will be put to the test.
+This evaluation serves two key purposes:
+
+\begin{itemize}
+  \item Gaining insight into the performance and limitations of the proposed algorithm.
+  \item Conducting tests using both digital and real-world jigsaw puzzles to discern the distinctions between the two contexts.
+\end{itemize}
 
 \subsection{Setup}
 The test sample consist in 5 different puzzle:
@@ -916,10 +926,12 @@ The test sample consist in 5 different puzzle:
   \item a 16x16 digital puzzle
 \end{itemize}
 The real world puzzles have been obtained with a printer’s scanner,
-and the digital puzzles have been obtained from \url{https://puzzle.telegnom.org/}.\newline
+and the digital puzzles have been obtained from \url{https://puzzle.telegnom.org/}.
+
 The constants MIN\_SHORE\_SINGLE\_SIDE and MIN\_SHORE\_PIECE\_GROUP mentioned in section
 \ref{document:combining_four_objects} were set at different values
-depending on the nature of the puzzle (real or digital).\newline
+depending on the nature of the puzzle (real or digital).
+
 The test has been performed on a ryzen 5 5600 CPU with 16 GB of RAM.
 The time measured in the test does not include the execution time of the Comparator
 \ref{document:my_comparator}, but only the one of the Solver~\ref{document:my_solver}.
@@ -947,19 +959,21 @@ The time measured in the test does not include the execution time of the Compara
 \end{table}
 
 \subsection{Accuracy}
-It is important to note that the project does not have a way to evaluate the accuracy
-of the results automatically. But the accuracy for the two real world puzzles
-has been asserted manually. And both of them are 100\% correct.
+It is crucial to mention that the project currently lacks an automated
+method for evaluating the accuracy of results. However, the accuracy
+of the two real-world puzzles has been manually confirmed,
+with both achieving a 100\% correctness.
 
 \subsection{Analysis}
 
-This paper has claimed from the start that real world puzzles were harder than digital ones.
-Some intuitive explanations were given to justify this claim,
-but a formal proof has never been given.
-This test finally proves the claim, by showing that the same algorithm can have vastly
-different time performances depending on the accuracy of the input data.
+This paper has asserted from the beginning that real-world puzzles
+pose greater challenges compared to their digital counterparts.
+While some intuitive explanations were provided to support this assertion,
+a proof has not yet been presented. This test ultimately substantiates 
+the claim, demonstrating that the performance of the same
+algorithm can vary significantly depending on the accuracy of the input data.
 
-It is fair to say that the performance of the algorithm are not amazing,
+It is fair to point out that the performances of the algorithm are not amazing,
 but they are good enough to achieve the objective of this paper \ref{document:objective}.
 It is also worth remembering that the problem itself is extremely complex.
 Using the formula introduced in section \ref{document:proof_definitions} we can calculate that a 64 piece puzzle,
@@ -968,19 +982,21 @@ like the one that has been solved before, has approximately \(4 \cdot 10^{127}\)
 
 
 \section{The Labeling tool}
-When the program solves a puzzle it also exports some files that could be used in the future to train
-a machine-learning based comparator.
-This section is here to explain the data available and the format used.
+When the program runs, it also exports files that could be utilized
+in the future for training a machine-learning-based comparator.
+This section will list the available data and explain the format employed.
+
+\subsection{Basic notions}
 
 One piece is uniquely identified by his id piece\_id.
-The id is an integer that goes from 0 to Number of pieces - 1.
+The id is an integer that goes from 0 to \mbox{Number of pieces - 1}.
 Each piece has 4 sides that can be identified by the side side\_id,
 an integer that goes from 0 to 3.
 
 \subsection{Image of each piece}
 
 Inside the folder results/pieces the program will generate one image
-for each one of the pieces of the puzzle. The pieces will be named \{piece\_id\}.jpeg.
+for each one of the pieces of the puzzle. The file will be named \{piece\_id\}.jpeg.
 An example can be seen in \ref{fig:result_pieces}
 
 \begin{figure}[H]
@@ -1075,20 +1091,23 @@ An example of the generated json can be seen below.
 
 
 \section{Conclusions}
-In conclusion, this paper's objective can be considered achieved.
-It has been documented why real-world puzzles are harder than digital puzzles.
-It has also been shown that the same algorithm can have drastically worse
+In conclusion, this paper has successfully achieved its objectives.
+It has provided a comprehensive explanation of why real-world puzzles
+present greater challenges compared to their digital counterparts.
+Additionally, it has been shown that the same algorithm can have drastically worse
 performance when working with real-world puzzles compared to digital ones.
 
-A highly effective labeling tool has also been developed.
-It could be used in the future to create a machine learning-based comparator that could significantly
-improve the time needed to solve this problem by providing more accurate data.
+Furthermore, we have developed a highly effective labeling tool,
+which holds great promise for future applications in creating a
+machine learning-based comparator. Such a comparator has the potential
+to greatly facilitate puzzle-solving algorithms by providing more
+accurate data.
 
-Even the solver that has been created can be considered a success.
-His time complexity is horrible if compared with current state-of-the-art digital puzzle solvers.
-But if compared with real world one the algorithm is probably one of the best, if not the best, available online.
-
-
+Even the solver we have created can be considered a success.
+While its time complexity may be less favorable when compared to state-of-the-art
+digital puzzle solvers, it stands as a strong contender in the realm of
+real-world puzzle-solving algorithms. In fact, it may even be considered
+one of the best available online for tackling real-world puzzles.
 
 % referneces page
 \clearpage
