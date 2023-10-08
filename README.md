@@ -39,6 +39,19 @@ Note that the version linked above is compiled with visual studio. using other c
 You need to add the folder `dll_output` to your system path.
 
 ### Installation
+
+You will need to edit [CMakeList.txt](./cpp_lib/CMakeLists.txt);
+```Cmake
+find_package(OpenCV REQUIRED PATHS  YOUR_PATH)
+```
+As well as [piece_array.rs](cpp_lib/rust_solving/src/piece_array.rs)
+```rust
+#[link(name="YOUR_PATH/PieceArrayLink", kind = "static")]
+extern "C"{
+    //...
+}
+```
+
 If you followed all the previous steps, and you have make install. the installation
 is as simple opening a terminal inside `Puzzle_Solver ` and writing `make install`
 Then you can build the target you want including:
@@ -46,7 +59,11 @@ Then you can build the target you want including:
  - `PuzzleSolverCommand`: create a file named `PuzzleSolver.exe` inside `dll_output`, that you can use to run
 puzzle solver form the terminal
  - `PuzzleSolverLib`: create a file named `PuzzleSolverLib.dll` inside `dll_output`, that is used from the 
-GUI in c# to work
+GUI in c# to work  
+
+Alternatively if you just want to use the tool, without recompiling it, unzip [this](dlls_output/outputs.zip) folder.
+(but you still need to install opencv, and the edit the system's path!)
+
 
 ## Usage
 
