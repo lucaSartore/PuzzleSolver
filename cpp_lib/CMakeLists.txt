@@ -114,6 +114,18 @@ add_executable(
 target_link_libraries(PuzzleSolverTest ${OpenCV_LIBS})
 target_link_libraries(PuzzleSolverTest C:/Users/lucas/CLionProjects/Puzzle_Solver/dlls_output/rust_solving_lib.dll.lib)
 
+# command for access functions from terminal
+add_executable(
+        PuzzleSolverCommand
+        puzzle_solver_command.cpp
+        ${SOURCE_FILES}
+        ${SOURCE_FILES_PIECE_ARRAY}
+        rust_solving/rust_solving_lib.h
+)
+target_link_libraries(PuzzleSolverCommand ${OpenCV_LIBS})
+target_link_libraries(PuzzleSolverCommand C:/Users/lucas/CLionProjects/Puzzle_Solver/dlls_output/rust_solving_lib.dll.lib)
+
+
 # enable testing functionality
 enable_testing()
 
