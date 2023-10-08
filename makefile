@@ -27,6 +27,10 @@ PuzzleSolverTest: RustLib
 RunPuzzleSolverTest:
 	.\cpp_lib\cmake-build\Release\PuzzleSolverTest.exe
 
+PuzzleSolverCommand: RustLib
+	cmake --build C:\Users\lucas\CLionProjects\Puzzle_Solver\cpp_lib\cmake-build --target PuzzleSolverCommand --config Release -j 9
+	copy .\cpp_lib\cmake-build\Release\PuzzleSolverCommand.exe .\dlls_output\PuzzleSolver.exe
+
 uninstall:
 	rmdir /s /q .\cpp_lib\cmake-build
 
