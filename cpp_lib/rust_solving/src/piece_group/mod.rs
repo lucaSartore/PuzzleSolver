@@ -13,6 +13,8 @@ use crate::piece_group_holder::PieceRef;
 mod comparable;
 pub use comparable::Comparable;
 
+mod intersection_comparable;
+
 mod direction;
 pub use direction::Direction;
 
