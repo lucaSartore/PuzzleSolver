@@ -38,7 +38,7 @@ impl PartialEq for PieceArraySlice<'_> {
 impl PieceArray {
     /// return a slice within the specified bounds
     /// x_max and y_max are INCLUDED
-    fn get_slice(&self, x_min: u64, x_max: u64, y_min: u64, y_max: u64) ->PieceArraySlice {
+    pub fn get_slice(&self, x_min: u64, x_max: u64, y_min: u64, y_max: u64) ->PieceArraySlice {
         assert!(x_min<x_max);
         assert!(y_min<y_max);
         assert!(x_max<self.dim_x);

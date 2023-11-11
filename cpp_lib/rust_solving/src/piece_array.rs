@@ -93,8 +93,8 @@ extern "C"{
 /// - Can generate a preview image and send it to the c# lib to be analized
 /// - Can Generate an image for shoring, and return a shore that tels how well sed pieces work together
 pub struct PieceArray{
-    dim_x: u64,
-    dim_y: u64,
+    pub dim_x: u64,
+    pub dim_y: u64,
     pub pieces: Vec<CSinglePiece>,
 }
 
