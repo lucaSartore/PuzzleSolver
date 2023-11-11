@@ -33,8 +33,8 @@ impl<T:Comparable + Clone + IsSubComponent + PieceArrayFiller + HasKnownLevel> I
             panic!("Comparing with an intersection that is longer that the piece itself is impossible")
         }
 
-        let mut pa = PieceArray::new(size_x,size_y);
-        piece_group.fill_piece_array(&mut pa,0,0,0);
+        //let mut pa = PieceArray::new(size_x,size_y);
+        //piece_group.fill_piece_array(&mut pa,0,0,0);
         todo!()
     }
 }

@@ -8,6 +8,7 @@ use crate::piece_basics_components::PieceBasicComponents;
 #[repr(C)]
 #[derive(Debug)]
 #[derive(Clone)]
+#[derive(Eq, PartialEq)]
 pub struct CSinglePiece{
     pub id: u64,
     pub orientation: u64
