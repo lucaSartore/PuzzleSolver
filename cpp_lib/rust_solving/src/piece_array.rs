@@ -9,10 +9,13 @@ use serde::{Deserialize, Serialize};
 use crate::piece_group::Direction;
 use crate::piece_group::Direction::{DOWN, LEFT, RIGHT, UP};
 
+pub mod piece_array_slice;
+
 #[repr(C)]
 pub struct PieceArrayWrapper{
     _dummy: bool // useless value to disable warning (has no impact on the performance, since the program uses this type only as a pointer)
 }
+
 
 impl PieceArrayWrapper {
     pub unsafe fn generate_test_image(&mut self, path: &str){
