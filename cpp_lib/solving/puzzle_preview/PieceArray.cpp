@@ -542,7 +542,7 @@ PieceArray::PieceArray(int size_x, int size_y) {
     has_been_completed = false;
     image = Mat::zeros(Size(STARTING_DIMENSIONS,STARTING_DIMENSIONS),CV_8UC3);
     dim_x = size_x;
-    dim_y = size_x;
+    dim_y = size_y;
     // create the x dimension
     pieces = vector<vector<Holder>>(size_x);
     for(int i=0; i<size_x; i++){
