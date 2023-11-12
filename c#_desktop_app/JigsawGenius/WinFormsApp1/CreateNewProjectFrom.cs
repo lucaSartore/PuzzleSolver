@@ -37,7 +37,7 @@ namespace JigsawGenius
 
             uint number_of_cores = (uint)this._numberOfCoresSelector.Value;
             uint res_x = (uint)this._resXSelector.Value;
-            uint res_y = (uint)this._resXSelector.Value;
+            uint res_y = (uint)this._resYSelector.Value;
 
 
             try
