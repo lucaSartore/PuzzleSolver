@@ -30,7 +30,7 @@ void test_rust_integration(){
 
 void test_piece_array(){
 
-    PieceImage::set_origin_path("../../../dataset/test_2x3/divided");
+    PieceImage::set_origin_path("../../../../dataset/test_2x3/divided");
     PieceImage pieces_images[6];
 
     // filling both array up with the respective index;

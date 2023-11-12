@@ -7,6 +7,7 @@
 #include <thread>
 #include <opencv2/opencv.hpp>
 #include "pre_processing/corner_finding.h"
+#include "solving/calculate_connections.h"
 using namespace std;
 using namespace cv;
 
@@ -27,6 +28,14 @@ void debug_thread(){
 }
 
 int main(){
+
+    // function to call if you only want to compare the pieces:
+    //*
+    calculate_all_connections(R"(C:\Users\lucas\CLionProjects\Puzzle_Solver\dataset\test_5x7_digital\divided)",
+                              R"(C:\Users\lucas\CLionProjects\Puzzle_Solver\dataset\test_5x7_digital\connections)",
+                              35,3, false);
+    return 0;
+    //*/
 
     //export_sides_result("C:\\Users\\lucas\\Desktop\\results\\results\\pieces","C:\\Users\\lucas\\Desktop\\results\\divided","C:\\Users\\lucas\\Desktop\\results\\results\\sides", 16);
 

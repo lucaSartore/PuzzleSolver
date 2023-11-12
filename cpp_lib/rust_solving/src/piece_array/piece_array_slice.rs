@@ -39,17 +39,17 @@ impl PieceArray {
     /// return a slice within the specified bounds
     /// x_max and y_max are INCLUDED
     pub fn get_slice(&self, x_min: u64, x_max: u64, y_min: u64, y_max: u64) ->PieceArraySlice {
-        assert!(x_min<x_max);
-        assert!(y_min<y_max);
+        assert!(x_min<=x_max);
+        assert!(y_min<=y_max);
         assert!(x_max<self.dim_x);
         assert!(y_max<self.dim_y);
 
         PieceArraySlice{
             original_piece_array: self,
-            offset_x: x_max,
+            offset_x: x_min,
             offset_y: y_min,
-            size_x: x_max-x_min,
-            size_y: y_max-y_min
+            size_x: x_max-x_min+1,
+            size_y: y_max-y_min+1
         }
     }
 }

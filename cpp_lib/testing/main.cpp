@@ -10,10 +10,10 @@ int main(){
     //test_rust_integration(); return 0;
     //test_image_ram_encode(); return 0;
     //test_piece_array_save(); return 0;
-    //test_piece_array(); return 0;
+    test_piece_array(); return 0;
     //test_preview_manager(); return 0;
     //test_piece_array_shore(); return 0;
     //test_grouped_piece_2_constructor();return 0;
     //test_grouped_piece_holder(); return 0;
-    test_comparing(); return 0;
+    //test_comparing(); return 0;
 }

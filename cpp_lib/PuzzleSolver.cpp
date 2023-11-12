@@ -193,7 +193,7 @@ void PuzzleSolver::calculate_connections() {
     if(state != CORNER_PROCESSED){
         throw wrong_state_exception();
     }
-    // calculate all combinations
+    // calculate all connections
     calculate_all_connections(work_path + "/divided/", work_path + "/connections", number_of_pieces,number_of_cores,false);
 
     // save the sides in the result
