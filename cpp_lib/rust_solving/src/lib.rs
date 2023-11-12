@@ -95,10 +95,10 @@ fn main_test(){
 
 
 
-    const CONNECTIONS_PATH: &str = r"..\..\dataset\test_4x4\connections";
+    /*const CONNECTIONS_PATH: &str = r"..\..\dataset\test_4x4\connections";
     const DIVIDED_PATH: &str = r"..\..\dataset\test_4x4\divided";
     const SIZE_X: u64 = 4;
-    const SIZE_Y: u64 = 4;
+    const SIZE_Y: u64 = 4;*/
 
     /*
     const CONNECTIONS_PATH: &str = r"..\..\dataset\test_8x8\connections";
@@ -112,11 +112,11 @@ fn main_test(){
     const SIZE_X: u64 = 4;
     const SIZE_Y: u64 = 4;*/
 
-    /*
-    const CONNECTIONS_PATH: &str = r"..\..\dataset\test_8x8_digital\connections";
-    const DIVIDED_PATH: &str = r"..\..\dataset\test_8x8_digital\divided";
-    const SIZE_X: u64 = 8;
-    const SIZE_Y: u64 = 8;*/
+
+    const CONNECTIONS_PATH: &str = r"..\..\dataset\test_5x7_digital\connections";
+    const DIVIDED_PATH: &str = r"..\..\dataset\test_5x7_digital\divided";
+    const SIZE_X: u64 = 5;
+    const SIZE_Y: u64 = 7;
 
     /*
     const CONNECTIONS_PATH: &str = r"..\..\dataset\test_16x16_digital\connections";

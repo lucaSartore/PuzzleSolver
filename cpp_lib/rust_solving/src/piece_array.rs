@@ -92,6 +92,7 @@ extern "C"{
 /// the struct can comunicate with the C++ library, and offer the following functionalities:
 /// - Can generate a preview image and send it to the c# lib to be analized
 /// - Can Generate an image for shoring, and return a shore that tels how well sed pieces work together
+#[derive(Clone)]
 pub struct PieceArray{
     pub dim_x: u64,
     pub dim_y: u64,

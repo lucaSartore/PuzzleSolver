@@ -61,7 +61,7 @@ pub fn solve<T: NextLevelOrPanic + Debug>(pgh: &PieceGroupHolder<T>, output_path
 
                         // now it is possible to check if the pieces match graphically, calling the c++ func
 
-                        if T::LEVEL < 2{
+                        if T::LEVEL < 2 && false{
                             // create the piece array with the appropriate size
                             let mut pa = PieceArray::new(
                                 PieceGroup::<T>::SIDE_LEN,

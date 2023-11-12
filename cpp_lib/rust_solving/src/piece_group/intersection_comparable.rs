@@ -57,10 +57,10 @@ impl<T:Comparable + Clone + IsSubComponent + PieceArrayFiller + HasKnownLevel> I
                     x_min = 0;
                     x_max = pa.dim_x-1;
                     y_min = 0;
-                    y_max = width;
+                    y_max = width-1;
                 }
                 Direction::RIGHT =>{
-                    x_min = pa.dim_x-1-width;
+                    x_min = pa.dim_x-width;
                     x_max = pa.dim_x-1;
                     y_min = 0;
                     y_max = pa.dim_y-1;
@@ -68,20 +68,19 @@ impl<T:Comparable + Clone + IsSubComponent + PieceArrayFiller + HasKnownLevel> I
                 Direction::DOWN =>{
                     x_min = 0;
                     x_max = pa.dim_x-1;
-                    y_min = pa.dim_y-1-width;
+                    y_min = pa.dim_y-width;
                     y_max = pa.dim_y-1;
                 }
                 Direction::LEFT =>{
                     x_min = 0;
-                    x_max = width;
+                    x_max = width-1;
                     y_min = 0;
                     y_max = pa.dim_y-1;
                 }
             }
+
             return pa.get_slice(x_min,x_max,y_min,y_max);
         }
-
-
 
         let pa_slice_self = get_slice(&pa_self,direction,intersection_width);
         let pa_slice_other = get_slice(&pa_other,-direction,intersection_width);
