@@ -106,17 +106,18 @@ fn main_test(){
     const SIZE_X: u64 = 8;
     const SIZE_Y: u64 = 8;*/
 
-    /*
+
     const CONNECTIONS_PATH: &str = r"..\..\dataset\test_4x4_digital\connections";
     const DIVIDED_PATH: &str = r"..\..\dataset\test_4x4_digital\divided";
     const SIZE_X: u64 = 4;
-    const SIZE_Y: u64 = 4;*/
+    const SIZE_Y: u64 = 4;
 
 
+    /*
     const CONNECTIONS_PATH: &str = r"..\..\dataset\test_5x7_digital\connections";
     const DIVIDED_PATH: &str = r"..\..\dataset\test_5x7_digital\divided";
     const SIZE_X: u64 = 5;
-    const SIZE_Y: u64 = 7;
+    const SIZE_Y: u64 = 7;*/
 
     /*
     const CONNECTIONS_PATH: &str = r"..\..\dataset\test_16x16_digital\connections";

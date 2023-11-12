@@ -17,7 +17,6 @@ pub fn finalize_piece_array<T: NextLevelOrPanic>(pgh: &PieceGroupHolder<T>, outp
     let shrink_size_x =  T::SIDE_LEN*2 - size_x;
     let shrink_size_y = T::SIDE_LEN*2 - size_y;
 
-
     let function= |top_left_id: usize|  {
         for top_left_orientation in 0..4{
 
@@ -44,27 +43,6 @@ pub fn finalize_piece_array<T: NextLevelOrPanic>(pgh: &PieceGroupHolder<T>, outp
                                     if top_left.compare_to_with_intersection(Direction::RIGHT,
                                                 top_right,shrink_size_x).get_shore() < MIN_SHORE_PIECE_GROUP{
                                         continue 'tr_orientation;
-                                    }else if false{
-                                        let mut pa = PieceArray::new(T::SIDE_LEN,T::SIDE_LEN);
-                                        top_left.fill_piece_array(&mut pa,0,0,0);
-                                        println!("top left: {:?}",pa);
-                                        top_right.fill_piece_array(&mut pa,0,0,0);
-                                        println!("top right: {:?}",pa);
-
-                                        let mut pa = PieceArray::new(size_x,T::SIDE_LEN);
-                                        //let mut pa = PieceArray::new(T::SIDE_LEN,T::SIDE_LEN);
-                                        top_left.fill_piece_array(&mut pa,0,0,0);
-                                        top_right.fill_piece_array(&mut pa,T::SIDE_LEN-shrink_size_x,0,0);
-                                        println!("merged: {:?}",pa);
-
-                                        unsafe {
-                                            // call c++ dll
-                                            let mut paw = pa.get_piece_array_wrapper();
-                                            (*paw).save_as_binary("test.bin");
-                                            // save the image
-                                            (*paw).generate_test_image("candidate.png");
-                                            println!();
-                                        }
                                     }
                                     if top_right.compare_to_with_intersection(Direction::DOWN,
                                                 bottom_right,shrink_size_y).get_shore() < MIN_SHORE_PIECE_GROUP{
@@ -119,9 +97,6 @@ pub fn finalize_piece_array<T: NextLevelOrPanic>(pgh: &PieceGroupHolder<T>, outp
             if shore > best_shore{
                 best = Option::Some(candidate.clone());
             }
-            // save the image
-            (*paw).generate_test_image("candidate.png");
-            println!("{:?}",candidate);
 
             // deallocate memory
             (*paw).destroy_piece_array_wrapper();
