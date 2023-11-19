@@ -31,9 +31,9 @@ int main(){
 
     // function to call if you only want to compare the pieces:
     //*
-    calculate_all_connections(R"(C:\Users\lucas\CLionProjects\Puzzle_Solver\dataset\test_5x7_digital\divided)",
-                              R"(C:\Users\lucas\CLionProjects\Puzzle_Solver\dataset\test_5x7_digital\connections)",
-                              35,3, false);
+    calculate_all_connections(R"(C:\Users\lucas\CLionProjects\Puzzle_Solver\dataset\test_3x4_digital\divided)",
+                              R"(C:\Users\lucas\CLionProjects\Puzzle_Solver\dataset\test_3x4_digital\connections)",
+                              12,3, false);
     return 0;
     //*/
 
