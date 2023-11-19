@@ -26,7 +26,7 @@ macro_rules! implement_next {
         impl NextLevelOrPanic for $i{
             fn next_or_panic(pgh: &PieceGroupHolder<PieceGroup<Self>>, output_path: &str, size_x: u64, size_y: u64) -> bool {
                 // when the limit is reached, call the finalize function
-                if PieceGroup::<Self>::SIDE_LEN*2 >= size_y || PieceGroup::<Self>::SIDE_LEN*2 >= size_x{
+                if PieceGroup::<Self>::SIDE_LEN*2 > size_y || PieceGroup::<Self>::SIDE_LEN*2 > size_x{
                     return finalize_piece_array::<PieceGroup<Self>>(&pgh,output_path,size_x,size_y);
                 }
                 return solve::<PieceGroup<Self>>(pgh, output_path, size_x, size_y);

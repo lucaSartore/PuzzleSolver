@@ -12,6 +12,24 @@ use crate::piece_group_holder::PieceGroupHolder;
 /// puzzle with a wide aspect ration (greater that 2:1) are not supported by this function)
 pub fn finalize_piece_array<T: NextLevelOrPanic>(pgh: &PieceGroupHolder<T>, output_path: &str ,size_x: u64, size_y: u64) -> bool{
 
+
+    for i in 0..pgh.get_size(){
+        let piece = pgh.get(i,0);
+        let mut pa = PieceArray::new(T::SIDE_LEN,T::SIDE_LEN);
+        piece.fill_piece_array(&mut pa, 0,0,0);
+
+        // calculate the shore of the current piece
+        unsafe {
+            // call c++ dll
+            let mut paw = pa.get_piece_array_wrapper();
+            println!("{:?}",pa);
+            (*paw).generate_test_image(&format!("{}.png",i));
+            // deallocate memory
+            (*paw).destroy_piece_array_wrapper();
+        }
+
+    }
+
     let mut candidates = Mutex::new(Vec::<PieceArray>::new());
     println!("{}",T::SIDE_LEN);
     let shrink_size_x =  T::SIDE_LEN*2 - size_x;
@@ -22,19 +40,19 @@ pub fn finalize_piece_array<T: NextLevelOrPanic>(pgh: &PieceGroupHolder<T>, outp
 
             let top_left = pgh.get(top_left_id,top_left_orientation);
 
-            for top_right_id in (top_left_id+1)..pgh.get_size(){
+            for top_right_id in 0..pgh.get_size(){
                 'tr_orientation:
                 for top_right_orientation in 0..4{
 
                     let top_right = pgh.get(top_right_id,top_right_orientation);
 
-                    for bottom_right_id in (top_left_id+1)..pgh.get_size(){
+                    for bottom_right_id in 0..pgh.get_size(){
                         'br_orientation:
                         for bottom_right_orientation in 0..4{
 
                             let bottom_right = pgh.get(bottom_right_id,bottom_right_orientation);
 
-                            for bottom_left_id in (top_left_id+1)..pgh.get_size(){
+                            for bottom_left_id in 0..pgh.get_size(){
                                 'bl_orientation:
                                 for bottom_left_orientation in 0..4{
 
@@ -81,6 +99,8 @@ pub fn finalize_piece_array<T: NextLevelOrPanic>(pgh: &PieceGroupHolder<T>, outp
         function(top_left_id);
     });
 
+    println!("I found {} pieces",candidates.lock().unwrap().len());
+
     let mut best: Option<PieceArray> = None;
     let best_shore = 0.0;
     // nota: for now this function only solve squared puzzles
@@ -97,6 +117,7 @@ pub fn finalize_piece_array<T: NextLevelOrPanic>(pgh: &PieceGroupHolder<T>, outp
             if shore > best_shore{
                 best = Option::Some(candidate.clone());
             }
+            //(*paw).generate_test_image("1.png");
 
             // deallocate memory
             (*paw).destroy_piece_array_wrapper();
@@ -106,7 +127,10 @@ pub fn finalize_piece_array<T: NextLevelOrPanic>(pgh: &PieceGroupHolder<T>, outp
     // get the best result, or return false to signal that the puzzle hasn't been solved
     let mut best = match best {
         Option::Some(e) => e,
-        Option::None => return false
+        Option::None => {
+            println!("No solution found");
+            return false
+        }
     };
 
     // save the connections result
