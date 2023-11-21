@@ -227,6 +227,17 @@ impl PieceArray {
     pub unsafe fn get_piece_array_wrapper(&mut self) -> *mut PieceArrayWrapper{
         create_piece_array_wrapper(self.dim_x,self.dim_y,self.pieces.as_mut_ptr())
     }
+
+    pub fn are_all_pieces_unique(&self) -> bool{
+        let mut set = HashSet::<u64>::new();
+        for piece in &self.pieces{
+            if set.contains(&piece.id){
+                return false;
+            }
+            set.insert(piece.id);
+        }
+        true
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug, Copy, Clone)]

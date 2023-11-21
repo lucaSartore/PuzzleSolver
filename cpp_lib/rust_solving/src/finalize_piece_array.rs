@@ -12,66 +12,68 @@ use crate::piece_group_holder::PieceGroupHolder;
 /// puzzle with a wide aspect ration (greater that 2:1) are not supported by this function)
 pub fn finalize_piece_array<T: NextLevelOrPanic>(pgh: &PieceGroupHolder<T>, output_path: &str ,size_x: u64, size_y: u64) -> bool{
 
-
-    for i in 0..pgh.get_size(){
-        let piece = pgh.get(i,0);
-        let mut pa = PieceArray::new(T::SIDE_LEN,T::SIDE_LEN);
-        piece.fill_piece_array(&mut pa, 0,0,0);
-
-        // calculate the shore of the current piece
-        unsafe {
-            // call c++ dll
-            let mut paw = pa.get_piece_array_wrapper();
-            println!("{:?}",pa);
-            (*paw).generate_test_image(&format!("{}.png",i));
-            // deallocate memory
-            (*paw).destroy_piece_array_wrapper();
-        }
-
-    }
-
     let mut candidates = Mutex::new(Vec::<PieceArray>::new());
     println!("{}",T::SIDE_LEN);
     let shrink_size_x =  T::SIDE_LEN*2 - size_x;
     let shrink_size_y = T::SIDE_LEN*2 - size_y;
 
+    let mut piece_arrays = Vec::new();
+
+    for id in 0..pgh.get_size(){
+        let mut pa_slice = [
+            PieceArray::new(T::SIDE_LEN,T::SIDE_LEN),
+            PieceArray::new(T::SIDE_LEN,T::SIDE_LEN),
+            PieceArray::new(T::SIDE_LEN,T::SIDE_LEN),
+            PieceArray::new(T::SIDE_LEN,T::SIDE_LEN)
+        ];
+        for orientation in 0..4 {
+            pgh.get(id,orientation).fill_piece_array(&mut pa_slice[orientation],0,0,0);
+        }
+        piece_arrays.push(pa_slice);
+    }
+    let piece_arrays = piece_arrays;
+
     let function= |top_left_id: usize|  {
         for top_left_orientation in 0..4{
 
             let top_left = pgh.get(top_left_id,top_left_orientation);
+            let top_left_pa = &piece_arrays[top_left_id][top_left_orientation];
 
             for top_right_id in 0..pgh.get_size(){
                 'tr_orientation:
                 for top_right_orientation in 0..4{
 
                     let top_right = pgh.get(top_right_id,top_right_orientation);
+                    let top_right_pa = &piece_arrays[top_right_id][top_right_orientation];
 
                     for bottom_right_id in 0..pgh.get_size(){
                         'br_orientation:
                         for bottom_right_orientation in 0..4{
 
                             let bottom_right = pgh.get(bottom_right_id,bottom_right_orientation);
+                            let bottom_right_pa = &piece_arrays[bottom_right_id][bottom_right_orientation];
 
                             for bottom_left_id in 0..pgh.get_size(){
                                 'bl_orientation:
                                 for bottom_left_orientation in 0..4{
 
                                     let bottom_left = pgh.get(bottom_left_id,bottom_left_orientation);
+                                    let bottom_left_pa = &piece_arrays[bottom_left_id][bottom_left_orientation];
 
                                     if top_left.compare_to_with_intersection(Direction::RIGHT,
-                                                top_right,shrink_size_x).get_shore() < MIN_SHORE_PIECE_GROUP{
+                                                top_right,shrink_size_x,top_left_pa,top_right_pa).get_shore() < MIN_SHORE_PIECE_GROUP{
                                         continue 'tr_orientation;
                                     }
                                     if top_right.compare_to_with_intersection(Direction::DOWN,
-                                                bottom_right,shrink_size_y).get_shore() < MIN_SHORE_PIECE_GROUP{
+                                                bottom_right,shrink_size_y, top_right_pa,bottom_right_pa).get_shore() < MIN_SHORE_PIECE_GROUP{
                                         continue 'br_orientation;
                                     }
                                     if bottom_right.compare_to_with_intersection(Direction::LEFT,
-                                                bottom_left,shrink_size_x).get_shore() < MIN_SHORE_PIECE_GROUP{
+                                                bottom_left,shrink_size_x, bottom_right_pa,bottom_left_pa).get_shore() < MIN_SHORE_PIECE_GROUP{
                                         continue 'bl_orientation;
                                     }
                                     if bottom_left.compare_to_with_intersection(Direction::UP,
-                                                top_left,shrink_size_y).get_shore() < MIN_SHORE_PIECE_GROUP{
+                                                top_left,shrink_size_y,bottom_left_pa,top_left_pa).get_shore() < MIN_SHORE_PIECE_GROUP{
                                         continue;
                                     }
                                     // todo: control that there are no duplicates
@@ -95,7 +97,7 @@ pub fn finalize_piece_array<T: NextLevelOrPanic>(pgh: &PieceGroupHolder<T>, outp
         }
     };
 
-    (0..pgh.get_size()).into_iter().for_each(|top_left_id|{
+    (0..pgh.get_size()).into_par_iter().for_each(|top_left_id|{
         function(top_left_id);
     });
 
@@ -105,6 +107,11 @@ pub fn finalize_piece_array<T: NextLevelOrPanic>(pgh: &PieceGroupHolder<T>, outp
     let best_shore = 0.0;
     // nota: for now this function only solve squared puzzles
     for candidate in candidates.lock().unwrap().iter_mut(){
+
+        if !candidate.are_all_pieces_unique(){
+            continue;
+        }
+
         // calculate the shore of the current piece
         unsafe {
             // call c++ dll

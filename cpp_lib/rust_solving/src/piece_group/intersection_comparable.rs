@@ -9,11 +9,11 @@ use super::Comparable;
 /// (given that the puzzle is not always a prefect square with a side that is a power of two)
 /// this trait is used to compare two pieces assuming that tey have an intersection with each other.
 pub trait IntersectionComparable: Comparable{
-    fn compare_to_with_intersection(&self, direction: Direction,other: &Self,intersection_width: u64) -> Shore;
+    fn compare_to_with_intersection(&self, direction: Direction,other: &Self,intersection_width: u64, self_piece_array: &PieceArray, other_piece_array: &PieceArray) -> Shore;
 }
 
 impl IntersectionComparable for SingePiece {
-    fn compare_to_with_intersection(&self, direction: Direction, other: &Self, intersection_width: u64) -> Shore {
+    fn compare_to_with_intersection(&self, direction: Direction, other: &Self, intersection_width: u64, _self_piece_array: &PieceArray, _other_piece_array: &PieceArray) -> Shore {
         if intersection_width == 0{
             self.compare_to(direction,other,0,0)
         }else if intersection_width == 1{
@@ -29,7 +29,7 @@ impl IntersectionComparable for SingePiece {
 }
 
 impl<T:Comparable + Clone + IsSubComponent + PieceArrayFiller + HasKnownLevel> IntersectionComparable for PieceGroup<'_,T> {
-    fn compare_to_with_intersection(&self, direction: Direction, other: &Self, intersection_width: u64) -> Shore {
+    fn compare_to_with_intersection(&self, direction: Direction, other: &Self, intersection_width: u64, self_piece_array: &PieceArray, other_piece_array: &PieceArray) -> Shore {
 
         let side_len = PieceGroup::<T>::SIDE_LEN;
 
@@ -39,12 +39,6 @@ impl<T:Comparable + Clone + IsSubComponent + PieceArrayFiller + HasKnownLevel> I
         if intersection_width > PieceGroup::<T>::SIDE_LEN{
             panic!("Comparing with an intersection that is longer that the piece itself is impossible")
         }
-
-        // create the piece array slice
-        let mut pa_self = PieceArray::new(side_len, side_len);
-        self.fill_piece_array(&mut pa_self, 0, 0, 0);
-        let mut pa_other = PieceArray::new( side_len, side_len);
-        other.fill_piece_array(&mut pa_other,0,0,0);
 
         fn get_slice(pa: &PieceArray, direction: Direction, width: u64) -> PieceArraySlice{
             let x_min;
@@ -82,8 +76,8 @@ impl<T:Comparable + Clone + IsSubComponent + PieceArrayFiller + HasKnownLevel> I
             return pa.get_slice(x_min,x_max,y_min,y_max);
         }
 
-        let pa_slice_self = get_slice(&pa_self,direction,intersection_width);
-        let pa_slice_other = get_slice(&pa_other,-direction,intersection_width);
+        let pa_slice_self = get_slice(self_piece_array,direction,intersection_width);
+        let pa_slice_other = get_slice(other_piece_array,-direction,intersection_width);
 
         if pa_slice_self == pa_slice_other {
             Shore::with_shore(255)
