@@ -11,7 +11,9 @@
 \usepackage[colorlinks=true,linkcolor=cyan]{hyperref}
 
 % to have better references
-\usepackage[noabbrev]{cleveref}
+\usepackage[nameinlink]{cleveref} 
+
+%\usepackage[noabbrev]{cleveref}
 
 % to use prefix for references
 \usepackage{etoolbox}
@@ -29,9 +31,6 @@
 \usepackage{wrapfig}
 
 \usepackage{multirow}
-
-% rule for reference to fugures
-\pretocmd{\thefigure}{F}{}{}
 
 % for the table
 \usepackage[table,xcdraw]{xcolor}
@@ -93,14 +92,14 @@
 This paper examines the Jigsaw puzzle problem,
 which has already been extensively studied in the literature.
 Several algorithms with efficient time complexity have been developed
-specifically for ``digital''~\ref{fig:figure_digital_puzzle} jigsaw puzzles. However, the counterpart:
+specifically for ``digital''~\cref{fig:figure_digital_puzzle} jigsaw puzzles. However, the counterpart:
 the ``real world' jigsaw puzzle, has received relatively little attention
 in the literature. While some small-scale projects have addressed this issue,
 we were unable to find any papers discussing it.
 
-The puzzle problem can be divided into two separate components: the ``Comparator''~\ref{document:comparator}
+The puzzle problem can be divided into two separate components: the ``Comparator''~\cref{document:comparator}
 whose objective is to determine whether two sides of two pieces fit together,
-and the ``Solver''~\ref{document:solver} whose objective is to use the information provided
+and the ``Solver''~\cref{document:solver} whose objective is to use the information provided
 by the comparator to find the best way to fit some pieces together.
 
 Solving the problem in the real world has proven to be more challenging compared
@@ -151,7 +150,7 @@ is not an easy task, neither for humans nor for computers.
 While the problem may appear to be a futile style exercise,
 it could have concrete applications in the future. For instance,
 it could be applied to the reconstruction of archaeological finds,
-such as a terracotta pot~\ref{fig:pot}.
+such as a terracotta pot~\cref{fig:pot}.
 
 % figure of real jigsaw puzzle    
 \begin{figure}[h]
@@ -177,8 +176,8 @@ Between these categories type 2 are the hardest, and will be the focus of this p
 \subsubsection{Digital vs Real-World Jigsaw Puzzles}
 
 There is  another important distinction between different types of puzzles.
-They can be divided into “digital”~\ref{fig:figure_digital_puzzle} and
-“real world”~\ref{fig:figure_real_puzzle} jigsaw puzzles.
+They can be divided into “digital”~\cref{fig:figure_digital_puzzle} and
+“real world”~\cref{fig:figure_real_puzzle} jigsaw puzzles.
 The difference between the two is quite self explanatory,
 and can be observed in the respective pictures.
 \label{document:DigitalVSReal}
@@ -204,7 +203,7 @@ obtaining accurate matches of a piece's characteristics
 is far easier with a digital puzzle,
 since there are far fewer things that can go wrong.
 For example, a piece's shape may be distorted by
-a low-quality cut, as seen in picture~\ref{fig:figure_measurement_error}
+a low-quality cut, as seen in picture~\cref{fig:figure_measurement_error}
 
 % figure of a measurement error
 \begin{figure}[H]
@@ -215,7 +214,11 @@ a low-quality cut, as seen in picture~\ref{fig:figure_measurement_error}
 
 \subsection{General Structure Of The Algorithms}
 
-All the algorithms that will be analyzed are composed of 3 sub algorithms:
+A puzzle solver program can be divided into 3 sub algorithms,
+The Splitter, The Comparator and The Solver.
+This generalization can be applied not only to our solution,
+but also to all the algorithms analyzed in the related
+work section of this paper~\cref{document:related_work}.
 
 \begin{indented_section}
 
@@ -233,78 +236,12 @@ All the algorithms that will be analyzed are composed of 3 sub algorithms:
     This allows states of uncertainty to be represented.\label{document:comparator}
 
     \subsubsection{The Solver:} This component utilizes the information provided by the
-    Comparator~\ref{document:comparator}, and attempts to find a solution
+    Comparator~\cref{document:comparator}, and attempts to find a solution
     (i.e.\ a position and an orientation for each piece)
     that is the most likely to be correct.\label{document:solver}
 
 \end{indented_section}
 
-
-\section{Previous Literature}
-This section will analyze three different algorithms that have been
-proposed as solutions for type 2 puzzles.
-The objective is to understand the strengths and weaknesses of each one,
-in order to build up knowledge that will be useful for the next sections.
-
-
-\subsection{Solving Jigsaw Puzzles By The Graph Connection Laplacian~\cite{GCL}}
-This algorithm falls within the ``binary comparison'' category~\ref{document:comparator}.
-And can be used to understand the strength and weaknesses
-of this approach.\newline
-The primary advantage of this approach lies in its speed;
-the utilization of binary comparison permits specific optimizations,
-particularly leveraging graph theory techniques.\newline
-The algorithm exhibits a time complexity of approximately \(O(N^2)\),
-a value consistent with the theoretical minimum for
-jigsaw puzzle solving, as outlined in the study
-``No easy puzzles: Hardness results for jigsaw puzzles~\cite{ON2Claim}''.\newline
-However, a potential drawback may arise in terms of accuracy.
-This stems from the fact that, with only two states
-(matching or not matching),
-certain details may be lost when compared to a non-binary comparison. 
-To quantify accuracy the paper used the ``neighbors compariso'' metric,
-which ``calculates the percentage of pairs of image patches that are matched correctly''.
-This will be useful later.\label{document:GCL}
-
-\subsection{A Genetic Algorithm-Based Solver for Very Large Jigsaw Puzzles~\cite{GA}}
-This paper employs genetic algorithms to address the
-jigsaw puzzle problem, yielding promising results.\newline
-The algorithm seems to have a \(O(N^2)\) time complexity,
-with execution time slightly lower than the previous example
-(However, it remains uncertain which one is faster, as the papers did not specify
-the particular hardware configuration used).\newline
-The paper adopts the same evaluation method for accuracy as the previous example,
-namely neighbor comparison, facilitating direct comparison between the two approaches.
-This algorithm falls under the category of “Non binary comparison”~\ref{document:comparator}
-a distinction that theoretically grants it an advantage due to the increased granularity
-of input data.
-Unfortunately this advantage does not compensate for the worst precision
-of the algorithm itself, and the accuracy results are equivalent,
-if not slightly worse than the previous algorithm.\newline
-It is important to keep in mind that for the very nature of genetic algorithms,
-it might be possible that the accuracy would have been better if they had allowed
-the algorithm to run for more generations.\label{document:GA}
-
-\subsection{Computer Vision Powers Automatic Jigsaw Puzzle Solver~\cite{Abto}}
-Solutions~\ref{document:GCL} and~\ref{document:GA} can be considered ``state-of-the-art''
-for digital jigsaw puzzles.
-However, as already introduced in section ~\ref{document:DigitalVSReal},
-translating these solutions to the real world can be challenging.\newline
-This article represents one of the most comprehensive and well-documented
-implementations for real-world puzzles. However,
-it's important to note that referring to this approach as a ``solution''
-may be misleading, as it primarily identifies the top eight matching
-pieces for a specific point and subsequently relies on user input to make
-the final placement decision.
-This aspect renders the algorithm non-autonomous..\newline
-Even disregarding this significant detail,
-conducting an analysis of this solution has proven to be challenging,
-as the article leans more towards a publicity stunt than an academic paper.
-In fact, the code is not open source, and informations regarding the time needed
-to solve the puzzle are absent. The article only showcases a single puzzle solved,
-with dimensions of 9\(\times\)6.\newline
-Despite these limitations, this article still stands as one of the best examples of a solution
-for real-world puzzles.
 
 \section{The Objective Of This Paper}\label{document:objective}
 After a review of the existing literature on this problem, some conclusions could be drawn:
@@ -318,7 +255,7 @@ to analyze the real-world jigsaw puzzle problem.
 The second objective is to use the forthcoming research to create a labeling tool.
 
 This objective is motivated by the fact that the biggest challenge for real world puzzles is creating a
-reliable comparator~\ref{document:comparator}, that could provide accurate information even with noisy 
+reliable comparator~\cref{document:comparator}, that could provide accurate information even with noisy 
 input images, that are obtained from real-world measure.
 
 It is easy to see how a machine learning based comparator would probably be the best solution, 
@@ -333,8 +270,8 @@ solve it, and return the labeled data in just minutes.
 To fulfill the objectives of this paper,
 it is essential to have the necessary data for analysis.
 This section will encompass the input data utilized,
-as well as the Splitter~\ref{document:splitter}
-and Comparator~\ref{document:comparator} algorithms.
+as well as the Splitter~\cref{document:splitter}
+and Comparator~\cref{document:comparator} algorithms.
 
 \subsection{The Puzzle To Solve}
 
@@ -345,7 +282,7 @@ A printer's scanner is employed to digitize the individual pieces.
 
 The puzzle has been scanned in various sub-sizes to facilitate the testing of different configurations.
 A resolution of 1200 pixels per inch (ppi) has been employed to ensure a sharp and precise
-depiction of the pieces, as seen in image~\ref{fig:figure_measurement_error}.
+depiction of the pieces, as seen in image~\cref{fig:figure_measurement_error}.
 The puzzle has been scanned backward, using a black background.
 
 This choice has been dictated by the fact that the scanner used has the flashlight
@@ -360,7 +297,7 @@ by using a different scanner.
 
 \subsection{Splitting The Pieces}
 
-As introduced in section~\ref{document:splitter},  the initial stage in puzzle solving involves
+As introduced in~\cref{document:splitter},  the initial stage in puzzle solving involves
 splitting an image composed of many pieces into individual ones.
 This is relatively straightforward, and can be done with the following steps:
 
@@ -380,7 +317,7 @@ This is relatively straightforward, and can be done with the following steps:
 
 \subsection{Splitting The Sides}
 
-The next step following the general structure~\ref{document:splitter}
+The next step following the general structure~\cref{document:splitter}
 is to split a piece into
 his 4 sides, this could be done with the following steps:
 
@@ -388,51 +325,51 @@ his 4 sides, this could be done with the following steps:
 
   \item \textbf{Remove the holes from the piece:}\newline
   To remove the holes from the piece, the program employs a three-step process. Initially it
-  computes the convex hull of the piece~\ref{fig:s_s_ch}.
+  computes the convex hull of the piece~\cref{fig:s_s_ch}.
   Subsequently it calculates the difference between the convex hull and the original image,
-  resulting in an ``image with filler areas''~\ref{fig:fig:s_s_og_minus_ch}.
+  resulting in an ``image with filler areas''~\cref{fig:fig:s_s_og_minus_ch}.
   It can be noted that these filler areas have distinct shapes,
   depending on what has generated them (either a ``hole'' or a ``knob'').
   Therefore they can be categorized.
   Finally the filler areas are added back to the original only if
   they originated from a hole. This results in an image where the holes
-  have been filled~\ref{fig:s_s_no_holes}
+  have been filled~\cref{fig:s_s_no_holes}
 
   \item \textbf{Remove the knobs from he piece:}\newline
   In order to remove the knobs from the piece, the image without holes
-  undergoes an erosion~\ref{fig:s_s_erosion} followed by a dilation~\ref{fig:s_s_dilatation}.
+  undergoes an erosion~\cref{fig:s_s_erosion} followed by a dilation~\cref{fig:s_s_dilatation}.
   This process results in an image that resembles the original, but without any knobs.
-  Subsequently, the program identifies the pixels that are white in the image without holes~\ref{fig:s_s_no_holes},
-  but not in the eroded and dilated version~\ref{fig:s_s_dilatation}.
-  This leads to the formation of a set of blobs ~\ref{fig:s_s_no_holes_minus_expansion}.
+  Subsequently, the program identifies the pixels that are white in the image without holes~\cref{fig:s_s_no_holes},
+  but not in the eroded and dilated version~\cref{fig:s_s_dilatation}.
+  This leads to the formation of a set of blobs ~\cref{fig:s_s_no_holes_minus_expansion}.
   It is important to note that the shape of a blob can vary significantly depending on whether it originated
   from an ``angle'' or a ``knob'' and thus they can be classified accordingly.
   Following this, the program proceeds to eliminate from the hole-free
-  image~\ref{fig:s_s_no_holes} all pixels that are in close proximity to a blob generated by a knob.
-  This operation yields an image that is both devoid of knobs and holes~\ref{fig:s_s_no_knobs}.
+  image~\cref{fig:s_s_no_holes} all pixels that are in close proximity to a blob generated by a knob.
+  This operation yields an image that is both devoid of knobs and holes~\cref{fig:s_s_no_knobs}.
   
   \item \textbf{Find the coordinates of the four corners:}\newline
   In order to determine the coordinates of the corners,
   the program employs a three-step approximation method.
   Initially, it identifies the minimum enclosing rectangle and
   utilizes the coordinates of its corners
-  as the first approximation~\ref{fig:s_s_min_enc_rec}.\newline
+  as the first approximation~\cref{fig:s_s_min_enc_rec}.\newline
   For the second approximation, the program selects,
   from the white pixels in close proximity to the first approximation,
   the pixel that contains the highest number of black pixels
   within a specified range.
   Then it considers only the pixels that are within a certain
   distance of the second approximation, and finds the minimum
-  enclosing triangle of sed pixels~\ref{fig:s_s_min_enc_triangle}.\newline
+  enclosing triangle of sed pixels~\cref{fig:s_s_min_enc_triangle}.\newline
   The corner of the triangle that is nearest to the second
   approximation serves as the third and final approximation
   for the corner of the puzzle piece.
-  The position of the four corners can be seen in image~\ref{fig:s_s_corners_found}.
+  The position of the four corners can be seen in image~\cref{fig:s_s_corners_found}.
 
   \item \textbf{Split each piece into four sides using the previously found coordinates:}\newline
 	After the program has successfully identified the four corner coordinates,
   it can straightforwardly derive each of the four sides.
-  An example of a single side can be seen in image .~\ref{fig:s_s_a_piece_side}.
+  An example of a single side can be seen in image .~\cref{fig:s_s_a_piece_side}.
 \end{itemize}
 
 \begin{figure}
@@ -453,49 +390,49 @@ his 4 sides, this could be done with the following steps:
   \begin{subfigure}{0.3\textwidth}
     \centering
     \includegraphics[width=\linewidth]{pictures/remove_holes_filler_areas.png}
-    \caption{Difference:~\ref{fig:s_s_ch} \textminus~\ref{fig:s_s_og}.}
+    \caption{Difference:~\cref{fig:s_s_ch} \textminus~\cref{fig:s_s_og}.}
     \label{fig:fig:s_s_og_minus_ch}
   \end{subfigure}
   \vspace{1cm}
   \begin{subfigure}{0.3\textwidth}
     \centering
     \includegraphics[width=\linewidth]{pictures/piece_with_no_hole.png}
-    \caption{Piece~\ref{fig:s_s_og} with holes removed.}
+    \caption{Piece~\cref{fig:s_s_og} with holes removed.}
     \label{fig:s_s_no_holes}
   \end{subfigure}
   \hfill
   \begin{subfigure}{0.3\textwidth}
     \centering
     \includegraphics[width=\linewidth]{pictures/remove_knobs_erosion.png}
-    \caption{Mask~\ref{fig:s_s_no_holes} eroded.}
+    \caption{Mask~\cref{fig:s_s_no_holes} eroded.}
     \label{fig:s_s_erosion}
   \end{subfigure}
   \hfill
   \begin{subfigure}{0.3\textwidth}
     \centering
     \includegraphics[width=\linewidth]{pictures/remove_knobs_expansion.png}
-    \caption{Mask~\ref{fig:s_s_erosion} dilated.}
+    \caption{Mask~\cref{fig:s_s_erosion} dilated.}
     \label{fig:s_s_dilatation}
   \end{subfigure}
   \vspace{1cm}
   \begin{subfigure}{0.3\textwidth}
     \centering
     \includegraphics[width=\linewidth]{pictures/remove_knobs_knob_pixels.png}
-    \caption{Difference:~\ref{fig:s_s_no_holes} \textminus~\ref{fig:s_s_erosion}.}
+    \caption{Difference:~\cref{fig:s_s_no_holes} \textminus~\cref{fig:s_s_erosion}.}
     \label{fig:s_s_no_holes_minus_expansion}
   \end{subfigure}
   \hfill
   \begin{subfigure}{0.3\textwidth}
     \centering
     \includegraphics[width=\linewidth]{pictures/piece_with_no_knobs.png}
-    \caption{Piece~\ref{fig:s_s_no_holes} with knobs removed.}
+    \caption{Piece~\cref{fig:s_s_no_holes} with knobs removed.}
     \label{fig:s_s_no_knobs}
   \end{subfigure}
   \hfill
   \begin{subfigure}{0.3\textwidth}
     \centering
     \includegraphics[width=\linewidth]{pictures/find_corners_min_enclosing_rectangle.png}
-    \caption{Min enclosing rectangle of~\ref{fig:s_s_no_knobs}.}
+    \caption{Min enclosing rectangle of~\cref{fig:s_s_no_knobs}.}
     \label{fig:s_s_min_enc_rec}
   \end{subfigure}
 \end{figure}
@@ -504,21 +441,21 @@ his 4 sides, this could be done with the following steps:
   \begin{subfigure}{0.3\textwidth}
     \centering
     \includegraphics[width=\linewidth]{pictures/find_corners_min_enclosing_triangle.png}
-    \caption{Min enclosing triangle of the bottom right corner of~\ref{fig:s_s_no_knobs}.}
+    \caption{Min enclosing triangle of the bottom right corner of~\cref{fig:s_s_no_knobs}.}
     \label{fig:s_s_min_enc_triangle}
   \end{subfigure}
   \hfill
   \begin{subfigure}{0.3\textwidth}
     \centering
     \includegraphics[width=\linewidth]{pictures/corners_found.png}
-    \caption{The corners of the piece~\ref{fig:s_s_og}.}
+    \caption{The corners of the piece~\cref{fig:s_s_og}.}
     \label{fig:s_s_corners_found}
   \end{subfigure}
   \hfill
   \begin{subfigure}{0.3\textwidth}
     \centering
     \includegraphics[width=\linewidth]{pictures/piece_side.png}
-    \caption{One of the sides of the piece~\ref{fig:s_s_og}.}
+    \caption{One of the sides of the piece~\cref{fig:s_s_og}.}
     \label{fig:s_s_a_piece_side}
   \end{subfigure}
   
@@ -563,20 +500,20 @@ the program compute the following steps:
 \section{Applying Already Existing Algorithms To The Real World}
 With the initial setup completed, it is now possible to
 test the existing algorithms with real-world puzzle. For this test,
-the fist algorithm~\ref{document:GCL} is selected due to the comprehensive
+the fist algorithm~\cref{document:GCL} is selected due to the comprehensive
 details provided in the paper. Notably, it contains information
 regarding the algorithm's accuracy in relation to the corruption rate,
 which is crucial for this analysis.
 
-The conducted tests reveal that the Comparator developed in this paper~\ref{document:my_comparator}
-and the ``Graph Connection Laplacian'' solution ~\ref{document:my_comparator} are not compatible with each other.
+The conducted tests reveal that the Comparator developed in this paper~\cref{document:my_comparator}
+and the ``Graph Connection Laplacian'' solution ~\cref{document:my_comparator} are not compatible with each other.
 A formal proof supporting this assertion is presented subsequently.
 
 \subsection{Proof}
 
-The comparison algorithm deceived in section~\ref{document:my_comparator} outputs a compatibility
+The comparison algorithm deceived in section~\cref{document:my_comparator} outputs a compatibility
 shore that goes from 0 to 1.\newline
-But the algorithm~\ref{document:GCL} takes as input a binary value.
+But the algorithm~\cref{document:GCL} takes as input a binary value.
 Which means that it is necessary to apply a threshold to the input
 data to convert them from float to bool.
 \subsubsection{Input Data}
@@ -684,8 +621,8 @@ And the following 4 values have been measured, in function of the threshold:
     \includegraphics[height=0.5\textwidth]{pictures/match_metrics_vs_threshold_used.png}
 \end{figure}
 
-Now, let's consider Algorithm \ref{document:GCL} tasked with solving a 500-piece puzzle
-using our Comparator \ref{document:my_comparator}.
+Now, let's consider Algorithm \cref{document:GCL} tasked with solving a 500-piece puzzle
+using our Comparator \cref{document:my_comparator}.
 A threshold of 0.425 is chosen;
 This implies a limit match\% of 0.04 and a corruption rate of 0.057.
 What would this mean in terms of accuracy of the results?
@@ -714,12 +651,12 @@ This set of definitions are useful to better understand the next section:
 
 \subsubsection{Corruption Rate Analysis}
 \begin{figure}[h]
-  \caption{Neighbors comparison vs Corruption rate of algorithm \ref{document:GCL}. Image taken from pater \cite{GCL} page 34.}\label{fig:GCL_Corruption_Rate}
+  \caption{Neighbors comparison vs Corruption rate of algorithm \cref{document:GCL}. Image taken from pater \cite{GCL} page 34.}\label{fig:GCL_Corruption_Rate}
   \centering
   \includegraphics[height=0.35\textwidth]{pictures/corruption_rate.png}
 \end{figure}
 
-In Figure \ref{fig:GCL_Corruption_Rate}, it can be observed that at a corruption rate of 0.057,
+In Figure \cref{fig:GCL_Corruption_Rate}, it can be observed that at a corruption rate of 0.057,
 a neighbors comparison metric of roughly 80\% can be anticipated.
 This implies that, on average, one out of every five connections will be incorrect.
 In the context of a puzzle comprising 500 pieces (equating to approximately 1000 connections),
@@ -744,8 +681,8 @@ Which makes the chance of finding the actual correct combination basically zero.
 In this case both the match\% and the corruption rate are bad enough to make a correct reconstruction impossible.
 To lower limit match\% is necessary to increase the threshold, but this would increase the corruption rate.
 To lower the corruption rate is necessary to decrease the threshold, but this would increase the limit match\%.
-This means that, regardless of the threshold chosen, our comparison algorithm \ref{document:my_comparator}
-can not work with a state of the art solver \ref{document:GCL}.
+This means that, regardless of the threshold chosen, our comparison algorithm \cref{document:my_comparator}
+can not work with a state of the art solver \cref{document:GCL}.
 
 \subsection{Solutions For The Problem}
 
@@ -819,7 +756,7 @@ To implement the algorithm two fundamental object are defined
   \item PieceGroup\(<\)T\(>\) where T can be either a PieceGroup or a SinglePiece\newline
   This element encompasses four elements of type T, each with its own position (top right, top left, bottom left, bottom right).
 \end{itemize}
-Both SinglePiece and PieceGroup have an ``orientation'' attribute that goes from 0 to 3~\ref{fig:orientation}.
+Both SinglePiece and PieceGroup have an ``orientation'' attribute that goes from 0 to 3~\cref{fig:orientation}.
 \begin{figure}[H]
   \caption{orientation attribute of an object}\label{fig:orientation}
   \centering
@@ -842,7 +779,7 @@ These basic objects also have the following shared behaviors:
   \item 4 objects of level N can be combined to build an object of level N+1.
   \item One object of level N has 4 sides, each of which can be compared with a side of an element of level N. This results in a compatibility shore.
   \begin{itemize}
-    \item The comparing shore for level 0 objects is just the shore given by the Comparator~\ref{document:comparator}.
+    \item The comparing shore for level 0 objects is just the shore given by the Comparator~\cref{document:comparator}.
     \item The comparing shore for level N+1 objects is the average between two comparisons made with objects of level N
   \end{itemize}
 \end{itemize}
@@ -851,10 +788,10 @@ These basic objects also have the following shared behaviors:
 
 When combining four objects into one, some comparisons are executed to ensure that the resulting piece is a valid  combination.
 \begin{itemize}
-  \item The right side of the object in the top left position is compared with the left side of the object in the top right position~\ref{fig:merge_pieces}(1).
-  \item The bottom side of the objection the top right position is compared with the top side of the object in the bottom right position~\ref{fig:merge_pieces}(2).
-  \item The left side of the objection the bottom right position is compared with the right side of the object in the bottom left position~\ref{fig:merge_pieces}(3).
-  \item The top side of the objection the bottom left position is compared with the bottom side of the object in the top left position~\ref{fig:merge_pieces}(4).
+  \item The right side of the object in the top left position is compared with the left side of the object in the top right position~\cref{fig:merge_pieces}(1).
+  \item The bottom side of the objection the top right position is compared with the top side of the object in the bottom right position~\cref{fig:merge_pieces}(2).
+  \item The left side of the objection the bottom right position is compared with the right side of the object in the bottom left position~\cref{fig:merge_pieces}(3).
+  \item The top side of the objection the bottom left position is compared with the bottom side of the object in the top left position~\cref{fig:merge_pieces}(4).
 \end{itemize}
 
 \begin{figure}[H]
@@ -956,7 +893,7 @@ We have tested many different sizes of real, and digital puzzles.
 The real world puzzles have been obtained with a printer’s scanner, more data are available in REF SETUP.
 The digital puzzles have been obtained from \url{https://puzzle.telegnom.org/}.
 This web app can generate a puzzle from a dimension and a jitter value. The jitter is a parameter that controls
-how unique and distorted the puzzle images are, see \ref{fig:jiiter}.
+how unique and distorted the puzzle images are, see \cref{fig:jiiter}.
 The default jitter used in the tests is 5\%.
 
 \begin{figure}[H]
@@ -966,12 +903,12 @@ The default jitter used in the tests is 5\%.
 \end{figure}
 
 The constants MIN\_SHORE\_SINGLE\_SIDE and MIN\_SHORE\_PIECE\_GROUP mentioned in section
-\ref{document:combining_four_objects} were set at different values
+\cref{document:combining_four_objects} were set at different values
 depending on the nature of the puzzle (real or digital).
 
 The test has been performed on a ryzen 5 5600 CPU with 16 GB of RAM.
 The time measured in the test does not include the execution time of the Comparator
-\ref{document:my_comparator}, but only the one of the Solver~\ref{document:my_solver}.
+\cref{document:my_comparator}, but only the one of the Solver~\cref{document:my_solver}.
 
 \subsection{Digital vs Real World Puzzles}
 
@@ -1079,9 +1016,9 @@ the claim, demonstrating that the performance of the same
 algorithm can vary significantly depending on the accuracy of the input data.
 
 It is fair to point out that the performances of the algorithm are not amazing,
-but they are good enough to achieve the objectives of this paper \ref{document:objective}.
+but they are good enough to achieve the objectives of this paper \cref{document:objective}.
 It is also worth remembering that the problem itself is extremely complex.
-Using the formula introduced in section \ref{document:proof_definitions} we can calculate that a 64 piece puzzle,
+Using the formula introduced in section \cref{document:proof_definitions} we can calculate that a 64 piece puzzle,
 like the one that has been solved before, has approximately \(4 \cdot 10^{127}\) possible combinations.
 \[C = N! \cdot 4^N =  64! \cdot 4^{64} \approx 4.32 \cdot 10^{127}\]
 
@@ -1102,7 +1039,7 @@ an integer that goes from 0 to 3.
 
 Inside the folder results/pieces the program will generate one image
 for each one of the pieces of the puzzle. The file will be named \{piece\_id\}.jpeg.
-An example can be seen in \ref{fig:result_pieces}
+An example can be seen in \cref{fig:result_pieces}
 
 \begin{figure}[H]
   \caption{}\label{fig:result_pieces}
@@ -1114,7 +1051,7 @@ An example can be seen in \ref{fig:result_pieces}
 
 Inside the folder results/sides the program will generate one image 
 for each side of each piece. The images will be named \{piece\_id\}\_\{side\_id\}.jpeg.
-An example can be seen in \ref{fig:result_sides}
+An example can be seen in \cref{fig:result_sides}
 
 \begin{figure}[H]
   \caption{}\label{fig:result_sides}
@@ -1193,6 +1130,73 @@ An example of the generated json can be seen below.
   
   \end{lstlisting}
 \end{minipage}
+
+
+\section{Related work}\label{document:related_work}
+This section will analyze three different algorithms that have been
+proposed as solutions for type 2 puzzles.
+The objective is to understand the strengths and weaknesses of each one,
+in order to build up knowledge that will be useful for the next sections.
+
+
+\subsection{Solving Jigsaw Puzzles By The Graph Connection Laplacian~\cite{GCL}}
+This algorithm falls within the ``binary comparison'' category~\cref{document:comparator}.
+And can be used to understand the strength and weaknesses
+of this approach.\newline
+The primary advantage of this approach lies in its speed;
+the utilization of binary comparison permits specific optimizations,
+particularly leveraging graph theory techniques.\newline
+The algorithm exhibits a time complexity of approximately \(O(N^2)\),
+a value consistent with the theoretical minimum for
+jigsaw puzzle solving, as outlined in the study
+``No easy puzzles: Hardness results for jigsaw puzzles~\cite{ON2Claim}''.\newline
+However, a potential drawback may arise in terms of accuracy.
+This stems from the fact that, with only two states
+(matching or not matching),
+certain details may be lost when compared to a non-binary comparison. 
+To quantify accuracy the paper used the ``neighbors compariso'' metric,
+which ``calculates the percentage of pairs of image patches that are matched correctly''.
+This will be useful later.\label{document:GCL}
+
+\subsection{A Genetic Algorithm-Based Solver for Very Large Jigsaw Puzzles~\cite{GA}}
+This paper employs genetic algorithms to address the
+jigsaw puzzle problem, yielding promising results.\newline
+The algorithm seems to have a \(O(N^2)\) time complexity,
+with execution time slightly lower than the previous example
+(However, it remains uncertain which one is faster, as the papers did not specify
+the particular hardware configuration used).\newline
+The paper adopts the same evaluation method for accuracy as the previous example,
+namely neighbor comparison, facilitating direct comparison between the two approaches.
+This algorithm falls under the category of “Non binary comparison”~\cref{document:comparator}
+a distinction that theoretically grants it an advantage due to the increased granularity
+of input data.
+Unfortunately this advantage does not compensate for the worst precision
+of the algorithm itself, and the accuracy results are equivalent,
+if not slightly worse than the previous algorithm.\newline
+It is important to keep in mind that for the very nature of genetic algorithms,
+it might be possible that the accuracy would have been better if they had allowed
+the algorithm to run for more generations.\label{document:GA}
+
+\subsection{Computer Vision Powers Automatic Jigsaw Puzzle Solver~\cite{Abto}}
+Solutions~\cref{document:GCL} and~\cref{document:GA} can be considered ``state-of-the-art''
+for digital jigsaw puzzles.
+However, as already introduced in section ~\cref{document:DigitalVSReal},
+translating these solutions to the real world can be challenging.\newline
+This article represents one of the most comprehensive and well-documented
+implementations for real-world puzzles. However,
+it's important to note that referring to this approach as a ``solution''
+may be misleading, as it primarily identifies the top eight matching
+pieces for a specific point and subsequently relies on user input to make
+the final placement decision.
+This aspect renders the algorithm non-autonomous..\newline
+Even disregarding this significant detail,
+conducting an analysis of this solution has proven to be challenging,
+as the article leans more towards a publicity stunt than an academic paper.
+In fact, the code is not open source, and informations regarding the time needed
+to solve the puzzle are absent. The article only showcases a single puzzle solved,
+with dimensions of 9\(\times\)6.\newline
+Despite these limitations, this article still stands as one of the best examples of a solution
+for real-world puzzles.
 
 
 \section{Conclusions}

@@ -20,12 +20,13 @@
     - Solver
   - Related work
     - 3 papers
-    - Why not to use their comparator?
-  - Testing result
-  - Future work
-    - Labeling tool
-    - Machine learning based comparator
-
+    - Why not to use their solver?
+  - Conclusion
+    - Testing result
+    - Future work
+      - Machine learning based comparator
+      - Labeling tool
+      
 # Note MP
 no references in the abstract
 
