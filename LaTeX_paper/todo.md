@@ -5,6 +5,27 @@
 
  - la seziuone 5 e 7 vanno mergiate
 
+# New structure
+
+ - Abstract
+ - Introduction
+   - Context
+     - Classification
+     - Digital vs Real
+     - Structure of the algorithms
+    - Problem (The objective of this paper)
+    - Setup (The Puzzle To Solve)
+  - Our solution
+    - Comparator
+    - Solver
+  - Related work
+    - 3 papers
+    - Why not to use their comparator?
+  - Testing result
+  - Future work
+    - Labeling tool
+    - Machine learning based comparator
+
 # Note MP
 no references in the abstract
 
