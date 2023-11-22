@@ -161,14 +161,26 @@ such as a terracotta pot~\ref{fig:pot}.
 \end{figure}
 
 
-\subsection{context}
+\subsection{Context}
+This section will provide some basic knowledge
+related to the jigsaw problem that will be useful
+  for the next sections.
 \subsubsection{Classification}
-This paper will focus on Type 2 puzzles. A Type 2 puzzle is one where the position and orientation of each piece are unknown.
-\subsection{Digital vs Real-World Jigsaw Puzzles}
+Puzzles are categorized in different types, for example 
+\begin{itemize}
+  \item Type 1 puzzles have the orientation of the pieces known, but the position unknown. 
+  \item Type 2 puzzles have both the orientation and the position of the pieces unknown.
+  \item Type 3 puzzles have the orientation of the pieces unknown, but the position is known.
+\end{itemize}
+Between these categories type 2 are the hardest, and will be the focus of this paper.
+
+\subsubsection{Digital vs Real-World Jigsaw Puzzles}
 
 There is  another important distinction between different types of puzzles.
-They can be divided into “digital”~\ref{fig:figure_digital_puzzle} and “real world”~\ref{fig:figure_real_puzzle} jigsaw puzzles.
-The difference between the two is quite self explanatory, and can be observed in the respective pictures.
+They can be divided into “digital”~\ref{fig:figure_digital_puzzle} and
+“real world”~\ref{fig:figure_real_puzzle} jigsaw puzzles.
+The difference between the two is quite self explanatory,
+and can be observed in the respective pictures.
 \label{document:DigitalVSReal}
 
 % figure of digital jigsaw puzzle    
@@ -192,7 +204,7 @@ obtaining accurate matches of a piece's characteristics
 is far easier with a digital puzzle,
 since there are far fewer things that can go wrong.
 For example, a piece's shape may be distorted by
-a low-quality cut, as seen in picture \ref{fig:figure_measurement_error}
+a low-quality cut, as seen in picture~\ref{fig:figure_measurement_error}
 
 % figure of a measurement error
 \begin{figure}[H]
@@ -200,12 +212,6 @@ a low-quality cut, as seen in picture \ref{fig:figure_measurement_error}
     \includegraphics[height=0.25\textwidth]{pictures/example_bad_piece.jpg}
     \centering
 \end{figure}
-
-\section{Previous Literature}
-This section will analyze three different algorithms that have been
-proposed as solutions for type 2 puzzles.
-The objective is to understand the strengths and weaknesses of each one,
-in order to build up knowledge that will be useful for the next sections.
 
 \subsection{General Structure Of The Algorithms}
 
@@ -232,6 +238,14 @@ All the algorithms that will be analyzed are composed of 3 sub algorithms:
     that is the most likely to be correct.\label{document:solver}
 
 \end{indented_section}
+
+
+\section{Previous Literature}
+This section will analyze three different algorithms that have been
+proposed as solutions for type 2 puzzles.
+The objective is to understand the strengths and weaknesses of each one,
+in order to build up knowledge that will be useful for the next sections.
+
 
 \subsection{Solving Jigsaw Puzzles By The Graph Connection Laplacian~\cite{GCL}}
 This algorithm falls within the ``binary comparison'' category~\ref{document:comparator}.
