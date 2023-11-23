@@ -244,37 +244,58 @@ work section of this paper~\cref{document:related_work}.
 
 
 \subsection{The Objective Of This Paper}\label{document:objective}
-After a review of the existing literature on this problem, some conclusions could be drawn:
-The ``digital'' jigsaw puzzle dilemma has been extensively addressed and is already
-well-optimized. Conversely, the ``real-world'' counterpart has largely been
-overlooked within the academic community.
 
-The first objective for this paper is to fill this void, and been the first formal paper
-to analyze the real-world jigsaw puzzle problem.
+This paper is not the first to tackle the jigsaw puzzle problem in computer science,
+in fact there have been several more that are mentioned in the related work section (\cref{document:related_work}).
 
-The second objective is to use the forthcoming research to create a labeling tool.
+All the papers we read focused on digital jigsaw puzzles exclusively,
+and we couldn't find any paper that mentioned real-world puzzles.
+It should be mentioned that we did find some open source project that solved the
+real-world puzzle problem, but they didn’t document the creation process nor the
+findings given that they weren't trying to write a paper.
 
-This objective is motivated by the fact that the biggest challenge for real world puzzles is creating a
-reliable comparator~\cref{document:comparator}, that could provide accurate information even with noisy 
-input images, that are obtained from real-world measure.
+This paper’s objective is to focus on both digital and real-world jigsaw puzzles,
+and document why the real-world version is harder, and try to quantify by how much.
+In other to achieve this objective we want to answer these two questions:
+\begin{itemize}
+  \item \textbf{What is the difference in execution time between
+                digital and real-world puzzles?}
+  
+  To answer this question we decided to build a puzzle solver from the ground up,
+  and measure his performance across a set of digital, and real-world puzzles.
+  Our focus when developing this component wasn't to build a state of the art algorithm,
+  as there has already been extensive research put into that;
+  We simply needed something that could work with both digital and real-world puzzles.
+  
+  \item \textbf{What are the challenges to use the current state of the art algorithms developed for digital
+                puzzles in the real-world, and how can we overcome them?}
+  
+	Answering this question is a bit trickier, as an algorithm is divided into Comparator~\cref{document:comparator}
+  and Solver~\cref{document:solver}. Due to the intrinsic difference of digital and real-world jigsaw puzzles
+  reusing the Comparator is impossible, but there is the possibility to reuse the Sover,
+  assuming we could build a Comparator for real-world puzzles that is in the same realm
+  of accuracy achieved by Comparators for digital puzzles.
+  So another way to write this question is: ``Can we build a Comparator for real-world
+  puzzles that is accurate enough to work with current state-of-the-art  digital
+  puzzle Solvers?''
 
-It is easy to see how a machine learning based comparator would probably be the best solution, 
-but this poses problems, in fact having to manually scan and label thousands of individual puzzle
-pieces to train the model would take ages.
-Instead an automatic tool would allow to scan a small $4\times4$ puzzle in one shot,
-solve it, and return the labeled data in just minutes.
+	To answer this question we will measure the accuracy of the comparator we developed
+  to answer the previous question and observe what would happen if that accuracy is
+  applied to a digital puzzle solver. We will then propose a solution to improve
+  the accuracy of real-world Comparators.
 
 
-\section{The Setup}
+\end{itemize}
 
-To fulfill the objectives of this paper,
-it is essential to have the necessary data for analysis.
-This section will encompass the input data utilized,
-as well as the Splitter~\cref{document:splitter}
-and Comparator~\cref{document:comparator} algorithms.
 
-\subsection{The Puzzle To Solve}
+\subsection{The Dataset}
+The last step of the introduction is defining our
+testing dataset. We need both digital and real world
+puzzles to solve. The dataset used, as well as
+the code, can be seen in the public GitHub
+repository:~\url{https://github.com/lucaSartore/PuzzleSolver}.
 
+\subsubsection{The Real-World Puzzle}
 The first step involves selecting a real-world
 puzzle for solving. It has been decided to utilize a
 classic 1000-piece puzzle measuring 66cm x 50cm.
@@ -294,6 +315,9 @@ and it was difficult to separate them from the background.
 In the future it would be possible to scan the pieces in the correct orientation,
 by using a different scanner.
 
+\subsubsection{The Digital Puzzle}
+
+\section{Our Implementation Of A Puzzle Solver}
 
 \subsection{Splitting The Pieces}
 

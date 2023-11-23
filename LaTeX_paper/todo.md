@@ -20,9 +20,9 @@
     - Solver
   - Related work
     - 3 papers
-    - Why not to use their solver?
   - Conclusion
     - Testing result
+    - Why not to use their solver?
     - Future work
       - Machine learning based comparator
       - Labeling tool
