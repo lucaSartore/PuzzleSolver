@@ -25,6 +25,7 @@
     - Why not to use their solver?
     - Future work
       - Machine learning based comparator
+        - mention gitter reduced execution time
       - Labeling tool
       
 # Note MP

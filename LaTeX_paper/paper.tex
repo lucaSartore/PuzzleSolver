@@ -569,7 +569,7 @@ Both SinglePiece and PieceGroup have an ``orientation'' attribute that goes from
   \includegraphics[height=0.3\textwidth]{pictures/orientation.png}
 \end{figure}
 
-\paragraph{The Levels}
+\subsubsection{The Levels}
 
 These objects are assigned levels:
 \begin{itemize}
@@ -578,7 +578,7 @@ These objects are assigned levels:
 \item PieceGroup\(<\)PieceGroup\(<\)SinglePiece\(>>\) is at level 2, representing a 4x4 solution to a puzzle, and so forth.
 \end{itemize}
 
-\paragraph{The Behaviors}
+\subsubsection{The Behaviors}
 
 These basic objects also have the following shared behaviors:
 \begin{itemize}
@@ -590,9 +590,10 @@ These basic objects also have the following shared behaviors:
   \end{itemize}
 \end{itemize}
 
-\paragraph{Combining four objects}\label{document:combining_four_objects}
+\subsubsection{Combining four objects}\label{document:combining_four_objects}
+When combining four objects into one, some comparisons are executed to
+ensure that the resulting piece is a valid  combination.
 
-When combining four objects into one, some comparisons are executed to ensure that the resulting piece is a valid  combination.
 \begin{itemize}
   \item The right side of the object in the top left position is compared with the left side of the object in the top right position~\cref{fig:merge_pieces}(1).
   \item The bottom side of the objection the top right position is compared with the top side of the object in the bottom right position~\cref{fig:merge_pieces}(2).
@@ -767,6 +768,125 @@ by answering the two questions posed in \cref{document:objective}:
 And by making some consideration about possible future works related to this problem.
 
 \subsection{Difference In Execution Time}
+
+This section measures the execution time of many puzzles,
+and plots the results. The puzzles that has been used for
+this test has been described in ~\cref{document:dataset}.
+
+The constants MIN\_SHORE\_SINGLE\_SIDE and MIN\_SHORE\_PIECE\_GROUP mentioned in
+section~\cref{document:combining_four_objects} were set at different values
+depending on the nature of the puzzle (real or digital).
+
+The test has been performed on a ryzen 5 5600 CPU with 16 GB of RAM.
+The time measured in the test does not include the execution time of the Comparator
+\cref{document:my_comparator}, but only the one of the Solver~\cref{document:my_solver}.
+
+\subsection{Digital vs Real World Puzzles}
+
+In the table below we can see how the same algorithm
+can have vastly different performance depending on the kind of puzzle 
+it is working with.
+\begin{table}[H]
+  \centering
+  \begin{tabular}{
+  >{\columncolor[HTML]{D9EAD3}}c 
+  >{\columncolor[HTML]{D0E0E3}}c 
+  >{\columncolor[HTML]{F4CCCC}}c 
+  >{\columncolor[HTML]{FCE5CD}}c }
+  \cellcolor[HTML]{B6D7A8} &
+    \cellcolor[HTML]{A2C4C9} &
+    \multicolumn{2}{c}{\cellcolor[HTML]{EA9999}Execution time {[}s{]}} \\
+  \multirow{-2}{*}{\cellcolor[HTML]{B6D7A8}Size} &
+    \multirow{-2}{*}{\cellcolor[HTML]{A2C4C9}Pieces} &
+    \cellcolor[HTML]{DD7E6B}Digital puzzle &
+    \cellcolor[HTML]{F9CB9C}Real Puzzle \\
+  2x3   & 6   & 1   & 4    \\
+  3x4   & 12  & 3   & 14   \\
+  4x4   & 16  & 4   & 59   \\
+  4x5   & 20  & 4   & 48   \\
+  5x8   & 40  & 20  & 627  \\
+  8x8   & 64  & 30  & 2851 \\
+  8x12  & 96  & 660 & N/A  \\
+  16x16 & 256 & 377 & N/A 
+  \end{tabular}
+\end{table}
+
+Looking at the data we can spot to anomalies:
+\begin{itemize}
+  \item The 4x5 real puzzle has a lower execution time than the 4x4 real puzzle. This is not a big
+  difference and can be attribute to run to run variation.
+  \item The 8x12 digital puzzle has a much higher execution time than the 16x16 digital puzzle.
+  This is also easily explainable, as puzzles whose side is not a power of two are in general
+  harder compared to those who fulfill this condition. As they require an extra step compared to
+  the simple algorithm shown in section REF.
+\end{itemize}
+
+\subsubsection{Effect of Jitter on Execution Time}
+
+As mention in \cref{document:dataset} the digital puzzle have an attribute called jitter.
+Intuitively increasing the jitter would make the pieces harder to
+match with each other, and consequently making the puzzle easier to solve.
+And we can observe that this intuition is correct in the table below.
+
+\begin{figure}[h]
+  \caption{Effect of jitter on jigsaw pieces}\label{fig:jiiter}
+  \centering
+  \includegraphics[height=0.3\textwidth]{pictures/jitter.png}
+\end{figure}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{
+  >{\columncolor[HTML]{D0E0E3}}c 
+  >{\columncolor[HTML]{C9DAF8}}c }
+  \multicolumn{2}{c}{\cellcolor[HTML]{B6D7A8}Jitter effect on an 8x8 digital puzzle} \\
+  \cellcolor[HTML]{A2C4C9}Jitter   & \cellcolor[HTML]{A4C2F4}Execution time {[}s{]}  \\
+  4\%                              & 104                                             \\
+  5\%                              & 30                                              \\
+  6\%                              & 17                                              \\
+  8\%                              & 17                                              \\
+  10\%                             & 16                                             
+  \end{tabular}
+  \end{table}
+
+This shows how the execution time can be six times faster just by making
+each piece more unique.
+\subsection{Run to Run Variation}
+
+Another feature of the algorithm that is worth testing is his consistency.
+The table below shows how the algorithm performs using a set of different
+same-sized puzzles as input.
+\begin{table}[H]
+  \centering
+  \begin{tabular}{
+  >{\columncolor[HTML]{FCE5CD}}c 
+  >{\columncolor[HTML]{FFF2CC}}c 
+  >{\columncolor[HTML]{EAD1DC}}c }
+  \multicolumn{3}{c}{\cellcolor[HTML]{EA9999}Run to run vairance on a 4x4 real puzzle}                                                             \\
+  \cellcolor[HTML]{F9CB9C}Execution time {[}s{]} & \cellcolor[HTML]{FFE599}Avrege                 & \cellcolor[HTML]{D5A6BD}Standard deviation     \\
+  64 & \cellcolor[HTML]{FFF2CC} & \cellcolor[HTML]{EAD1DC} \\
+  68 & \cellcolor[HTML]{FFF2CC} & \cellcolor[HTML]{EAD1DC} \\
+  43 & \cellcolor[HTML]{FFF2CC} & \cellcolor[HTML]{EAD1DC} \\
+  24 & \cellcolor[HTML]{FFF2CC} & \cellcolor[HTML]{EAD1DC} \\
+  29 & \cellcolor[HTML]{FFF2CC} & \cellcolor[HTML]{EAD1DC} \\
+  59 & \multirow{-6}{*}{\cellcolor[HTML]{FFF2CC}47.8} & \multirow{-6}{*}{\cellcolor[HTML]{EAD1DC}18.6}
+\end{tabular}
+\end{table}
+
+\subsection{Accuracy}
+It is crucial to mention that the project currently lacks an automated
+method for evaluating the accuracy of results. However, the accuracy
+of two real-world puzzles (4x4 and 8x8) and one digital puzzle (16x16) has been manually confirmed,
+with them achieving a 100\% correctness.
+
+\subsection{Answering The Question}
+
+This paper has asserted from the beginning that real-world puzzles
+pose greater challenges compared to their digital counterparts.
+While some intuitive explanations were provided to support this assertion,
+a proof hasn't been been presented until now. This test ultimately substantiates 
+the claim, demonstrating that the performance of the same
+algorithm can vary significantly depending on the accuracy of the input data.
 
 \subsection{Applying Already Existing Algorithms To The Real World}
 
@@ -1016,146 +1136,6 @@ the solver algorithm. This choice was driven by the belief
 that creating a new algorithm, and subsequently using it to
 generate a dataset, would still be a more time-efficient
 approach compared to manually constructing a dataset.
-
-\section{Testing Results}
-
-In this section, the solver proposed by this paper will be put to the test.
-This evaluation serves two key purposes:
-
-\begin{itemize}
-  \item Gaining insight into the performance and limitations of the proposed algorithm.
-  \item Conducting tests using both digital and real-world jigsaw puzzles to discern the distinctions between the two contexts.
-\end{itemize}
-
-\subsection{Setup}
-See~\cref{document:dataset} for a detailed
-description of the setup.
-
-\begin{figure}[H]
-  \caption{Effect of jitter on jigsaw pieces}\label{fig:jiiter}
-  \centering
-  \includegraphics[height=0.3\textwidth]{pictures/jitter.png}
-\end{figure}
-
-The constants MIN\_SHORE\_SINGLE\_SIDE and MIN\_SHORE\_PIECE\_GROUP mentioned in section
-\cref{document:combining_four_objects} were set at different values
-depending on the nature of the puzzle (real or digital).
-
-The test has been performed on a ryzen 5 5600 CPU with 16 GB of RAM.
-The time measured in the test does not include the execution time of the Comparator
-\cref{document:my_comparator}, but only the one of the Solver~\cref{document:my_solver}.
-
-\subsection{Digital vs Real World Puzzles}
-
-In the table below we can see how the same algorithm
-can have vastly different performance depending on the kind of puzzle 
-it is working with.
-\begin{table}[H]
-  \centering
-  \begin{tabular}{
-  >{\columncolor[HTML]{D9EAD3}}c 
-  >{\columncolor[HTML]{D0E0E3}}c 
-  >{\columncolor[HTML]{F4CCCC}}c 
-  >{\columncolor[HTML]{FCE5CD}}c }
-  \cellcolor[HTML]{B6D7A8} &
-    \cellcolor[HTML]{A2C4C9} &
-    \multicolumn{2}{c}{\cellcolor[HTML]{EA9999}Execution time {[}s{]}} \\
-  \multirow{-2}{*}{\cellcolor[HTML]{B6D7A8}Size} &
-    \multirow{-2}{*}{\cellcolor[HTML]{A2C4C9}Pieces} &
-    \cellcolor[HTML]{DD7E6B}Digital puzzle &
-    \cellcolor[HTML]{F9CB9C}Real Puzzle \\
-  2x3   & 6   & 1   & 4    \\
-  3x4   & 12  & 3   & 14   \\
-  4x4   & 16  & 4   & 59   \\
-  4x5   & 20  & 4   & 48   \\
-  5x8   & 40  & 20  & 627  \\
-  8x8   & 64  & 30  & 2851 \\
-  8x12  & 96  & 660 & N/A  \\
-  16x16 & 256 & 377 & N/A 
-  \end{tabular}
-\end{table}
-
-Looking at the data we can spot to anomalies:
-\begin{itemize}
-  \item The 4x5 real puzzle has a lower execution time than the 4x4 real puzzle. This is not a big
-  difference and can be attribute to run to run variation.
-  \item The 8x12 digital puzzle has a much higher execution time than the 16x16 digital puzzle.
-  This is also easily explainable, as puzzles whose side is not a power of two are in general
-  harder compared to those who fulfill this condition. As they require an extra step compared to
-  the simple algorithm shown in section REF.
-\end{itemize}
-
-\subsubitem{Effect of Jitter on Execution Time}
-
-Intuitively increasing the jitter would make the pieces harder to
-match with each other, and consequently making the puzzle easier to solve.
-And we can observe that this intuition is correct in the table below.
-
-\begin{table}[H]
-  \centering
-  \begin{tabular}{
-  >{\columncolor[HTML]{D0E0E3}}c 
-  >{\columncolor[HTML]{C9DAF8}}c }
-  \multicolumn{2}{c}{\cellcolor[HTML]{B6D7A8}Jitter effect on an 8x8 digital puzzle} \\
-  \cellcolor[HTML]{A2C4C9}Jitter   & \cellcolor[HTML]{A4C2F4}Execution time {[}s{]}  \\
-  4\%                              & 104                                             \\
-  5\%                              & 30                                              \\
-  6\%                              & 17                                              \\
-  8\%                              & 17                                              \\
-  10\%                             & 16                                             
-  \end{tabular}
-  \end{table}
-
-This shows how the execution time can be six times faster just by making
-each piece more unique. This notion can be applied to the real world puzzle,
-in fact the current version of the comparator REF is not using the color
-of the piece, only the shape. Adding the color to the available
-data could significantly increase the uniqueness of each piece,
-bringing down the execution time. 
-
-\subsection{Run to Run Variation}
-
-Another feature of the algorithm that is worth testing is his consistency.
-The table below shows how the algorithm performs using a set of different
-same-sized puzzles as input.
-\begin{table}[H]
-  \centering
-  \begin{tabular}{
-  >{\columncolor[HTML]{FCE5CD}}c 
-  >{\columncolor[HTML]{FFF2CC}}c 
-  >{\columncolor[HTML]{EAD1DC}}c }
-  \multicolumn{3}{c}{\cellcolor[HTML]{EA9999}Run to run vairance on a 4x4 real puzzle}                                                             \\
-  \cellcolor[HTML]{F9CB9C}Execution time {[}s{]} & \cellcolor[HTML]{FFE599}Avrege                 & \cellcolor[HTML]{D5A6BD}Standard deviation     \\
-  64 & \cellcolor[HTML]{FFF2CC} & \cellcolor[HTML]{EAD1DC} \\
-  68 & \cellcolor[HTML]{FFF2CC} & \cellcolor[HTML]{EAD1DC} \\
-  43 & \cellcolor[HTML]{FFF2CC} & \cellcolor[HTML]{EAD1DC} \\
-  24 & \cellcolor[HTML]{FFF2CC} & \cellcolor[HTML]{EAD1DC} \\
-  29 & \cellcolor[HTML]{FFF2CC} & \cellcolor[HTML]{EAD1DC} \\
-  59 & \multirow{-6}{*}{\cellcolor[HTML]{FFF2CC}47.8} & \multirow{-6}{*}{\cellcolor[HTML]{EAD1DC}18.6}
-\end{tabular}
-\end{table}
-
-\subsection{Accuracy}
-It is crucial to mention that the project currently lacks an automated
-method for evaluating the accuracy of results. However, the accuracy
-of two real-world puzzles (4x4 and 8x8) has been manually confirmed,
-with both achieving a 100\% correctness.
-
-\subsection{Analysis}
-
-This paper has asserted from the beginning that real-world puzzles
-pose greater challenges compared to their digital counterparts.
-While some intuitive explanations were provided to support this assertion,
-a proof hasn't been been presented until now. This test ultimately substantiates 
-the claim, demonstrating that the performance of the same
-algorithm can vary significantly depending on the accuracy of the input data.
-
-It is fair to point out that the performances of the algorithm are not amazing,
-but they are good enough to achieve the objectives of this paper \cref{document:objective}.
-It is also worth remembering that the problem itself is extremely complex.
-Using the formula introduced in section \cref{document:proof_definitions} we can calculate that a 64 piece puzzle,
-like the one that has been solved before, has approximately \(4 \cdot 10^{127}\) possible combinations.
-\[C = N! \cdot 4^N =  64! \cdot 4^{64} \approx 4.32 \cdot 10^{127}\]
 
 
 \section{The Labeling tool}
