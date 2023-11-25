@@ -781,7 +781,7 @@ The test has been performed on a ryzen 5 5600 CPU with 16 GB of RAM.
 The time measured in the test does not include the execution time of the Comparator
 \cref{document:my_comparator}, but only the one of the Solver~\cref{document:my_solver}.
 
-\subsection{Digital vs Real World Puzzles}
+\subsubsection{Digital vs Real World Puzzles}
 
 In the table below we can see how the same algorithm
 can have vastly different performance depending on the kind of puzzle 
@@ -851,7 +851,7 @@ And we can observe that this intuition is correct in the table below.
 
 This shows how the execution time can be six times faster just by making
 each piece more unique.
-\subsection{Run to Run Variation}
+\subsubsection{Run to Run Variation}
 
 Another feature of the algorithm that is worth testing is his consistency.
 The table below shows how the algorithm performs using a set of different
@@ -873,13 +873,13 @@ same-sized puzzles as input.
 \end{tabular}
 \end{table}
 
-\subsection{Accuracy}
+\subsubsection{Accuracy}
 It is crucial to mention that the project currently lacks an automated
 method for evaluating the accuracy of results. However, the accuracy
 of two real-world puzzles (4x4 and 8x8) and one digital puzzle (16x16) has been manually confirmed,
 with them achieving a 100\% correctness.
 
-\subsection{Answering The Question}
+\subsubsection{Answering The Question}
 
 This paper has asserted from the beginning that real-world puzzles
 pose greater challenges compared to their digital counterparts.
@@ -890,34 +890,30 @@ algorithm can vary significantly depending on the accuracy of the input data.
 
 \subsection{Applying Already Existing Algorithms To The Real World}
 
-\subsection{Future Works}
-
-\subsubsection{Machine Learning Based Comparator}
-
-\subsubsection{Labeling tool}
-
-\subsection{Conclusion}
-
-\section{Applying Already Existing Algorithms To The Real World}
-With the initial setup completed, it is now possible to
-test the existing algorithms with real-world puzzle. For this test,
-the fist algorithm~\cref{document:GCL} is selected due to the comprehensive
-details provided in the paper. Notably, it contains information
+Comparing the results achieved by our algorithm with some of the algorithms seen in the related
+work section (\cref{document:related_work}), clearly shows how our algorithm is far away
+from the current state of the art digital puzzle solvers. In this section we want to
+see if it is possible to use our comparator with current state of the art algorithms.
+In particular we selected the ``Graph Connection Laplacian'' solution, due to the
+comprehensive details provided in the paper. Notably, it contains information
 regarding the algorithm's accuracy in relation to the corruption rate,
 which is crucial for this analysis.
 
-The conducted tests reveal that the Comparator developed in this paper~\cref{document:my_comparator}
-and the ``Graph Connection Laplacian'' solution ~\cref{document:my_comparator} are not compatible with each other.
+Unfortunately the conducted tests reveal that the Comparator developed
+in this paper~\cref{document:my_comparator}
+and the ``Graph Connection Laplacian'' solution~\cref{document:GCL}
+are not compatible with each other.
 A formal proof supporting this assertion is presented subsequently.
 
-\subsection{Proof}
+
+\subsubsection{Selecting The Threshold Based On Input Data}
 
 The comparison algorithm deceived in section~\cref{document:my_comparator} outputs a compatibility
 shore that goes from 0 to 1.\newline
 But the algorithm~\cref{document:GCL} takes as input a binary value.
 Which means that it is necessary to apply a threshold to the input
 data to convert them from float to bool.
-\subsubsection{Input Data}
+
 To find the optimal threshold a small 16 piece puzzle has been solved.
 And the following 4 values have been measured, in function of the threshold:
 
@@ -1084,6 +1080,17 @@ To lower limit match\% is necessary to increase the threshold, but this would in
 To lower the corruption rate is necessary to decrease the threshold, but this would increase the limit match\%.
 This means that, regardless of the threshold chosen, our comparison algorithm \cref{document:my_comparator}
 can not work with a state of the art solver \cref{document:GCL}.
+
+
+\subsection{Future Works}
+
+\subsubsection{Machine Learning Based Comparator}
+
+\subsubsection{Labeling tool}
+
+\subsection{Conclusion}
+
+
 
 \subsection{Solutions For The Problem}
 
