@@ -40,6 +40,17 @@
 
 \usepackage{color}
 
+% To have a paragraph look like a subsubsubsection
+\usepackage{titlesec}
+
+\setcounter{secnumdepth}{4}
+
+\titleformat{\paragraph}
+{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
 \definecolor{mauve}{rgb}{0.58,0,0.82}
@@ -287,23 +298,22 @@ In other to achieve this objective we want to answer these two questions:
 
 \end{itemize}
 
-
 \subsection{The Dataset}
 The last step of the introduction is defining our
 testing dataset. We need both digital and real world
 puzzles to solve. The dataset used, as well as
 the code, can be seen in the public GitHub
 repository:~\url{https://github.com/lucaSartore/PuzzleSolver}.
-
+\label{document:dataset}
 \subsubsection{The Real-World Puzzle}
 The first step involves selecting a real-world
-puzzle for solving. It has been decided to utilize a
+puzzle to solve. It has been decided to utilize a
 classic 1000-piece puzzle measuring 66cm x 50cm.
 A printer's scanner is employed to digitize the individual pieces.
 
 The puzzle has been scanned in various sub-sizes to facilitate the testing of different configurations.
 A resolution of 1200 pixels per inch (ppi) has been employed to ensure a sharp and precise
-depiction of the pieces, as seen in image~\cref{fig:figure_measurement_error}.
+depiction of the pieces, as seen in~\cref{fig:figure_measurement_error}.
 The puzzle has been scanned backward, using a black background.
 
 This choice has been dictated by the fact that the scanner used has the flashlight
@@ -316,10 +326,16 @@ In the future it would be possible to scan the pieces in the correct orientation
 by using a different scanner.
 
 \subsubsection{The Digital Puzzle}
+The digital puzzles have been obtained from \url{https://puzzle.telegnom.org/}.
+This web app can generate a puzzle from a dimension and a jitter value. The jitter is a parameter that controls
+how unique and distorted the puzzle images are, see \cref{fig:jiiter}.
+The default jitter used in the tests is 5\%.
 
 \section{Our Implementation Of A Puzzle Solver}
 
-\subsection{Splitting The Pieces}
+\subsection{Our Splitter}
+
+\subsubsection{Splitting The Pieces}
 
 As introduced in~\cref{document:splitter},  the initial stage in puzzle solving involves
 splitting an image composed of many pieces into individual ones.
@@ -339,7 +355,7 @@ This is relatively straightforward, and can be done with the following steps:
 
 \end{itemize}
 
-\subsection{Splitting The Sides}
+\subsubsection{Splitting The Sides}
 
 The next step following the general structure~\cref{document:splitter}
 is to split a piece into
@@ -488,7 +504,9 @@ his 4 sides, this could be done with the following steps:
   
 \end{figure}
 
-\subsection{Comparing The Sides}\label{document:my_comparator}
+
+
+\subsection{Our Comparator}\label{document:my_comparator}
 The last step in the setup, is to compare the sides that have been
 generated before.
 In order to generate a compatibility shore,
@@ -520,6 +538,152 @@ the program compute the following steps:
   \end{minipage}
 \end{figure}
 \clearpage
+
+
+
+\subsection{Our Solver}\label{document:my_solver}
+The Solver that has been developed is not the primary focus of this
+paper and cannot be considered state-of-the-art when compared
+to the current best digital puzzle solvers. However, it may be
+considered as such when compared to existing ``real-world'' puzzle solvers.
+
+\subsubsection{Overview}
+The algorithm itself is relatively straightforward.
+It operates as a recursive procedure, initiating by recognizing all 2x2
+sets of matching pieces through the combination of four individual pieces.
+Subsequently, it extends this process to identify all 4x4 sets of matching pieces
+by aggregating four 2x2 pieces, and this pattern continues recursively.
+
+\subsubsection{Basic Components}
+To implement the algorithm two fundamental object are defined
+\begin{itemize}
+  \item SinglePiece: which contains information about a single puzzle piece.
+  \item PieceGroup\(<\)T\(>\) where T can be either a PieceGroup or a SinglePiece\newline
+  This element encompasses four elements of type T, each with its own position (top right, top left, bottom left, bottom right).
+\end{itemize}
+Both SinglePiece and PieceGroup have an ``orientation'' attribute that goes from 0 to 3~\cref{fig:orientation}.
+\begin{figure}[H]
+  \caption{orientation attribute of an object}\label{fig:orientation}
+  \centering
+  \includegraphics[height=0.3\textwidth]{pictures/orientation.png}
+\end{figure}
+
+\paragraph{The Levels}
+
+These objects are assigned levels:
+\begin{itemize}
+\item SinglePiece is at level 0, representing a 1x1 ``solution'' to a puzzle.
+\item PieceGroup\(<\)SinglePiece\(>\) is at level 1, representing a 2x2 solution to a puzzle.
+\item PieceGroup\(<\)PieceGroup\(<\)SinglePiece\(>>\) is at level 2, representing a 4x4 solution to a puzzle, and so forth.
+\end{itemize}
+
+\paragraph{The Behaviors}
+
+These basic objects also have the following shared behaviors:
+\begin{itemize}
+  \item 4 objects of level N can be combined to build an object of level N+1.
+  \item One object of level N has 4 sides, each of which can be compared with a side of an element of level N. This results in a compatibility shore.
+  \begin{itemize}
+    \item The comparing shore for level 0 objects is just the shore given by the Comparator~\cref{document:comparator}.
+    \item The comparing shore for level N+1 objects is the average between two comparisons made with objects of level N
+  \end{itemize}
+\end{itemize}
+
+\paragraph{Combining four objects}\label{document:combining_four_objects}
+
+When combining four objects into one, some comparisons are executed to ensure that the resulting piece is a valid  combination.
+\begin{itemize}
+  \item The right side of the object in the top left position is compared with the left side of the object in the top right position~\cref{fig:merge_pieces}(1).
+  \item The bottom side of the objection the top right position is compared with the top side of the object in the bottom right position~\cref{fig:merge_pieces}(2).
+  \item The left side of the objection the bottom right position is compared with the right side of the object in the bottom left position~\cref{fig:merge_pieces}(3).
+  \item The top side of the objection the bottom left position is compared with the bottom side of the object in the top left position~\cref{fig:merge_pieces}(4).
+\end{itemize}
+
+\begin{figure}[H]
+  \caption{Example of a combination of four objects in to one}\label{fig:merge_pieces}
+  \centering
+  \includegraphics[height=0.3\textwidth]{pictures/merge_pieces.png}
+\end{figure}
+
+In order for the created object to be considered valid all of the comparisons must have a shore greater
+than the constant MIN\_SHORE\_SINGLE\_SIDE. And the average of the four comparisons must be greater
+than the constant MIN\_SHORE\_PIECE\_GROUP.
+
+The process also checks that all individual pieces inside a newly
+created object are different (because obviously is impossible to reuse the same piece twice to solve a puzzle)
+\subsubsection{The Algorithm}
+
+As mentioned earlier, the algorithm is implemented with a recursive function.
+The function is generic, and can take as input objects of any level.
+
+A Function of level N takes as input a list of objects of level N,
+and creates all possible objects with level N+1.
+Then it uses the newly created objects to generate a recursive call on a version
+of itself with level N+1.
+This process is repeated until the desired size is reached.
+
+
+\begin{minipage}{\textwidth}
+\begin{lstlisting}
+  # This function returns a list of object that match with `piece_to_match'
+  # along the direction `direction'.
+  # It also filters the data to return only pieces with an index greater than `index_filter'
+  # This function is executed in constant time, since it relies on some pre-processing of the data
+  def get_matches(piece_to_match, direction, index_filter):
+      ...
+
+  def solve<T>(pieces: List<T>):
+
+      number_of_pieces = pieces.length()
+
+      found_pieces = List::<PieceGroup<T>>::new()
+
+      # this function compare all pieces with the others, and build some data structures
+      # that are used from the function `get_matches'
+	   # the time complexity is o(N^2)
+      do_pre_processing(pieces)
+
+      # test all possible combinations for the top left piece
+      for top_left_index in 0..number_of_pieces:
+	       for top_left_orientation in 0..4:
+
+          # get the top left piece
+          top_left = get_piece(top_left_index, top_left_orientation)
+
+          # test all possible combinations of top_right, bottom_right and bottom_left
+          for top_right in get_matches(top_left, RIGHT, top_left_index):
+	           for bottom_right in get_matches(top_right, DOWN , top_left_index):
+                  for bottom_left in get_matches(bottom_right, LEFT, top_left_index):
+
+                      # try to create the new piece group
+                      new_element = PieceGroup::new(top_left, top_right, bottom_right,bottom_left)
+
+                      if new_element.is_valid():
+                          # if the 4 pieces can fit together the newly created piece
+                          # is added to the list of found pieces
+                          found_pieces.add_element(new_element)
+                      else:
+                          # otherwise the program check what the case of the 
+                          # invalid creation is, and generate a continue
+                          # on the respective loop, to speed up the operations
+                          continue_failure_cause_loop()
+
+      # at the end a recursive call is generated 
+      return solve::<PieceGroup<T>>(found_pieces)
+
+\end{lstlisting}
+\end{minipage}
+The procedure begins by testing all possible pieces and orientations as the top\_right piece.
+Then continues by finding all the other 3 pieces in an efficient way thanks to get\_matches.
+When the program has an hypothesis on the 4 pieces that can build a new piece it tries to create it.\newline
+The creation process does some checks, and if everything is successful it adds the piece to the list of found pieces.
+If the creation is not successful it figures out which piece has caused the failure, and moves to the next iteration of the respective loop.\newline
+When all combinations have been found, the function makes a recursive call and the process is repeated.\newline
+The process ensures that the piece in the top\_left is always the one with the lower index.
+This is done to avoid building the same piece 4 times with 4 different orientations.\newline
+One advantage of this algorithm is that the outer edge for loop can be easily parallelized to achieve better performances.
+
+
 
 \section{Applying Already Existing Algorithms To The Real World}
 With the initial setup completed, it is now possible to
@@ -760,148 +924,6 @@ that creating a new algorithm, and subsequently using it to
 generate a dataset, would still be a more time-efficient
 approach compared to manually constructing a dataset.
 
-\section{The Solver}\label{document:my_solver}
-The Solver that has been developed is not the primary focus of this
-paper and cannot be considered state-of-the-art when compared
-to the current best digital puzzle solvers. However, it may be
-considered as such when compared to existing ``real-world'' puzzle solvers.
-
-\subsection{Overview}
-The algorithm itself is relatively straightforward.
-It operates as a recursive procedure, initiating by recognizing all 2x2
-sets of matching pieces through the combination of four individual pieces.
-Subsequently, it extends this process to identify all 4x4 sets of matching pieces
-by aggregating four 2x2 pieces, and this pattern continues recursively.
-
-\subsection{Basic Components}
-To implement the algorithm two fundamental object are defined
-\begin{itemize}
-  \item SinglePiece: which contains information about a single puzzle piece.
-  \item PieceGroup\(<\)T\(>\) where T can be either a PieceGroup or a SinglePiece\newline
-  This element encompasses four elements of type T, each with its own position (top right, top left, bottom left, bottom right).
-\end{itemize}
-Both SinglePiece and PieceGroup have an ``orientation'' attribute that goes from 0 to 3~\cref{fig:orientation}.
-\begin{figure}[H]
-  \caption{orientation attribute of an object}\label{fig:orientation}
-  \centering
-  \includegraphics[height=0.3\textwidth]{pictures/orientation.png}
-\end{figure}
-
-\subsubsection{The Levels}
-
-These objects are assigned levels:
-\begin{itemize}
-\item SinglePiece is at level 0, representing a 1x1 ``solution'' to a puzzle.
-\item PieceGroup\(<\)SinglePiece\(>\) is at level 1, representing a 2x2 solution to a puzzle.
-\item PieceGroup\(<\)PieceGroup\(<\)SinglePiece\(>>\) is at level 2, representing a 4x4 solution to a puzzle, and so forth.
-\end{itemize}
-
-\subsubsection{The Behaviors}
-
-These basic objects also have the following shared behaviors:
-\begin{itemize}
-  \item 4 objects of level N can be combined to build an object of level N+1.
-  \item One object of level N has 4 sides, each of which can be compared with a side of an element of level N. This results in a compatibility shore.
-  \begin{itemize}
-    \item The comparing shore for level 0 objects is just the shore given by the Comparator~\cref{document:comparator}.
-    \item The comparing shore for level N+1 objects is the average between two comparisons made with objects of level N
-  \end{itemize}
-\end{itemize}
-
-\subsubsection{Combining four objects}\label{document:combining_four_objects}
-
-When combining four objects into one, some comparisons are executed to ensure that the resulting piece is a valid  combination.
-\begin{itemize}
-  \item The right side of the object in the top left position is compared with the left side of the object in the top right position~\cref{fig:merge_pieces}(1).
-  \item The bottom side of the objection the top right position is compared with the top side of the object in the bottom right position~\cref{fig:merge_pieces}(2).
-  \item The left side of the objection the bottom right position is compared with the right side of the object in the bottom left position~\cref{fig:merge_pieces}(3).
-  \item The top side of the objection the bottom left position is compared with the bottom side of the object in the top left position~\cref{fig:merge_pieces}(4).
-\end{itemize}
-
-\begin{figure}[H]
-  \caption{Example of a combination of four objects in to one}\label{fig:merge_pieces}
-  \centering
-  \includegraphics[height=0.3\textwidth]{pictures/merge_pieces.png}
-\end{figure}
-
-In order for the created object to be considered valid all of the comparisons must have a shore greater
-than the constant MIN\_SHORE\_SINGLE\_SIDE. And the average of the four comparisons must be greater
-than the constant MIN\_SHORE\_PIECE\_GROUP.
-
-The process also checks that all individual pieces inside a newly
-created object are different (because obviously is impossible to reuse the same piece twice to solve a puzzle)
-\subsection{The Algorithm}
-
-As mentioned earlier, the algorithm is implemented with a recursive function.
-The function is generic, and can take as input objects of any level.
-
-A Function of level N takes as input a list of objects of level N,
-and creates all possible objects with level N+1.
-Then it uses the newly created objects to generate a recursive call on a version
-of itself with level N+1.
-This process is repeated until the desired size is reached.
-
-
-\begin{minipage}{\textwidth}
-\begin{lstlisting}
-  # This function returns a list of object that match with `piece_to_match'
-  # along the direction `direction'.
-  # It also filters the data to return only pieces with an index greater than `index_filter'
-  # This function is executed in constant time, since it relies on some pre-processing of the data
-  def get_matches(piece_to_match, direction, index_filter):
-      ...
-
-  def solve<T>(pieces: List<T>):
-
-      number_of_pieces = pieces.length()
-
-      found_pieces = List::<PieceGroup<T>>::new()
-
-      # this function compare all pieces with the others, and build some data structures
-      # that are used from the function `get_matches'
-	   # the time complexity is o(N^2)
-      do_pre_processing(pieces)
-
-      # test all possible combinations for the top left piece
-      for top_left_index in 0..number_of_pieces:
-	       for top_left_orientation in 0..4:
-
-          # get the top left piece
-          top_left = get_piece(top_left_index, top_left_orientation)
-
-          # test all possible combinations of top_right, bottom_right and bottom_left
-          for top_right in get_matches(top_left, RIGHT, top_left_index):
-	           for bottom_right in get_matches(top_right, DOWN , top_left_index):
-                  for bottom_left in get_matches(bottom_right, LEFT, top_left_index):
-
-                      # try to create the new piece group
-                      new_element = PieceGroup::new(top_left, top_right, bottom_right,bottom_left)
-
-                      if new_element.is_valid():
-                          # if the 4 pieces can fit together the newly created piece
-                          # is added to the list of found pieces
-                          found_pieces.add_element(new_element)
-                      else:
-                          # otherwise the program check what the case of the 
-                          # invalid creation is, and generate a continue
-                          # on the respective loop, to speed up the operations
-                          continue_failure_cause_loop()
-
-      # at the end a recursive call is generated 
-      return solve::<PieceGroup<T>>(found_pieces)
-
-\end{lstlisting}
-\end{minipage}
-The procedure begins by testing all possible pieces and orientations as the top\_right piece.
-Then continues by finding all the other 3 pieces in an efficient way thanks to get\_matches.
-When the program has an hypothesis on the 4 pieces that can build a new piece it tries to create it.\newline
-The creation process does some checks, and if everything is successful it adds the piece to the list of found pieces.
-If the creation is not successful it figures out which piece has caused the failure, and moves to the next iteration of the respective loop.\newline
-When all combinations have been found, the function makes a recursive call and the process is repeated.\newline
-The process ensures that the piece in the top\_left is always the one with the lower index.
-This is done to avoid building the same piece 4 times with 4 different orientations.\newline
-One advantage of this algorithm is that the outer edge for loop can be easily parallelized to achieve better performances.
-
 \section{Testing Results}
 
 In this section, the solver proposed by this paper will be put to the test.
@@ -913,12 +935,8 @@ This evaluation serves two key purposes:
 \end{itemize}
 
 \subsection{Setup}
-We have tested many different sizes of real, and digital puzzles.
-The real world puzzles have been obtained with a printer’s scanner, more data are available in REF SETUP.
-The digital puzzles have been obtained from \url{https://puzzle.telegnom.org/}.
-This web app can generate a puzzle from a dimension and a jitter value. The jitter is a parameter that controls
-how unique and distorted the puzzle images are, see \cref{fig:jiiter}.
-The default jitter used in the tests is 5\%.
+See~\cref{document:dataset} for a detailed
+description of the setup.
 
 \begin{figure}[H]
   \caption{Effect of jitter on jigsaw pieces}\label{fig:jiiter}
