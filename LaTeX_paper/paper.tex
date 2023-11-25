@@ -359,7 +359,7 @@ This is relatively straightforward, and can be done with the following steps:
 
 The next step following the general structure~\cref{document:splitter}
 is to split a piece into
-his 4 sides, this could be done with the following steps:
+his 4 sides, this can be done with the following steps:
 
 \begin{itemize}
 
@@ -458,7 +458,7 @@ his 4 sides, this could be done with the following steps:
   \begin{subfigure}{0.3\textwidth}
     \centering
     \includegraphics[width=\linewidth]{pictures/remove_knobs_knob_pixels.png}
-    \caption{Difference:~\cref{fig:s_s_no_holes} \textminus~\cref{fig:s_s_erosion}.}
+    \caption{Difference:~\cref{fig:s_s_no_holes} \textminus~\cref{fig:s_s_dilatation}.}
     \label{fig:s_s_no_holes_minus_expansion}
   \end{subfigure}
   \hfill
@@ -507,10 +507,11 @@ his 4 sides, this could be done with the following steps:
 
 
 \subsection{Our Comparator}\label{document:my_comparator}
-The last step in the setup, is to compare the sides that have been
-generated before.
-In order to generate a compatibility shore,
-the program compute the following steps:
+The next step is to compare the sides that have been
+generated before, in order to generate
+a compatibility shore.
+To achieve this, the program employs
+the following steps:
 
 \begin{itemize}
   \item For each side, it considers only the border, and  makes it thicker.
