@@ -685,6 +685,73 @@ This is done to avoid building the same piece 4 times with 4 different orientati
 One advantage of this algorithm is that the outer edge for loop can be easily parallelized to achieve better performances.
 
 
+\section{Related work}\label{document:related_work}
+Now that we have developed our own solution, it would be
+interesting to see how it compares against the current
+state-of-the-art algorithms for both digital and real-world
+jigsaw puzzles. This section gives a brief introduction to 3
+state-of-the-art algorithms, so that they can be compared with
+our solution in the conclusions.
+
+\subsection{Solving Jigsaw Puzzles By The Graph Connection Laplacian~\cite{GCL}}
+This algorithm falls within the ``binary comparison'' category (\cref{document:comparator}).
+And can be used to understand the strength and weaknesses
+of this approach.\newline
+The primary advantage of this approach lies in its speed;
+the utilization of binary comparison permits specific optimizations,
+particularly leveraging graph theory techniques.\newline
+The algorithm exhibits a time complexity of approximately \(O(N^2)\),
+a value consistent with the theoretical minimum for
+jigsaw puzzle solving, as outlined in the study
+``No easy puzzles: Hardness results for jigsaw puzzles~\cite{ON2Claim}''.\newline
+However, a potential drawback may arise in terms of accuracy.
+This stems from the fact that, with only two states
+(matching or not matching),
+certain details may be lost when compared to a non-binary comparison. 
+To quantify accuracy the paper used the ``neighbors compariso'' metric,
+which ``calculates the percentage of pairs of image patches that are matched correctly''.
+This will be useful later.\label{document:GCL}
+
+\subsection{A Genetic Algorithm-Based Solver for Very Large Jigsaw Puzzles~\cite{GA}}
+This paper employs genetic algorithms to address the
+jigsaw puzzle problem, yielding promising results.\newline
+The algorithm seems to have a \(O(N^2)\) time complexity,
+with execution time slightly lower than the previous example
+(However, it remains uncertain which one is faster, as the papers did not specify
+the particular hardware configuration used).\newline
+The paper adopts the same evaluation method for accuracy as the previous example,
+namely neighbor comparison, facilitating direct comparison between the two approaches.
+This algorithm falls under the category of “Non binary comparison”~\cref{document:comparator}
+a distinction that theoretically grants it an advantage due to the increased granularity
+of input data.
+Unfortunately this advantage does not compensate for the worst precision
+of the algorithm itself, and the accuracy results are equivalent,
+if not slightly worse than the previous algorithm.\newline
+It is important to keep in mind that for the very nature of genetic algorithms,
+it might be possible that the accuracy would have been better if they had allowed
+the algorithm to run for more generations.\label{document:GA}
+
+\subsection{Computer Vision Powers Automatic Jigsaw Puzzle Solver~\cite{Abto}}
+Solutions~\cref{document:GCL} and~\cref{document:GA} can be considered ``state-of-the-art''
+for digital jigsaw puzzles.
+However, as already introduced in section ~\cref{document:DigitalVSReal},
+translating these solutions to the real world can be challenging.\newline
+This article represents one of the most comprehensive and well-documented
+implementations for real-world puzzles. However,
+it's important to note that referring to this approach as a ``solution''
+may be misleading, as it primarily identifies the top eight matching
+pieces for a specific point and subsequently relies on user input to make
+the final placement decision.
+This aspect renders the algorithm non-autonomous..\newline
+Even disregarding this significant detail,
+conducting an analysis of this solution has proven to be challenging,
+as the article leans more towards a publicity stunt than an academic paper.
+In fact, the code is not open source, and informations regarding the time needed
+to solve the puzzle are absent. The article only showcases a single puzzle solved,
+with dimensions of 9\(\times\)6.\newline
+Despite these limitations, this article still stands as one of the best examples of a solution
+for real-world puzzles.
+
 
 \section{Applying Already Existing Algorithms To The Real World}
 With the initial setup completed, it is now possible to
@@ -1173,74 +1240,6 @@ An example of the generated json can be seen below.
   
   \end{lstlisting}
 \end{minipage}
-
-
-\section{Related work}\label{document:related_work}
-This section will analyze three different algorithms that have been
-proposed as solutions for type 2 puzzles.
-The objective is to understand the strengths and weaknesses of each one,
-in order to build up knowledge that will be useful for the next sections.
-
-
-\subsection{Solving Jigsaw Puzzles By The Graph Connection Laplacian~\cite{GCL}}
-This algorithm falls within the ``binary comparison'' category~\cref{document:comparator}.
-And can be used to understand the strength and weaknesses
-of this approach.\newline
-The primary advantage of this approach lies in its speed;
-the utilization of binary comparison permits specific optimizations,
-particularly leveraging graph theory techniques.\newline
-The algorithm exhibits a time complexity of approximately \(O(N^2)\),
-a value consistent with the theoretical minimum for
-jigsaw puzzle solving, as outlined in the study
-``No easy puzzles: Hardness results for jigsaw puzzles~\cite{ON2Claim}''.\newline
-However, a potential drawback may arise in terms of accuracy.
-This stems from the fact that, with only two states
-(matching or not matching),
-certain details may be lost when compared to a non-binary comparison. 
-To quantify accuracy the paper used the ``neighbors compariso'' metric,
-which ``calculates the percentage of pairs of image patches that are matched correctly''.
-This will be useful later.\label{document:GCL}
-
-\subsection{A Genetic Algorithm-Based Solver for Very Large Jigsaw Puzzles~\cite{GA}}
-This paper employs genetic algorithms to address the
-jigsaw puzzle problem, yielding promising results.\newline
-The algorithm seems to have a \(O(N^2)\) time complexity,
-with execution time slightly lower than the previous example
-(However, it remains uncertain which one is faster, as the papers did not specify
-the particular hardware configuration used).\newline
-The paper adopts the same evaluation method for accuracy as the previous example,
-namely neighbor comparison, facilitating direct comparison between the two approaches.
-This algorithm falls under the category of “Non binary comparison”~\cref{document:comparator}
-a distinction that theoretically grants it an advantage due to the increased granularity
-of input data.
-Unfortunately this advantage does not compensate for the worst precision
-of the algorithm itself, and the accuracy results are equivalent,
-if not slightly worse than the previous algorithm.\newline
-It is important to keep in mind that for the very nature of genetic algorithms,
-it might be possible that the accuracy would have been better if they had allowed
-the algorithm to run for more generations.\label{document:GA}
-
-\subsection{Computer Vision Powers Automatic Jigsaw Puzzle Solver~\cite{Abto}}
-Solutions~\cref{document:GCL} and~\cref{document:GA} can be considered ``state-of-the-art''
-for digital jigsaw puzzles.
-However, as already introduced in section ~\cref{document:DigitalVSReal},
-translating these solutions to the real world can be challenging.\newline
-This article represents one of the most comprehensive and well-documented
-implementations for real-world puzzles. However,
-it's important to note that referring to this approach as a ``solution''
-may be misleading, as it primarily identifies the top eight matching
-pieces for a specific point and subsequently relies on user input to make
-the final placement decision.
-This aspect renders the algorithm non-autonomous..\newline
-Even disregarding this significant detail,
-conducting an analysis of this solution has proven to be challenging,
-as the article leans more towards a publicity stunt than an academic paper.
-In fact, the code is not open source, and informations regarding the time needed
-to solve the puzzle are absent. The article only showcases a single puzzle solved,
-with dimensions of 9\(\times\)6.\newline
-Despite these limitations, this article still stands as one of the best examples of a solution
-for real-world puzzles.
-
 
 \section{Conclusions}
 In conclusion, this paper has successfully achieved its objectives.
