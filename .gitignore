@@ -4,7 +4,7 @@
 .idea/
 opencv/
 dlls_output/
-
+.vscode/
 # for latex:
 
 ## Core latex/pdflatex auxiliary files:
