@@ -282,7 +282,7 @@ In other to achieve this objective we want to answer these two questions:
   
 	Answering this question is a bit trickier, as an algorithm is divided into Comparator~\cref{document:comparator}
   and Solver~\cref{document:solver}. Due to the intrinsic difference of digital and real-world jigsaw puzzles
-  reusing the Comparator is impossible, but there is the possibility to reuse the Sover,
+  reusing the Comparator is impossible, but there is the possibility to reuse the Solver,
   assuming we could build a Comparator for real-world puzzles that is in the same realm
   of accuracy achieved by Comparators for digital puzzles.
   So another way to write this question is: ``Can we build a Comparator for real-world
@@ -561,7 +561,7 @@ by aggregating four 2x2 pieces, and this pattern continues recursively.
 To implement the algorithm two fundamental object are defined
 \begin{itemize}
   \item \texttt{SinglePiece}: which contains information about a single puzzle piece.
-  \item P\texttt{ieceGroup\(<\)T\(>\)} where \texttt{T} can be either a \texttt{PieceGroup} or a \texttt{SinglePiece}\newline
+  \item P\texttt{PieceGroup\(<\)T\(>\)} where \texttt{T} can be either a \texttt{PieceGroup} or a \texttt{SinglePiece}\newline
   This element encompasses four elements of type \texttt{T}, each with its own position (top right, top left, bottom left, bottom right).
 \end{itemize}
 Both \texttt{SinglePiece} and \texttt{PieceGroup} have an ``orientation'' attribute that goes from 0 to 3~\cref{fig:orientation}.
@@ -718,7 +718,7 @@ However, a potential drawback may arise in terms of accuracy.
 This stems from the fact that, with only two states
 (matching or not matching),
 certain details may be lost when compared to a non-binary comparison. 
-To quantify accuracy the paper used the ``neighbors compariso'' metric,
+To quantify accuracy the paper used the ``neighbors comparison'' metric,
 which ``calculates the percentage of pairs of image patches that are matched correctly''.
 This will be useful later.\label{document:GCL}
 
@@ -872,7 +872,7 @@ been a size of 4$\times$4.
   >{\columncolor[HTML]{FCE5CD}}c 
   >{\columncolor[HTML]{FFF2CC}}c 
   >{\columncolor[HTML]{EAD1DC}}c }
-  \multicolumn{3}{c}{\cellcolor[HTML]{EA9999}Run to run vairance on a 4x4 real puzzle}                                                             \\
+  \multicolumn{3}{c}{\cellcolor[HTML]{EA9999}Run to run variance on a 4x4 real puzzle}                                                             \\
   \cellcolor[HTML]{F9CB9C}Execution time {[}s{]} & \cellcolor[HTML]{FFE599}Average                 & \cellcolor[HTML]{D5A6BD}Standard deviation     \\
   64 & \cellcolor[HTML]{FFF2CC} & \cellcolor[HTML]{EAD1DC} \\
   68 & \cellcolor[HTML]{FFF2CC} & \cellcolor[HTML]{EAD1DC} \\
@@ -895,7 +895,7 @@ with them achieving a 100\% correctness.
 >{\columncolor[HTML]{FCE5CD}}c 
 >{\columncolor[HTML]{FFF2CC}}c 
 >{\columncolor[HTML]{EAD1DC}}c }
-\multicolumn{3}{c}{\cellcolor[HTML]{EA9999}Manualy evaluated accuracy of the solution}                       \\
+\multicolumn{3}{c}{\cellcolor[HTML]{EA9999}Manually evaluated accuracy of the solution}                       \\
 \cellcolor[HTML]{F9CB9C}Puzzle size & \cellcolor[HTML]{FFE599}Puzzle kind & \cellcolor[HTML]{D5A6BD}Accuracy \\
 4x4                                 & real world                          & 100\%                            \\
 8x8                                 & real world                          & 100\%                            \\
@@ -970,9 +970,6 @@ And the following 4 values have been measured, in function of the threshold:
 \end{itemize}
 
 
-% Please add the following required packages to your document preamble:
-% \usepackage[table,xcdraw]{xcolor}
-% If you use beamer only pass "xcolor=table" option, i.e. \documentclass[xcolor=table]{beamer}
 \begin{table}[H]
   \centering
   \begin{tabular}{
@@ -1060,7 +1057,7 @@ This set of definitions are useful to better understand the next section:
   A puzzle with N pieces can be put together in many different ways,
   (Even if not all of 	them actually fit together).
   The total number of possible combinations is \(N! \times 4^N\) where
-  \(N!\) represent all possible way to combinate the pieces in a particular position, and
+  \(N!\) represent all possible way to combine the pieces in a particular position, and
   \(4^N\) represents all possible orientations that each piece can have.
   \item \textbf{Possible Correct Combination:}\newline
   Is one of the possible combinations where all the connections are considered a match
@@ -1077,7 +1074,7 @@ This set of definitions are useful to better understand the next section:
   \includegraphics[height=0.35\textwidth]{pictures/corruption_rate.png}
 \end{figure}
 
-In Figure \cref{fig:GCL_Corruption_Rate}, it can be observed that at a corruption rate of 0.057,
+In \cref{fig:GCL_Corruption_Rate}, it can be observed that at a corruption rate of 0.057,
 a neighbors comparison metric of roughly 80\% can be anticipated.
 This implies that, on average, one out of every five connections will be incorrect.
 In the context of a puzzle comprising 500 pieces (equating to approximately 1000 connections),
