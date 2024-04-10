@@ -103,14 +103,14 @@
 This paper examines the Jigsaw puzzle problem,
 which has already been extensively studied in the literature.
 Several algorithms with efficient time complexity have been developed
-specifically for ``digital''~\cref{fig:figure_digital_puzzle} jigsaw puzzles. However, the counterpart:
-the ``real world'' jigsaw puzzle~\cref{fig:figure_real_puzzle}, has received relatively little attention
+specifically for ``digital'' jigsaw puzzles. However, the counterpart:
+the ``real world'' jigsaw puzzle, has received relatively little attention
 in the literature. While some small-scale projects have addressed this issue,
 we were unable to find any papers discussing it.
 
-The puzzle problem can be divided into two separate components: the ``Comparator''~\cref{document:comparator}
+The puzzle problem can be divided into two separate components: the ``Comparator''
 whose objective is to determine whether two sides of two pieces fit together,
-and the ``Solver''~\cref{document:solver} whose objective is to use the information provided
+and the ``Solver'' whose objective is to use the information provided
 by the comparator to find the best way to fit some pieces together.
 
 Solving the problem in the real world has proven to be more challenging compared
@@ -118,15 +118,14 @@ to the digital realm.
 This is because all measurements in the real world are noisier than those
 in the digital world, making it challenging to obtain accurate data from the Comparator.
 The Solver poses its own set of challenges, as it is an example of a
-multiobjective optimization problem. Specifically, one objective is to have
+multi-objective optimization problem. Specifically, one objective is to have
 the fastest algorithm possible,
 while the other objective is to create an algorithm that performs well with
 imprecise data. The latter objective is particularly important when solving
 real-world puzzles.
 
-In the first half of this paper, a Comparator is developed, and its accuracy
-is evaluated.
-The data are then used to demonstrate its incompatibility with the current
+In the first half of this paper, we developed a Comparator, and evaluate it's accuracy.
+We then use the data to demonstrate its incompatibility with the current
 state-of-the-art algorithm. At this juncture,
 two options remain to solve the problem:
 either create a superior Comparator or design a
@@ -161,7 +160,7 @@ is not an easy task, neither for humans nor for computers.
 While the problem may appear to be a futile style exercise,
 it could have concrete applications in the future. For instance,
 it could be applied to the reconstruction of archaeological finds,
-such as a terracotta pot~\cref{fig:pot}.
+such as a terracotta pot of~\cref{fig:pot}.
 
 % figure of real jigsaw puzzle    
 \begin{figure}[h]
@@ -561,11 +560,11 @@ by aggregating four 2x2 pieces, and this pattern continues recursively.
 \subsubsection{Basic Components}
 To implement the algorithm two fundamental object are defined
 \begin{itemize}
-  \item SinglePiece: which contains information about a single puzzle piece.
-  \item PieceGroup\(<\)T\(>\) where T can be either a PieceGroup or a SinglePiece\newline
-  This element encompasses four elements of type T, each with its own position (top right, top left, bottom left, bottom right).
+  \item \texttt{SinglePiece}: which contains information about a single puzzle piece.
+  \item P\texttt{ieceGroup\(<\)T\(>\)} where \texttt{T} can be either a \texttt{PieceGroup} or a \texttt{SinglePiece}\newline
+  This element encompasses four elements of type \texttt{T}, each with its own position (top right, top left, bottom left, bottom right).
 \end{itemize}
-Both SinglePiece and PieceGroup have an ``orientation'' attribute that goes from 0 to 3~\cref{fig:orientation}.
+Both \texttt{SinglePiece} and \texttt{PieceGroup} have an ``orientation'' attribute that goes from 0 to 3~\cref{fig:orientation}.
 \begin{figure}[H]
   \caption{orientation attribute of an object}\label{fig:orientation}
   \centering
@@ -576,9 +575,9 @@ Both SinglePiece and PieceGroup have an ``orientation'' attribute that goes from
 
 These objects are assigned levels:
 \begin{itemize}
-\item SinglePiece is at level 0, representing a 1x1 ``solution'' to a puzzle.
-\item PieceGroup\(<\)SinglePiece\(>\) is at level 1, representing a 2x2 solution to a puzzle.
-\item PieceGroup\(<\)PieceGroup\(<\)SinglePiece\(>>\) is at level 2, representing a 4x4 solution to a puzzle, and so forth.
+\item \texttt{SinglePiece} is at level 0, representing a 1x1 ``solution'' to a puzzle.
+\item \texttt{PieceGroup\(<\)SinglePiece\(>\)} is at level 1, representing a 2x2 solution to a puzzle.
+\item \texttt{PieceGroup\(<\)PieceGroup\(<\)SinglePiece\(>>\)} is at level 2, representing a 4x4 solution to a puzzle, and so forth.
 \end{itemize}
 
 \subsubsection{The Behaviors}
@@ -588,7 +587,7 @@ These basic objects also have the following shared behaviors:
   \item 4 objects of level N can be combined to build an object of level N+1.
   \item One object of level N has 4 sides, each of which can be compared with a side of an element of level N. This results in a compatibility shore.
   \begin{itemize}
-    \item The comparing shore for level 0 objects is just the shore given by the Comparator~\cref{document:comparator}.
+    \item The comparing shore for level 0 objects is just the shore given by the Comparator of~\cref{document:comparator}.
     \item The comparing shore for level N+1 objects is the average between two comparisons made with objects of level N
   \end{itemize}
 \end{itemize}
@@ -611,8 +610,8 @@ ensure that the resulting piece is a valid  combination.
 \end{figure}
 
 In order for the created object to be considered valid all of the comparisons must have a shore greater
-than the constant MIN\_SHORE\_SINGLE\_SIDE. And the average of the four comparisons must be greater
-than the constant MIN\_SHORE\_PIECE\_GROUP.
+than the constant \texttt{MIN\_SHORE\_SINGLE\_SIDE}. And the average of the four comparisons must be greater
+than the constant \texttt{MIN\_SHORE\_PIECE\_GROUP}.
 
 The process also checks that all individual pieces inside a newly
 created object are different (because obviously is impossible to reuse the same piece twice to solve a puzzle)
@@ -688,6 +687,13 @@ The process ensures that the piece in the top\_left is always the one with the l
 This is done to avoid building the same piece 4 times with 4 different orientations.\newline
 One advantage of this algorithm is that the outer edge for loop can be easily parallelized to achieve better performances.
 
+
+It should be noted that this pseudo code omits many details, two of witch are:
+\begin{itemize}
+  \item A condition that checks if the desired size has been reached and eventually stops the recursion.
+  \item A condition that specifically handles cases where the final size of the puzzle can't be reached simply by combining 4 pieces together recursively.
+  Without this condition the algorithm could only solve squared puzzles. Who's size is a power of 2. 
+\end{itemize}
 
 \section{Related work}\label{document:related_work}
 Now that we have developed our own solution, it would be
@@ -857,8 +863,9 @@ each piece more unique.
 \subsubsection{Run to Run Variation}
 
 Another feature of the algorithm that is worth testing is his consistency.
-The table below shows how the algorithm performs using a set of different
-same-sized puzzles as input.
+To measure tested the performance on 5 distinct puzzles, with the only thing in common
+been a size of 4$\times$4.
+
 \begin{table}[H]
   \centering
   \begin{tabular}{
@@ -866,7 +873,7 @@ same-sized puzzles as input.
   >{\columncolor[HTML]{FFF2CC}}c 
   >{\columncolor[HTML]{EAD1DC}}c }
   \multicolumn{3}{c}{\cellcolor[HTML]{EA9999}Run to run vairance on a 4x4 real puzzle}                                                             \\
-  \cellcolor[HTML]{F9CB9C}Execution time {[}s{]} & \cellcolor[HTML]{FFE599}Avrege                 & \cellcolor[HTML]{D5A6BD}Standard deviation     \\
+  \cellcolor[HTML]{F9CB9C}Execution time {[}s{]} & \cellcolor[HTML]{FFE599}Average                 & \cellcolor[HTML]{D5A6BD}Standard deviation     \\
   64 & \cellcolor[HTML]{FFF2CC} & \cellcolor[HTML]{EAD1DC} \\
   68 & \cellcolor[HTML]{FFF2CC} & \cellcolor[HTML]{EAD1DC} \\
   43 & \cellcolor[HTML]{FFF2CC} & \cellcolor[HTML]{EAD1DC} \\
@@ -881,6 +888,20 @@ It is crucial to mention that the project currently lacks an automated
 method for evaluating the accuracy of results. However, the accuracy
 of two real-world puzzles (4x4 and 8x8) and one digital puzzle (16x16) has been manually confirmed,
 with them achieving a 100\% correctness.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{
+>{\columncolor[HTML]{FCE5CD}}c 
+>{\columncolor[HTML]{FFF2CC}}c 
+>{\columncolor[HTML]{EAD1DC}}c }
+\multicolumn{3}{c}{\cellcolor[HTML]{EA9999}Manualy evaluated accuracy of the solution}                       \\
+\cellcolor[HTML]{F9CB9C}Puzzle size & \cellcolor[HTML]{FFE599}Puzzle kind & \cellcolor[HTML]{D5A6BD}Accuracy \\
+4x4                                 & real world                          & 100\%                            \\
+8x8                                 & real world                          & 100\%                            \\
+16x16                               & digital                             & 100\%                           
+\end{tabular}
+\end{table}
 
 \subsubsection{Answering The Question}
 
