@@ -131,7 +131,7 @@ two options remain to solve the problem:
 either create a superior Comparator or design a
 Solver that can operate with noisier data.
 
-The most promising approach to improving the Comparator
+The most promising approach to improve the Comparator
 involves utilizing machine learning, but this requires a substantial amount of data.
 Conversely, creating a better Solver is a less straightforward task.
 However, if successful, it could potentially serve as a labeling tool
@@ -175,7 +175,7 @@ This section will provide some basic knowledge
 related to the jigsaw problem that will be useful
   for the next sections.
 \subsubsection{Classification}
-Puzzles are categorized in different types, for example 
+Puzzles are categorized in different types, for example:
 \begin{itemize}
   \item Type 1 puzzles have the orientation of the pieces known, but the position unknown. 
   \item Type 2 puzzles have both the orientation and the position of the pieces unknown.
@@ -186,8 +186,8 @@ Between these categories type 2 are the hardest, and will be the focus of this p
 \subsubsection{Digital vs Real-World Jigsaw Puzzles}
 
 There is  another important distinction between different types of puzzles.
-They can be divided into “digital”~\cref{fig:figure_digital_puzzle} and
-“real world”~\cref{fig:figure_real_puzzle} jigsaw puzzles.
+They can be divided into “digital” e.g.~\cref{fig:figure_digital_puzzle} and
+“real world” e.g.~\cref{fig:figure_real_puzzle} jigsaw puzzles.
 The difference between the two is quite self explanatory,
 and can be observed in the respective pictures.
 \label{document:DigitalVSReal}
@@ -209,11 +209,11 @@ and can be observed in the respective pictures.
 
 The reason this distinction is important is because,
 despite the generic concept of the puzzle not changing,
-obtaining accurate matches of a piece's characteristics
+obtaining accurate measures of a piece's characteristics
 is far easier with a digital puzzle,
 since there are far fewer things that can go wrong.
 For example, a piece's shape may be distorted by
-a low-quality cut, as seen in picture~\cref{fig:figure_measurement_error}
+a low-quality cut, as seen in~\cref{fig:figure_measurement_error}
 
 % figure of a measurement error
 \begin{figure}[H]
@@ -246,7 +246,7 @@ work section of this paper (\cref{document:related_work}).
     This allows states of uncertainty to be represented.\label{document:comparator}
 
     \subsubsection{The Solver:} This component utilizes the information provided by the
-    Comparator~\cref{document:comparator}, and attempts to find a solution
+    Comparator, and attempts to find a solution
     (i.e.\ a position and an orientation for each piece)
     that is the most likely to be correct.\label{document:solver}
 
@@ -291,7 +291,7 @@ In other to achieve this objective we want to answer these two questions:
 
 	To answer this question we will measure the accuracy of the comparator we developed
   and observe what would happen if that accuracy is
-  applied to a digital puzzle solver. We will then propose a solution to improve
+  applied to a digital puzzle Solver. We will then propose a solution to improve
   the accuracy of real-world Comparators.
 
 
@@ -333,7 +333,7 @@ The default jitter used in the tests is 5\%.
 \section{Our Implementation Of A Puzzle Solver}
 
 This section will describe the implementation of the puzzle solver we developed.
-This solver will then be put to the test in the next section.
+This solver will then be put to the test in the next sections.
 
 \subsection{Our Splitter}
 
@@ -359,7 +359,7 @@ This is relatively straightforward, and can be done with the following steps:
 
 \subsubsection{Splitting The Sides}
 
-The next step following the general structure~\cref{document:splitter}
+The next step following the general structure described in~\cref{document:splitter}
 is to split a piece into
 his 4 sides, this can be done with the following steps:
 
@@ -545,10 +545,13 @@ the following steps:
 
 
 \subsection{Our Solver}\label{document:my_solver}
-The Solver that has been developed is not the primary focus of this
-paper and cannot be considered state-of-the-art when compared
+The Solver we developed cannot be considered state-of-the-art when compared
 to the current best digital puzzle solvers. However, it may be
 considered as such when compared to existing ``real-world'' puzzle solvers.
+
+Regardless, the achieved performances are still good enough to test and understand
+the differences between digital and real-world puzzles,
+which is the main objective of this paper.
 
 \subsubsection{Overview}
 The algorithm itself is relatively straightforward.
@@ -564,7 +567,8 @@ To implement the algorithm two fundamental object are defined
   \item P\texttt{PieceGroup\(<\)T\(>\)} where \texttt{T} can be either a \texttt{PieceGroup} or a \texttt{SinglePiece}\newline
   This element encompasses four elements of type \texttt{T}, each with its own position (top right, top left, bottom left, bottom right).
 \end{itemize}
-Both \texttt{SinglePiece} and \texttt{PieceGroup} have an ``orientation'' attribute that goes from 0 to 3~\cref{fig:orientation}.
+Both \texttt{SinglePiece} and \texttt{PieceGroup} have an ``orientation'' attribute that goes from 0 to 3, this attribute
+represent the orientation of the piece, as shown in~\cref{fig:orientation}.
 \begin{figure}[H]
   \caption{orientation attribute of an object}\label{fig:orientation}
   \centering
@@ -779,7 +783,7 @@ This section measures the execution time of many puzzles,
 and shows the results. The puzzles that has been used for
 this test has been described in ~\cref{document:dataset}.
 
-The constants MIN\_SHORE\_SINGLE\_SIDE and MIN\_SHORE\_PIECE\_GROUP mentioned in
+The constants \texttt{MIN\_SHORE\_SINGLE\_SIDE} and \texttt{MIN\_SHORE\_PIECE\_GROUP} mentioned in
 section~\cref{document:combining_four_objects} were set at different values
 depending on the nature of the puzzle (real or digital).
 
@@ -882,7 +886,7 @@ been a size of 4$\times$4.
 
 \subsubsection{Accuracy}
 It is crucial to mention that the project currently lacks an automated
-method for evaluating the accuracy of results. However, the accuracy
+method for evaluating the accuracy of the results. However, the accuracy
 of two real-world puzzles (4x4 and 8x8) and one digital puzzle (16x16) has been manually confirmed,
 with them achieving a 100\% correctness.
 
@@ -892,7 +896,7 @@ with them achieving a 100\% correctness.
 >{\columncolor[HTML]{FCE5CD}}c 
 >{\columncolor[HTML]{FFF2CC}}c 
 >{\columncolor[HTML]{EAD1DC}}c }
-\multicolumn{3}{c}{\cellcolor[HTML]{EA9999}Manually evaluated accuracy of the solution}                       \\
+\multicolumn{3}{c}{\cellcolor[HTML]{EA9999}Manually evaluated accuracy of the solutions}                       \\
 \cellcolor[HTML]{F9CB9C}Puzzle size & \cellcolor[HTML]{FFE599}Puzzle kind & \cellcolor[HTML]{D5A6BD}Accuracy \\
 4x4                                 & real world                          & 100\%                            \\
 8x8                                 & real world                          & 100\%                            \\
@@ -905,7 +909,7 @@ with them achieving a 100\% correctness.
 This paper has asserted from the beginning that real-world puzzles
 pose greater challenges compared to their digital counterparts.
 While some intuitive explanations were provided to support this assertion,
-a proof hasn't been been presented until now. This test ultimately substantiates 
+a proof hasn't been presented until now. This test ultimately substantiates 
 the claim, demonstrating that the performance of the same
 algorithm can vary significantly depending on the accuracy of the input data.
 
@@ -933,23 +937,22 @@ comprehensive details provided in the paper. Notably, it contains information
 regarding the algorithm's accuracy in relation to the corruption rate,
 which is crucial for this analysis.
 
-Unfortunately the conducted tests reveal that the Comparator developed
-in this paper~\cref{document:my_comparator}
-and the ``Graph Connection Laplacian'' solution~\cref{document:GCL}
+Unfortunately the conducted tests reveal that the Comparator we developed in~\cref{document:my_comparator}
+and the ``Graph Connection Laplacian'' solution of~\cref{document:GCL}
 are not compatible with each other.
-A formal proof supporting this assertion is presented subsequently.
+A proof supporting this assertion is presented subsequently.
 
 
 \subsubsection{Selecting The Threshold Based On Input Data}
 
-The comparison algorithm deceived in section~\cref{document:my_comparator} outputs a compatibility
+The comparison algorithm described in~\cref{document:my_comparator} outputs a compatibility
 shore that goes from 0 to 1.\newline
-But the algorithm~\cref{document:GCL} takes as input a binary value.
+But the graph connection Laplacian algorithm of~\cref{document:GCL} takes as input a binary value.
 Which means that it is necessary to apply a threshold to the input
 data to convert them from float to bool.
 
-To find the optimal threshold a small 16 piece puzzle has been solved.
-And the following 4 values have been measured, in function of the threshold:
+To find the optimal threshold we solved a small 16 piece puzzle.
+And we measured the following 4 values in function of the threshold:
 
 \begin{itemize}
   \item \textbf{match\%:}\newline
@@ -957,7 +960,8 @@ And the following 4 values have been measured, in function of the threshold:
   
   \item \textbf{correct combination match\% (or c.c match\%):}\newline
   The probability that 2 randomly selected sides matches given that in the correct puzzle
-  solution they are actually close to each other. Ideally this should be 1.
+  solution they are actually close to each other. Ideally this should be 1, as we would prefer
+  that the comparison never returns false if two pieces are actually connected in the correct solution.
   
   \item \textbf{limit match\%:}\newline
   Given that this measures has been taken on a 16 piece puzzle,
@@ -970,8 +974,9 @@ And the following 4 values have been measured, in function of the threshold:
   This value is obtained by subtracting to match\%
   the probability of choosing randomly the correct side,
   multiplied by the probability that the comparison returns true
-  (which is c.c match\%). \newline
-  Ideally limit match\% should be almost zero.
+  (which is c.c match\%).\newline
+  Ideally limit match\% should be almost zero, as we would prefer that the comparison is true only when
+  the pieces are actually connected in the correct solution.
   \[limit \: math\% = math\% - \frac{c.c. \: mathc\%}{16 \times 4}\]
   
   \item \textbf{corruption rate:}\newline
@@ -1049,8 +1054,8 @@ And the following 4 values have been measured, in function of the threshold:
     \includegraphics[height=0.5\textwidth]{pictures/match_metrics_vs_threshold_used.png}
 \end{figure}
 
-Now, let's consider Algorithm \cref{document:GCL} tasked with solving a 500-piece puzzle
-using our Comparator \cref{document:my_comparator}.
+Now, let's consider the graph connection Laplacian algorithm of \cref{document:GCL} tasked with solving a 500-piece puzzle
+using our Comparator of \cref{document:my_comparator}.
 A threshold of 0.425 is chosen;
 This implies a limit match\% of 0.04 and a corruption rate of 0.057.
 What would this mean in terms of accuracy of the results?
@@ -1078,8 +1083,8 @@ This set of definitions are useful to better understand the next section:
 \end{itemize}
 
 \subsubsection{Corruption Rate Analysis}
-\begin{figure}[h]
-  \caption{Neighbors comparison vs Corruption rate of algorithm \cref{document:GCL}. Image taken from pater \cite{GCL} page 34.}\label{fig:GCL_Corruption_Rate}
+\begin{figure}[H]
+  \caption{Neighbors comparison vs Corruption rate of graph connection laplacian algorithm of \cref{document:GCL}. Image taken from paper~\cite{GCL} page 34.}\label{fig:GCL_Corruption_Rate}
   \centering
   \includegraphics[height=0.35\textwidth]{pictures/corruption_rate.png}
 \end{figure}
@@ -1131,7 +1136,7 @@ the problem by significantly improving the comparator.
 
 Some minor improvements to the comparator can be made by spending some time
 tweaking the current algorithm.
-However, it is evident that for a task of this nature,
+However, it is clear that for a task of this nature,
 the most viable solution would likely involve
 leveraging machine-learning techniques.
 
@@ -1154,17 +1159,17 @@ We added to our program the capability to export the data useful
 to train a machine learning model.
 This section will explain the format of the data.
 
-\paragraph {Basic notions}
+\paragraph{Basic notions}
 
-One piece is uniquely identified by his id piece\_id.
+One piece is uniquely identified by his id \texttt{piece\_id}.
 The id is an integer that goes from 0 to \mbox{Number of pieces - 1}.
-Each piece has 4 sides that can be identified by the side side\_id,
+Each piece has 4 sides that can be identified by the side \texttt{side\_id},
 an integer that goes from 0 to 3.
 
-\paragraph {Image of each piece}
+\paragraph{Image of each piece}
 
-Inside the folder results/pieces the program will generate one image
-for each one of the pieces of the puzzle. The file will be named \{piece\_id\}.jpeg.
+Inside the folder \texttt{results/pieces} the program will generate one image
+for each one of the pieces of the puzzle. The file will be named \texttt{\{piece\_id\}.jpeg}.
 An example can be seen in \cref{fig:result_pieces}
 
 \begin{figure}[H]
@@ -1173,10 +1178,10 @@ An example can be seen in \cref{fig:result_pieces}
   \includegraphics[height=0.3\textwidth]{pictures/result_pieces.jpeg}
 \end{figure}
 
-\paragraph {Image of each side}
+\paragraph{Image of each side}
 
-Inside the folder results/sides the program will generate one image 
-for each side of each piece. The images will be named \{piece\_id\}\_\{side\_id\}.jpeg.
+Inside the folder \texttt{results/sides} the program will generate one image 
+for each side of each piece. The images will be named \texttt{\{piece\_id\}\_\{side\_id\}.jpeg}.
 An example can be seen in \cref{fig:result_sides}
 
 \begin{figure}[H]
@@ -1186,7 +1191,7 @@ An example can be seen in \cref{fig:result_sides}
 \end{figure}
 
 \paragraph{Corners of each piece}
-The file corners.json will be generated inside the folder results.
+The file \texttt{corners.json} will be generated inside the folder \texttt{results}.
 This file will contain a list of pieces.
 Each piece has 4 sides, and each side has the coordinates of the two points
 that delimit itself.\newline
@@ -1223,8 +1228,8 @@ An example of the generated json can be seen below.
 \end{minipage}
 
 \paragraph{Match for each side}
-The file connections\_result.json will be generated
-inside the folder results. This file will contain a list of pieces,
+The file \texttt{connections\_result.json} will be generated
+inside the folder \texttt{results}. This file will contain a list of pieces,
 each piece has 4 sides, and each side has a link to the side of the piece
 that matches it. The link can be null if the side is along the border.\newline
 An example of the generated json can be seen below.
@@ -1276,6 +1281,8 @@ While its time complexity may be less favorable when compared to state-of-the-ar
 digital puzzle solvers, it stands as a strong contender in the realm of
 real-world puzzle-solving algorithms. In fact, it may even be considered
 one of the best available online for tackling real-world puzzles.
+
+All the code used in this project is available on the GitHub repository: \url{https://github.com/lucaSartore/PuzzleSolver}.
 
 \begin{figure}[h]
   \caption{example of a result render of a digital puzzle}\label{fig:result_digital}
