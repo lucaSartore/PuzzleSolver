@@ -601,7 +601,7 @@ by aggregating four 2x2 pieces, and this pattern continues recursively.
 To implement the algorithm two fundamental object are defined
 \begin{itemize}
   \item \texttt{SinglePiece}: which contains information about a single puzzle piece.
-  \item P\texttt{PieceGroup\(<\)T\(>\)} where \texttt{T} can be either a \texttt{PieceGroup} or a \texttt{SinglePiece}\newline
+  \item \texttt{PieceGroup\(<\)T\(>\)} where \texttt{T} can be either a \texttt{PieceGroup} or a \texttt{SinglePiece}\newline
   This element encompasses four elements of type \texttt{T}, each with its own position (top right, top left, bottom left, bottom right).
 \end{itemize}
 Both \texttt{SinglePiece} and \texttt{PieceGroup} have an ``orientation'' attribute that goes from 0 to 3, this attribute
